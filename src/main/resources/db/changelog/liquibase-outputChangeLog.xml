@@ -1,0 +1,2004 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="a-panov (generated)" id="1582791234100-1">
+        <createTable tableName="reversion_revision">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="reversion_revision_pkey"/>
+            </column>
+            <column name="date_created" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-2">
+        <createTable tableName="catalogs_internetaccesstype">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_internetaccesstype_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_weight" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-3">
+        <createTable tableName="capabilities_petition">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="capabilities_petition_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="priority" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="level" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_petition" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="petition_file" type="VARCHAR(100)"/>
+            <column name="answer_file" type="VARCHAR(100)"/>
+            <column name="location_id" type="INTEGER"/>
+            <column name="owner_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-4">
+        <createTable tableName="catalogs_smotype">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_smotype_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-5">
+        <createTable tableName="auth_permission">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="auth_permission_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_type_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="codename" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-6">
+        <createTable tableName="catalogs_mobiletype">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_mobiletype_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-7">
+        <createTable tableName="django_session">
+            <column name="session_key" type="VARCHAR(40)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="django_session_pkey"/>
+            </column>
+            <column name="session_data" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expire_date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-8">
+        <createTable tableName="catalogs_trunkchanneltype">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_trunkchanneltype_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_weight" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-9">
+        <createTable tableName="catalogs_governmentdevelopmentprogram">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_governmentdevelopmentprogram_pkey"/>
+            </column>
+            <column name="short_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_name" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-10">
+        <createTable tableName="catalogs_networkconnection">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_networkconnection_pkey"/>
+            </column>
+            <column name="state" type="VARCHAR(4)"/>
+            <column name="completed" type="INTEGER"/>
+            <column name="throughput" type="FLOAT8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="max_amount" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quality" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="government_program_id" type="INTEGER"/>
+            <column name="operator_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organization_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_internet_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_trunkchannel_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-11">
+        <createTable tableName="ftc_ats">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ftc_ats_pkey"/>
+            </column>
+            <column name="state" type="VARCHAR(4)"/>
+            <column name="completed" type="INTEGER"/>
+            <column name="quality" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="technical_status" type="VARCHAR(9)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="requests" type="INTEGER"/>
+            <column name="functional_customer" type="TEXT"/>
+            <column name="commissioning" type="date"/>
+            <column name="dismiss_date" type="date"/>
+            <column name="capacity" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity_payphone" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="max_users" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="clarify_petition_id" type="INTEGER"/>
+            <column name="contract_id" type="INTEGER"/>
+            <column name="government_program_id" type="INTEGER"/>
+            <column name="location_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operator_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="previous_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-12">
+        <createTable tableName="catalogs_contract">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_contract_pkey"/>
+            </column>
+            <column name="registration_number" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="numeric(15, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_realization" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-13">
+        <createTable tableName="auth_group_permissions">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="auth_group_permissions_pkey"/>
+            </column>
+            <column name="group_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-14">
+        <createTable tableName="user_info_user">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_info_user_pkey"/>
+            </column>
+            <column name="password" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_login" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="is_superuser" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_staff" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fio" type="VARCHAR(256)"/>
+            <column name="operator_id" type="INTEGER"/>
+            <column name="role" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contacts" type="TEXT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-15">
+        <createTable tableName="esia_dj_auth_esiapersoncredentials">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="esia_dj_auth_esiapersoncredentials_pkey"/>
+            </column>
+            <column name="uuid" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="TEXT"/>
+            <column name="phone" type="TEXT"/>
+            <column name="snils" type="TEXT"/>
+            <column name="person_first_name" type="TEXT"/>
+            <column name="person_middle_name" type="TEXT"/>
+            <column name="person_last_name" type="TEXT"/>
+            <column name="person_inn" type="TEXT"/>
+            <column name="person_birth_date" type="TEXT"/>
+            <column name="person_gender" type="TEXT"/>
+            <column name="person_passport" type="TEXT"/>
+            <column name="person_account_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-16">
+        <createTable tableName="django_migrations">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="django_migrations_pkey"/>
+            </column>
+            <column name="app" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="applied" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-17">
+        <createTable tableName="user_info_user_locations">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_info_user_locations_pkey"/>
+            </column>
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-18">
+        <createTable tableName="auth_group">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="auth_group_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(80)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-19">
+        <createTable tableName="django_admin_log">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="django_admin_log_pkey"/>
+            </column>
+            <column name="action_time" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="object_id" type="TEXT"/>
+            <column name="object_repr" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action_flag" type="SMALLINT(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="change_message" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_type_id" type="INTEGER"/>
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-20">
+        <createTable tableName="ftc_television">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ftc_television_pkey"/>
+            </column>
+            <column name="state" type="VARCHAR(4)"/>
+            <column name="completed" type="INTEGER"/>
+            <column name="quality" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="technical_status" type="VARCHAR(9)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="requests" type="INTEGER"/>
+            <column name="functional_customer" type="TEXT"/>
+            <column name="commissioning" type="date"/>
+            <column name="dismiss_date" type="date"/>
+            <column name="type" type="VARCHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity_digital" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity_analog" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="max_users" type="INTEGER"/>
+            <column name="clarify_petition_id" type="INTEGER"/>
+            <column name="contract_id" type="INTEGER"/>
+            <column name="government_program_id" type="INTEGER"/>
+            <column name="location_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operator_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="previous_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-21">
+        <createTable tableName="authtoken_token">
+            <column name="key" type="VARCHAR(40)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="authtoken_token_pkey"/>
+            </column>
+            <column name="created" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-22">
+        <createTable tableName="esia_dj_auth_esiaauthlogentry">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="esia_dj_auth_esiaauthlogentry_pkey"/>
+            </column>
+            <column name="timestamp" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_uid" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="success" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="newbie" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_snils" type="TEXT"/>
+            <column name="credentials_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-23">
+        <createTable tableName="catalogs_organization_available_smo_types">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_organization_available_smo_types_pkey"/>
+            </column>
+            <column name="organization_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="smotype_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-24">
+        <createTable tableName="monitoring_accesspoint_traffic">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="monitoring_accesspoint_traffic_pkey"/>
+            </column>
+            <column name="incoming_bytes" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="outgoing_bytes" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="day" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="access_point_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-25">
+        <createTable tableName="catalogs_trunkchannel">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_trunkchannel_pkey"/>
+            </column>
+            <column name="state" type="VARCHAR(4)"/>
+            <column name="completed" type="INTEGER"/>
+            <column name="commissioning" type="date"/>
+            <column name="decommissioning" type="date"/>
+            <column name="contract_id" type="INTEGER"/>
+            <column name="government_program_id" type="INTEGER"/>
+            <column name="location_end_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_start_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operator_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="previous_id" type="INTEGER"/>
+            <column name="type_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-26">
+        <createTable tableName="catalogs_organizationtype">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_organizationtype_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-27">
+        <createTable tableName="ftc_radio">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ftc_radio_pkey"/>
+            </column>
+            <column name="state" type="VARCHAR(4)"/>
+            <column name="completed" type="INTEGER"/>
+            <column name="quality" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="technical_status" type="VARCHAR(9)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="requests" type="INTEGER"/>
+            <column name="functional_customer" type="TEXT"/>
+            <column name="commissioning" type="date"/>
+            <column name="dismiss_date" type="date"/>
+            <column name="type" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="clarify_petition_id" type="INTEGER"/>
+            <column name="contract_id" type="INTEGER"/>
+            <column name="government_program_id" type="INTEGER"/>
+            <column name="location_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operator_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="previous_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-28">
+        <createTable tableName="user_info_user_user_permissions">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_info_user_user_permissions_pkey"/>
+            </column>
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-29">
+        <createTable tableName="ftc_internet">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ftc_internet_pkey"/>
+            </column>
+            <column name="state" type="VARCHAR(4)"/>
+            <column name="completed" type="INTEGER"/>
+            <column name="quality" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="technical_status" type="VARCHAR(9)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="requests" type="INTEGER"/>
+            <column name="functional_customer" type="TEXT"/>
+            <column name="commissioning" type="date"/>
+            <column name="dismiss_date" type="date"/>
+            <column name="throughput" type="FLOAT8"/>
+            <column name="max_users" type="INTEGER"/>
+            <column name="clarify_petition_id" type="INTEGER"/>
+            <column name="contract_id" type="INTEGER"/>
+            <column name="government_program_id" type="INTEGER"/>
+            <column name="location_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operator_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="previous_id" type="INTEGER"/>
+            <column name="type_trunkchannel_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-30">
+        <createTable tableName="ftc_mobile">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ftc_mobile_pkey"/>
+            </column>
+            <column name="state" type="VARCHAR(4)"/>
+            <column name="completed" type="INTEGER"/>
+            <column name="quality" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="technical_status" type="VARCHAR(9)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="requests" type="INTEGER"/>
+            <column name="functional_customer" type="TEXT"/>
+            <column name="commissioning" type="date"/>
+            <column name="dismiss_date" type="date"/>
+            <column name="max_users" type="INTEGER"/>
+            <column name="clarify_petition_id" type="INTEGER"/>
+            <column name="contract_id" type="INTEGER"/>
+            <column name="government_program_id" type="INTEGER"/>
+            <column name="location_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operator_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="previous_id" type="INTEGER"/>
+            <column name="type_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-31">
+        <createTable tableName="catalogs_organization_available_organization_types">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_organization_available_organization_types_pkey"/>
+            </column>
+            <column name="organization_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organizationtype_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-32">
+        <createTable tableName="catalogs_organization">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_organization_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inn" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="kpp" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fias" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_id" type="INTEGER"/>
+            <column name="type_id" type="INTEGER"/>
+            <column name="type_smo_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-33">
+        <createTable tableName="monitoring_connectionmetric">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="monitoring_connectionmetric_pkey"/>
+            </column>
+            <column name="available" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="medium_speed_per_hour" type="FLOAT8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_mark" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="access_point_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-34">
+        <createTable tableName="catalogs_operator">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_operator_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contacts" type="TEXT"/>
+            <column name="juristic_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="icon" type="VARCHAR(100)"/>
+            <column name="services" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inn" type="VARCHAR(12)"/>
+            <column name="kpp" type="VARCHAR(9)"/>
+            <column name="type" type="VARCHAR(5)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-35">
+        <createTable tableName="catalogs_location">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_location_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_location" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="okato" type="VARCHAR(16)"/>
+            <column name="oktmo" type="VARCHAR(16)"/>
+            <column name="fias_code" type="UUID"/>
+            <column name="people_count" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lft" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rght" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tree_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="level" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_id" type="INTEGER"/>
+            <column name="geo_data_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-36">
+        <createTable tableName="reversion_version">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="reversion_version_pkey"/>
+            </column>
+            <column name="object_id" type="VARCHAR(191)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="format" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="serialized_data" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="object_repr" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_type_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revision_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="db" type="VARCHAR(191)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-37">
+        <createTable tableName="user_info_user_groups">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_info_user_groups_pkey"/>
+            </column>
+            <column name="user_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-38">
+        <createTable tableName="catalogs_communicationservicesaddcause">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_infomataddcause_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_cause" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-39">
+        <createTable tableName="django_content_type">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="django_content_type_pkey"/>
+            </column>
+            <column name="app_label" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="model" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-40">
+        <createTable tableName="catalogs_infomat">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_infomat_pkey"/>
+            </column>
+            <column name="serial_number" type="VARCHAR(16)"/>
+            <column name="address" type="TEXT"/>
+            <column name="organization" type="VARCHAR(256)"/>
+            <column name="contacts" type="TEXT"/>
+            <column name="speed" type="FLOAT8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="install_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="removed" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="add_cause_id" type="INTEGER"/>
+            <column name="location_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trunk_channel_type_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-41">
+        <createTable tableName="spatial_ref_sys">
+            <column name="srid" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="spatial_ref_sys_pkey"/>
+            </column>
+            <column name="auth_name" type="VARCHAR(256)"/>
+            <column name="auth_srid" type="INTEGER"/>
+            <column name="srtext" type="VARCHAR(2048)"/>
+            <column name="proj4text" type="VARCHAR(2048)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-42">
+        <createTable tableName="ftc_post">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ftc_post_pkey"/>
+            </column>
+            <column name="state" type="VARCHAR(4)"/>
+            <column name="completed" type="INTEGER"/>
+            <column name="quality" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="technical_status" type="VARCHAR(9)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="requests" type="INTEGER"/>
+            <column name="functional_customer" type="TEXT"/>
+            <column name="commissioning" type="date"/>
+            <column name="dismiss_date" type="date"/>
+            <column name="type" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="clarify_petition_id" type="INTEGER"/>
+            <column name="contract_id" type="INTEGER"/>
+            <column name="government_program_id" type="INTEGER"/>
+            <column name="location_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operator_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="previous_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-43">
+        <createTable tableName="capabilities_clarifypetition">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="capabilities_clarifypetition_pkey"/>
+            </column>
+            <column name="state" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment" type="TEXT"/>
+            <column name="created" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="started" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="location_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-44">
+        <createTable tableName="catalogs_locationinfrastructure">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_locationinfrastructure_pkey"/>
+            </column>
+            <column name="project_down_analog" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-45">
+        <createTable tableName="django_site">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="django_site_pkey"/>
+            </column>
+            <column name="domain" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-46">
+        <createIndex indexName="reversion_revision_date_created_96f7c20c" tableName="reversion_revision">
+            <column name="date_created"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-47">
+        <createIndex indexName="reversion_revision_user_id_17095f45" tableName="reversion_revision">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-48">
+        <addForeignKeyConstraint baseColumnNames="revision_id" baseTableName="reversion_version" constraintName="reversion_version_revision_id_af9f6a9d_fk_reversion_revision_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="reversion_revision" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-49">
+        <addForeignKeyConstraint baseColumnNames="type_internet_id" baseTableName="catalogs_networkconnection" constraintName="catalogs_networkconn_type_internet_id_72277312_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_internetaccesstype" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-50">
+        <createIndex indexName="capabilities_petition_location_id_448c7d55" tableName="capabilities_petition">
+            <column name="location_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-51">
+        <createIndex indexName="capabilities_petition_owner_id_9dab479d" tableName="capabilities_petition">
+            <column name="owner_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-52">
+        <createIndex indexName="auth_permission_content_type_id_2f476e4b" tableName="auth_permission">
+            <column name="content_type_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-53">
+        <addUniqueConstraint columnNames="content_type_id, codename" constraintName="auth_permission_content_type_id_codename_01ab375a_uniq" tableName="auth_permission"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-54">
+        <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="user_info_user_user_permissions" constraintName="user_info_user_user__permission_id_d323a227_fk_auth_perm" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="auth_permission" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-55">
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="ftc_mobile" constraintName="ftc_mobile_type_id_fdaedf90_fk_catalogs_mobiletype_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_mobiletype" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-56">
+        <createIndex indexName="django_session_expire_date_a5c62663" tableName="django_session">
+            <column name="expire_date"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-57">
+        <addForeignKeyConstraint baseColumnNames="type_trunkchannel_id" baseTableName="ftc_internet" constraintName="ftc_internet_type_trunkchannel_id_d7ed01cc_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_trunkchanneltype" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-58">
+        <addForeignKeyConstraint baseColumnNames="government_program_id" baseTableName="catalogs_networkconnection" constraintName="catalogs_networkconn_government_program_i_7345c936_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_governmentdevelopmentprogram" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-59">
+        <addForeignKeyConstraint baseColumnNames="government_program_id" baseTableName="catalogs_trunkchannel" constraintName="catalogs_trunkchanne_government_program_i_0585f0f7_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_governmentdevelopmentprogram" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-60">
+        <addForeignKeyConstraint baseColumnNames="government_program_id" baseTableName="ftc_ats" constraintName="ftc_ats_government_program_i_54af9d27_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_governmentdevelopmentprogram" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-61">
+        <addForeignKeyConstraint baseColumnNames="government_program_id" baseTableName="ftc_internet" constraintName="ftc_internet_government_program_i_7dab1db1_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_governmentdevelopmentprogram" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-62">
+        <addForeignKeyConstraint baseColumnNames="government_program_id" baseTableName="ftc_mobile" constraintName="ftc_mobile_government_program_i_3384e4fe_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_governmentdevelopmentprogram" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-63">
+        <addForeignKeyConstraint baseColumnNames="government_program_id" baseTableName="ftc_post" constraintName="ftc_post_government_program_i_fa34b1ba_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_governmentdevelopmentprogram" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-64">
+        <addForeignKeyConstraint baseColumnNames="government_program_id" baseTableName="ftc_radio" constraintName="ftc_radio_government_program_i_99c580c6_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_governmentdevelopmentprogram" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-65">
+        <addForeignKeyConstraint baseColumnNames="government_program_id" baseTableName="ftc_television" constraintName="ftc_television_government_program_i_3133aff1_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_governmentdevelopmentprogram" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-66">
+        <addForeignKeyConstraint baseColumnNames="type_trunkchannel_id" baseTableName="catalogs_networkconnection" constraintName="catalogs_networkconn_type_trunkchannel_id_d8f8f1c0_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_trunkchanneltype" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-67">
+        <createIndex indexName="catalogs_networkconnection_government_program_id_7345c936" tableName="catalogs_networkconnection">
+            <column name="government_program_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-68">
+        <createIndex indexName="catalogs_networkconnection_operator_id_64b29abc" tableName="catalogs_networkconnection">
+            <column name="operator_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-69">
+        <createIndex indexName="catalogs_networkconnection_organization_id_6c8c7de7" tableName="catalogs_networkconnection">
+            <column name="organization_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-70">
+        <createIndex indexName="catalogs_networkconnection_type_internet_id_72277312" tableName="catalogs_networkconnection">
+            <column name="type_internet_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-71">
+        <createIndex indexName="catalogs_networkconnection_type_trunkchannel_id_d8f8f1c0" tableName="catalogs_networkconnection">
+            <column name="type_trunkchannel_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-72">
+        <createIndex indexName="ftc_ats_clarify_petition_id_0e4fe8f7" tableName="ftc_ats">
+            <column name="clarify_petition_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-73">
+        <createIndex indexName="ftc_ats_contract_id_9909f20a" tableName="ftc_ats">
+            <column name="contract_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-74">
+        <createIndex indexName="ftc_ats_government_program_id_54af9d27" tableName="ftc_ats">
+            <column name="government_program_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-75">
+        <createIndex indexName="ftc_ats_location_id_fcff2432" tableName="ftc_ats">
+            <column name="location_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-76">
+        <createIndex indexName="ftc_ats_operator_id_95e5d901" tableName="ftc_ats">
+            <column name="operator_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-77">
+        <createIndex indexName="ftc_ats_previous_id_cf49f4f1" tableName="ftc_ats">
+            <column name="previous_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-78">
+        <addForeignKeyConstraint baseColumnNames="previous_id" baseTableName="ftc_ats" constraintName="ftc_ats_previous_id_cf49f4f1_fk_ftc_ats_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="ftc_ats" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-79">
+        <createView fullDefinition="false" viewName="location_tc"> SELECT NULL::integer AS id,
+    ftc_ats.id AS ftc_ats_id,
+    NULL::integer AS ftc_internet_id,
+    NULL::integer AS ftc_mobile_id,
+    NULL::integer AS ftc_post_id,
+    NULL::integer AS ftc_radio_id,
+    NULL::integer AS ftc_television_id,
+    ftc_ats.location_id
+   FROM ftc_ats
+UNION
+ SELECT NULL::integer AS id,
+    NULL::integer AS ftc_ats_id,
+    ftc_internet.id AS ftc_internet_id,
+    NULL::integer AS ftc_mobile_id,
+    NULL::integer AS ftc_post_id,
+    NULL::integer AS ftc_radio_id,
+    NULL::integer AS ftc_television_id,
+    ftc_internet.location_id
+   FROM ftc_internet
+UNION
+ SELECT NULL::integer AS id,
+    NULL::integer AS ftc_ats_id,
+    NULL::integer AS ftc_internet_id,
+    ftc_mobile.id AS ftc_mobile_id,
+    NULL::integer AS ftc_post_id,
+    NULL::integer AS ftc_radio_id,
+    NULL::integer AS ftc_television_id,
+    ftc_mobile.location_id
+   FROM ftc_mobile
+UNION
+ SELECT NULL::integer AS id,
+    NULL::integer AS ftc_ats_id,
+    NULL::integer AS ftc_internet_id,
+    NULL::integer AS ftc_mobile_id,
+    ftc_post.id AS ftc_post_id,
+    NULL::integer AS ftc_radio_id,
+    NULL::integer AS ftc_television_id,
+    ftc_post.location_id
+   FROM ftc_post
+UNION
+ SELECT NULL::integer AS id,
+    NULL::integer AS ftc_ats_id,
+    NULL::integer AS ftc_internet_id,
+    NULL::integer AS ftc_mobile_id,
+    NULL::integer AS ftc_post_id,
+    ftc_radio.id AS ftc_radio_id,
+    NULL::integer AS ftc_television_id,
+    ftc_radio.location_id
+   FROM ftc_radio
+UNION
+ SELECT NULL::integer AS id,
+    NULL::integer AS ftc_ats_id,
+    NULL::integer AS ftc_internet_id,
+    NULL::integer AS ftc_mobile_id,
+    NULL::integer AS ftc_post_id,
+    NULL::integer AS ftc_radio_id,
+    ftc_television.id AS ftc_television_id,
+    ftc_television.location_id
+   FROM ftc_television
+  ORDER BY 8, 2, 3, 4, 5, 6, 7;</createView>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-80">
+        <createIndex indexName="catalogs_contract_customer_id_e1c1494b" tableName="catalogs_contract">
+            <column name="customer_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-81">
+        <addForeignKeyConstraint baseColumnNames="contract_id" baseTableName="catalogs_trunkchannel" constraintName="catalogs_trunkchanne_contract_id_b86b3e3e_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_contract" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-82">
+        <addForeignKeyConstraint baseColumnNames="contract_id" baseTableName="ftc_ats" constraintName="ftc_ats_contract_id_9909f20a_fk_catalogs_contract_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_contract" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-83">
+        <addForeignKeyConstraint baseColumnNames="contract_id" baseTableName="ftc_internet" constraintName="ftc_internet_contract_id_98e01cbc_fk_catalogs_contract_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_contract" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-84">
+        <addForeignKeyConstraint baseColumnNames="contract_id" baseTableName="ftc_mobile" constraintName="ftc_mobile_contract_id_fa9c01de_fk_catalogs_contract_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_contract" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-85">
+        <addForeignKeyConstraint baseColumnNames="contract_id" baseTableName="ftc_post" constraintName="ftc_post_contract_id_c137d36e_fk_catalogs_contract_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_contract" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-86">
+        <addForeignKeyConstraint baseColumnNames="contract_id" baseTableName="ftc_radio" constraintName="ftc_radio_contract_id_83bada14_fk_catalogs_contract_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_contract" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-87">
+        <addForeignKeyConstraint baseColumnNames="contract_id" baseTableName="ftc_television" constraintName="ftc_television_contract_id_56f61c12_fk_catalogs_contract_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_contract" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-88">
+        <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="auth_group_permissions" constraintName="auth_group_permissio_permission_id_84c5c92e_fk_auth_perm" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="auth_permission" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-89">
+        <createIndex indexName="auth_group_permissions_group_id_b120cbf9" tableName="auth_group_permissions">
+            <column name="group_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-90">
+        <addUniqueConstraint columnNames="group_id, permission_id" constraintName="auth_group_permissions_group_id_permission_id_0cd325b0_uniq" tableName="auth_group_permissions"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-91">
+        <createIndex indexName="auth_group_permissions_permission_id_84c5c92e" tableName="auth_group_permissions">
+            <column name="permission_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-92">
+        <addUniqueConstraint columnNames="email" constraintName="user_info_user_email_key" tableName="user_info_user"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-93">
+        <createIndex indexName="user_info_user_operator_id_eb73f2e1" tableName="user_info_user">
+            <column name="operator_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-94">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_info_user_user_permissions" constraintName="user_info_user_user__user_id_eaf5ad22_fk_user_info" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user_info_user" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-95">
+        <addForeignKeyConstraint baseColumnNames="person_account_id" baseTableName="esia_dj_auth_esiapersoncredentials" constraintName="esia_dj_auth_esiaper_person_account_id_0d591436_fk_user_info" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user_info_user" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-96">
+        <addUniqueConstraint columnNames="email" constraintName="esia_dj_auth_esiapersoncredentials_email_key" tableName="esia_dj_auth_esiapersoncredentials"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-97">
+        <addUniqueConstraint columnNames="person_account_id" constraintName="esia_dj_auth_esiapersoncredentials_person_account_id_key" tableName="esia_dj_auth_esiapersoncredentials"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-98">
+        <createIndex indexName="esia_dj_auth_esiapersoncredentials_phone_2b8a4ddb_like" tableName="esia_dj_auth_esiapersoncredentials">
+            <column name="phone"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-99">
+        <addUniqueConstraint columnNames="phone" constraintName="esia_dj_auth_esiapersoncredentials_phone_key" tableName="esia_dj_auth_esiapersoncredentials"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-100">
+        <addUniqueConstraint columnNames="snils" constraintName="esia_dj_auth_esiapersoncredentials_snils_key" tableName="esia_dj_auth_esiapersoncredentials"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-101">
+        <createIndex indexName="esia_dj_auth_esiapersoncredentials_uuid_0aa2d4cb_like" tableName="esia_dj_auth_esiapersoncredentials">
+            <column name="uuid"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-102">
+        <addUniqueConstraint columnNames="uuid" constraintName="esia_dj_auth_esiapersoncredentials_uuid_key" tableName="esia_dj_auth_esiapersoncredentials"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-103">
+        <createIndex indexName="user_info_user_locations_location_id_dd9d7b06" tableName="user_info_user_locations">
+            <column name="location_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-104">
+        <createIndex indexName="user_info_user_locations_user_id_20460b9f" tableName="user_info_user_locations">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-105">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_info_user_locations" constraintName="user_info_user_locations_user_id_20460b9f_fk_user_info_user_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user_info_user" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-106">
+        <addUniqueConstraint columnNames="user_id, location_id" constraintName="user_info_user_locations_user_id_location_id_5de130fd_uniq" tableName="user_info_user_locations"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-107">
+        <addUniqueConstraint columnNames="name" constraintName="auth_group_name_key" tableName="auth_group"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-108">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="user_info_user_groups" constraintName="user_info_user_groups_group_id_2a1ee735_fk_auth_group_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="auth_group" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-109">
+        <createIndex indexName="django_admin_log_content_type_id_c4bce8eb" tableName="django_admin_log">
+            <column name="content_type_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-110">
+        <createIndex indexName="django_admin_log_user_id_c564eba6" tableName="django_admin_log">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-111">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="django_admin_log" constraintName="django_admin_log_user_id_c564eba6_fk_user_info_user_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user_info_user" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-112">
+        <createIndex indexName="ftc_television_clarify_petition_id_b80b9e6d" tableName="ftc_television">
+            <column name="clarify_petition_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-113">
+        <createIndex indexName="ftc_television_contract_id_56f61c12" tableName="ftc_television">
+            <column name="contract_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-114">
+        <createIndex indexName="ftc_television_government_program_id_3133aff1" tableName="ftc_television">
+            <column name="government_program_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-115">
+        <createIndex indexName="ftc_television_location_id_80644537" tableName="ftc_television">
+            <column name="location_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-116">
+        <createIndex indexName="ftc_television_operator_id_a5105428" tableName="ftc_television">
+            <column name="operator_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-117">
+        <createIndex indexName="ftc_television_previous_id_0c08dc09" tableName="ftc_television">
+            <column name="previous_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-118">
+        <addForeignKeyConstraint baseColumnNames="previous_id" baseTableName="ftc_television" constraintName="ftc_television_previous_id_0c08dc09_fk_ftc_television_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="ftc_television" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-119">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="authtoken_token" constraintName="authtoken_token_user_id_35299eff_fk_user_info_user_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user_info_user" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-120">
+        <addUniqueConstraint columnNames="user_id" constraintName="authtoken_token_user_id_key" tableName="authtoken_token"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-121">
+        <addForeignKeyConstraint baseColumnNames="credentials_id" baseTableName="esia_dj_auth_esiaauthlogentry" constraintName="esia_dj_auth_esiaaut_credentials_id_1c327bac_fk_esia_dj_a" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="esia_dj_auth_esiapersoncredentials" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-122">
+        <createIndex indexName="esia_dj_auth_esiaauthlogentry_credentials_id_1c327bac" tableName="esia_dj_auth_esiaauthlogentry">
+            <column name="credentials_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-123">
+        <addForeignKeyConstraint baseColumnNames="smotype_id" baseTableName="catalogs_organization_available_smo_types" constraintName="catalogs_organizatio_smotype_id_6810faec_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_smotype" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-124">
+        <addUniqueConstraint columnNames="organization_id, smotype_id" constraintName="catalogs_organization_av_organization_id_smotype__3ba215ca_uniq" tableName="catalogs_organization_available_smo_types"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-125">
+        <createIndex indexName="catalogs_organization_avai_organization_id_3dc84155" tableName="catalogs_organization_available_smo_types">
+            <column name="organization_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-126">
+        <createIndex indexName="catalogs_organization_available_smo_types_smotype_id_6810faec" tableName="catalogs_organization_available_smo_types">
+            <column name="smotype_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-127">
+        <addUniqueConstraint columnNames="access_point_id, day" constraintName="monitoring_accesspoint_t_access_point_id_day_6f20bcdf_uniq" tableName="monitoring_accesspoint_traffic"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-128">
+        <createIndex indexName="monitoring_accesspoint_traffic_access_point_id_e1db87f2" tableName="monitoring_accesspoint_traffic">
+            <column name="access_point_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-129">
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="catalogs_trunkchannel" constraintName="catalogs_trunkchanne_type_id_2c0239bc_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_trunkchanneltype" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-130">
+        <createIndex indexName="catalogs_trunkchannel_contract_id_b86b3e3e" tableName="catalogs_trunkchannel">
+            <column name="contract_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-131">
+        <createIndex indexName="catalogs_trunkchannel_government_program_id_0585f0f7" tableName="catalogs_trunkchannel">
+            <column name="government_program_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-132">
+        <createIndex indexName="catalogs_trunkchannel_location_end_id_4784fb7a" tableName="catalogs_trunkchannel">
+            <column name="location_end_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-133">
+        <createIndex indexName="catalogs_trunkchannel_location_start_id_c6ae2b41" tableName="catalogs_trunkchannel">
+            <column name="location_start_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-134">
+        <createIndex indexName="catalogs_trunkchannel_operator_id_8329c0cb" tableName="catalogs_trunkchannel">
+            <column name="operator_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-135">
+        <createIndex indexName="catalogs_trunkchannel_previous_id_a750bcb0" tableName="catalogs_trunkchannel">
+            <column name="previous_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-136">
+        <createIndex indexName="catalogs_trunkchannel_type_id_2c0239bc" tableName="catalogs_trunkchannel">
+            <column name="type_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-137">
+        <createView fullDefinition="false" viewName="geography_columns"> SELECT current_database() AS f_table_catalog,
+    n.nspname AS f_table_schema,
+    c.relname AS f_table_name,
+    a.attname AS f_geography_column,
+    postgis_typmod_dims(a.atttypmod) AS coord_dimension,
+    postgis_typmod_srid(a.atttypmod) AS srid,
+    postgis_typmod_type(a.atttypmod) AS type
+   FROM pg_class c,
+    pg_attribute a,
+    pg_type t,
+    pg_namespace n
+  WHERE ((t.typname = 'geography'::name) AND (a.attisdropped = false) AND (a.atttypid = t.oid) AND (a.attrelid = c.oid) AND (c.relnamespace = n.oid) AND (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"])) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text));</createView>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-138">
+        <createView fullDefinition="false" viewName="geometry_columns"> SELECT (current_database())::character varying(256) AS f_table_catalog,
+    n.nspname AS f_table_schema,
+    c.relname AS f_table_name,
+    a.attname AS f_geometry_column,
+    COALESCE(postgis_typmod_dims(a.atttypmod), sn.ndims, 2) AS coord_dimension,
+    COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod), 0), sr.srid, 0) AS srid,
+    (replace(replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)), 'GEOMETRY'::text), st.type, 'GEOMETRY'::text), 'ZM'::text, ''::text), 'Z'::text, ''::text))::character varying(30) AS type
+   FROM ((((((pg_class c
+     JOIN pg_attribute a ON (((a.attrelid = c.oid) AND (NOT a.attisdropped))))
+     JOIN pg_namespace n ON ((c.relnamespace = n.oid)))
+     JOIN pg_type t ON ((a.atttypid = t.oid)))
+     LEFT JOIN ( SELECT s.connamespace,
+            s.conrelid,
+            s.conkey,
+            replace(split_part(s.consrc, ''''::text, 2), ')'::text, ''::text) AS type
+           FROM ( SELECT pg_constraint.connamespace,
+                    pg_constraint.conrelid,
+                    pg_constraint.conkey,
+                    pg_get_constraintdef(pg_constraint.oid) AS consrc
+                   FROM pg_constraint) s
+          WHERE (s.consrc ~~* '%geometrytype(% = %'::text)) st ON (((st.connamespace = n.oid) AND (st.conrelid = c.oid) AND (a.attnum = ANY (st.conkey)))))
+     LEFT JOIN ( SELECT s.connamespace,
+            s.conrelid,
+            s.conkey,
+            (replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text))::integer AS ndims
+           FROM ( SELECT pg_constraint.connamespace,
+                    pg_constraint.conrelid,
+                    pg_constraint.conkey,
+                    pg_get_constraintdef(pg_constraint.oid) AS consrc
+                   FROM pg_constraint) s
+          WHERE (s.consrc ~~* '%ndims(% = %'::text)) sn ON (((sn.connamespace = n.oid) AND (sn.conrelid = c.oid) AND (a.attnum = ANY (sn.conkey)))))
+     LEFT JOIN ( SELECT s.connamespace,
+            s.conrelid,
+            s.conkey,
+            (replace(replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text), '('::text, ''::text))::integer AS srid
+           FROM ( SELECT pg_constraint.connamespace,
+                    pg_constraint.conrelid,
+                    pg_constraint.conkey,
+                    pg_get_constraintdef(pg_constraint.oid) AS consrc
+                   FROM pg_constraint) s
+          WHERE (s.consrc ~~* '%srid(% = %'::text)) sr ON (((sr.connamespace = n.oid) AND (sr.conrelid = c.oid) AND (a.attnum = ANY (sr.conkey)))))
+  WHERE ((c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"])) AND (NOT (c.relname = 'raster_columns'::name)) AND (t.typname = 'geometry'::name) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text));</createView>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-139">
+        <createIndex indexName="ftc_radio_clarify_petition_id_e690b7ee" tableName="ftc_radio">
+            <column name="clarify_petition_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-140">
+        <createIndex indexName="ftc_radio_contract_id_83bada14" tableName="ftc_radio">
+            <column name="contract_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-141">
+        <createIndex indexName="ftc_radio_government_program_id_99c580c6" tableName="ftc_radio">
+            <column name="government_program_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-142">
+        <createIndex indexName="ftc_radio_location_id_783aa83e" tableName="ftc_radio">
+            <column name="location_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-143">
+        <createIndex indexName="ftc_radio_operator_id_fd04115d" tableName="ftc_radio">
+            <column name="operator_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-144">
+        <createIndex indexName="ftc_radio_previous_id_9fbdea7d" tableName="ftc_radio">
+            <column name="previous_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-145">
+        <addForeignKeyConstraint baseColumnNames="previous_id" baseTableName="ftc_radio" constraintName="ftc_radio_previous_id_9fbdea7d_fk_ftc_radio_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="ftc_radio" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-146">
+        <addUniqueConstraint columnNames="user_id, permission_id" constraintName="user_info_user_user_perm_user_id_permission_id_58245fec_uniq" tableName="user_info_user_user_permissions"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-147">
+        <createIndex indexName="user_info_user_user_permissions_permission_id_d323a227" tableName="user_info_user_user_permissions">
+            <column name="permission_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-148">
+        <createIndex indexName="user_info_user_user_permissions_user_id_eaf5ad22" tableName="user_info_user_user_permissions">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-149">
+        <createIndex indexName="ftc_internet_clarify_petition_id_316fb8af" tableName="ftc_internet">
+            <column name="clarify_petition_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-150">
+        <createIndex indexName="ftc_internet_contract_id_98e01cbc" tableName="ftc_internet">
+            <column name="contract_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-151">
+        <createIndex indexName="ftc_internet_government_program_id_7dab1db1" tableName="ftc_internet">
+            <column name="government_program_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-152">
+        <createIndex indexName="ftc_internet_location_id_3b67fac4" tableName="ftc_internet">
+            <column name="location_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-153">
+        <createIndex indexName="ftc_internet_operator_id_c687cbe5" tableName="ftc_internet">
+            <column name="operator_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-154">
+        <createIndex indexName="ftc_internet_previous_id_11aaecb7" tableName="ftc_internet">
+            <column name="previous_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-155">
+        <addForeignKeyConstraint baseColumnNames="previous_id" baseTableName="ftc_internet" constraintName="ftc_internet_previous_id_11aaecb7_fk_ftc_internet_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="ftc_internet" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-156">
+        <createIndex indexName="ftc_internet_type_trunkchannel_id_d7ed01cc" tableName="ftc_internet">
+            <column name="type_trunkchannel_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-157">
+        <createIndex indexName="ftc_mobile_clarify_petition_id_ec494e76" tableName="ftc_mobile">
+            <column name="clarify_petition_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-158">
+        <createIndex indexName="ftc_mobile_contract_id_fa9c01de" tableName="ftc_mobile">
+            <column name="contract_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-159">
+        <createIndex indexName="ftc_mobile_government_program_id_3384e4fe" tableName="ftc_mobile">
+            <column name="government_program_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-160">
+        <createIndex indexName="ftc_mobile_location_id_a22bf8cc" tableName="ftc_mobile">
+            <column name="location_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-161">
+        <createIndex indexName="ftc_mobile_operator_id_344bc52b" tableName="ftc_mobile">
+            <column name="operator_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-162">
+        <createIndex indexName="ftc_mobile_previous_id_c50eb41b" tableName="ftc_mobile">
+            <column name="previous_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-163">
+        <addForeignKeyConstraint baseColumnNames="previous_id" baseTableName="ftc_mobile" constraintName="ftc_mobile_previous_id_c50eb41b_fk_ftc_mobile_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="ftc_mobile" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-164">
+        <createIndex indexName="ftc_mobile_type_id_fdaedf90" tableName="ftc_mobile">
+            <column name="type_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-165">
+        <addForeignKeyConstraint baseColumnNames="organizationtype_id" baseTableName="catalogs_organization_available_organization_types" constraintName="catalogs_organizatio_organizationtype_id_fdbed5c9_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_organizationtype" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-166">
+        <addUniqueConstraint columnNames="organization_id, organizationtype_id" constraintName="catalogs_organization_av_organization_id_organiza_41f31e28_uniq" tableName="catalogs_organization_available_organization_types"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-167">
+        <createIndex indexName="catalogs_organization_avai_organization_id_0336f548" tableName="catalogs_organization_available_organization_types">
+            <column name="organization_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-168">
+        <createIndex indexName="catalogs_organization_avai_organizationtype_id_fdbed5c9" tableName="catalogs_organization_available_organization_types">
+            <column name="organizationtype_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-169">
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="catalogs_organization" constraintName="catalogs_organizatio_type_id_773b82a3_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_organizationtype" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-170">
+        <addForeignKeyConstraint baseColumnNames="type_smo_id" baseTableName="catalogs_organization" constraintName="catalogs_organizatio_type_smo_id_393e3100_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_smotype" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-171">
+        <createIndex indexName="catalogs_organization_location_id_1d79e919" tableName="catalogs_organization">
+            <column name="location_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-172">
+        <createIndex indexName="catalogs_organization_parent_id_a7e2e5e5" tableName="catalogs_organization">
+            <column name="parent_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-173">
+        <createIndex indexName="catalogs_organization_type_id_773b82a3" tableName="catalogs_organization">
+            <column name="type_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-174">
+        <createIndex indexName="catalogs_organization_type_smo_id_393e3100" tableName="catalogs_organization">
+            <column name="type_smo_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-175">
+        <createIndex indexName="monitoring_connectionmetric_access_point_id_869bd579" tableName="monitoring_connectionmetric">
+            <column name="access_point_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-176">
+        <addForeignKeyConstraint baseColumnNames="operator_id" baseTableName="catalogs_trunkchannel" constraintName="catalogs_trunkchanne_operator_id_8329c0cb_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_operator" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-177">
+        <addForeignKeyConstraint baseColumnNames="operator_id" baseTableName="ftc_ats" constraintName="ftc_ats_operator_id_95e5d901_fk_catalogs_operator_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_operator" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-178">
+        <addForeignKeyConstraint baseColumnNames="operator_id" baseTableName="ftc_internet" constraintName="ftc_internet_operator_id_c687cbe5_fk_catalogs_operator_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_operator" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-179">
+        <addForeignKeyConstraint baseColumnNames="operator_id" baseTableName="ftc_mobile" constraintName="ftc_mobile_operator_id_344bc52b_fk_catalogs_operator_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_operator" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-180">
+        <addForeignKeyConstraint baseColumnNames="operator_id" baseTableName="ftc_post" constraintName="ftc_post_operator_id_234f63f8_fk_catalogs_operator_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_operator" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-181">
+        <addForeignKeyConstraint baseColumnNames="operator_id" baseTableName="ftc_radio" constraintName="ftc_radio_operator_id_fd04115d_fk_catalogs_operator_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_operator" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-182">
+        <addForeignKeyConstraint baseColumnNames="operator_id" baseTableName="ftc_television" constraintName="ftc_television_operator_id_a5105428_fk_catalogs_operator_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_operator" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-183">
+        <addForeignKeyConstraint baseColumnNames="operator_id" baseTableName="user_info_user" constraintName="user_info_user_operator_id_eb73f2e1_fk_catalogs_operator_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_operator" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-184">
+        <createIndex indexName="catalogs_location_geo_data_id_1c5f84c3" tableName="catalogs_location">
+            <column name="geo_data_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-185">
+        <createIndex indexName="catalogs_location_level_a4e7ee58" tableName="catalogs_location">
+            <column name="level"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-186">
+        <createIndex indexName="catalogs_location_lft_05cbb69e" tableName="catalogs_location">
+            <column name="lft"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-187">
+        <createIndex indexName="catalogs_location_parent_id_6eb91a67" tableName="catalogs_location">
+            <column name="parent_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-188">
+        <createIndex indexName="catalogs_location_rght_8752c665" tableName="catalogs_location">
+            <column name="rght"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-189">
+        <createIndex indexName="catalogs_location_tree_id_4d095022" tableName="catalogs_location">
+            <column name="tree_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-190">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="catalogs_locationinfrastructure" constraintName="catalogs_locationinf_location_id_64ed2d6e_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-191">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="catalogs_organization" constraintName="catalogs_organizatio_location_id_1d79e919_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-192">
+        <addForeignKeyConstraint baseColumnNames="location_end_id" baseTableName="catalogs_trunkchannel" constraintName="catalogs_trunkchanne_location_end_id_4784fb7a_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-193">
+        <addForeignKeyConstraint baseColumnNames="location_start_id" baseTableName="catalogs_trunkchannel" constraintName="catalogs_trunkchanne_location_start_id_c6ae2b41_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-194">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="ftc_ats" constraintName="ftc_ats_location_id_fcff2432_fk_catalogs_location_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-195">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="ftc_internet" constraintName="ftc_internet_location_id_3b67fac4_fk_catalogs_location_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-196">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="ftc_mobile" constraintName="ftc_mobile_location_id_a22bf8cc_fk_catalogs_location_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-197">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="ftc_post" constraintName="ftc_post_location_id_2270baa9_fk_catalogs_location_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-198">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="ftc_radio" constraintName="ftc_radio_location_id_783aa83e_fk_catalogs_location_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-199">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="ftc_television" constraintName="ftc_television_location_id_80644537_fk_catalogs_location_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-200">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="user_info_user_locations" constraintName="user_info_user_locat_location_id_dd9d7b06_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-201">
+        <createIndex indexName="reversion_version_content_type_id_7d0ff25c" tableName="reversion_version">
+            <column name="content_type_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-202">
+        <addUniqueConstraint columnNames="db, content_type_id, object_id, revision_id" constraintName="reversion_version_db_content_type_id_objec_b2c54f65_uniq" tableName="reversion_version"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-203">
+        <createIndex indexName="reversion_version_revision_id_af9f6a9d" tableName="reversion_version">
+            <column name="revision_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-204">
+        <createIndex indexName="user_info_user_groups_group_id_2a1ee735" tableName="user_info_user_groups">
+            <column name="group_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-205">
+        <createIndex indexName="user_info_user_groups_user_id_ec8c4e99" tableName="user_info_user_groups">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-206">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_info_user_groups" constraintName="user_info_user_groups_user_id_ec8c4e99_fk_user_info_user_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user_info_user" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-207">
+        <addUniqueConstraint columnNames="user_id, group_id" constraintName="user_info_user_groups_user_id_group_id_c3e3caad_uniq" tableName="user_info_user_groups"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-208">
+        <addUniqueConstraint columnNames="app_label, model" constraintName="django_content_type_app_label_model_76bd3d3b_uniq" tableName="django_content_type"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-209">
+        <addForeignKeyConstraint baseColumnNames="content_type_id" baseTableName="reversion_version" constraintName="reversion_version_content_type_id_7d0ff25c_fk_django_co" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="django_content_type" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-210">
+        <createIndex indexName="catalogs_infomat_add_cause_id_09af5655" tableName="catalogs_infomat">
+            <column name="add_cause_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-211">
+        <addForeignKeyConstraint baseColumnNames="add_cause_id" baseTableName="catalogs_infomat" constraintName="catalogs_infomat_add_cause_id_09af5655_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_communicationservicesaddcause" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-212">
+        <createIndex indexName="catalogs_infomat_location_id_d3fa390c" tableName="catalogs_infomat">
+            <column name="location_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-213">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="catalogs_infomat" constraintName="catalogs_infomat_location_id_d3fa390c_fk_catalogs_location_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-214">
+        <addForeignKeyConstraint baseColumnNames="trunk_channel_type_id" baseTableName="catalogs_infomat" constraintName="catalogs_infomat_trunk_channel_type_i_6d6149d8_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_trunkchanneltype" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-215">
+        <createIndex indexName="catalogs_infomat_trunk_channel_type_id_6d6149d8" tableName="catalogs_infomat">
+            <column name="trunk_channel_type_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-216">
+        <createIndex indexName="ftc_post_clarify_petition_id_b737c4ee" tableName="ftc_post">
+            <column name="clarify_petition_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-217">
+        <createIndex indexName="ftc_post_contract_id_c137d36e" tableName="ftc_post">
+            <column name="contract_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-218">
+        <createIndex indexName="ftc_post_government_program_id_fa34b1ba" tableName="ftc_post">
+            <column name="government_program_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-219">
+        <createIndex indexName="ftc_post_location_id_2270baa9" tableName="ftc_post">
+            <column name="location_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-220">
+        <createIndex indexName="ftc_post_operator_id_234f63f8" tableName="ftc_post">
+            <column name="operator_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-221">
+        <createIndex indexName="ftc_post_previous_id_de3a17c1" tableName="ftc_post">
+            <column name="previous_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-222">
+        <addForeignKeyConstraint baseColumnNames="previous_id" baseTableName="ftc_post" constraintName="ftc_post_previous_id_de3a17c1_fk_ftc_post_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="ftc_post" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-223">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="capabilities_clarifypetition" constraintName="capabilities_clarify_location_id_bd1557bd_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-224">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="capabilities_clarifypetition" constraintName="capabilities_clarify_owner_id_fdc65ca6_fk_user_info" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user_info_user" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-225">
+        <createIndex indexName="capabilities_clarifypetition_location_id_bd1557bd" tableName="capabilities_clarifypetition">
+            <column name="location_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-226">
+        <createIndex indexName="capabilities_clarifypetition_owner_id_fdc65ca6" tableName="capabilities_clarifypetition">
+            <column name="owner_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-227">
+        <addForeignKeyConstraint baseColumnNames="clarify_petition_id" baseTableName="ftc_ats" constraintName="ftc_ats_clarify_petition_id_0e4fe8f7_fk_capabilit" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="capabilities_clarifypetition" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-228">
+        <addForeignKeyConstraint baseColumnNames="clarify_petition_id" baseTableName="ftc_internet" constraintName="ftc_internet_clarify_petition_id_316fb8af_fk_capabilit" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="capabilities_clarifypetition" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-229">
+        <addForeignKeyConstraint baseColumnNames="clarify_petition_id" baseTableName="ftc_mobile" constraintName="ftc_mobile_clarify_petition_id_ec494e76_fk_capabilit" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="capabilities_clarifypetition" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-230">
+        <addForeignKeyConstraint baseColumnNames="clarify_petition_id" baseTableName="ftc_post" constraintName="ftc_post_clarify_petition_id_b737c4ee_fk_capabilit" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="capabilities_clarifypetition" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-231">
+        <addForeignKeyConstraint baseColumnNames="clarify_petition_id" baseTableName="ftc_radio" constraintName="ftc_radio_clarify_petition_id_e690b7ee_fk_capabilit" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="capabilities_clarifypetition" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-232">
+        <addForeignKeyConstraint baseColumnNames="clarify_petition_id" baseTableName="ftc_television" constraintName="ftc_television_clarify_petition_id_b80b9e6d_fk_capabilit" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="capabilities_clarifypetition" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-233">
+        <addUniqueConstraint columnNames="location_id" constraintName="catalogs_locationinfrastructure_location_id_key" tableName="catalogs_locationinfrastructure"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-234">
+        <createIndex indexName="django_site_domain_a2e37b91_like" tableName="django_site">
+            <column name="domain"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-235">
+        <addUniqueConstraint columnNames="domain" constraintName="django_site_domain_a2e37b91_uniq" tableName="django_site"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-236">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="reversion_revision" constraintName="reversion_revision_user_id_17095f45_fk_user_info_user_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user_info_user" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-237">
+        <addForeignKeyConstraint baseColumnNames="location_id" baseTableName="capabilities_petition" constraintName="capabilities_petitio_location_id_448c7d55_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-238">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="capabilities_petition" constraintName="capabilities_petition_owner_id_9dab479d_fk_user_info_user_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user_info_user" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-239">
+        <addForeignKeyConstraint baseColumnNames="content_type_id" baseTableName="auth_permission" constraintName="auth_permission_content_type_id_2f476e4b_fk_django_co" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="django_content_type" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-240">
+        <addForeignKeyConstraint baseColumnNames="operator_id" baseTableName="catalogs_networkconnection" constraintName="catalogs_networkconn_operator_id_64b29abc_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_operator" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-241">
+        <addForeignKeyConstraint baseColumnNames="organization_id" baseTableName="catalogs_networkconnection" constraintName="catalogs_networkconn_organization_id_6c8c7de7_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_organization" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-242">
+        <addForeignKeyConstraint baseColumnNames="customer_id" baseTableName="catalogs_contract" constraintName="catalogs_contract_customer_id_e1c1494b_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_organization" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-243">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="auth_group_permissions" constraintName="auth_group_permissions_group_id_b120cbf9_fk_auth_group_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="auth_group" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-244">
+        <addForeignKeyConstraint baseColumnNames="content_type_id" baseTableName="django_admin_log" constraintName="django_admin_log_content_type_id_c4bce8eb_fk_django_co" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="django_content_type" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-245">
+        <addForeignKeyConstraint baseColumnNames="organization_id" baseTableName="catalogs_organization_available_smo_types" constraintName="catalogs_organizatio_organization_id_3dc84155_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_organization" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-246">
+        <addForeignKeyConstraint baseColumnNames="previous_id" baseTableName="catalogs_trunkchannel" constraintName="catalogs_trunkchanne_previous_id_a750bcb0_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_trunkchannel" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-247">
+        <addForeignKeyConstraint baseColumnNames="organization_id" baseTableName="catalogs_organization_available_organization_types" constraintName="catalogs_organizatio_organization_id_0336f548_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_organization" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-248">
+        <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="catalogs_organization" constraintName="catalogs_organizatio_parent_id_a7e2e5e5_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_organization" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-249">
+        <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="catalogs_location" constraintName="catalogs_location_parent_id_6eb91a67_fk_catalogs_location_id" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-250">
+        <createTable tableName="catalogs_geolocation">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="catalogs_geolocation_pkey"/>
+            </column>
+            <column name="fias_code" type="UUID"/>
+            <column name="okato" type="VARCHAR(16)"/>
+            <column name="oktmo" type="VARCHAR(16)"/>
+            <column name="osm_id" type="VARCHAR(16)"/>
+            <column name="administrative_center" type="GEOMETRY"/>
+            <column name="border" type="GEOMETRY"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-251">
+        <createTable tableName="fg_my">
+            <column name="id" type="VARCHAR"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-252">
+        <createTable tableName="fg_other">
+            <column name="id" type="VARCHAR"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-253">
+        <createTable tableName="monitoring_accesspoint_re">
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state" type="VARCHAR(4)"/>
+            <column name="completed" type="INTEGER"/>
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="monitoring_accesspoint_re_pkey"/>
+            </column>
+            <column name="point" type="GEOMETRY">
+                <constraints nullable="false"/>
+            </column>
+            <column name="visible" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(500)"/>
+            <column name="address" type="VARCHAR(1000)"/>
+            <column name="node" type="VARCHAR(500)"/>
+            <column name="description" type="TEXT"/>
+            <column name="ucn" type="INTEGER"/>
+            <column name="customer" type="VARCHAR(500)"/>
+            <column name="contractor" type="VARCHAR(500)"/>
+            <column name="defined_speed" type="VARCHAR(500)"/>
+            <column name="max_amount" type="INTEGER"/>
+            <column name="quality" type="VARCHAR(6)"/>
+            <column name="ip_config" type="TEXT"/>
+            <column name="billing_id" type="INTEGER"/>
+            <column name="net_traffic_last_month" type="BIGINT"/>
+            <column name="net_traffic_last_week" type="BIGINT"/>
+            <column name="contract_id" type="INTEGER"/>
+            <column name="government_program_id" type="INTEGER"/>
+            <column name="operator_id" type="INTEGER"/>
+            <column name="organization_id" type="INTEGER"/>
+            <column name="connection_type_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-254">
+        <addUniqueConstraint columnNames="fias_code, okato, oktmo" constraintName="catalogs_geolocation_fias_code_okato_oktmo_b821ccbd_uniq" tableName="catalogs_geolocation"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-255">
+        <addUniqueConstraint columnNames="billing_id" constraintName="monitoring_accesspoint_re_billing_id_key" tableName="monitoring_accesspoint_re"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-256">
+        <addUniqueConstraint columnNames="ucn" constraintName="monitoring_accesspoint_re_ucn_key" tableName="monitoring_accesspoint_re"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-257">
+        <createIndex indexName="catalogs_geolocation_administrative_center_id" tableName="catalogs_geolocation">
+            <column name="administrative_center"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-258">
+        <createIndex indexName="catalogs_geolocation_border_id" tableName="catalogs_geolocation">
+            <column name="border"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-259">
+        <createIndex indexName="monitoring_accesspoint_re_connection_type_uno_id_a419a3f0" tableName="monitoring_accesspoint_re">
+            <column name="connection_type_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-260">
+        <createIndex indexName="monitoring_accesspoint_re_contract_id_683fc3d5" tableName="monitoring_accesspoint_re">
+            <column name="contract_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-261">
+        <createIndex indexName="monitoring_accesspoint_re_government_program_id_790cf623" tableName="monitoring_accesspoint_re">
+            <column name="government_program_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-262">
+        <createIndex indexName="monitoring_accesspoint_re_operator_id_2fca2f49" tableName="monitoring_accesspoint_re">
+            <column name="operator_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-263">
+        <createIndex indexName="monitoring_accesspoint_re_organization_id_a7085f24" tableName="monitoring_accesspoint_re">
+            <column name="organization_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-264">
+        <createIndex indexName="monitoring_accesspoint_re_point_id" tableName="monitoring_accesspoint_re">
+            <column name="point"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-265">
+        <addForeignKeyConstraint baseColumnNames="geo_data_id" baseTableName="catalogs_location" constraintName="catalogs_location_geo_data_id_1c5f84c3_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_geolocation" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-266">
+        <addForeignKeyConstraint baseColumnNames="access_point_id" baseTableName="monitoring_accesspoint_traffic" constraintName="monitoring_accesspoi_access_point_id_e1db87f2_fk_monitorin" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="monitoring_accesspoint_re" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-267">
+        <addForeignKeyConstraint baseColumnNames="connection_type_id" baseTableName="monitoring_accesspoint_re" constraintName="monitoring_accesspoi_connection_type_id_7ea96c66_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_internetaccesstype" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-268">
+        <addForeignKeyConstraint baseColumnNames="contract_id" baseTableName="monitoring_accesspoint_re" constraintName="monitoring_accesspoi_contract_id_683fc3d5_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_contract" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-269">
+        <addForeignKeyConstraint baseColumnNames="government_program_id" baseTableName="monitoring_accesspoint_re" constraintName="monitoring_accesspoi_government_program_i_790cf623_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_governmentdevelopmentprogram" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-270">
+        <addForeignKeyConstraint baseColumnNames="operator_id" baseTableName="monitoring_accesspoint_re" constraintName="monitoring_accesspoi_operator_id_2fca2f49_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_operator" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-271">
+        <addForeignKeyConstraint baseColumnNames="organization_id" baseTableName="monitoring_accesspoint_re" constraintName="monitoring_accesspoi_organization_id_a7085f24_fk_catalogs_" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="catalogs_organization" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-272">
+        <addForeignKeyConstraint baseColumnNames="access_point_id" baseTableName="monitoring_connectionmetric" constraintName="monitoring_connectio_access_point_id_869bd579_fk_monitorin" deferrable="true" initiallyDeferred="true" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="monitoring_accesspoint_re" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-273">
+        <createView fullDefinition="false" viewName="raster_columns"> SELECT current_database() AS r_table_catalog,
+    n.nspname AS r_table_schema,
+    c.relname AS r_table_name,
+    a.attname AS r_raster_column,
+    COALESCE(_raster_constraint_info_srid(n.nspname, c.relname, a.attname), ( SELECT st_srid('010100000000000000000000000000000000000000'::geometry) AS st_srid)) AS srid,
+    _raster_constraint_info_scale(n.nspname, c.relname, a.attname, 'x'::bpchar) AS scale_x,
+    _raster_constraint_info_scale(n.nspname, c.relname, a.attname, 'y'::bpchar) AS scale_y,
+    _raster_constraint_info_blocksize(n.nspname, c.relname, a.attname, 'width'::text) AS blocksize_x,
+    _raster_constraint_info_blocksize(n.nspname, c.relname, a.attname, 'height'::text) AS blocksize_y,
+    COALESCE(_raster_constraint_info_alignment(n.nspname, c.relname, a.attname), false) AS same_alignment,
+    COALESCE(_raster_constraint_info_regular_blocking(n.nspname, c.relname, a.attname), false) AS regular_blocking,
+    _raster_constraint_info_num_bands(n.nspname, c.relname, a.attname) AS num_bands,
+    _raster_constraint_info_pixel_types(n.nspname, c.relname, a.attname) AS pixel_types,
+    _raster_constraint_info_nodata_values(n.nspname, c.relname, a.attname) AS nodata_values,
+    _raster_constraint_info_out_db(n.nspname, c.relname, a.attname) AS out_db,
+    _raster_constraint_info_extent(n.nspname, c.relname, a.attname) AS extent,
+    COALESCE(_raster_constraint_info_index(n.nspname, c.relname, a.attname), false) AS spatial_index
+   FROM pg_class c,
+    pg_attribute a,
+    pg_type t,
+    pg_namespace n
+  WHERE ((t.typname = 'raster'::name) AND (a.attisdropped = false) AND (a.atttypid = t.oid) AND (a.attrelid = c.oid) AND (c.relnamespace = n.oid) AND (c.relkind = ANY (ARRAY['r'::"char", 'v'::"char", 'm'::"char", 'f'::"char", 'p'::"char"])) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text));</createView>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1582791234100-274">
+        <createView fullDefinition="false" viewName="raster_overviews"> SELECT current_database() AS o_table_catalog,
+    n.nspname AS o_table_schema,
+    c.relname AS o_table_name,
+    a.attname AS o_raster_column,
+    current_database() AS r_table_catalog,
+    (split_part(split_part(s.consrc, '''::name'::text, 1), ''''::text, 2))::name AS r_table_schema,
+    (split_part(split_part(s.consrc, '''::name'::text, 2), ''''::text, 2))::name AS r_table_name,
+    (split_part(split_part(s.consrc, '''::name'::text, 3), ''''::text, 2))::name AS r_raster_column,
+    (btrim(split_part(s.consrc, ','::text, 2)))::integer AS overview_factor
+   FROM pg_class c,
+    pg_attribute a,
+    pg_type t,
+    pg_namespace n,
+    ( SELECT pg_constraint.connamespace,
+            pg_constraint.conrelid,
+            pg_constraint.conkey,
+            pg_get_constraintdef(pg_constraint.oid) AS consrc
+           FROM pg_constraint) s
+  WHERE ((t.typname = 'raster'::name) AND (a.attisdropped = false) AND (a.atttypid = t.oid) AND (a.attrelid = c.oid) AND (c.relnamespace = n.oid) AND ((c.relkind)::text = ANY ((ARRAY['r'::character(1), 'v'::character(1), 'm'::character(1), 'f'::character(1)])::text[])) AND (s.connamespace = n.oid) AND (s.conrelid = c.oid) AND (s.consrc ~~ '%_overview_constraint(%'::text) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text));</createView>
+    </changeSet>
+</databaseChangeLog>
