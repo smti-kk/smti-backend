@@ -10,6 +10,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositorySmoType;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/location")
@@ -21,17 +22,21 @@ public class ApiLocation {
     }
 
     @GetMapping
-    public List<CatalogsLocation> list(){
+    public List<CatalogsLocation> list() {
         return repository.findAll();
     }
 
     @GetMapping("/locations/")
-    public List<CatalogsLocation> locations(){
-        return repository.locations();
+    public List<LocationSimple> locations() {
+        return repository.locations().stream()
+                .map(LocationSimple::new)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/parents/")
-    public List<CatalogsLocation> parents(){
-        return repository.parents();
+    public List<LocationSimple> parents() {
+        return repository.parents().stream()
+                .map(LocationSimple::new)
+                .collect(Collectors.toList());
     }
 }

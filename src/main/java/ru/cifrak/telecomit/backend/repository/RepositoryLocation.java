@@ -12,9 +12,9 @@ public interface RepositoryLocation extends JpaRepository<CatalogsLocation, Inte
 
     @Query("SELECT l from CatalogsLocation l where" +
             " l.typeLocation not like 'р-н' " +
-            "or l.typeLocation not like 'край' " +
-            "or l.typeLocation not like 'с/с' " +
-            "or l.typeLocation not like 'тер' "
+            "and l.typeLocation not like 'край' " +
+            "and l.typeLocation not like 'с/с' " +
+            "and l.typeLocation not like 'тер' "
     )
     List<CatalogsLocation> locations();
 
