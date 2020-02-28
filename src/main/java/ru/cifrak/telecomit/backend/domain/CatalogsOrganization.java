@@ -20,7 +20,6 @@ import java.util.UUID;
 public class CatalogsOrganization implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-
 	@Id
 	@SequenceGenerator(name="CATALOGS_ORGANIZATION_ID_GENERATOR", sequenceName="catalogs_organization_id_seq", allocationSize = 1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CATALOGS_ORGANIZATION_ID_GENERATOR")
@@ -43,52 +42,62 @@ public class CatalogsOrganization implements Serializable {
 	@Column(nullable=false)
 	private Integer kpp;
 
+/*
 	@Column(nullable=false, length=500)
 	private String name;
-/*
 	//bi-directional many-to-one association to CatalogsContract
 	@OneToMany(mappedBy="catalogsOrganization")
 	private List<CatalogsContract> catalogsContracts;
+*/
 
+/*
 	//bi-directional many-to-one association to CatalogsNetworkconnection
 	@OneToMany(mappedBy="catalogsOrganization")
 	private List<CatalogsNetworkconnection> catalogsNetworkconnections;
+*/
 
-	//bi-directional many-to-one association to CatalogsLocation
+/*	//bi-directional many-to-one association to CatalogsLocation
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="location_id", nullable=false)
 	private CatalogsLocation catalogsLocation;
-
+*/
+	@JsonIgnore
 	//bi-directional many-to-one association to CatalogsOrganization
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="parent_id")
 	private CatalogsOrganization catalogsOrganization;
 
+	@JsonIgnore
 	//bi-directional many-to-one association to CatalogsOrganization
 	@OneToMany(mappedBy="catalogsOrganization")
 	private List<CatalogsOrganization> catalogsOrganizations;
 
+	@JsonManagedReference
 	//bi-directional many-to-one association to CatalogsOrganizationtype
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="type_id")
 	private CatalogsOrganizationtype catalogsOrganizationtype;
 
+	@JsonManagedReference
 	//bi-directional many-to-one association to CatalogsSmotype
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="type_smo_id")
 	private CatalogsSmotype catalogsSmotype;
 
+	@JsonIgnore
 	//bi-directional many-to-one association to CatalogsOrganizationAvailableOrganizationType
 	@OneToMany(mappedBy="catalogsOrganization")
 	private List<CatalogsOrganizationAvailableOrganizationType> catalogsOrganizationAvailableOrganizationTypes;
 
+	@JsonIgnore
 	//bi-directional many-to-one association to CatalogsOrganizationAvailableSmoType
 	@OneToMany(mappedBy="catalogsOrganization")
 	private List<CatalogsOrganizationAvailableSmoType> catalogsOrganizationAvailableSmoTypes;
+/*
 
 	//bi-directional many-to-one association to MonitoringAccesspointRe
 	@OneToMany(mappedBy="catalogsOrganization")
 	private List<MonitoringAccesspointRe> monitoringAccesspointRes;
-
 */
+
 }
