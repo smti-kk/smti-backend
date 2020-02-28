@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
@@ -24,33 +25,41 @@ public class CatalogsLocation implements Serializable {
 	@Column(unique=true, nullable=false)
 	private Integer id;
 
+	@JsonIgnore
 	@Column(name="fias_code")
 	private UUID fiasCode;
 
+	@JsonIgnore
 	@Column(nullable=false)
 	private Integer level;
 
+	@JsonIgnore
 	@Column(nullable=false)
 	private Integer lft;
 
 	@Column(nullable=false, length=128)
 	private String name;
 
+	@JsonIgnore
 	@Column(length=16)
 	private String okato;
 
+	@JsonIgnore
 	@Column(length=16)
 	private String oktmo;
 
 	@Column(name="people_count", nullable=false)
 	private Integer peopleCount;
 
+	@JsonIgnore
 	@Column(nullable=false)
 	private Integer rght;
 
+	@JsonIgnore
 	@Column(name="tree_id", nullable=false)
 	private Integer treeId;
 
+	@JsonProperty("type_location")
 	@Column(name="type_location", nullable=false, length=32)
 	private String typeLocation;
 /*
@@ -71,11 +80,13 @@ public class CatalogsLocation implements Serializable {
 	@JoinColumn(name="geo_data_id")
 	private CatalogsGeolocation catalogsGeolocation;
 */
+	@JsonIgnore
 	//bi-directional many-to-one association to CatalogsLocation
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="parent_id")
 	private CatalogsLocation parent;
 
+	@JsonIgnore
 	//bi-directional many-to-one association to CatalogsLocation
 	@OneToMany(mappedBy= "parent")
 	private List<CatalogsLocation> catalogsLocations;

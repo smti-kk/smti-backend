@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.api;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.cifrak.telecomit.backend.api.dto.LocationSimple;
 import ru.cifrak.telecomit.backend.domain.CatalogsLocation;
 import ru.cifrak.telecomit.backend.domain.CatalogsSmotype;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
@@ -26,6 +27,11 @@ public class ApiLocation {
 
     @GetMapping("/locations/")
     public List<CatalogsLocation> locations(){
-        return repository.findAll();
+        return repository.locations();
+    }
+
+    @GetMapping("/parents/")
+    public List<CatalogsLocation> parents(){
+        return repository.parents();
     }
 }
