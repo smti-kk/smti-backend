@@ -26,6 +26,7 @@ public class ApiOrganization {
 
     @GetMapping("/create")
     public void create() {
+        //TODO: this workable! but make it to business correct
 //        final CatalogsOrganization CatalogsOrganization = CatalogsOrganization.builder()
 //                .address("address")
 //                .fias(UUID.randomUUID())
