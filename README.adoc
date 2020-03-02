@@ -10,5 +10,8 @@ https://github.com/mstahv/spring-boot-spatial-example
 === По сериализации десереализации точек:
 https://stackoverflow.com/a/27706408/1679702
 
+В итоге отсюда взял сериализаторы и десериализаторы
+https://github.com/miguelcobain/jackson-geojson/tree/master/src/main/java/com/bedatadriven/geojson
+
 === PostGIS и JPA
 https://habr.com/ru/post/440872/
