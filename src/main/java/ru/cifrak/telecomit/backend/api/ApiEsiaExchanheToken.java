@@ -14,14 +14,14 @@ public class ApiEsiaExchanheToken {
     @GetMapping("/login/")
     public void login() {}
 
-    @GetMapping("/get_token/")
+    @PostMapping("/get_token/")
     public ResponseEntity<Map<String, Object>> exchangeTempToken(@RequestBody Map<String, String> data) {
         return ResponseEntity.ok(new HashMap<String, Object>() {{
             put("token", "123");
         }});
     }
 
-    @GetMapping("/account_info/")
+    @GetMapping("/account_info")
     public ResponseEntity<User> account_info() {
         return ResponseEntity.ok(new User("username123"));
     }
