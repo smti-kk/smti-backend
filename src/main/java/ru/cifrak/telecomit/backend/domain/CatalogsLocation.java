@@ -74,12 +74,12 @@ public class CatalogsLocation implements Serializable {
 	//bi-directional many-to-one association to CatalogsInfomat
 	@OneToMany(mappedBy="catalogsLocation")
 	private List<CatalogsInfomat> catalogsInfomats;
-
+*/
 	//bi-directional many-to-one association to CatalogsGeolocation
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="geo_data_id")
 	private CatalogsGeolocation catalogsGeolocation;
-*/
+
 	@JsonIgnore
 	//bi-directional many-to-one association to CatalogsLocation
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -90,11 +90,11 @@ public class CatalogsLocation implements Serializable {
 	//bi-directional many-to-one association to CatalogsLocation
 	@OneToMany(mappedBy= "parent")
 	private List<CatalogsLocation> catalogsLocations;
-/*
+
 	//bi-directional many-to-one association to CatalogsLocationinfrastructure
 	@OneToMany(mappedBy="catalogsLocation")
 	private List<CatalogsLocationinfrastructure> catalogsLocationinfrastructures;
-
+/*
 	//bi-directional many-to-one association to CatalogsOrganization
 	@OneToMany(mappedBy="catalogsLocation")
 	private List<CatalogsOrganization> catalogsOrganizations;
@@ -291,7 +291,7 @@ public class CatalogsLocation implements Serializable {
 
 		return catalogsInfomat;
 	}
-
+*/
 	public CatalogsGeolocation getCatalogsGeolocation() {
 		return this.catalogsGeolocation;
 	}
@@ -299,7 +299,7 @@ public class CatalogsLocation implements Serializable {
 	public void setCatalogsGeolocation(CatalogsGeolocation catalogsGeolocation) {
 		this.catalogsGeolocation = catalogsGeolocation;
 	}
-*/
+
 	public CatalogsLocation getParent() {
 		return this.parent;
 	}
@@ -329,7 +329,7 @@ public class CatalogsLocation implements Serializable {
 
 		return catalogsLocation;
 	}
-/*
+
 	public List<CatalogsLocationinfrastructure> getCatalogsLocationinfrastructures() {
 		return this.catalogsLocationinfrastructures;
 	}
@@ -351,7 +351,7 @@ public class CatalogsLocation implements Serializable {
 
 		return catalogsLocationinfrastructure;
 	}
-
+/*
 	public List<CatalogsOrganization> getCatalogsOrganizations() {
 		return this.catalogsOrganizations;
 	}

@@ -18,6 +18,9 @@ public interface RepositoryLocation extends JpaRepository<CatalogsLocation, Inte
     )
     List<CatalogsLocation> locations();
 
+    @Query("SELECT l from CatalogsLocation l left join CatalogsGeolocation g on l.catalogsGeolocation.id = g.id where l.level = 1")
+    List<CatalogsLocation> areaBorders();
+
     @Query("SELECT l from CatalogsLocation l where l.level = 1 ")
     List<CatalogsLocation> parents();
 }

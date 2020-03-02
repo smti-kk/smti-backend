@@ -1,3 +1,14 @@
-# Temporal project for rewrite TELECOM-IT project
+= Temporal project for rewrite TELECOM-IT project
 
 So. We start with SPRING.
+
+== Интересные штуки
+
+=== geo with vaadin
+https://github.com/mstahv/spring-boot-spatial-example
+
+=== По сериализации десереализации точек:
+https://stackoverflow.com/a/27706408/1679702
+
+=== PostGIS и JPA
+https://habr.com/ru/post/440872/
