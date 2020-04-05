@@ -1,6 +1,7 @@
 package ru.cifrak.telecomit.backend.domain;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -56,11 +57,11 @@ public class CatalogsOrganization implements Serializable {
 	private List<CatalogsNetworkconnection> catalogsNetworkconnections;
 */
 
-/*	//bi-directional many-to-one association to CatalogsLocation
+	//bi-directional many-to-one association to CatalogsLocation
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="location_id", nullable=false)
 	private CatalogsLocation catalogsLocation;
-*/
+
 	@JsonIgnore
 	//bi-directional many-to-one association to CatalogsOrganization
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -76,12 +77,14 @@ public class CatalogsOrganization implements Serializable {
 	//bi-directional many-to-one association to CatalogsOrganizationtype
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="type_id")
+	@JsonProperty("type")
 	private CatalogsOrganizationtype catalogsOrganizationtype;
 
 	@JsonManagedReference
 	//bi-directional many-to-one association to CatalogsSmotype
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="type_smo_id")
+	@JsonProperty("type_smo")
 	private CatalogsSmotype catalogsSmotype;
 
 	@JsonIgnore
@@ -93,11 +96,11 @@ public class CatalogsOrganization implements Serializable {
 	//bi-directional many-to-one association to CatalogsOrganizationAvailableSmoType
 	@OneToMany(mappedBy="catalogsOrganization")
 	private List<CatalogsOrganizationAvailableSmoType> catalogsOrganizationAvailableSmoTypes;
-/*
 
 	//bi-directional many-to-one association to MonitoringAccesspointRe
+	@JsonProperty("reaccesspoints")
+	@JsonManagedReference
 	@OneToMany(mappedBy="catalogsOrganization")
 	private List<MonitoringAccesspointRe> monitoringAccesspointRes;
-*/
 
 }
