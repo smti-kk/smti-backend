@@ -15,4 +15,10 @@ public class DateUtils {
     public static Date getCurrentDate() {
         return new Date();
     }
+
+    public static Integer getYear(Date date) {
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
+        calendar.setTime(date);
+        return calendar.get(Calendar.YEAR);
+    }
 }

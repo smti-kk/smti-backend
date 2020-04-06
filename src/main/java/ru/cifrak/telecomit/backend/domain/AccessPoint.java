@@ -82,11 +82,59 @@ public class AccessPoint implements Serializable {
                 || governmentProgram == null && commissioning.before(DateUtils.getCurrentDate());
     }
 
+    @JsonProperty("archive")
+    public boolean isArchive() {
+        return technicalStatus.equals(TechnicalStatus.OUTDATED.getName());
+    }
+
+    @JsonProperty("planYear")
+    public boolean isPlanYear() {
+        return technicalStatus.equals(TechnicalStatus.CONFIRMED.getName()) &&
+                governmentProgram != null && completed >= DateUtils.getCurrentYear()
+                || governmentProgram == null && commissioning != null && commissioning.after(DateUtils.getCurrentDate());
+    }
+
+    @JsonProperty("planTwoYear")
+    public boolean isPlanTwoYear() {
+        return technicalStatus.equals(TechnicalStatus.CONFIRMED.getName()) &&
+                governmentProgram != null && completed >= DateUtils.getCurrentYear()
+                || governmentProgram == null && commissioning != null && DateUtils.getYear(commissioning) > DateUtils.getCurrentYear() + 2;
+    }
+
     public AccessPoint() {
     }
 }
 
 /*
+def get_planYear(self, instance: FTCInternet):
+        """
+        Mark current technical capabilities actual for planned year
+
+        :param instance:
+        :return:
+        """
+        if (instance.technical_status == TechnicalStatus.CONFIRMED) and (
+                (instance.government_program is not None and datetime.now().year <= instance.completed)
+                or (instance.government_program is None and instance.commissioning is not None and instance.commissioning > datetime.now().date())
+        ):
+            return True
+        else:
+            return False
+
+    def get_planTwoYear(self, instance: FTCInternet):
+        """
+        Mark current technical capabilities actual for planned year
+
+        :param instance:
+        :return:
+        """
+        if (instance.technical_status == TechnicalStatus.CONFIRMED) and (
+                (instance.government_program is None and instance.commissioning is not None and instance.commissioning.year > datetime.now().year+2)
+        ):
+            return True
+        else:
+            return False
+
 def get_active(self, instance: FTCInternet):
         """
         Mark current technical capabilities actual for current year
@@ -115,34 +163,6 @@ def get_active(self, instance: FTCInternet):
         else:
             return False
 
-    def get_planYear(self, instance: FTCInternet):
-        """
-        Mark current technical capabilities actual for planned year
-
-        :param instance:
-        :return:
-        """
-        if (instance.technical_status == TechnicalStatus.CONFIRMED) and (
-                (instance.government_program is not None and datetime.now().year <= instance.completed)
-                or (instance.government_program is None and instance.commissioning is not None and instance.commissioning > datetime.now().date())
-        ):
-            return True
-        else:
-            return False
-
-    def get_planTwoYear(self, instance: FTCInternet):
-        """
-        Mark current technical capabilities actual for planned year
-
-        :param instance:
-        :return:
-        """
-        if (instance.technical_status == TechnicalStatus.CONFIRMED) and (
-                (instance.government_program is None and instance.commissioning is not None and instance.commissioning.year > datetime.now().year+2)
-        ):
-            return True
-        else:
-            return False
     class Meta:
         model = FTCInternet
         exclude = []

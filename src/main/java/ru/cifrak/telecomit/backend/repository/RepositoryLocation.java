@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.cifrak.telecomit.backend.domain.CatalogsLocation;
-import ru.cifrak.telecomit.backend.domain.CatalogsOrganization;
 
 import java.util.List;
 
@@ -40,6 +39,7 @@ public interface RepositoryLocation extends JpaRepository<CatalogsLocation, Inte
             "and (l.parent.id = ?1 or l.id = ?1)")
     List<CatalogsLocation> findAllByParentId(Integer parentId);
 
-    @Query(value = "SELECT l from CatalogsLocation l where l.typeLocation not in ('р-н', 'край', 'с/с', 'тер')")
+    @Query(value = "SELECT l from CatalogsLocation l" +
+            " where l.typeLocation not in ('р-н', 'край', 'с/с', 'тер')")
     Page<CatalogsLocation> findAll(Pageable pageable);
 }

@@ -4,17 +4,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+import ru.cifrak.telecomit.backend.api.dto.LocationSimple;
 import ru.cifrak.telecomit.backend.api.dto.PaginatedList;
 import ru.cifrak.telecomit.backend.api.dto.TechnicalCapabilitiesDTO;
 import ru.cifrak.telecomit.backend.api.service.TechnicalCapabilitiesService;
+import ru.cifrak.telecomit.backend.domain.AccessPoint;
 import ru.cifrak.telecomit.backend.domain.CatalogsLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/technical-capabilities")
+@RequestMapping("/api/v1/")
 public class ApiTechnicalCapabilities {
     private TechnicalCapabilitiesService technicalCapabilitiesService;
     private RepositoryLocation repositoryLocation;
@@ -25,14 +28,14 @@ public class ApiTechnicalCapabilities {
         this.repositoryLocation = repositoryLocation;
     }
 
-    @GetMapping
+    @GetMapping("technical-capabilities")
     public List<TechnicalCapabilitiesDTO> getTechnicalCapabilities() {
         return repositoryLocation.findAll().stream()
                 .map(TechnicalCapabilitiesDTO::new)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(params = {"page", "page_size"})
+    @GetMapping(value = "technical-capabilities", params = {"page", "page_size"})
     public PaginatedList<TechnicalCapabilitiesDTO> getTechnicalCapabilitiesPaginated(
             @RequestParam("page") Integer page,
             @RequestParam("page_size") Integer pageSize
@@ -48,8 +51,29 @@ public class ApiTechnicalCapabilities {
         return new PaginatedList<>(locationsPage.getTotalElements(), capabilitiesDTOS);
     }
 
-    @GetMapping("{id}")
+    @GetMapping(value = "technical-capabilities/{id}")
     public TechnicalCapabilitiesDTO getTechnicalCapabilities(@PathVariable("id") Integer id) {
         return this.technicalCapabilitiesService.getByLocationId(id);
+    }
+
+    @GetMapping(value = "tc-internet")
+    public PaginatedList<HashMap<String, Object>> getTcInternet(
+            @RequestParam("page") Integer page,
+            @RequestParam("page_size") Integer pageSize
+    ) {
+        Page<CatalogsLocation> locationsPage = repositoryLocation.findAll(
+                PageRequest.of(page - 1, pageSize, Sort.by("id"))
+        );
+
+        List<HashMap<String, Object>> capabilitiesDTOS = locationsPage.getContent().stream()
+                .map(capability -> {
+                    HashMap<String, Object> internetFeatures = new HashMap<>();
+                    internetFeatures.put("location", new LocationSimple(capability));
+                    internetFeatures.put("internet", capability.getFtcInternets());
+                    return internetFeatures;
+                })
+                .collect(Collectors.toList());
+
+        return new PaginatedList<>(locationsPage.getTotalElements(), capabilitiesDTOS);
     }
 }
