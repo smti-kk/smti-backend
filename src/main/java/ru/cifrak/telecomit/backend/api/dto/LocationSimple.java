@@ -40,7 +40,9 @@ public class LocationSimple {
         this.fullName = entity.getTypeLocation() + " " + entity.getName();
         this.name = entity.getName();
         this.type = entity.getTypeLocation();
-        this.geoData = entity.getCatalogsGeolocation().getAdministrativeCenter();
+        this.geoData = entity.getCatalogsGeolocation() != null
+                ? entity.getCatalogsGeolocation().getAdministrativeCenter()
+                : null;
         this.parent = entity.getParent().getTypeLocation() + " " + entity.getParent().getName();
         this.peopleCount = entity.getPeopleCount();
         this.infomat = entity.getCatalogsInfomats().size();

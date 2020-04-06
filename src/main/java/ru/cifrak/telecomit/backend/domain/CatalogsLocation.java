@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.Filters;
 
 import java.io.Serializable;
 import javax.persistence.*;
@@ -19,6 +21,9 @@ import java.util.UUID;
 @Entity
 @Table(name="catalogs_location")
 @NamedQuery(name="CatalogsLocation.findAll", query="SELECT c FROM CatalogsLocation c")
+@Filters({
+		@Filter(name="-name", condition="order by name DESC")
+})
 public class CatalogsLocation implements Serializable {
 	private static final long serialVersionUID = 1L;
 

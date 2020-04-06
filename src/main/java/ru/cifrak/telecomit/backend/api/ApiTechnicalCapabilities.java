@@ -38,17 +38,10 @@ public class ApiTechnicalCapabilities {
     @GetMapping(value = "technical-capabilities", params = {"page", "page_size"})
     public PaginatedList<TechnicalCapabilitiesDTO> getTechnicalCapabilitiesPaginated(
             @RequestParam("page") Integer page,
-            @RequestParam("page_size") Integer pageSize
+            @RequestParam("page_size") Integer pageSize,
+            @RequestParam(name = "ordering", required = false) String ordering
     ) {
-        Page<CatalogsLocation> locationsPage = repositoryLocation.findAll(
-                PageRequest.of(page - 1, pageSize, Sort.by("id"))
-        );
-
-        List<TechnicalCapabilitiesDTO> capabilitiesDTOS = locationsPage.getContent().stream()
-                .map(TechnicalCapabilitiesDTO::new)
-                .collect(Collectors.toList());
-
-        return new PaginatedList<>(locationsPage.getTotalElements(), capabilitiesDTOS);
+        return this.technicalCapabilitiesService.findAll(page, pageSize);
     }
 
     @GetMapping(value = "technical-capabilities/{id}")
