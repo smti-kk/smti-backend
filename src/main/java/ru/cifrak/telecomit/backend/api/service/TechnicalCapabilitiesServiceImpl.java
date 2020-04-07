@@ -23,14 +23,10 @@ import java.util.stream.Collectors;
 public class TechnicalCapabilitiesServiceImpl implements TechnicalCapabilitiesService {
     private RepositoryLocation repositoryLocation;
 
-//    private final SessionFactory sessionFactory;
-
     public TechnicalCapabilitiesServiceImpl(
             RepositoryLocation repositoryLocation
-//            SessionFactory sessionFactory
     ) {
         this.repositoryLocation = repositoryLocation;
-//        this.sessionFactory = sessionFactory;
     }
 
     public PaginatedList<TechnicalCapabilitiesDTO> findAll(Integer page, Integer pageSize) {
