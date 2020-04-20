@@ -1,0 +1,83 @@
+package ru.cifrak.telecomit.backend.api;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ru.cifrak.telecomit.backend.api.dto.AuthDTO;
+import ru.cifrak.telecomit.backend.api.dto.TokenDTO;
+import ru.cifrak.telecomit.backend.auth.entity.User;
+import ru.cifrak.telecomit.backend.auth.repository.UserRepository;
+import ru.cifrak.telecomit.backend.cache.entity.AuthTokenCache;
+import ru.cifrak.telecomit.backend.cache.entity.TempTokenCache;
+import ru.cifrak.telecomit.backend.cache.repository.TempTokenCacheRepository;
+import ru.cifrak.telecomit.backend.cache.service.AuthTokenCacheService;
+
+import java.security.NoSuchAlgorithmException;
+import java.time.ZoneId;
+import java.util.Optional;
+
+@Slf4j
+@RestController
+@RequestMapping("/api")
+public class AuthAPI {
+    private final PasswordEncoder passwordEncoder;
+
+    private final UserRepository userRepository;
+
+    private final AuthTokenCacheService authTokenCacheService;
+
+    private final TempTokenCacheRepository tempTokenCacheRepository;
+
+    public AuthAPI(PasswordEncoder passwordEncoder, UserRepository userRepository, AuthTokenCacheService authTokenCacheService, TempTokenCacheRepository tempTokenCacheRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.authTokenCacheService = authTokenCacheService;
+        this.tempTokenCacheRepository = tempTokenCacheRepository;
+    }
+
+    @PostMapping("/auth")
+    public ResponseEntity<TokenDTO> register(@Validated @RequestBody AuthDTO data) throws NoSuchAlgorithmException {
+        final Optional<User> userOptional = userRepository.findByUsername(data.getUsername());
+
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        final User user = userOptional.get();
+
+        if (!passwordEncoder.matches(data.getPassword(), user.getPassword())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        final Optional<AuthTokenCache> optionalAuthToken = authTokenCacheService.findByUser(user);
+
+        if (optionalAuthToken.isPresent()) {
+            return ResponseEntity.ok(new TokenDTO(optionalAuthToken.get().getId()));
+        }
+
+        final ZoneId zoneId = ZoneId.systemDefault(); // TODO get from properties
+
+        final AuthTokenCache newAuthTokenCache = authTokenCacheService.createForUser(user, zoneId);
+
+        return ResponseEntity.ok(new TokenDTO(newAuthTokenCache.getId()));
+    }
+
+    @PostMapping("/exchange_temp_token")
+    public ResponseEntity<TokenDTO> exchangeTempToken(@Validated @RequestBody TokenDTO data) {
+        final Optional<TempTokenCache> optionalTempTokenCache = tempTokenCacheRepository.findById(data.getToken());
+
+        return optionalTempTokenCache
+                .map(tempTokenCache -> {
+                    final String token = tempTokenCache.getToken();
+                    tempTokenCacheRepository.delete(tempTokenCache);
+                    return ResponseEntity.ok(new TokenDTO(token));
+                })
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+}

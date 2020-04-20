@@ -1,3 +1,4 @@
+/*
 package ru.cifrak.telecomit.backend.security;
 
 import org.springframework.http.HttpMethod;
@@ -21,3 +22,4 @@ public class ConfigSecurity extends WebSecurityConfigurerAdapter {
         ;
     }
 }
+*/

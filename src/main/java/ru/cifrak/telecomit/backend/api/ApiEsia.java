@@ -1,3 +1,4 @@
+/*
 package ru.cifrak.telecomit.backend.api;
 
 import org.springframework.http.HttpHeaders;
@@ -20,3 +21,4 @@ public class ApiEsia {
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 }
+*/
