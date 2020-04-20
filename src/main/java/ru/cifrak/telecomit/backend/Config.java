@@ -12,8 +12,7 @@ public class Config {
     @Bean
     public Module datatypeHibernateModule() {
         Hibernate5Module hibernate5Module = new Hibernate5Module();
-        hibernate5Module.enable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
-        hibernate5Module.enable(Hibernate5Module.Feature.WRITE_MISSING_ENTITIES_AS_NULL);
+//        hibernate5Module.enable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
         return hibernate5Module;
     }
 }

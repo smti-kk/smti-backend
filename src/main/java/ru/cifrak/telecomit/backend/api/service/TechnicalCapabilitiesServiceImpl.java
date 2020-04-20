@@ -46,6 +46,6 @@ public class TechnicalCapabilitiesServiceImpl implements TechnicalCapabilitiesSe
     }
 
     public TechnicalCapabilitiesDTO getByLocationId(Integer locationId) {
-        return new TechnicalCapabilitiesDTO(repositoryLocation.getOne(locationId));
+        return new TechnicalCapabilitiesDTO(repositoryLocation.get(locationId));
     }
 }

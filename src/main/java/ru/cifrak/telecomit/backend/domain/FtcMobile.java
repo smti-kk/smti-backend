@@ -21,8 +21,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class FtcMobile extends AccessPoint implements Serializable {
-	//bi-directional many-to-one association to CatalogsMobiletype
-	@ManyToOne(fetch=FetchType.LAZY)
+	@OneToOne()
 	@JoinColumn(name="type_id", nullable=false)
 	@JsonProperty("type")
 	private CatalogsMobiletype catalogsMobileType;

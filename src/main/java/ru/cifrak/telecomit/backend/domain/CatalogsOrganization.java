@@ -18,7 +18,22 @@ import java.util.UUID;
 @Entity
 @Table(name="catalogs_organization")
 @NamedQuery(name="CatalogsOrganization.findAll", query="SELECT c FROM CatalogsOrganization c")
+@NamedEntityGraphs({
+		@NamedEntityGraph(
+				name = CatalogsOrganization.FULL,
+				attributeNodes = {
+						@NamedAttributeNode(value = "monitoringAccesspointRes", subgraph = "accesspoints")
+				},
+				subgraphs = {
+						@NamedSubgraph(name = "accesspoints", attributeNodes = {
+								@NamedAttributeNode("catalogsGovernmentDevelopmentProgram")
+						})
+				}
+		)
+})
 public class CatalogsOrganization implements Serializable {
+	public static final String FULL = "CatalogsOrganization.FULL";
+
 	private static final long serialVersionUID = 1L;
 
 	@Id

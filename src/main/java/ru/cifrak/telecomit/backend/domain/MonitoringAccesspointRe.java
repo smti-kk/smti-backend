@@ -22,7 +22,6 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "monitoring_accesspoint_re")
-@NamedQuery(name = "MonitoringAccesspointRe.findAll", query = "SELECT m FROM MonitoringAccesspointRe m")
 public class MonitoringAccesspointRe implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -107,7 +106,6 @@ public class MonitoringAccesspointRe implements Serializable {
 	@JsonIgnore
 	private CatalogsContract catalogsContract;
 
-	//bi-directional many-to-one association to CatalogsGovernmentdevelopmentprogram
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="government_program_id")
 	@JsonProperty("government_program")

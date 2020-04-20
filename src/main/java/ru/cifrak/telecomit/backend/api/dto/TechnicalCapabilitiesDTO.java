@@ -3,16 +3,16 @@ package ru.cifrak.telecomit.backend.api.dto;
 import lombok.Getter;
 import ru.cifrak.telecomit.backend.domain.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 public class TechnicalCapabilitiesDTO {
-    private List<FtcInternet> internet;
-    private List<FtcAts> ats;
-    private List<FtcMobile> cellular;
-    private List<FtcPost> post;
-    private List<FtcRadio> radio;
-    private List<FtcTelevision> television;
+    private Set<FtcInternet> internet;
+    private Set<FtcAts> ats;
+    private Set<FtcMobile> cellular;
+    private Set<FtcPost> post;
+    private Set<FtcRadio> radio;
+    private Set<FtcTelevision> television;
     private LocationSimple location;
 
     public TechnicalCapabilitiesDTO(CatalogsLocation location) {
