@@ -23,7 +23,7 @@ public class ApiOperator {
     public Map<String, List<CatalogsOperator>> grouped() {
         Map<String, List<CatalogsOperator>> map = new HashMap<>();
         map.put("internet",repository.internet());
-        map.put("cellular", repository.mobile());
+        map.put("cellurar", repository.mobile());
         map.put("ats", repository.ats());
         map.put("radio", repository.radio());
         map.put("post", repository.postal());
@@ -31,32 +31,32 @@ public class ApiOperator {
         return map;
     }
 
-    @GetMapping("/internet/")
+    @GetMapping("/internet")
     public List<CatalogsOperator> internet() {
         return repository.internet();
     }
 
-    @GetMapping("/mobile/")
+    @GetMapping("/mobile")
     public List<CatalogsOperator> mobile() {
         return repository.mobile();
     }
 
-    @GetMapping("/postal/")
+    @GetMapping("/postal")
     public List<CatalogsOperator> postal() {
         return repository.postal();
     }
 
-    @GetMapping("/ats/")
+    @GetMapping("/ats")
     public List<CatalogsOperator> ats() {
         return repository.ats();
     }
 
-    @GetMapping("/radio/")
+    @GetMapping("/radio")
     public List<CatalogsOperator> radio() {
         return repository.radio();
     }
 
-    @GetMapping("/tv/")
+    @GetMapping("/tv")
     public List<CatalogsOperator> television() {
         return repository.television();
     }

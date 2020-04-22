@@ -2,6 +2,7 @@ package ru.cifrak.telecomit.backend.api;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.domain.CatalogsOrganization;
 import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
@@ -19,9 +20,13 @@ public class ApiOrganization {
     }
 
     @GetMapping
-    public List<CatalogsOrganization> list(){
-        final List<CatalogsOrganization> items = repository.findAll();
-        return items;
+    public List<CatalogsOrganization> list() {
+        return repository.findAll();
+    }
+
+    @GetMapping(params = "location")
+    public List<CatalogsOrganization> listByLocationId(@RequestParam("location") Integer locationId){
+        return repository.findAllByLocationId(locationId);
     }
 
     @GetMapping("/create")

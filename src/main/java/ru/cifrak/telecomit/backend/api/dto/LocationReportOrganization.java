@@ -8,13 +8,6 @@ import ru.cifrak.telecomit.backend.domain.CatalogsLocation;
 @Data
 @AllArgsConstructor
 public class LocationReportOrganization {
-    public LocationReportOrganization(CatalogsLocation entity) {
-        this.id = entity.getId();
-        this.name = entity.getName();
-        this.type = entity.getTypeLocation();
-        this.level = entity.getLevel();
-    }
-
     private Integer id;
     private String name;
 
@@ -23,4 +16,10 @@ public class LocationReportOrganization {
 
     private Integer level;
 
+    public LocationReportOrganization(CatalogsLocation entity) {
+        this.id = entity.getId();
+        this.name = entity.getName();
+        this.type = entity.getTypeLocation();
+        this.level = entity.getLevel();
+    }
 }
