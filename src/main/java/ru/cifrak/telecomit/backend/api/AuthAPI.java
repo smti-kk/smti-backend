@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.AuthDTO;
+import ru.cifrak.telecomit.backend.api.dto.AuthFrontDTO;
 import ru.cifrak.telecomit.backend.api.dto.TokenDTO;
 import ru.cifrak.telecomit.backend.auth.entity.User;
 import ru.cifrak.telecomit.backend.auth.repository.UserRepository;
@@ -23,7 +24,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/auth")
 public class AuthAPI {
     private final PasswordEncoder passwordEncoder;
 
@@ -40,9 +41,9 @@ public class AuthAPI {
         this.tempTokenCacheRepository = tempTokenCacheRepository;
     }
 
-    @PostMapping("/auth")
-    public ResponseEntity<TokenDTO> register(@Validated @RequestBody AuthDTO data) throws NoSuchAlgorithmException {
-        final Optional<User> userOptional = userRepository.findByUsername(data.getUsername());
+    @PostMapping("/login/")
+    public ResponseEntity<TokenDTO> register(@Validated @RequestBody AuthFrontDTO data) throws NoSuchAlgorithmException {
+        final Optional<User> userOptional = userRepository.findByUsername(data.getEmail());
 
         if (!userOptional.isPresent()) {
             return ResponseEntity.badRequest().build();

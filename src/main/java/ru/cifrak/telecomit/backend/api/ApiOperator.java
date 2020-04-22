@@ -19,7 +19,7 @@ public class ApiOperator {
         this.repository = repository;
     }
 
-    @GetMapping("/grouped/")
+    @GetMapping("/grouped")
     public Map<String, List<CatalogsOperator>> grouped() {
         Map<String, List<CatalogsOperator>> map = new HashMap<>();
         map.put("internet",repository.internet());
