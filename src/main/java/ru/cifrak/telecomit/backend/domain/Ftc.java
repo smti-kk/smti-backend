@@ -1,8 +1,13 @@
 package ru.cifrak.telecomit.backend.domain;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.cifrak.telecomit.backend.utils.DateUtils;
 
 import javax.persistence.*;
@@ -11,7 +16,8 @@ import java.util.Date;
 
 @MappedSuperclass
 @Data
-public class AccessPoint implements Serializable {
+@NoArgsConstructor
+public class Ftc implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -72,6 +78,9 @@ public class AccessPoint implements Serializable {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="operator_id", nullable=false)
     @JsonProperty("operator")
+//    @JsonManagedReference
+//    @JsonBackReference
+    @JsonIgnoreProperties
     private CatalogsOperator catalogsOperator;
 
     @JsonProperty("active")
@@ -101,8 +110,7 @@ public class AccessPoint implements Serializable {
                 || governmentProgram == null && commissioning != null && DateUtils.getYear(commissioning) > DateUtils.getCurrentYear() + 2;
     }
 
-    public AccessPoint() {
-    }
+
 }
 
 /*

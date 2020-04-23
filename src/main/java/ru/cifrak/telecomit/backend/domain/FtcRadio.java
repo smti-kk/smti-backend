@@ -19,7 +19,7 @@ import java.util.List;
 @NamedQuery(name="FtcRadio.findAll", query="SELECT f FROM FtcRadio f")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FtcRadio extends AccessPoint implements Serializable {
+public class FtcRadio extends Ftc implements Serializable {
 	@Column(nullable=false)
 	private Integer type;
 }

@@ -20,7 +20,7 @@ import java.util.List;
 @NamedQuery(name="FtcMobile.findAll", query="SELECT f FROM FtcMobile f")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FtcMobile extends AccessPoint implements Serializable {
+public class FtcMobile extends Ftc implements Serializable {
 	@OneToOne()
 	@JoinColumn(name="type_id", nullable=false)
 	@JsonProperty("type")

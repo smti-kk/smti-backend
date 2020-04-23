@@ -17,7 +17,7 @@ import java.util.List;
 @NamedQuery(name = "FtcTelevision.findAll", query = "SELECT f FROM FtcTelevision f")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FtcTelevision extends AccessPoint implements Serializable {
+public class FtcTelevision extends Ftc implements Serializable {
     @Column(nullable = false, length = 3)
     @Convert(converter = SignalConverter.class)
     private List<Signal> type;

@@ -16,7 +16,7 @@ import java.io.Serializable;
 @NamedQuery(name = "FtcAts.findAll", query = "SELECT f FROM FtcAts f")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FtcAts extends AccessPoint implements Serializable {
+public class FtcAts extends Ftc implements Serializable {
     @Column(name = "quantity_payphone", nullable = false)
     @JsonProperty("quantity_payphone")
     private Integer quantityPayphone;

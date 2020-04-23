@@ -19,7 +19,7 @@ import java.util.List;
 @NamedQuery(name="FtcPost.findAll", query="SELECT f FROM FtcPost f")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FtcPost extends AccessPoint implements Serializable {
+public class FtcPost extends Ftc implements Serializable {
 	@Column(nullable=false, length=4)
 	private String type;
 }

@@ -1,6 +1,8 @@
 package ru.cifrak.telecomit.backend.domain;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,10 +22,12 @@ import java.util.List;
 @NamedQuery(name="FtcInternet.findAll", query="SELECT f FROM FtcInternet f")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FtcInternet extends AccessPoint implements Serializable {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public class FtcInternet extends Ftc implements Serializable {
 	//bi-directional many-to-one association to CatalogsTrunkchanneltype
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="type_trunkchannel_id", nullable=false)
 	@JsonProperty("type_trunkchannel")
+//	@JsonIgnoreProperties
 	private CatalogsTrunkChannelType trunkChannelType;
 }
