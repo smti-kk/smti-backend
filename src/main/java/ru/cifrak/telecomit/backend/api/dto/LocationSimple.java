@@ -43,7 +43,7 @@ public class LocationSimple {
         this.geoData = entity.getCatalogsGeolocation() != null
                 ? entity.getCatalogsGeolocation().getAdministrativeCenter()
                 : null;
-        this.parent = entity.getParent().getTypeLocation() + " " + entity.getParent().getName();
+        this.parent = entity.getParent() != null ? entity.getParent().getTypeLocation() + " " + entity.getParent().getName() : null;
         this.peopleCount = entity.getPeopleCount();
         this.infomat = entity.getCatalogsInfomats().size();
     }
