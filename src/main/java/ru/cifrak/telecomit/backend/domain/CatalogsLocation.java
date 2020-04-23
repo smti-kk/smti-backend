@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.Filters;
 
 import java.io.Serializable;
 import javax.persistence.*;
@@ -115,7 +113,7 @@ public class CatalogsLocation implements Serializable {
 	@OneToMany(mappedBy="catalogsLocation")
 	private List<CatalogsLocationinfrastructure> catalogsLocationinfrastructures;
 
-	@OneToMany(mappedBy = "catalogsOrganization")
+	@OneToMany(mappedBy = "parent")
 	private List<CatalogsOrganization> catalogsOrganizations;
 
 	@OneToMany(mappedBy="catalogsLocation1")
