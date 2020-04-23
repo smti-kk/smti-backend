@@ -187,17 +187,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        ;
 //    }
 //
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        web.ignoring()
-//                .antMatchers(HttpMethod.GET, "/**")
-//                .antMatchers(HttpMethod.HEAD, "/**")
-//                .antMatchers(HttpMethod.POST, "/**")
-//                .antMatchers(HttpMethod.PUT, "/**")
-//                .antMatchers(HttpMethod.PATCH, "/**")
-//                .antMatchers(HttpMethod.DELETE, "/**")
-//                .antMatchers(HttpMethod.OPTIONS, "/**")
-//                .antMatchers(HttpMethod.TRACE, "/**")
-//        ;
-//    }
+   /* @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring()
+                .antMatchers(HttpMethod.GET, "/media/**")
+                .antMatchers(HttpMethod.GET, "/resources/**")
+                *//*.antMatchers(HttpMethod.HEAD, "/**")
+                .antMatchers(HttpMethod.POST, "/**")
+                .antMatchers(HttpMethod.PUT, "/**")
+                .antMatchers(HttpMethod.PATCH, "/**")
+                .antMatchers(HttpMethod.DELETE, "/**")
+                .antMatchers(HttpMethod.OPTIONS, "/**")
+                .antMatchers(HttpMethod.TRACE, "/**")*//*
+        ;
+    }*/
+    @Override
+    protected void configure(final HttpSecurity http) throws Exception {
+        http.authorizeRequests().antMatchers(HttpMethod.GET,"/media/**").permitAll();
+    }
 }
