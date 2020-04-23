@@ -1,25 +1,29 @@
-###
+### LOGIN USER with taking TOKEN
 POST http://localhost:8080/auth/login/
 Content-Type: application/json
-
 //{"username": "admin", "password": "pwd"}
 
 {"email": "admin", "password": "pwd"}
 
-###
-POST http://localhost:8080/api/auth
-Content-Type: application/json
+> {% client.global.set("auth_token", response.body.token); %}
 
-{"username": "admin", "password": "pwd"}
+### GET USER INFO FOR USE IN FRONT
+GET http://localhost:8080/auth/account_info
+Authorization: Token {{auth_token}}
 
-###
+### operators grouped by profiles
 GET http://localhost:8080/api/v1/operator/grouped/
-Authorization: Token a2225e07df2d1eb46af3c6b4737778cb06d33f5fe09dfa106c592f7815e6d5c2
+Authorization: Token {{auth_token}}
+
+### DONE - WIP: possible all fields need truncate
+GET http://localhost:8080/api/v1/technical-capabilities/2419/
+http://localhost:4200/api/v1/technical-capabilities/2419/
+Authorization: Token {{auth_token}}
+
+
+//********************** TODO: THIS WHAT I NEED FOR REDO ********************************************************
 
 ###
-GET http://localhost:8080/api/v1/operator/grouped
-Authorization: Token a2225e07df2d1eb46af3c6b4737778cb06d33f5fe09dfa106c592f7815e6d5c2
-
-###
-GET http://localhost:8080/api/v1/location
-Authorization: Token a2225e07df2d1eb46af3c6b4737778cb06d33f5fe09dfa106c592f7815e6d5c2
+GET http://localhost:8080/api/v1/organization?location=11
+#GET http://localhost:8080/api/v1/organization?location=2419
+Authorization: Token {{auth_token}}

@@ -28,13 +28,22 @@ import java.util.UUID;
 		@NamedEntityGraph(
 				name = CatalogsLocation.WITH_FEATURES,
 				attributeNodes = {
-						@NamedAttributeNode("ftcAts"),
-						@NamedAttributeNode("ftcInternets"),
-						@NamedAttributeNode("ftcTelevisions"),
-						@NamedAttributeNode("ftcPosts"),
-						@NamedAttributeNode("ftcRadios"),
-						@NamedAttributeNode("ftcMobiles")
+						@NamedAttributeNode(value = "ftcAts", subgraph="opers"),
+						@NamedAttributeNode(value = "ftcInternets", subgraph="opers"),
+						@NamedAttributeNode(value = "ftcTelevisions", subgraph="opers"),
+						@NamedAttributeNode(value = "ftcPosts", subgraph="opers"),
+						@NamedAttributeNode(value = "ftcRadios", subgraph="opers"),
+						@NamedAttributeNode(value = "ftcMobiles", subgraph="opers")
+				},
+				subgraphs = {
+						@NamedSubgraph(
+								name = "opers",
+								attributeNodes = {
+										@NamedAttributeNode("catalogsOperator")
+								}
+						)
 				}
+
 		)
 })
 public class CatalogsLocation implements Serializable {

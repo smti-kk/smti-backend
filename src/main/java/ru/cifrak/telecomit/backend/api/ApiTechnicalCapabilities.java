@@ -3,13 +3,15 @@ package ru.cifrak.telecomit.backend.api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.*;
-import ru.cifrak.telecomit.backend.api.criteria.CapabilitiesCriteria;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.LocationSimple;
 import ru.cifrak.telecomit.backend.api.dto.PaginatedList;
 import ru.cifrak.telecomit.backend.api.dto.TechnicalCapabilitiesDTO;
 import ru.cifrak.telecomit.backend.api.service.TechnicalCapabilitiesService;
-import ru.cifrak.telecomit.backend.domain.AccessPoint;
 import ru.cifrak.telecomit.backend.domain.CatalogsLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 
@@ -45,7 +47,7 @@ public class ApiTechnicalCapabilities {
         return this.technicalCapabilitiesService.findAll(page, pageSize);
     }
 
-    @GetMapping(value = "technical-capabilities/{id}")
+    @GetMapping(value = "technical-capabilities/{id}/")
     public TechnicalCapabilitiesDTO getTechnicalCapabilities(@PathVariable("id") Integer id) {
         return this.technicalCapabilitiesService.getByLocationId(id);
     }
