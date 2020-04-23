@@ -4,11 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.cifrak.telecomit.backend.api.dto.AuthDTO;
 import ru.cifrak.telecomit.backend.api.dto.AuthFrontDTO;
 import ru.cifrak.telecomit.backend.api.dto.TokenDTO;
 import ru.cifrak.telecomit.backend.auth.entity.User;
@@ -43,6 +43,7 @@ public class AuthAPI {
 
     @PostMapping("/login/")
     public ResponseEntity<TokenDTO> register(@Validated @RequestBody AuthFrontDTO data) throws NoSuchAlgorithmException {
+        log.info("-> [api] auth/login/");
         final Optional<User> userOptional = userRepository.findByUsername(data.getEmail());
 
         if (!userOptional.isPresent()) {
@@ -70,6 +71,7 @@ public class AuthAPI {
 
     @PostMapping("/exchange_temp_token")
     public ResponseEntity<TokenDTO> exchangeTempToken(@Validated @RequestBody TokenDTO data) {
+        log.info("-> [api] auth/exchange_temp_token");
         final Optional<TempTokenCache> optionalTempTokenCache = tempTokenCacheRepository.findById(data.getToken());
 
         return optionalTempTokenCache
@@ -81,4 +83,11 @@ public class AuthAPI {
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
+    @GetMapping("/account_info")
+    public ResponseEntity<User> account_info() {
+        log.info("-> [api] auth/account_info");
+        final Optional<User> userOptional = userRepository.findByUsername("admin");
+
+        return ResponseEntity.ok(userOptional.get());
+    }
 }
