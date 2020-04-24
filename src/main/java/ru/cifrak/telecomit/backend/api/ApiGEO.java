@@ -27,7 +27,7 @@ public class ApiGEO {
      *
      * @return Location DTO with id and name and POLIGON of border
      */
-    @GetMapping("/location-area/")
+    @GetMapping("/location-area")
     public List<LocationAreaBorders> locations() {
         return repository.areaBorders().stream()
                 .map(LocationAreaBorders::new)

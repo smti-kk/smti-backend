@@ -12,4 +12,9 @@ public class PaginatedList<T> {
     String next;
     String previous;
     List<T> results;
+
+    public PaginatedList(Long count, List<T> results) {
+        this.count = count;
+        this.results = results;
+    }
 }
