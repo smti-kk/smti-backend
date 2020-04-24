@@ -13,13 +13,6 @@ import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 @Data
 @AllArgsConstructor
 public class LocationAreaBorders {
-    public LocationAreaBorders(CatalogsLocation entity) {
-        this.id = entity.getId();
-        this.name = entity.getName();
-        this.fullName = entity.getTypeLocation() + " " + entity.getName();
-        this.type = entity.getCatalogsGeolocation().getBorder();
-    }
-
     private Integer id;
     private String name;
     @JsonProperty("full_name")
@@ -30,5 +23,10 @@ public class LocationAreaBorders {
     @JsonDeserialize(using = GeometryDeserializer.class)
     private MultiPolygon type;
 
-
+    public LocationAreaBorders(CatalogsLocation entity) {
+        this.id = entity.getId();
+        this.name = entity.getName();
+        this.fullName = entity.getTypeLocation() + " " + entity.getName();
+        this.type = entity.getCatalogsGeolocation().getBorder();
+    }
 }

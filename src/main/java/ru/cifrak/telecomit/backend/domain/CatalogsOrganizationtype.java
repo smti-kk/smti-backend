@@ -29,7 +29,7 @@ public class CatalogsOrganizationtype implements Serializable {
 
 	@JsonBackReference
 	//bi-directional many-to-one association to CatalogsOrganization
-	@OneToMany(mappedBy="catalogsOrganizationtype")
+	@OneToMany(mappedBy= "type")
 	private List<CatalogsOrganization> catalogsOrganizations;
 
 	@JsonIgnore
@@ -66,14 +66,14 @@ public class CatalogsOrganizationtype implements Serializable {
 
 	public CatalogsOrganization addCatalogsOrganization(CatalogsOrganization catalogsOrganization) {
 		getCatalogsOrganizations().add(catalogsOrganization);
-		catalogsOrganization.setCatalogsOrganizationtype(this);
+		catalogsOrganization.setType(this);
 
 		return catalogsOrganization;
 	}
 
 	public CatalogsOrganization removeCatalogsOrganization(CatalogsOrganization catalogsOrganization) {
 		getCatalogsOrganizations().remove(catalogsOrganization);
-		catalogsOrganization.setCatalogsOrganizationtype(null);
+		catalogsOrganization.setType(null);
 
 		return catalogsOrganization;
 	}
