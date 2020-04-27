@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.LocationSimple;
+import ru.cifrak.telecomit.backend.api.dto.LocationSimpleFilter;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.utils.BboxFactory;
 
@@ -21,9 +22,16 @@ public class ApiLocation {
     }
 
     @GetMapping
-    public List<LocationSimple> locations() {
+    public List<LocationSimple> location() {
         return repository.locations().stream()
                 .map(LocationSimple::new)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/locations/")
+    public List<LocationSimpleFilter> locations() {
+        return repository.locations().stream()
+                .map(LocationSimpleFilter::new)
                 .collect(Collectors.toList());
     }
 

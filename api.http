@@ -21,16 +21,19 @@ Authorization: Token {{auth_token}}
 #********************************************************
 # TODO: THIS WHAT I NEED FOR REDO
 #********************************************************
-### WIP: possible all fields need truncate
+
+### WIP: -----------------------------------------------------------
+### possible all fields need truncate
 GET http://localhost:8080/api/v1/technical-capabilities/2419/
 Authorization: Token {{auth_token}}
 
 #********************************************************
 #********************************************************
 
-###
+### WIP: -----------------------------------------------------------
 GET http://localhost:8080/api/v1/operator/
 Authorization: Token {{auth_token}}
+
 ###
 GET http://localhost:8080/api/v1/operator/ats/
 Authorization: Token {{auth_token}}
@@ -52,25 +55,28 @@ Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/v1/operator/tv/
 Authorization: Token {{auth_token}}
-###
-GET http://localhost:8080/api/v1/operator/(?P<pk>[^/.]+)/
+
+### WIP: -----------------------------------------------------------
+GET http://localhost:8080/api/v1/operator/2/
 Authorization: Token {{auth_token}}
+
 ###
 GET http://localhost:8080/api/v1/mobile-type/
 Authorization: Token {{auth_token}}
 ###
-GET http://localhost:8080/api/v1/mobile-type/(?P<pk>[^/.]+)/
+GET http://localhost:8080/api/v1/mobile-type/1/
 Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/v1/internet-access-type/
 Authorization: Token {{auth_token}}
 ###
-GET http://localhost:8080/api/v1/internet-access-type/(?P<pk>[^/.]+)/
+GET http://localhost:8080/api/v1/internet-access-type/11/
 Authorization: Token {{auth_token}}
-###
+
+### WIP: -----------------------------------------------------------
 GET http://localhost:8080/api/v1/location-summary-capabilities/
 Authorization: Token {{auth_token}}
-###
+### WIP: -----------------------------------------------------------
 GET http://localhost:8080/api/v1/location-summary-capabilities/(?P<pk>[^/.]+)/
 Authorization: Token {{auth_token}}
 ###
@@ -82,7 +88,11 @@ Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/v1/location/
 Authorization: Token {{auth_token}}
-###
+
+### ------------------------- v CURSOR ----------------------------------
+
+### WIP: -----------------------------------------------------------
+### [locations with parent.fullName for FILTERS in any forms]
 GET http://localhost:8080/api/v1/location/locations/
 Authorization: Token {{auth_token}}
 ###
