@@ -47,7 +47,14 @@ public interface RepositoryLocation extends JpaRepository<CatalogsLocation, Inte
 
     @EntityGraph(value = CatalogsLocation.WITH_FEATURES)
     @Query(value = "SELECT l from CatalogsLocation l" +
-            " where l.typeLocation not in ('р-н', 'край', 'с/с', 'тер')"
+            " where l.typeLocation not in ('р-н', 'край', 'с/с', 'тер') and l.name like '%Орловк%'"
     )
     Page<CatalogsLocation> findAll(Pageable pageable);
+
+    //TODO: REMOVE!!!!!!! sql - and l.name like '%Орловк%'
+    @EntityGraph(value = CatalogsLocation.WITH_ORGANIZATIONS_ACCESSPOINTS)
+    @Query(value = "SELECT l from CatalogsLocation l" +
+            " where l.typeLocation not in ('р-н', 'край', 'с/с', 'тер') and l.name like '%Орловк%'"
+    )
+    Page<CatalogsLocation> findAllReportOrganization(Pageable pageable);
 }

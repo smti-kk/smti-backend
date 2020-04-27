@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.cifrak.telecomit.backend.api.dto.LocationReportOrganization;
+import ru.cifrak.telecomit.backend.api.dto.LocationReportOrganizationDTO;
 import ru.cifrak.telecomit.backend.api.dto.PaginatedList;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 
@@ -25,14 +25,26 @@ public class ApiReports {
         this.repository = repository;
     }
 
+    //TODO: TELECOMIT-155 !!!WIP!!! proper select
     @GetMapping("/report-organization/")
-    public PaginatedList<LocationReportOrganization> locations(@RequestParam @Min(1) int page, @RequestParam int page_size) {
+    public PaginatedList<LocationReportOrganizationDTO> organizations(@RequestParam @Min(1) int page, @RequestParam int page_size) {
         Pageable pageable = PageRequest.of(page - 1, page_size);
         long count = repository.count();
-        final List<LocationReportOrganization> list = repository.findAll(pageable).stream()
-                .map(LocationReportOrganization::new)
+        final List<LocationReportOrganizationDTO> list = repository.findAllReportOrganization(pageable).stream()
+                .map(LocationReportOrganizationDTO::new)
                 .collect(Collectors.toList());
-        return new PaginatedList<LocationReportOrganization>(count, "", "", list);
+        return new PaginatedList<LocationReportOrganizationDTO>(count, "", "", list);
+    }
+
+    //TODO: TELECOMIT-155 !!!WIP!!! proper select
+    @GetMapping("/report-organization-contracts/")
+    public PaginatedList<LocationReportOrganizationDTO> contracts(@RequestParam @Min(1) int page, @RequestParam int page_size) {
+        Pageable pageable = PageRequest.of(page - 1, page_size);
+        long count = repository.count();
+        final List<LocationReportOrganizationDTO> list = repository.findAllReportOrganization(pageable).stream()
+                .map(LocationReportOrganizationDTO::new)
+                .collect(Collectors.toList());
+        return new PaginatedList<LocationReportOrganizationDTO>(count, "", "", list);
     }
 
 }

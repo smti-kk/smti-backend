@@ -88,10 +88,6 @@ Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/v1/location/
 Authorization: Token {{auth_token}}
-
-### ------------------------- v CURSOR ----------------------------------
-
-### WIP: -----------------------------------------------------------
 ### [locations with parent.fullName for FILTERS in any forms]
 GET http://localhost:8080/api/v1/location/locations/
 Authorization: Token {{auth_token}}
@@ -185,8 +181,11 @@ Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/v1/tc-mobile/(?P<pk>[^/.]+)/
 Authorization: Token {{auth_token}}
+
+### ------------------------- v CURSOR ----------------------------------
+### WIP: -----------------------------------------------------------
 ###
-GET http://localhost:8080/api/v1/report-organization/
+GET http://localhost:8080/api/v1/report-organization/?page=1&page_size=10
 Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/v1/report-organization/export/

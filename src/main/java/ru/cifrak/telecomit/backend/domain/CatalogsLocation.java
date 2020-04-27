@@ -42,10 +42,28 @@ import java.util.UUID;
 						)
 				}
 
+		),
+		//TODO: TELECOMIT-155 !!!WIP!!! proper select
+		@NamedEntityGraph(
+				name = CatalogsLocation.WITH_ORGANIZATIONS_ACCESSPOINTS,
+				attributeNodes = {
+						@NamedAttributeNode(value = "catalogsOrganizations"/*, subgraph="access_points"*/),
+				}/*,
+				subgraphs = {
+						@NamedSubgraph(
+								name = "access_points",
+								attributeNodes = {
+										@NamedAttributeNode("monitoringAccesspointRes")
+								}
+						)
+				}*/
+
 		)
 })
 public class CatalogsLocation implements Serializable {
 	public static final String WITH_FEATURES = "CatalogsLocation[FtcFeatures]";
+	//TODO: TELECOMIT-155 !!!WIP!!! proper select
+	public static final String WITH_ORGANIZATIONS_ACCESSPOINTS = "CatalogsLocation[Organization]";
 
 	private static final long serialVersionUID = 1L;
 

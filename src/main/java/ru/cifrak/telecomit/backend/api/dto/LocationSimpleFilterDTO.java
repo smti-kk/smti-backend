@@ -1,21 +1,16 @@
 package ru.cifrak.telecomit.backend.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.locationtech.jts.geom.Point;
 import ru.cifrak.telecomit.backend.domain.CatalogsLocation;
-import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
-import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
 @Data
 @AllArgsConstructor
-public class LocationSimpleFilter {
+public class LocationSimpleFilterDTO {
     private Integer id;
 
-    private LocationSimpleFilter parent;
+    private LocationSimpleFilterDTO parent;
 
     @JsonProperty("full_name")
     private String fullName;
@@ -25,11 +20,11 @@ public class LocationSimpleFilter {
     @JsonProperty("type_location")
     private String type;
 
-    public LocationSimpleFilter(CatalogsLocation entity) {
+    public LocationSimpleFilterDTO(CatalogsLocation entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.type = entity.getTypeLocation();
         this.fullName = entity.getTypeLocation() + " " + entity.getName();
-        this.parent = entity.getParent() != null ? new LocationSimpleFilter(entity.getParent()): null;
+        this.parent = entity.getParent() != null ? new LocationSimpleFilterDTO(entity.getParent()): null;
     }
 }
