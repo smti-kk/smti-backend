@@ -80,4 +80,24 @@
     <changeSet author="a-panov (generated)" id="1588327759435-18">
         <addUniqueConstraint columnNames="id" constraintName="UC_TYPE_TRUNK_CHANNELID_COL" tableName="type_trunk_channel"/>
     </changeSet>
+    <changeSet author="a-panov (generated)" id="1588332154470-9">
+        <createSequence incrementBy="1" sequenceName="governmentdevelopmentprogram_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588332154470-10">
+        <createTable tableName="government_development_program">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="government_development_programPK"/>
+            </column>
+            <column name="acronym" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="name" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588332154470-11">
+        <addUniqueConstraint columnNames="id" constraintName="UC_GOVERNMENT_DEVELOPMENT_PROGRAMID_COL" tableName="government_development_program"/>
+    </changeSet>
 </databaseChangeLog>
