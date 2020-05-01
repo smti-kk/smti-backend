@@ -15,3 +15,11 @@ https://github.com/miguelcobain/jackson-geojson/tree/master/src/main/java/com/be
 
 === PostGIS и JPA
 https://habr.com/ru/post/440872/
+
+
+=== Разница в моделях
+Создать разницу по текущей БД
+`mvn liquibase:generateChangeLog`
+
+Создать разницу по текущей БД и существующими моделями JPA
+`mvn clean compile liquibase:diff`
