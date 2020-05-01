@@ -60,7 +60,4 @@
     <changeSet author="a-panov (generated)" id="1588311208070-7">
         <addForeignKeyConstraint baseColumnNames="id" baseTableName="user_roles" constraintName="FKayrovfl8a6q4pko3ja82pfxtb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="core_user" validate="true"/>
     </changeSet>
-    <changeSet author="a-panov (generated)" id="1588323285533-3">
-        <createSequence incrementBy="50" sequenceName="CORE_USER_ID_GENERATOR" startValue="1"/>
-    </changeSet>
 </databaseChangeLog>

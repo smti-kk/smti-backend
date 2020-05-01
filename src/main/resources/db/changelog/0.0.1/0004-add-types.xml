@@ -1,0 +1,83 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="a-panov (generated)" id="1588327759435-4">
+        <createSequence incrementBy="1" sequenceName="typeinternetaccess_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-5">
+        <createSequence incrementBy="1" sequenceName="typemobile_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-6">
+        <createSequence incrementBy="1" sequenceName="typeorganization_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-7">
+        <createSequence incrementBy="1" sequenceName="typesmo_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-8">
+        <createSequence incrementBy="1" sequenceName="typetrunkchannel_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-9">
+        <createTable tableName="type_internet_access">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="type_internet_accessPK"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-10">
+        <createTable tableName="type_mobile">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="type_mobilePK"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-11">
+        <createTable tableName="type_organization">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="type_organizationPK"/>
+            </column>
+            <column name="name" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-12">
+        <createTable tableName="type_smo">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="type_smoPK"/>
+            </column>
+            <column name="name" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-13">
+        <createTable tableName="type_trunk_channel">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="type_trunk_channelPK"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-14">
+        <addUniqueConstraint columnNames="id" constraintName="UC_TYPE_INTERNET_ACCESSID_COL" tableName="type_internet_access"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-15">
+        <addUniqueConstraint columnNames="id" constraintName="UC_TYPE_MOBILEID_COL" tableName="type_mobile"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-16">
+        <addUniqueConstraint columnNames="id" constraintName="UC_TYPE_ORGANIZATIONID_COL" tableName="type_organization"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-17">
+        <addUniqueConstraint columnNames="id" constraintName="UC_TYPE_SMOID_COL" tableName="type_smo"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588327759435-18">
+        <addUniqueConstraint columnNames="id" constraintName="UC_TYPE_TRUNK_CHANNELID_COL" tableName="type_trunk_channel"/>
+    </changeSet>
+</databaseChangeLog>

@@ -29,8 +29,8 @@ import java.util.List;
 })
 public class User implements Serializable {
     @Id
-    @SequenceGenerator(name = "CORE_USER_ID_GENERATOR", sequenceName = "core_user_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = " CORE_USER_ID_GENERATOR")
+    @SequenceGenerator(name = "COREUSER_ID_GENERATOR", sequenceName = "core_user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COREUSER_ID_GENERATOR")
     protected Long id;
 
     @Column
