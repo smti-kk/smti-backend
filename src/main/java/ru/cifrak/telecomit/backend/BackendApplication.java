@@ -10,8 +10,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.cifrak.telecomit.backend.auth.entity.User;
-import ru.cifrak.telecomit.backend.auth.entity.UserRole;
+import ru.cifrak.telecomit.backend.entities.User;
+import ru.cifrak.telecomit.backend.entities.UserRole;
 import ru.cifrak.telecomit.backend.auth.service.UserService;
 import ru.cifrak.telecomit.backend.cache.repository.AuthTokenCacheRepository;
 

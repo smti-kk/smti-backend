@@ -2,7 +2,7 @@ package ru.cifrak.telecomit.backend.auth.service;
 
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import ru.cifrak.telecomit.backend.auth.ProjectUserDetails;
-import ru.cifrak.telecomit.backend.auth.entity.User;
+import ru.cifrak.telecomit.backend.entities.User;
 
 import java.security.Principal;
 import java.util.Optional;

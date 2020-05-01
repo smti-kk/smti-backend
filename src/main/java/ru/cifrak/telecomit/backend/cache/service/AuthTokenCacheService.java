@@ -1,6 +1,6 @@
 package ru.cifrak.telecomit.backend.cache.service;
 
-import ru.cifrak.telecomit.backend.auth.entity.User;
+import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.cache.entity.AuthTokenCache;
 
 import java.time.ZoneId;

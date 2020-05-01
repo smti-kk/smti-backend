@@ -55,10 +55,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
+        </dependency>-->
 <!--        <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-spring-boot-starter</artifactId>
@@ -251,6 +251,33 @@
                 <configuration>
                     <propertyFile>src/main/resources/liquibase.properties</propertyFile>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.liquibase.ext</groupId>
+                        <artifactId>liquibase-hibernate5</artifactId>
+                        <version>3.8</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.hibernate</groupId>
+                        <artifactId>hibernate-spatial</artifactId>
+                        <version>5.4.10.Final</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                        <version>4.3.8.RELEASE</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.springframework.data</groupId>
+                        <artifactId>spring-data-jpa</artifactId>
+                        <version>2.2.6.RELEASE</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.hibernate.validator</groupId>
+                        <artifactId>hibernate-validator</artifactId>
+                        <version>6.0.18.Final</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

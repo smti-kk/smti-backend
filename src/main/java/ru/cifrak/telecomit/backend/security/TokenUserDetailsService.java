@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import ru.cifrak.telecomit.backend.auth.ProjectUserDetails;
-import ru.cifrak.telecomit.backend.auth.entity.User;
+import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.auth.service.UserService;
 
 import java.util.Optional;
