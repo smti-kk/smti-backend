@@ -4,4 +4,5 @@
     <include file="0002-add-user-role.xml" relativeToChangelogFile="true" />
     <include file="0003-add-location-geodata.xml" relativeToChangelogFile="true" />
     <include file="0004-add-types.xml" relativeToChangelogFile="true" />
+    <include file="0005-add-organization.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
