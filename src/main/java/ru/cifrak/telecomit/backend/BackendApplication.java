@@ -54,7 +54,6 @@ public class BackendApplication {
         newUser.setPassword(passwordEncoder.encode("pwd"));
         newUser.getRoles().add(UserRole.ADMIN);
         newUser.getRoles().add(UserRole.OPERATOR);
-        newUser.getRoles().add(UserRole.USER);
         newUser.setCreateDateTime(nowTime);
         userService.save(newUser);
         log.info("user admin created with default password");

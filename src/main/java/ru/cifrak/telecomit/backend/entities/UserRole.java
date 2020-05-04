@@ -4,16 +4,20 @@ import org.springframework.security.core.GrantedAuthority;
 
 public enum UserRole {
     ADMIN,
-    OPERATOR,
-    USER;
+    GUEST,
+    MUNICIPALITY,
+    ORGANIZATION,
+    OPERATOR;
 
     @Override
     public String toString() {
         switch (this) {
-            case ADMIN:     return "Администратор";
-            case OPERATOR:  return "Оператор";
-            case USER:      return "Пользователь";
-            default:        throw new IllegalArgumentException();
+            case ADMIN:         return "Администратор";
+            case GUEST:         return "Посетитель";
+            case MUNICIPALITY:  return "Муниципалитет";
+            case ORGANIZATION:  return "Оператор - Организации";
+            case OPERATOR:      return "Оператор - Локации";
+            default:    throw new IllegalArgumentException();
         }
     }
 
