@@ -7,4 +7,5 @@
     <include file="0005-add-organization.xml" relativeToChangelogFile="true" />
     <include file="0006-add-operator.xml" relativeToChangelogFile="true" />
     <include file="0007-add-access-point.xml" relativeToChangelogFile="true" />
+    <include file="0008-add-infomat-trunkchannel.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

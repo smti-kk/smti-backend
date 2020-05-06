@@ -55,7 +55,7 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @SequenceGenerator(name = "ACCESSPOINT_ID_GENERATOR", sequenceName = "ACCESSPOINT_ID_SEQ", allocationSize = 1)
+    @SequenceGenerator(name = "ACCESSPOINT_ID_GENERATOR", sequenceName = "accesspoint_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ACCESSPOINT_ID_GENERATOR")
     @Column(unique = true, nullable = false)
     private Integer id;
@@ -66,6 +66,8 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @Column
     private Integer billingId;
 
+    //TODO: всё таки разобраться что это за штука и или текстом или еще как
+    @Column
     private Integer completed;
 
     @Column(length = 500)

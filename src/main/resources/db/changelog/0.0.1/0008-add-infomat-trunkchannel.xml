@@ -1,0 +1,87 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="a-panov (generated)" id="1588758530863-12">
+        <createSequence incrementBy="1" sequenceName="infomat_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588758530863-13">
+        <createSequence incrementBy="1" sequenceName="trunkchannel_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588758530863-15">
+        <createTable tableName="infomat">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="infomatPK"/>
+            </column>
+            <column name="address" type="TEXT"/>
+            <column name="contacts" type="TEXT"/>
+            <column name="install_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organization" type="VARCHAR(256)"/>
+            <column name="removed" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="serial_number" type="VARCHAR(16)"/>
+            <column name="speed" type="FLOAT8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_location" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_trunk_channel_type" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588758530863-16">
+        <createTable tableName="trunk_channel">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="trunk_channelPK"/>
+            </column>
+            <column name="commissioning" type="date"/>
+            <column name="completed" type="INTEGER"/>
+            <column name="decommissioning" type="date"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="key_government_program" type="INTEGER"/>
+            <column name="key_operator" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_location_end" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_location_start" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_type_trunk_channel" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="a-panov (generated)" id="1588758530863-18">
+        <addUniqueConstraint columnNames="id" constraintName="UC_INFOMATID_COL" tableName="infomat"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588758530863-19">
+        <addUniqueConstraint columnNames="id" constraintName="UC_TRUNK_CHANNELID_COL" tableName="trunk_channel"/>
+    </changeSet>
+
+    <changeSet author="a-panov (generated)" id="1588758530863-22">
+        <addForeignKeyConstraint baseColumnNames="key_trunk_channel_type" baseTableName="infomat" constraintName="FKacr44ejn31r2baqhitvx1snxh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="type_trunk_channel" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588758530863-23">
+        <addForeignKeyConstraint baseColumnNames="key_type_trunk_channel" baseTableName="trunk_channel" constraintName="FKexp21w3oh5hcvathya0r5ebo1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="type_trunk_channel" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588758530863-24">
+        <addForeignKeyConstraint baseColumnNames="key_government_program" baseTableName="trunk_channel" constraintName="FKfubhxykgmdq49u178hrddonrm" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="government_development_program" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588758530863-25">
+        <addForeignKeyConstraint baseColumnNames="key_operator" baseTableName="trunk_channel" constraintName="FKqu16aasqvcqpp88ncne04ntk0" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="operator" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588758530863-26">
+        <addForeignKeyConstraint baseColumnNames="key_location_start" baseTableName="trunk_channel" constraintName="FKrvxsyup399h45i0oqmxdd5nrx" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="location" validate="true"/>
+    </changeSet>
+
+    <changeSet author="a-panov (generated)" id="1588758530863-28">
+        <addForeignKeyConstraint baseColumnNames="key_location_end" baseTableName="trunk_channel" constraintName="FKt2b34f1n9b9keue1oupoo9gs3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588758530863-29">
+        <addForeignKeyConstraint baseColumnNames="key_location" baseTableName="infomat" constraintName="FKxfac0lps6wkepntsplhxrry9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="location" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

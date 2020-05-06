@@ -42,7 +42,7 @@ public class Organization implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @SequenceGenerator(name = "ORGANIZATION_ID_GENERATOR", sequenceName = "ORGANIZATION_ID_SEQ", allocationSize = 1)
+    @SequenceGenerator(name = "ORGANIZATION_ID_GENERATOR", sequenceName = "organization_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ORGANIZATION_ID_GENERATOR")
     @Column(unique = true, nullable = false)
     private Integer id;

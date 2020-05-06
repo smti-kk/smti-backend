@@ -18,19 +18,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 
-//@Audited
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-//@Inheritance(strategy = InheritanceType.JOINED)
 
 @Entity
-@Table(name = "core_user", indexes = {
+@Table(name = "app_user", indexes = {
         @Index(columnList = "oid", name = "oid_idx"),
 })
 public class User implements Serializable {
     @Id
-    @SequenceGenerator(name = "COREUSER_ID_GENERATOR", sequenceName = "core_user_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COREUSER_ID_GENERATOR")
+    @SequenceGenerator(name = "USER_ID_GENERATOR", sequenceName = "app_user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_ID_GENERATOR")
     protected Long id;
 
     @Column

@@ -1,11 +1,14 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
-    <changeSet author="a-panov (generated)" id="1588311208070-2">
-        <createTable tableName="core_user">
-            <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="core_userPK"/>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="a-panov (generated)" id="1588758530863-14">
+        <createSequence incrementBy="1" sequenceName="app_user_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588758530863-17">
+        <createTable tableName="app_user">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="userPK"/>
             </column>
-            <column defaultValueComputed="CURRENT_TIMESTAMP" name="create_date_time" type="TIMESTAMP WITH TIME ZONE">
+            <column name="create_date_time" type="TIMESTAMP WITH TIME ZONE">
                 <constraints nullable="false"/>
             </column>
             <column name="email" type="TEXT">
@@ -49,15 +52,16 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="a-panov (generated)" id="1588311208070-5">
-        <addUniqueConstraint columnNames="username" constraintName="UC_CORE_USERUSERNAME_COL" tableName="core_user"/>
+    <changeSet author="a-panov (generated)" id="1588758530863-20">
+        <addUniqueConstraint columnNames="username" constraintName="UC_USERUSERNAME_COL" tableName="app_user"/>
     </changeSet>
-    <changeSet author="a-panov (generated)" id="1588311208070-6">
-        <createIndex indexName="oid_idx" tableName="core_user">
+    <changeSet author="a-panov (generated)" id="1588758530863-21">
+        <createIndex indexName="oid_idx" tableName="app_user">
             <column name="oid"/>
         </createIndex>
     </changeSet>
-    <changeSet author="a-panov (generated)" id="1588311208070-7">
-        <addForeignKeyConstraint baseColumnNames="id" baseTableName="user_roles" constraintName="FKayrovfl8a6q4pko3ja82pfxtb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="core_user" validate="true"/>
+
+    <changeSet author="a-panov (generated)" id="1588758530863-27">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="user_roles" constraintName="FKsrdrenljg5rfi2ceuxfsx23oh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="app_user" validate="true"/>
     </changeSet>
 </databaseChangeLog>

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Signal {
-    ATV(1, "Аналоговое"),
-    CTV(2, "Цифровое");
+    ANLG(1, "Аналоговое"),
+    DIGT(2, "Цифровое");
 
     private Integer id;
     private String name;
