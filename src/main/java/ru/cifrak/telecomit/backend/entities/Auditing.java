@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.entities;
 
+import lombok.Data;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -10,6 +11,8 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
+
+@Data
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
