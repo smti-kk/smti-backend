@@ -8,8 +8,10 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.UserRole;
 import ru.cifrak.telecomit.backend.auth.service.UserService;
@@ -22,6 +24,8 @@ import java.util.Optional;
 @Slf4j
 @SpringBootApplication
 @EnableJpaRepositories
+//@EnableTransactionManagement
+@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EntityScan
 public class BackendApplication {
 

@@ -1,7 +1,7 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet author="a-panov (generated)" id="1588604416933-11">
-        <createSequence incrementBy="50" sequenceName="SEQ_ACCESSPOINT" startValue="1"/>
+        <createSequence incrementBy="1" sequenceName="ACCESSPOINT_ID_SEQ" startValue="1"/>
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588604416933-13">
         <createTable tableName="access_point">
@@ -49,5 +49,43 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588604416933-18">
         <addForeignKeyConstraint baseColumnNames="key_type_internet_access" baseTableName="access_point" constraintName="FKt8a34ucn9co7osyw768624vmj" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="type_internet_access" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-19">
+        <addColumn tableName="access_point">
+            <column name="type" type="varchar(31)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-20">
+        <addColumn tableName="access_point">
+            <column name="created_by" type="varchar(255)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-21">
+        <addColumn tableName="access_point">
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-22">
+        <addColumn tableName="access_point">
+            <column name="modified_by" type="varchar(255)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-23">
+        <addColumn tableName="access_point">
+            <column name="modified" type="timestamp">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-24">
+        <addColumn tableName="access_point">
+            <column name="deleted" type="boolean">
+            </column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

@@ -1,19 +1,24 @@
 package ru.cifrak.telecomit.backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.vladmihalcea.hibernate.type.basic.Inet;
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLInetType;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.TypeDef;
 import org.locationtech.jts.geom.Point;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -21,12 +26,24 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 
-/**
- * The persistent class for the accesspoint database table.
- */
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ApESPD.class, name = "espd"),
+        @JsonSubTypes.Type(value = ApSMO.class, name = "smo")
+})
+
 @Data
+@NoArgsConstructor
+
 @Entity
 @Table
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+//@NamedEntityGraph(name = "AccessPointLocation", attributeNodes = {@NamedAttributeNode(value = "loc")})
+
 //note: https://vladmihalcea.com/postgresql-inet-type-hibernate/
 //note: https://github.com/vladmihalcea/hibernate-types/blob/master/hibernate-types-52/src/main/java/com/vladmihalcea/hibernate/type/basic/Inet.java
 @TypeDef(
@@ -34,11 +51,11 @@ import java.io.Serializable;
         typeClass = PostgreSQLInetType.class,
         defaultForType = Inet.class
 )
-public class AccessPoint implements Serializable {
+public class AccessPoint extends AuditingSoftDelete implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @SequenceGenerator(name = "ACCESSPOINT_ID_GENERATOR", sequenceName = "SEQ_ACCESSPOINT")
+    @SequenceGenerator(name = "ACCESSPOINT_ID_GENERATOR", sequenceName = "ACCESSPOINT_ID_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ACCESSPOINT_ID_GENERATOR")
     @Column(unique = true, nullable = false)
     private Integer id;
@@ -97,25 +114,21 @@ public class AccessPoint implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_government_program")
-    @JsonProperty("government_program")
     private GovernmentDevelopmentProgram governmentDevelopmentProgram;
 
     //bi-directional many-to-one association to CatalogsInternetaccesstype
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_type_internet_access")
-    @JsonProperty("connection_type")
     private TypeInternetAccess internetAccess;
 
     //bi-directional many-to-one association to CatalogsOperator
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_operator")
-    @JsonProperty("catalogs_operator")
     private Operator operator;
 
     //bi-directional many-to-one association to CatalogsOrganization
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_organization")
-    @JsonBackReference
     private Organization organization;
 
 }
