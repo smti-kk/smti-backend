@@ -8,7 +8,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588322609705-4">
         <createTable tableName="geo_data">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="geodata_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="geo_dataPK"/>
             </column>
             <column name="administrative_center" type="GEOMETRY"/>
@@ -21,7 +21,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588322609705-5">
         <createTable tableName="location">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="location_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="locationPK"/>
             </column>
             <column name="fias" type="uuid"/>

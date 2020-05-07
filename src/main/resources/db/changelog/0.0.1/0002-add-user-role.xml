@@ -5,7 +5,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588758530863-17">
         <createTable tableName="app_user">
-            <column name="id" type="BIGINT">
+            <column name="id" type="BIGINT" defaultValueSequenceNext="app_user_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="userPK"/>
             </column>
             <column name="create_date_time" type="TIMESTAMP WITH TIME ZONE">

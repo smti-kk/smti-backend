@@ -17,7 +17,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588327759435-9">
         <createTable tableName="type_internet_access">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="typeinternetaccess_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="type_internet_accessPK"/>
             </column>
             <column name="name" type="VARCHAR(256)">
@@ -27,7 +27,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588327759435-10">
         <createTable tableName="type_mobile">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="typemobile_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="type_mobilePK"/>
             </column>
             <column name="name" type="VARCHAR(256)">
@@ -37,7 +37,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588327759435-11">
         <createTable tableName="type_organization">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="typeorganization_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="type_organizationPK"/>
             </column>
             <column name="name" type="VARCHAR(500)">
@@ -47,7 +47,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588327759435-12">
         <createTable tableName="type_smo">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="typesmo_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="type_smoPK"/>
             </column>
             <column name="name" type="VARCHAR(500)">
@@ -57,7 +57,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588327759435-13">
         <createTable tableName="type_trunk_channel">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="typetrunkchannel_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="type_trunk_channelPK"/>
             </column>
             <column name="name" type="VARCHAR(256)">
@@ -85,7 +85,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588332154470-10">
         <createTable tableName="government_development_program">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="governmentdevelopmentprogram_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="government_development_programPK"/>
             </column>
             <column name="acronym" type="VARCHAR(100)">

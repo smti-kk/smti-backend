@@ -5,7 +5,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588604416933-13">
         <createTable tableName="access_point">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="accesspoint_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="access_pointPK"/>
             </column>
             <column name="address" type="VARCHAR(1000)"/>

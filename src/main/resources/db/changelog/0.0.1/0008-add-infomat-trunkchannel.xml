@@ -8,7 +8,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588758530863-15">
         <createTable tableName="infomat">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="infomat_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="infomatPK"/>
             </column>
             <column name="address" type="TEXT"/>
@@ -32,7 +32,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588758530863-16">
         <createTable tableName="trunk_channel">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="trunkchannel_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="trunk_channelPK"/>
             </column>
             <column name="commissioning" type="date"/>

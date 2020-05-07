@@ -5,7 +5,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588581282026-11">
         <createTable tableName="organization">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="organization_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="organizationPK"/>
             </column>
             <column name="acronym" type="VARCHAR(500)">
