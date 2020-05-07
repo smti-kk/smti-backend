@@ -1,0 +1,57 @@
+### LOGIN USER with taking TOKEN
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+//{"username": "admin", "password": "pwd"}
+
+{"email": "admin", "password": "pwd"}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
+
+### ********************************************************************************************************************
+### Operators
+### ********************************************************************************************************************
+
+###
+GET http://localhost:8080/api/v1/operator/ats/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/v1/operator/grouped/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/v1/operator/internet/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/v1/operator/mobile/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/v1/operator/postal/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/v1/operator/radio/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/v1/operator/tv/
+Authorization: Token {{auth_token}}
+
+### ********************************************************************************************************************
+### Types
+### ********************************************************************************************************************
+
+###       Mobile
+### ********************************************************************************************************************
+###
+GET http://localhost:8080/api/v1/mobile-type/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/v1/mobile-type/1/
+Authorization: Token {{auth_token}}
+
+###       Internet types
+### ********************************************************************************************************************
+###
+GET http://localhost:8080/api/v1/internet-access-type/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/v1/internet-access-type/11/
+Authorization: Token {{auth_token}}
