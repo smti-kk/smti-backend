@@ -15,7 +15,7 @@
             <column name="customer" type="VARCHAR(500)"/>
             <column name="declared_speed" type="VARCHAR(500)"/>
             <column name="description" type="TEXT"/>
-            <column name="ip_config" type="INET"/>
+            <column name="ip_config" type="TEXT"/>
             <column name="max_amount" type="INTEGER"/>
             <column name="net_traffic_last_month" type="BIGINT"/>
             <column name="net_traffic_last_week" type="BIGINT"/>

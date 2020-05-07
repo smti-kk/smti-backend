@@ -46,11 +46,11 @@ import java.io.Serializable;
 
 //note: https://vladmihalcea.com/postgresql-inet-type-hibernate/
 //note: https://github.com/vladmihalcea/hibernate-types/blob/master/hibernate-types-52/src/main/java/com/vladmihalcea/hibernate/type/basic/Inet.java
-@TypeDef(
-        name = "ipv4",
-        typeClass = PostgreSQLInetType.class,
-        defaultForType = Inet.class
-)
+//@TypeDef(
+//        name = "ipv4",
+//        typeClass = PostgreSQLInetType.class,
+//        defaultForType = Inet.class
+//)
 public class AccessPoint extends AuditingSoftDelete implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -82,8 +82,8 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @Column(columnDefinition = "text")
     private String description;
 
-    @Column(columnDefinition = "inet")
-    private Inet ipConfig;
+    @Column(columnDefinition = "text")
+    private String ipConfig;
 
     @Column
     private Integer maxAmount;

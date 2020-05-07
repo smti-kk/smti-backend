@@ -8,6 +8,6 @@ import javax.persistence.Entity;
 @Data
 
 @Entity
-@DiscriminatorValue("SMO")
+@DiscriminatorValue("ESPD")
 public class ApESPD extends AccessPoint{
 }
