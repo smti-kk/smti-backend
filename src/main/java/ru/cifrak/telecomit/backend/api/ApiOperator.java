@@ -23,7 +23,7 @@ public class ApiOperator {
     public Map<String, List<Operator>> grouped() {
         Map<String, List<Operator>> map = new HashMap<>();
         map.put("internet",repository.internet());
-        map.put("cellurar", repository.mobile());
+        map.put("mobile", repository.mobile());
         map.put("ats", repository.ats());
         map.put("radio", repository.radio());
         map.put("post", repository.postal());
