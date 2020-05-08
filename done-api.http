@@ -88,3 +88,23 @@ Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/type/access-point/
 Authorization: Token {{auth_token}}
+
+### ********************************************************************************************************************
+### Locations
+### ********************************************************************************************************************
+
+###
+GET http://localhost:8080/api/location/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/location/locations/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/location/parents/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/location?bbox=92.53749847412111,55.95342878289969,93.19667816162111,56.08314815685834
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/location?parent=4
+Authorization: Token {{auth_token}}
