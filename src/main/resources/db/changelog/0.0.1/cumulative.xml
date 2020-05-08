@@ -12,4 +12,6 @@
     <include file="0010-load-data-types.xml" relativeToChangelogFile="true" />
     <include file="0011-load-data-location.xml" relativeToChangelogFile="true" />
     <include file="0012-load-data-organization-aps.xml" relativeToChangelogFile="true" />
+    <include file="0013-load-data-gov-progs.xml" relativeToChangelogFile="true" />
+    <include file="0014-fix-seq-after-load-data.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
