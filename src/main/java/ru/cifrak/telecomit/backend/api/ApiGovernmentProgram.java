@@ -9,7 +9,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryGovernmentProgram;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/gov-program")
+@RequestMapping("/api/gov-program")
 public class ApiGovernmentProgram {
     private RepositoryGovernmentProgram repository;
 

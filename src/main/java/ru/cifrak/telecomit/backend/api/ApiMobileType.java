@@ -10,7 +10,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryMobileType;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/mobile-type")
+@RequestMapping("/api/type/mobile")
 public class ApiMobileType {
     private RepositoryMobileType repository;
 
@@ -18,7 +18,7 @@ public class ApiMobileType {
         this.repository = repository;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public List<TypeMobile> list() {
         return repository.findAll();
     }

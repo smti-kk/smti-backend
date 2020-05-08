@@ -10,7 +10,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryInternetAccessType;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/internet-access-type")
+@RequestMapping("/api/type/internet-access")
 public class ApiInternetAccessType {
     private RepositoryInternetAccessType repository;
 
@@ -18,7 +18,7 @@ public class ApiInternetAccessType {
         this.repository = repository;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public List<TypeInternetAccess> list() {
         return repository.findAll();
     }

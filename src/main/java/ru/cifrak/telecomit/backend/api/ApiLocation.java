@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/location")
+@RequestMapping("/api/location")
 public class ApiLocation {
     private RepositoryLocation repository;
 

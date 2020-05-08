@@ -9,7 +9,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryOrganizationType;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/organization-types")
+@RequestMapping("/api/type/organization")
 public class ApiOrganizationType {
     private RepositoryOrganizationType repository;
 
@@ -17,7 +17,7 @@ public class ApiOrganizationType {
         this.repository = repository;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public List<TypeOrganization> list() {
         return repository.findAll();
     }

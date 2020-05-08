@@ -5,26 +5,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.entities.TypeSmo;
+import ru.cifrak.telecomit.backend.entities.TypeTrunkChannel;
 import ru.cifrak.telecomit.backend.repository.RepositorySmoType;
+import ru.cifrak.telecomit.backend.repository.RepositoryTypeTruncChannel;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/type/smo")
-public class ApiSmoType {
-    private RepositorySmoType repository;
+@RequestMapping("/api/type/trunk-channel")
+public class ApiTypeTrunkChannel {
+    private RepositoryTypeTruncChannel repository;
 
-    public ApiSmoType(RepositorySmoType repository) {
+    public ApiTypeTrunkChannel(RepositoryTypeTruncChannel repository) {
         this.repository = repository;
     }
 
     @GetMapping("/")
-    public List<TypeSmo> list() {
+    public List<TypeTrunkChannel> list() {
         return repository.findAll();
     }
 
     @GetMapping("/{id}/")
-    public TypeSmo item(@PathVariable Integer id) {
+    public TypeTrunkChannel item(@PathVariable Integer id) {
         return repository.findById(id).orElse(null);
     }
 

@@ -13,25 +13,28 @@ Content-Type: application/json
 ### ********************************************************************************************************************
 
 ###
-GET http://localhost:8080/api/v1/operator/ats/
+GET http://localhost:8080/api/operator/3/
 Authorization: Token {{auth_token}}
 ###
-GET http://localhost:8080/api/v1/operator/grouped/
+GET http://localhost:8080/api/operator/ats/
 Authorization: Token {{auth_token}}
 ###
-GET http://localhost:8080/api/v1/operator/internet/
+GET http://localhost:8080/api/operator/grouped/
 Authorization: Token {{auth_token}}
 ###
-GET http://localhost:8080/api/v1/operator/mobile/
+GET http://localhost:8080/api/operator/internet/
 Authorization: Token {{auth_token}}
 ###
-GET http://localhost:8080/api/v1/operator/postal/
+GET http://localhost:8080/api/operator/mobile/
 Authorization: Token {{auth_token}}
 ###
-GET http://localhost:8080/api/v1/operator/radio/
+GET http://localhost:8080/api/operator/postal/
 Authorization: Token {{auth_token}}
 ###
-GET http://localhost:8080/api/v1/operator/tv/
+GET http://localhost:8080/api/operator/radio/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/operator/tv/
 Authorization: Token {{auth_token}}
 
 ### ********************************************************************************************************************
@@ -41,17 +44,44 @@ Authorization: Token {{auth_token}}
 ###       Mobile
 ### ********************************************************************************************************************
 ###
-GET http://localhost:8080/api/v1/mobile-type/
+GET http://localhost:8080/api/type/mobile/
 Authorization: Token {{auth_token}}
 ###
-GET http://localhost:8080/api/v1/mobile-type/1/
+GET http://localhost:8080/api/type/mobile/1/
 Authorization: Token {{auth_token}}
 
 ###       Internet types
 ### ********************************************************************************************************************
 ###
-GET http://localhost:8080/api/v1/internet-access-type/
+GET http://localhost:8080/api/type/internet-access/
 Authorization: Token {{auth_token}}
 ###
-GET http://localhost:8080/api/v1/internet-access-type/11/
+GET http://localhost:8080/api/type/internet-access/9/
+Authorization: Token {{auth_token}}
+
+###       SMO types
+### ********************************************************************************************************************
+###
+GET http://localhost:8080/api/type/smo/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/type/smo/1/
+Authorization: Token {{auth_token}}
+
+###       Trunc Channel types
+### ********************************************************************************************************************
+###
+GET http://localhost:8080/api/type/trunk-channel/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/type/trunk-channel/4/
+Authorization: Token {{auth_token}}
+
+###       POST and TV types
+### ********************************************************************************************************************
+###
+GET http://localhost:8080/api/type/post/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/type/tv/
 Authorization: Token {{auth_token}}
