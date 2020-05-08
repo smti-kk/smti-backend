@@ -85,3 +85,6 @@ Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/type/tv/
 Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/type/access-point/
+Authorization: Token {{auth_token}}

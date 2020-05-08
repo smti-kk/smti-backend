@@ -8,14 +8,21 @@ import ru.cifrak.telecomit.backend.entities.TypePost;
 
 @RestController
 @RequestMapping("/api/type/")
-public class ApiTypePostAndTV {
+public class ApiTypeSimple {
     @GetMapping("/post/")
     public TypePost[] post() {
         return TypePost.values();
     }
+
     @GetMapping("/tv/")
     public Signal[] tv() {
         return Signal.values();
+    }
+
+    @GetMapping("/access-point/")
+    public String[] ap() {
+        String[] aps = {"SMO", "ESPD"};
+        return aps;
     }
 
 }
