@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,14 +17,14 @@ import java.util.UUID;
 @Entity
 @Table
 @NamedQuery(name = "Organization.findAll", query = "SELECT c FROM Organization c")
-/*@NamedEntityGraphs({
+@NamedEntityGraphs({
         @NamedEntityGraph(
                 name = Organization.FULL,
                 attributeNodes = {
-                        @NamedAttributeNode(value = "monitoringAccesspointRes"*//*, subgraph = "accesspoints"*//*),
+                        @NamedAttributeNode("location"),
                         @NamedAttributeNode("type"),
-                        @NamedAttributeNode("smoType"),
-                },
+                        @NamedAttributeNode("smo"),
+                }/*,
                 subgraphs = {
                         @NamedSubgraph(
                                 name = "accesspoints",
@@ -34,9 +35,9 @@ import java.util.UUID;
                                     @NamedAttributeNode("Contract"),
                                 }
                         )
-                }
+                }*/
         )
-})*/
+})
 public class Organization implements Serializable {
     public static final String FULL = "Organization.FULL";
     private static final long serialVersionUID = 1L;
@@ -69,6 +70,7 @@ public class Organization implements Serializable {
     private String acronym;
 
     //bi-directional many-to-one association to Location
+    @JsonIgnoreProperties({"location","parent","geoData","children"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_location", nullable = false)
     private Location location;
@@ -79,6 +81,7 @@ public class Organization implements Serializable {
     private Organization parent;
 
     //bi-directional many-to-one association to Organization
+    @JsonIgnoreProperties("parent")
     @OneToMany(mappedBy = "parent")
     private List<Organization> children;
 

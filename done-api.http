@@ -119,3 +119,40 @@ Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/gov-program/1/
 Authorization: Token {{auth_token}}
+
+### ********************************************************************************************************************
+### Organization
+### ********************************************************************************************************************
+
+###
+GET http://localhost:8080/api/organization/1000/
+Authorization: Token {{auth_token}}
+
+###
+GET http://localhost:8080/api/organization/3428/
+Authorization: Token {{auth_token}}
+
+###
+POST http://localhost:8080/api/organization/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "Test addres",
+  "fias": "10000000-0000-0000-0000-000000000001",
+  "name": "Тест организация",
+  "inn": "123456789012",
+  "kpp": "123456789",
+  "acronym": "tst",
+  "location": {
+    "id": 2125
+  },
+  "parent": null,
+  "children": [],
+  "type": {
+    "id": 7
+  },
+  "smo": {
+    "id": 5
+  }
+}

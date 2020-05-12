@@ -1,9 +1,6 @@
 package ru.cifrak.telecomit.backend.api;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.api.dto.OrganizationWithAccessPointsDTO;
 import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
@@ -30,6 +27,16 @@ public class ApiOrganization {
         return repository.findAllByLocationId(locationId).stream()
                 .map(OrganizationWithAccessPointsDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}/")
+    public Organization item (@PathVariable Integer id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @PostMapping(value = "/", consumes = "application/json", produces = "application/json")
+    public Organization createItem (@RequestBody Organization item) {
+        return repository.saveAndFlush(item);
     }
 
     @GetMapping("/create")

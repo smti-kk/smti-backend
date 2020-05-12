@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,8 @@ import java.util.UUID;
  */
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"ftcInternets", "ftcMobiles", "ftcTelevisions", "ftcRadios", "ftcPosts", "ftcAts"})
+//@EqualsAndHashCode(exclude = {"ftcInternets", "ftcMobiles", "ftcTelevisions", "ftcRadios", "ftcPosts", "ftcAts"})
+@EqualsAndHashCode(exclude = {"geoData", "children", "parent"})
 
 @Entity
 @Table
@@ -92,6 +94,7 @@ public class Location implements Serializable {
     @Column(name = "type", nullable = false, length = 32)
     private String type;
 
+    @JsonIgnoreProperties({"location"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "geo_data_id")
     private GeoData geoData;
