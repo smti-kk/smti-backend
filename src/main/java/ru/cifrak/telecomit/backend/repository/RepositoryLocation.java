@@ -39,6 +39,7 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
             "and within(l.geoData.administrativeCenter, :bbox) = true")
     List<Location> locationsByBbox(@Param("bbox") Polygon bbox);
 
+    @EntityGraph(value = Location.WITH_FEATURES)
     @Query(value = "SELECT l from Location l where" +
             " l.type not in ('р-н', 'край', 'с/с', 'тер')" +
             "and l.geoData.administrativeCenter is not NULL " +

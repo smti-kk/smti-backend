@@ -22,16 +22,18 @@ import java.util.UUID;
 @Entity
 @Table
 @NamedQuery(name = "Location.findAll", query = "SELECT c FROM Location c")
-/*@NamedEntityGraphs(value = {
+@NamedEntityGraphs(value = {
         @NamedEntityGraph(
                 name = Location.WITH_FEATURES,
                 attributeNodes = {
-                        @NamedAttributeNode(value = "tcAts", subgraph = "opers"),
+                        @NamedAttributeNode(value = "geoData"),
+                        @NamedAttributeNode(value = "parent"),
+                        /*@NamedAttributeNode(value = "tcAts", subgraph = "opers"),
                         @NamedAttributeNode(value = "tcInternets", subgraph = "opers"),
                         @NamedAttributeNode(value = "tcTvs", subgraph = "opers"),
                         @NamedAttributeNode(value = "tcPosts", subgraph = "opers"),
                         @NamedAttributeNode(value = "tcRadios", subgraph = "opers"),
-                        @NamedAttributeNode(value = "tcMobiles", subgraph = "opers")
+                        @NamedAttributeNode(value = "tcMobiles", subgraph = "opers")*/
                 },
                 subgraphs = {
                         @NamedSubgraph(
@@ -42,7 +44,7 @@ import java.util.UUID;
                         )
                 }
 
-        ),
+        )/*,
         //TODO: TELECOMIT-155 !!!WIP!!! proper select
         @NamedEntityGraph(
                 name = Location.WITH_ORGANIZATIONS_ACCESSPOINTS,
@@ -58,9 +60,9 @@ import java.util.UUID;
 						)
 				}
 
-        )
+        )*/
 }
-)*/
+)
 public class Location implements Serializable {
     public static final String WITH_FEATURES = "Location[FtcFeatures]";
     public static final String WITH_ORGANIZATIONS_ACCESSPOINTS = "Location[Organization]";

@@ -24,6 +24,7 @@ import java.util.UUID;
                         @NamedAttributeNode("location"),
                         @NamedAttributeNode("type"),
                         @NamedAttributeNode("smo"),
+                        @NamedAttributeNode("children"),
                 }/*,
                 subgraphs = {
                         @NamedSubgraph(
@@ -38,6 +39,7 @@ import java.util.UUID;
                 }*/
         )
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Organization implements Serializable {
     public static final String FULL = "Organization.FULL";
     private static final long serialVersionUID = 1L;
