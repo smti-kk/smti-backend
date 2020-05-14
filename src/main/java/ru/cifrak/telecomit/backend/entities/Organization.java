@@ -37,11 +37,32 @@ import java.util.UUID;
                                 }
                         )
                 }*/
+        ),
+        @NamedEntityGraph(
+                name = Organization.REPORT_AP_ALL,
+                attributeNodes = {
+                        @NamedAttributeNode("location"),
+                        @NamedAttributeNode("type"),
+                        @NamedAttributeNode("smo"),
+                        @NamedAttributeNode(value = "accessPoints",subgraph = "aps"),
+                },
+                subgraphs = {
+                        @NamedSubgraph(
+                                name = "aps",
+                                attributeNodes = {
+                                    @NamedAttributeNode("governmentDevelopmentProgram"),
+                                    @NamedAttributeNode("internetAccess"),
+                                    @NamedAttributeNode("operator"),
+                                }
+                        )
+                }
         )
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Organization implements Serializable {
     public static final String FULL = "Organization.FULL";
+    public static final String REPORT_AP_ALL = "Organization.REPORT_AP_ALL";
+    public static final String REPORT_AP_CONTRACT = "Organization.REPORT_AP_CONTRACT";
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -96,5 +117,9 @@ public class Organization implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_type_smo")
     private TypeSmo smo;
+
+    @JsonIgnoreProperties("organization")
+    @OneToMany(mappedBy = "organization")
+    private List<AccessPoint> accessPoints;
 
 }

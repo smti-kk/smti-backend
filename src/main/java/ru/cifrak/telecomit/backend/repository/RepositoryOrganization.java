@@ -1,5 +1,7 @@
 package ru.cifrak.telecomit.backend.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +21,8 @@ public interface RepositoryOrganization extends JpaRepository<Organization, Inte
     @EntityGraph(Organization.FULL)
     @Override
     Optional<Organization> findById(Integer integer);
+
+    @EntityGraph(Organization.REPORT_AP_ALL)
+    @Override
+    Page<Organization> findAll(Pageable pageable);
 }

@@ -1,16 +1,24 @@
 package ru.cifrak.telecomit.backend.api;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.api.dto.OrganizationDTO;
 import ru.cifrak.telecomit.backend.api.dto.OrganizationWithAccessPointsDTO;
+import ru.cifrak.telecomit.backend.auth.service.UserService;
 import ru.cifrak.telecomit.backend.entities.Organization;
+import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
-import ru.cifrak.telecomit.backend.service.ServiceOrganization;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
+
+@Slf4j
 
 @RestController
 @RequestMapping("/api/organization")
@@ -34,12 +42,17 @@ public class ApiOrganization {
     }
 
     @GetMapping("/{id}/")
-    public OrganizationDTO item (@PathVariable Integer id) {
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    public OrganizationDTO item(@PathVariable Integer id) {
+        log.info("->GET /api/organization/{}/", id);
         return repository.findById(id).map(OrganizationDTO::new).orElse(null);
     }
 
     @PostMapping(value = "/", consumes = "application/json", produces = "application/json")
-    public Organization createItem (@RequestBody Organization item) {
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    public Organization createItem(Principal principal, @RequestBody Organization item) {
+        log.info("->POST /api/organization/ ");
+        final User user = UserService.getUser(principal);
         return repository.saveAndFlush(item);
     }
 
@@ -62,4 +75,15 @@ public class ApiOrganization {
         return ResponseEntity.ok(saved);
     }
 
+    // TODO:WIP: all organizations, next pagable, next filtered
+    @GetMapping(value = "/",params = { "page", "size" })
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    public List<OrganizationWithAccessPointsDTO> items(@RequestParam("page") int page,
+                                                       @RequestParam("size") int size) {
+        log.info("->GET /api/organization/");
+        Pageable firstPageWithTwoElements = PageRequest.of(page, size);
+        return repository.findAll(firstPageWithTwoElements).stream()
+                .map(OrganizationWithAccessPointsDTO::new)
+                .collect(Collectors.toList());
+    }
 }
