@@ -7,6 +7,7 @@ import ru.cifrak.telecomit.backend.entities.Organization;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 @Getter
@@ -23,7 +24,7 @@ public class OrganizationWithAccessPointsDTO {
     private TypeOrgDTO type;
     private TypeSmoDTO smo;
     private LocationSimpleFilterDTO location;
-    private List<AccessPointFull> reaccesspoints;
+    private List<AccessPointDTOReportOgranization> accesspoints;
 
     public OrganizationWithAccessPointsDTO(Organization organization) {
         this.id = organization.getId();
@@ -37,6 +38,6 @@ public class OrganizationWithAccessPointsDTO {
         this.type = organization.getType() != null ? new TypeOrgDTO(organization.getType()) : null;
         this.smo = organization.getSmo() != null ? new TypeSmoDTO(organization.getSmo()) : null;
         this.location = organization.getLocation() != null ? new LocationSimpleFilterDTO(organization.getLocation()) : null;
-//        this.reaccesspoints = organization.get().stream().map(AccessPointFull::new).collect(Collectors.toList());
+        this.accesspoints = organization.getAccessPoints().stream().map(AccessPointDTOReportOgranization::new).collect(Collectors.toList());
     }
 }

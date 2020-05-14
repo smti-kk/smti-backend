@@ -129,7 +129,7 @@ GET http://localhost:8080/api/organization/3/
 Authorization: Token {{auth_token}}
 
 ###
-GET http://localhost:8080/api/organization/3428/
+GET http://localhost:8080/api/organization/34283
 Authorization: Token {{auth_token}}
 
 ###
@@ -183,3 +183,12 @@ Content-Type: application/json
 
 }
 ###
+
+###            getting all orgs with all ap-s
+### ********************************************************************************************************************
+###
+#GET http://localhost:8080/api/organization/ <- not working without page and size
+#Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/organization/?page=1010&size=2
+Authorization: Token {{auth_token}}

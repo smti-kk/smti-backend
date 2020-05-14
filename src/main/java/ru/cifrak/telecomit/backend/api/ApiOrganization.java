@@ -1,6 +1,7 @@
 package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -9,6 +10,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.api.dto.OrganizationDTO;
 import ru.cifrak.telecomit.backend.api.dto.OrganizationWithAccessPointsDTO;
+import ru.cifrak.telecomit.backend.api.dto.PaginatedList;
 import ru.cifrak.telecomit.backend.auth.service.UserService;
 import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.entities.User;
@@ -78,12 +80,15 @@ public class ApiOrganization {
     // TODO:WIP: all organizations, next pagable, next filtered
     @GetMapping(value = "/",params = { "page", "size" })
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    public List<OrganizationWithAccessPointsDTO> items(@RequestParam("page") int page,
+    public PaginatedList<OrganizationWithAccessPointsDTO> items(@RequestParam("page") int page,
                                                        @RequestParam("size") int size) {
         log.info("->GET /api/organization/");
         Pageable firstPageWithTwoElements = PageRequest.of(page, size);
-        return repository.findAll(firstPageWithTwoElements).stream()
+        Page<Organization> pageData = repository.findAll(firstPageWithTwoElements);
+        List<OrganizationWithAccessPointsDTO> rezults =  pageData.stream()
                 .map(OrganizationWithAccessPointsDTO::new)
                 .collect(Collectors.toList());
+        PaginatedList<OrganizationWithAccessPointsDTO> pList  = new PaginatedList<>(pageData.getTotalElements(),rezults);
+        return pList;
     }
 }
