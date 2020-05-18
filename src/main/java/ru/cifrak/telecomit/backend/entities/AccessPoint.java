@@ -43,7 +43,9 @@ import java.io.Serializable;
                         @NamedSubgraph(
                                 name = "org-loc",
                                 attributeNodes = {
-                                        @NamedAttributeNode("location")
+                                        @NamedAttributeNode("location"),
+                                        @NamedAttributeNode("type"),
+                                        @NamedAttributeNode("smo"),
                                 }
                         )
                 }

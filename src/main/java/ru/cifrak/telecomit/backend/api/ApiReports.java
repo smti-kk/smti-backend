@@ -12,16 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.cifrak.telecomit.backend.api.dto.AccessPointDTOReportOgranization;
-import ru.cifrak.telecomit.backend.api.dto.OrganizationWithAccessPointsDTO;
 import ru.cifrak.telecomit.backend.api.dto.PaginatedList;
+import ru.cifrak.telecomit.backend.api.dto.ReportGroupOrganizaationDTO;
 import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.specs.SpecificationAccessPoint;
 
-import javax.validation.constraints.Min;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,17 +40,18 @@ public class ApiReports {
 
     @GetMapping("/ap-all/")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-//    public PaginatedList<Map<Organization, List<AccessPoint>>> items(
-    public PaginatedList<AccessPointDTOReportOgranization> items(
+    public PaginatedList<ReportGroupOrganizaationDTO> items(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
             @RequestParam(name = "location", required = false) Location location,
             @RequestParam(name = "type", required = false) TypeOrganization type,
             @RequestParam(name = "smo", required = false) TypeSmo smo,
-            @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp
+            @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp,
+            @RequestParam(name = "inet", required = false) TypeInternetAccess inettype,
+            @RequestParam(name = "parents", required = false) List<Location> parents
     ) {
         log.info("->GET /api/report/organization/");
-        Pageable pageConfig = PageRequest.of(page-1, size, Sort.by("organization").ascending());
+        Pageable pageConfig = PageRequest.of(page - 1, size, Sort.by("organization").ascending());
         Specification<AccessPoint> spec = Specification.where(null);
         if (location != null) {
             spec = spec.and(SpecificationAccessPoint.inLocation(location));
@@ -66,19 +65,18 @@ public class ApiReports {
         if (gdp != null) {
             spec = spec.and(SpecificationAccessPoint.withGovProgram(gdp));
         }
+        if (inettype != null) {
+            spec = spec.and(SpecificationAccessPoint.withInetType(inettype));
+        }
+        if (parents != null) {
+            spec = spec.and(SpecificationAccessPoint.inParent(parents));
+        }
         Page<AccessPoint> pageDatas = rAccessPoints.findAll(spec, pageConfig);
-//        Map<Organization, List<AccessPoint>> mapData = new HashMap<>();
-//        mapData = pageDatas.stream()
-//                .collect(Collectors.groupingBy(AccessPoint::getOrganization));
-//        List<OrganizationWithAccessPointsDTO> rezults
-        ;
-        List <AccessPointDTOReportOgranization> rzt =pageDatas.getContent().stream().map(AccessPointDTOReportOgranization::new).collect(Collectors.toList());
-        log.info("collected map");
-//        PaginatedList<Map<Organization, List<AccessPoint>>> pList = new PaginatedList<Map<Organization, List<AccessPoint>>>(pageDatas.getTotalElements(), mapData);
-        PaginatedList pList = new PaginatedList<AccessPointDTOReportOgranization>(
-                pageDatas.getTotalElements(),
-                rzt
-        );
+        Map<Organization, List<AccessPoint>> mapData = pageDatas.stream().collect(Collectors.groupingBy(AccessPoint::getOrganization));
+        List<ReportGroupOrganizaationDTO> rezultListofOrganizations = mapData.entrySet().stream()
+                .map(entry -> new ReportGroupOrganizaationDTO(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+        PaginatedList pList = new PaginatedList<>(pageDatas.getTotalElements(), rezultListofOrganizations);
+        log.info("<-GET /api/report/organization/");
         return pList;
     }
 

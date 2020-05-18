@@ -25,7 +25,7 @@ public class OrganizationWithAccessPointsDTO {
     private TypeOrgDTO type;
     private TypeSmoDTO smo;
     private LocationSimpleFilterDTO location;
-    private List<AccessPointDTOReportOgranization> accesspoints;
+    private List<ReportAccessPointDTO> accesspoints;
 
     public OrganizationWithAccessPointsDTO(Organization organization) {
         this.id = organization.getId();
@@ -39,7 +39,7 @@ public class OrganizationWithAccessPointsDTO {
         this.type = organization.getType() != null ? new TypeOrgDTO(organization.getType()) : null;
         this.smo = organization.getSmo() != null ? new TypeSmoDTO(organization.getSmo()) : null;
         this.location = organization.getLocation() != null ? new LocationSimpleFilterDTO(organization.getLocation()) : null;
-        this.accesspoints = organization.getAccessPoints().stream().map(AccessPointDTOReportOgranization::new).collect(Collectors.toList());
+        this.accesspoints = organization.getAccessPoints().stream().map(ReportAccessPointDTO::new).collect(Collectors.toList());
     }
 
     public OrganizationWithAccessPointsDTO(AccessPoint accessPoint) {

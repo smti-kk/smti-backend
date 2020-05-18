@@ -1,7 +1,6 @@
 package ru.cifrak.telecomit.backend.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.cifrak.telecomit.backend.entities.Location;
@@ -20,10 +19,13 @@ public class LocationSimpleFilterDTO {
 
     private String type;
 
+    private Integer population;
+
     public LocationSimpleFilterDTO(Location entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.type = entity.getType();
+        this.population = entity.getPopulation();
         this.fullName = entity.getType() + " " + entity.getName();
         this.parent = entity.getParent() != null ? new LocationSimpleFilterDTO(entity.getParent()) : null;
     }

@@ -9,7 +9,7 @@ import ru.cifrak.telecomit.backend.entities.ApSMO;
 
 @Data
 @AllArgsConstructor
-public class AccessPointDTOReportOgranization {
+public class ReportAccessPointDTO {
     private Integer id;
     private String address;
     private String contractor;
@@ -19,7 +19,7 @@ public class AccessPointDTOReportOgranization {
     private String type;
 
 
-    public AccessPointDTOReportOgranization(AccessPoint entity) {
+    public ReportAccessPointDTO(AccessPoint entity) {
         this.id = entity.getId();
         this.address = entity.getAddress();
         this.contractor = entity.getContractor();
