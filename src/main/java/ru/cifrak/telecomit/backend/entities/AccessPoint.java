@@ -9,20 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.TypeDef;
 import org.locationtech.jts.geom.Point;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 
@@ -43,6 +30,26 @@ import java.io.Serializable;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 //@NamedEntityGraph(name = "AccessPointLocation", attributeNodes = {@NamedAttributeNode(value = "loc")})
+@NamedEntityGraphs({
+        @NamedEntityGraph(
+                name = AccessPoint.REPORT_ALL,
+                attributeNodes = {
+                        @NamedAttributeNode("governmentDevelopmentProgram"),
+                        @NamedAttributeNode("internetAccess"),
+                        @NamedAttributeNode("operator"),
+                        @NamedAttributeNode(value = "organization",subgraph = "org-loc"),
+                },
+                subgraphs = {
+                        @NamedSubgraph(
+                                name = "org-loc",
+                                attributeNodes = {
+                                        @NamedAttributeNode("location")
+                                }
+                        )
+                }
+        )
+}
+)
 
 //note: https://vladmihalcea.com/postgresql-inet-type-hibernate/
 //note: https://github.com/vladmihalcea/hibernate-types/blob/master/hibernate-types-52/src/main/java/com/vladmihalcea/hibernate/type/basic/Inet.java
@@ -53,6 +60,7 @@ import java.io.Serializable;
 //)
 public class AccessPoint extends AuditingSoftDelete implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static final String REPORT_ALL = "AccessPoint.REPORT_ALL";
 
     @Id
     @SequenceGenerator(name = "ACCESSPOINT_ID_GENERATOR", sequenceName = "accesspoint_id_seq", allocationSize = 1)

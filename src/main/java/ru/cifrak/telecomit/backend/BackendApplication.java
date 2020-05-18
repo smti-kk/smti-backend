@@ -37,6 +37,7 @@ public class BackendApplication {
     public void doAfterAppStart(ApplicationReadyEvent event) {
         final ConfigurableApplicationContext context = event.getApplicationContext();
         BackendApplication.addAdminUser(context);
+        /*BackendApplication.addOperUser(context);*/
         BackendApplication.resetAuthTokenCache(context);
     }
 
@@ -62,6 +63,28 @@ public class BackendApplication {
         userService.save(newUser);
         log.info("user admin created with default password");
     }
+/*
+    public static void addOperUser(ApplicationContext context) {
+        final ZoneId zoneId = ZoneId.systemDefault(); // TODO get from properties
+        final LocalDateTime nowTime = LocalDateTime.now(zoneId);
+
+        final PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
+        final UserService userService = context.getBean(UserService.class);
+        final Optional<User> optionalUser = userService.findByUsername("oper");
+
+        if (optionalUser.isPresent()) {
+            return;
+        }
+
+        final User newUser = new User();
+        newUser.setUsername("oper");
+        newUser.setFirstName("oper");
+        newUser.setPassword(passwordEncoder.encode("pwd"));
+        newUser.getRoles().add(UserRole.OPERATOR);
+        newUser.setCreateDateTime(nowTime);
+        userService.save(newUser);
+        log.info("user oper created with default password");
+    }*/
 
     public static void resetAuthTokenCache(ApplicationContext context) {
         final AuthTokenCacheRepository authTokenCacheRepository = context.getBean(AuthTokenCacheRepository.class);

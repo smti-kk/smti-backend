@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
+@ToString(onlyExplicitlyIncluded = true)
 
 @Entity
 @Table
@@ -65,6 +67,7 @@ public class Organization implements Serializable {
     public static final String REPORT_AP_CONTRACT = "Organization.REPORT_AP_CONTRACT";
     private static final long serialVersionUID = 1L;
 
+    @ToString.Include
     @Id
     @SequenceGenerator(name = "ORGANIZATION_ID_GENERATOR", sequenceName = "organization_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ORGANIZATION_ID_GENERATOR")
@@ -74,9 +77,11 @@ public class Organization implements Serializable {
     @Column(nullable = false, columnDefinition = "text")
     private String address;
 
+    @ToString.Include
     @Column(nullable = false)
     private UUID fias;
 
+    @ToString.Include
     @Column(nullable = false, columnDefinition = "text")
     private String name;
 
@@ -89,6 +94,7 @@ public class Organization implements Serializable {
     /**
      * Better variable naming for short naming jf organization
      */
+    @ToString.Include
     @Column(nullable = false, length = 500)
     private String acronym;
 

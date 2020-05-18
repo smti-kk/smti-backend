@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -12,9 +14,9 @@ import ru.cifrak.telecomit.backend.api.dto.OrganizationDTO;
 import ru.cifrak.telecomit.backend.api.dto.OrganizationWithAccessPointsDTO;
 import ru.cifrak.telecomit.backend.api.dto.PaginatedList;
 import ru.cifrak.telecomit.backend.auth.service.UserService;
-import ru.cifrak.telecomit.backend.entities.Organization;
-import ru.cifrak.telecomit.backend.entities.User;
+import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
+import ru.cifrak.telecomit.backend.repository.specs.OrganizationSpec;
 
 import java.security.Principal;
 import java.util.List;
@@ -77,18 +79,4 @@ public class ApiOrganization {
         return ResponseEntity.ok(saved);
     }
 
-    // TODO:WIP: all organizations, next pagable, next filtered
-    @GetMapping(value = "/",params = { "page", "size" })
-    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    public PaginatedList<OrganizationWithAccessPointsDTO> items(@RequestParam("page") int page,
-                                                       @RequestParam("size") int size) {
-        log.info("->GET /api/organization/");
-        Pageable firstPageWithTwoElements = PageRequest.of(page, size);
-        Page<Organization> pageData = repository.findAll(firstPageWithTwoElements);
-        List<OrganizationWithAccessPointsDTO> rezults =  pageData.stream()
-                .map(OrganizationWithAccessPointsDTO::new)
-                .collect(Collectors.toList());
-        PaginatedList<OrganizationWithAccessPointsDTO> pList  = new PaginatedList<>(pageData.getTotalElements(),rezults);
-        return pList;
-    }
 }
