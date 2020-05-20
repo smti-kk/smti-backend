@@ -94,8 +94,12 @@ public class ApiReports {
             spec = spec.and(SpecificationAccessPoint.withOperator(contractor));
         }
         Page<AccessPoint> pageDatas = rAccessPoints.findAll(spec, pageConfig);
+
         Map<Organization, List<AccessPoint>> mapData = pageDatas.stream().collect(Collectors.groupingBy(AccessPoint::getOrganization));
-        List<ReportGroupOrganizaationDTO> rezultListofOrganizations = mapData.entrySet().stream()
+//        mapData.entrySet().stream().sorted(Map.Entry.comparingByKey((o1, o2) -> o1.getLocation().getName().compareToIgnoreCase(o2.getLocation().getName())));
+        List<ReportGroupOrganizaationDTO> rezultListofOrganizations =
+//                mapData.entrySet().stream()
+                mapData.entrySet().stream().sorted(Map.Entry.comparingByKey((o1, o2) -> o1.getLocation().getName().compareToIgnoreCase(o2.getLocation().getName())))
                 .map(entry -> new ReportGroupOrganizaationDTO(entry.getKey(), entry.getValue())).collect(Collectors.toList());
         PaginatedList<ReportGroupOrganizaationDTO> pList = new PaginatedList<>(pageDatas.getTotalElements(), rezultListofOrganizations);
         log.info("<-GET /api/report/organization/");
