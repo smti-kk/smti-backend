@@ -48,9 +48,12 @@ public class ApiReports {
             @RequestParam(name = "smo", required = false) TypeSmo smo,
             @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp,
             @RequestParam(name = "inet", required = false) TypeInternetAccess inettype,
-            @RequestParam(name = "parents", required = false) List<Location> parents
+            @RequestParam(name = "parents", required = false) List<Location> parents,
+            @RequestParam(name = "organization", required = false) String organization,
+            @RequestParam(name = "contractor", required = false) String contractor
     ) {
-        log.info("->GET /api/report/organization/");
+        log.info("->GET /api/report/organization/[page={}, size={}, location={}, type={}, smo={}, gdp={}, inet={}, parents=xx, orgname={}, operator={} ]",
+                page,size,location ==null ? "": location.getId(),type,smo,gdp,inettype,organization,contractor);
         Pageable pageConfig = PageRequest.of(page - 1, size, Sort.by("organization").ascending());
         Specification<AccessPoint> spec = Specification.where(null);
         if (location != null) {
@@ -70,6 +73,12 @@ public class ApiReports {
         }
         if (parents != null) {
             spec = spec.and(SpecificationAccessPoint.inParent(parents));
+        }
+        if (organization != null) {
+            spec = spec.and(SpecificationAccessPoint.withOrgname(organization));
+        }
+        if (contractor != null) {
+            spec = spec.and(SpecificationAccessPoint.withOperator(contractor));
         }
         Page<AccessPoint> pageDatas = rAccessPoints.findAll(spec, pageConfig);
         Map<Organization, List<AccessPoint>> mapData = pageDatas.stream().collect(Collectors.groupingBy(AccessPoint::getOrganization));
