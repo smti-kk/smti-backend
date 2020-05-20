@@ -1,6 +1,7 @@
 package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,9 +20,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.specs.SpecificationAccessPoint;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,11 +49,25 @@ public class ApiReports {
             @RequestParam(name = "inet", required = false) TypeInternetAccess inettype,
             @RequestParam(name = "parents", required = false) List<Location> parents,
             @RequestParam(name = "organization", required = false) String organization,
-            @RequestParam(name = "contractor", required = false) String contractor
+            @RequestParam(name = "contractor", required = false) String contractor,
+            @RequestParam(name = "sort", required = false) String sort
     ) {
         log.info("->GET /api/report/organization/[page={}, size={}, location={}, type={}, smo={}, gdp={}, inet={}, parents=xx, orgname={}, operator={} ]",
-                page,size,location ==null ? "": location.getId(),type,smo,gdp,inettype,organization,contractor);
-        Pageable pageConfig = PageRequest.of(page - 1, size, Sort.by("organization").ascending());
+                page, size, location == null ? "" : location.getId(), type, smo, gdp, inettype, organization, contractor);
+        //HINT: https://github.com/vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting
+        Set<String> sortingFileds = new LinkedHashSet<>(
+                Arrays.asList(StringUtils.split(StringUtils.defaultIfEmpty(sort, ""), ",")));
+
+        List<Sort.Order> sortingOrders = sortingFileds.stream().map(this::getOrder)
+                .collect(Collectors.toList());
+
+        Sort sortData = sortingOrders.isEmpty() ? null : Sort.by(sortingOrders);
+        Pageable pageConfig;
+        if (sortData != null) {
+            pageConfig = PageRequest.of(page - 1, size, sortData);
+        } else {
+            pageConfig = PageRequest.of(page - 1, size);
+        }
         Specification<AccessPoint> spec = Specification.where(null);
         if (location != null) {
             spec = spec.and(SpecificationAccessPoint.inLocation(location));
@@ -84,7 +97,7 @@ public class ApiReports {
         Map<Organization, List<AccessPoint>> mapData = pageDatas.stream().collect(Collectors.groupingBy(AccessPoint::getOrganization));
         List<ReportGroupOrganizaationDTO> rezultListofOrganizations = mapData.entrySet().stream()
                 .map(entry -> new ReportGroupOrganizaationDTO(entry.getKey(), entry.getValue())).collect(Collectors.toList());
-        PaginatedList pList = new PaginatedList<>(pageDatas.getTotalElements(), rezultListofOrganizations);
+        PaginatedList<ReportGroupOrganizaationDTO> pList = new PaginatedList<>(pageDatas.getTotalElements(), rezultListofOrganizations);
         log.info("<-GET /api/report/organization/");
         return pList;
     }
@@ -112,5 +125,18 @@ public class ApiReports {
                 .collect(Collectors.toList());
         return new PaginatedList<LocationReportOrganizationDTO>(count, "", "", list);
     }*/
+
+    private Sort.Order getOrder(String value) {
+
+        if (StringUtils.startsWith(value, "-")) {
+            return new Sort.Order(Sort.Direction.DESC, StringUtils.substringAfter(value, "-"));
+        } else if (StringUtils.startsWith(value, "+")) {
+            return new Sort.Order(Sort.Direction.ASC, StringUtils.substringAfter(value, "+"));
+        } else {
+            // Sometimes '+' from query param can be replaced as ' '
+            return new Sort.Order(Sort.Direction.ASC, StringUtils.trim(value));
+        }
+
+    }
 
 }
