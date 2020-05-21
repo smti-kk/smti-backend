@@ -230,5 +230,5 @@ GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&locati
 Authorization: Token {{auth_token}}
 
 ###
-GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&location=1251&sort=+organization.location.name
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&location=1251&sort=+organization.location.name
 Authorization: Token {{auth_token}}

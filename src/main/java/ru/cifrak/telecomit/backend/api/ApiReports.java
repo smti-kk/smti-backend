@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.PaginatedList;
+import ru.cifrak.telecomit.backend.api.dto.ReportAccessPointFullDTO;
 import ru.cifrak.telecomit.backend.api.dto.ReportGroupOrganizaationDTO;
 import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
@@ -39,7 +40,7 @@ public class ApiReports {
 
     @GetMapping("/ap-all/")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    public PaginatedList<ReportGroupOrganizaationDTO> items(
+    public PaginatedList<ReportAccessPointFullDTO> items(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
             @RequestParam(name = "location", required = false) Location location,
@@ -94,14 +95,7 @@ public class ApiReports {
             spec = spec.and(SpecificationAccessPoint.withOperator(contractor));
         }
         Page<AccessPoint> pageDatas = rAccessPoints.findAll(spec, pageConfig);
-
-        Map<Organization, List<AccessPoint>> mapData = pageDatas.stream().collect(Collectors.groupingBy(AccessPoint::getOrganization));
-//        mapData.entrySet().stream().sorted(Map.Entry.comparingByKey((o1, o2) -> o1.getLocation().getName().compareToIgnoreCase(o2.getLocation().getName())));
-        List<ReportGroupOrganizaationDTO> rezultListofOrganizations =
-//                mapData.entrySet().stream()
-                mapData.entrySet().stream().sorted(Map.Entry.comparingByKey((o1, o2) -> o1.getLocation().getName().compareToIgnoreCase(o2.getLocation().getName())))
-                .map(entry -> new ReportGroupOrganizaationDTO(entry.getKey(), entry.getValue())).collect(Collectors.toList());
-        PaginatedList<ReportGroupOrganizaationDTO> pList = new PaginatedList<>(pageDatas.getTotalElements(), rezultListofOrganizations);
+        PaginatedList<ReportAccessPointFullDTO> pList = new PaginatedList<>(pageDatas.getTotalElements(), pageDatas.stream().map(ReportAccessPointFullDTO::new).collect(Collectors.toList()));
         log.info("<-GET /api/report/organization/");
         return pList;
     }
