@@ -17,7 +17,7 @@ public class ApContract extends AccessPoint{
     private String number;
     //TODO: ask Lev about contract
     @Column
-    private Double amount;
+    private Long amount;
     @Column
     private LocalDate started;
     @Column

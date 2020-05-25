@@ -28,7 +28,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1590166261789-19">
         <addColumn tableName="access_point">
-            <column name="amount" type="float8"/>
+            <column name="amount" type="BIGINT"/>
         </addColumn>
     </changeSet>
     <changeSet author="a-panov (generated)" id="1590166261789-20">

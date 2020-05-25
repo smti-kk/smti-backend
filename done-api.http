@@ -184,7 +184,7 @@ Content-Type: application/json
 }
 
 ### ********************************************************************************************************************
-### REPORT --- AccessPoints all grpuped by ORGANIZATION
+### REPORT --- AccessPoints -- all by ORGANIZATION
 ### ********************************************************************************************************************
 
 ###
@@ -231,4 +231,17 @@ Authorization: Token {{auth_token}}
 
 ###
 GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&location=1251&sort=+organization.location.name
+Authorization: Token {{auth_token}}
+
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&organization=Пожарно-спасательная часть №95
+Authorization: Token {{auth_token}}
+
+### ********************************************************************************************************************
+### REPORT --- AccessPoints -- Contract
+### ********************************************************************************************************************
+
+###
+#GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=10&location=1251&sort=+organization.location.name
+GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=100
 Authorization: Token {{auth_token}}

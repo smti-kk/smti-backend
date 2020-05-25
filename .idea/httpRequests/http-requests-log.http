@@ -1,0 +1,174 @@
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&organization=Пожарно-спасательная часть №95
+Authorization: Token 5e7f97aaa4ac4c94bd5f3acd142533fdf5bacd5e2074a056f772554914160ab0
+
+<> 2020-05-25T015617.200.json
+
+###
+
+GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=100
+Authorization: Token 5e7f97aaa4ac4c94bd5f3acd142533fdf5bacd5e2074a056f772554914160ab0
+
+<> 2020-05-25T015532.200.json
+
+###
+
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+
+{"email": "admin", "password": "pwd"}
+
+<> 2020-05-25T015530.200.json
+
+###
+
+GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=100
+Authorization: Token ce7dc53cc49932f09144abfa4aa39162a2059634243f1eff00eb280070124c1a
+
+<> 2020-05-25T014110.200.json
+
+###
+
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+
+{"email": "admin", "password": "pwd"}
+
+<> 2020-05-25T014108.200.json
+
+###
+
+GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=100
+Authorization: Token 8da95281d50ea36dd66e41b1c1c0d4970d199b8806addf667a145390de9667ca
+
+<> 2020-05-25T010612.200.json
+
+###
+
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+
+{"email": "admin", "password": "pwd"}
+
+<> 2020-05-25T010609.200.json
+
+###
+
+GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=100
+Authorization: Token 830f9f2fcf674f5b6dfbf367b05123a03b17174fd93d3ab3a646d5bff97a71ca
+
+<> 2020-05-25T010417.200.json
+
+###
+
+GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=10&location=1251&sort= organization.location.name
+Authorization: Token 830f9f2fcf674f5b6dfbf367b05123a03b17174fd93d3ab3a646d5bff97a71ca
+
+<> 2020-05-25T010247.200.json
+
+###
+
+GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=10&location=1251&sort= organization.location.name
+Authorization: Token 830f9f2fcf674f5b6dfbf367b05123a03b17174fd93d3ab3a646d5bff97a71ca
+
+<> 2020-05-25T125943.200.json
+
+###
+
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+
+{"email": "admin", "password": "pwd"}
+
+<> 2020-05-25T125822.200.json
+
+###
+
+GET http://localhost:8080/api/report/organization/g/?s=one
+Authorization: Token 646010cef2e54e850404966d47867b8c3e03d74d5ab89606efdb9382f928fcda
+
+###
+
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+
+{"email": "admin", "password": "pwd"}
+
+<> 2020-05-21T064115.200.json
+
+###
+
+GET http://localhost:8080/api/report/organization/g/?s=one
+Authorization: Token 33bf30e3bfc20eec3bbb00e68e3cfdf445d47ed3043098d36a864455735fe56f
+
+###
+
+GET http://localhost:8080/api/report/organization/g/?s=one
+Authorization: Token 33bf30e3bfc20eec3bbb00e68e3cfdf445d47ed3043098d36a864455735fe56f
+
+###
+
+GET http://localhost:8080/api/report/organization/g/?s=one
+Authorization: Token 33bf30e3bfc20eec3bbb00e68e3cfdf445d47ed3043098d36a864455735fe56f
+
+###
+
+GET http://localhost:8080/api/report/organization/g/?s=one
+Authorization: Token 33bf30e3bfc20eec3bbb00e68e3cfdf445d47ed3043098d36a864455735fe56f
+
+###
+
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+
+{"email": "admin", "password": "pwd"}
+
+<> 2020-05-21T063721.200.json
+
+###
+
+GET http://localhost:8080/api/report/organization/g/?s=one
+Authorization: Token b6d69db114825029d59128ad5501101ed60cea2600c839827ccde98fc62ad65c
+
+###
+
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+
+{"email": "admin", "password": "pwd"}
+
+<> 2020-05-21T063619.200.json
+
+###
+
+GET http://localhost:8080/api/report/organization/g/?s=one
+Authorization: Token eebf73aefe4c76c36b8418587ce47228c375382fa805983bbc10f48e3ef48d27
+
+<> 2020-05-21T062641.500.json
+
+###
+
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+
+{"email": "admin", "password": "pwd"}
+
+<> 2020-05-21T062635.200.json
+
+###
+
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=1&location=1251&sort= organization.location.name
+Authorization: Token 1f2240f98ecba82f147a51208b2b62ed9142f4f44f1a6ae002e21b177b385324
+
+<> 2020-05-21T051806.200.json
+
+###
+
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+
+{"email": "admin", "password": "pwd"}
+
+<> 2020-05-21T051759.200.json
+
+###
+
