@@ -54,6 +54,8 @@ public class ApiReports {
             @RequestParam(name = "parents", required = false) List<Location> parents,
             @RequestParam(name = "organization", required = false) String organization,
             @RequestParam(name = "contractor", required = false) String contractor,
+            @RequestParam(name = "pupulation-start", required = false) Integer pStart,
+            @RequestParam(name = "pupulation-end", required = false) Integer pEnd,
             @RequestParam(name = "sort", required = false) String sort
     ) {
         log.info("->GET /api/report/organization/[page={}, size={}, location={}, type={}, smo={}, gdp={}, inet={}, parents=xx, orgname={}, operator={} ]",
@@ -97,6 +99,12 @@ public class ApiReports {
         if (contractor != null) {
             spec = spec.and(SpecificationAccessPoint.withOperator(contractor));
         }
+        if (pStart != null) {
+            spec = spec.and(SpecificationAccessPoint.pStart(pStart));
+        }
+        if (pEnd != null) {
+            spec = spec.and(SpecificationAccessPoint.pEnd(pEnd));
+        }
         Page<AccessPoint> pageDatas = rAccessPoints.findAll(spec, pageConfig);
         PaginatedList<ReportAccessPointFullDTO> pList = new PaginatedList<>(pageDatas.getTotalElements(), pageDatas.stream().map(ReportAccessPointFullDTO::new).collect(Collectors.toList()));
         log.info("<-GET /api/report/organization/");
@@ -116,6 +124,8 @@ public class ApiReports {
             @RequestParam(name = "parents", required = false) List<Location> parents,
             @RequestParam(name = "organization", required = false) String organization,
             @RequestParam(name = "contractor", required = false) String contractor,
+            @RequestParam(name = "pupulation-start", required = false) Integer pStart,
+            @RequestParam(name = "pupulation-end", required = false) Integer pEnd,
             @RequestParam(name = "sort", required = false) String sort
     ) {
         log.info("->GET /api/report/contract/[page={}, size={}, location={}, type={}, smo={}, gdp={}, inet={}, parents=xx, orgname={}, operator={} ]",
@@ -158,6 +168,12 @@ public class ApiReports {
         }
         if (contractor != null) {
             spec = spec.and(SpecificationAccessPoint.withOperator(contractor));
+        }
+        if (pStart != null) {
+            spec = spec.and(SpecificationAccessPoint.pStart(pStart));
+        }
+        if (pEnd != null) {
+            spec = spec.and(SpecificationAccessPoint.pEnd(pEnd));
         }
         Page<ApContract> pageDatas = rApContract.findAll(spec, pageConfig);
         PaginatedList<ReportApContractDTO> pList = new PaginatedList<>(pageDatas.getTotalElements(), pageDatas.stream().map(ReportApContractDTO::new).collect(Collectors.toList()));

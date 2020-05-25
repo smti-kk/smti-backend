@@ -237,6 +237,10 @@ Authorization: Token {{auth_token}}
 GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&organization=Пожарно-спасательная часть №95
 Authorization: Token {{auth_token}}
 
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&pupulation-start=5000&pupulation-end=6000&sort=+organization.location.name
+Authorization: Token {{auth_token}}
+
 ### ********************************************************************************************************************
 ### REPORT --- AccessPoints -- Contract
 ### ********************************************************************************************************************

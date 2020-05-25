@@ -2,9 +2,6 @@ package ru.cifrak.telecomit.backend.repository.specs;
 
 import org.springframework.data.jpa.domain.Specification;
 import ru.cifrak.telecomit.backend.entities.*;
-import ru.cifrak.telecomit.backend.entities.AccessPoint_;
-import ru.cifrak.telecomit.backend.entities.Location_;
-import ru.cifrak.telecomit.backend.entities.Organization_;
 
 import java.util.List;
 
@@ -39,5 +36,13 @@ public class SpecificationAccessPoint {
 
     public static Specification<AccessPoint> withOperator(String operator) {
         return (root, cq, cb) -> cb.like(cb.lower(root.get(AccessPoint_.contractor)), "%" + operator.toLowerCase() + "%");
+    }
+
+    public static Specification<AccessPoint> pStart(Integer pStart) {
+        return (root, cq, cb) -> cb.and(cb.greaterThanOrEqualTo(root.get(AccessPoint_.organization).get(Organization_.location).get(Location_.population), (pStart)));
+    }
+
+    public static Specification<AccessPoint> pEnd(Integer pEnd) {
+        return (root, cq, cb) -> cb.and(cb.lessThanOrEqualTo(root.get(AccessPoint_.organization).get(Organization_.location).get(Location_.population), (pEnd)));
     }
 }
