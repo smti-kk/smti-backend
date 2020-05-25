@@ -14,4 +14,5 @@
     <include file="0012-load-data-organization-aps.xml" relativeToChangelogFile="true" />
     <include file="0013-load-data-gov-progs.xml" relativeToChangelogFile="true" />
     <include file="0014-fix-seq-after-load-data.xml" relativeToChangelogFile="true" />
+    <include file="0015-add-aps.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
