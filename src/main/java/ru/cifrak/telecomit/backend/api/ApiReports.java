@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,11 @@ import ru.cifrak.telecomit.backend.repository.RepositoryApContract;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.specs.SpecificationAccessPoint;
 
-import java.util.*;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -56,6 +61,7 @@ public class ApiReports {
             @RequestParam(name = "contractor", required = false) String contractor,
             @RequestParam(name = "pupulation-start", required = false) Integer pStart,
             @RequestParam(name = "pupulation-end", required = false) Integer pEnd,
+            @RequestParam(name = "ap", required = false) List<String> ap,
             @RequestParam(name = "sort", required = false) String sort
     ) {
         log.info("->GET /api/report/organization/[page={}, size={}, location={}, type={}, smo={}, gdp={}, inet={}, parents=xx, orgname={}, operator={} ]",
@@ -104,7 +110,10 @@ public class ApiReports {
         }
         if (pEnd != null) {
             spec = spec.and(SpecificationAccessPoint.pEnd(pEnd));
-        }
+        }/*
+        if (ap != null) {
+            spec = spec.and(SpecificationAccessPoint.ap(ap));
+        }*/
         Page<AccessPoint> pageDatas = rAccessPoints.findAll(spec, pageConfig);
         PaginatedList<ReportAccessPointFullDTO> pList = new PaginatedList<>(pageDatas.getTotalElements(), pageDatas.stream().map(ReportAccessPointFullDTO::new).collect(Collectors.toList()));
         log.info("<-GET /api/report/organization/");
@@ -126,6 +135,9 @@ public class ApiReports {
             @RequestParam(name = "contractor", required = false) String contractor,
             @RequestParam(name = "pupulation-start", required = false) Integer pStart,
             @RequestParam(name = "pupulation-end", required = false) Integer pEnd,
+            @RequestParam(name = "contract", required = false) String contract,
+            @RequestParam(name = "contract-start", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cStart,
+            @RequestParam(name = "contract-end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cEnd,
             @RequestParam(name = "sort", required = false) String sort
     ) {
         log.info("->GET /api/report/contract/[page={}, size={}, location={}, type={}, smo={}, gdp={}, inet={}, parents=xx, orgname={}, operator={} ]",
@@ -174,6 +186,15 @@ public class ApiReports {
         }
         if (pEnd != null) {
             spec = spec.and(SpecificationAccessPoint.pEnd(pEnd));
+        }
+        if (contract != null) {
+            spec = spec.and(SpecificationAccessPoint.contract(contract));
+        }
+        if (cStart != null) {
+            spec = spec.and(SpecificationAccessPoint.cStart(cStart));
+        }
+        if (cEnd != null) {
+            spec = spec.and(SpecificationAccessPoint.cEnd(cEnd));
         }
         Page<ApContract> pageDatas = rApContract.findAll(spec, pageConfig);
         PaginatedList<ReportApContractDTO> pList = new PaginatedList<>(pageDatas.getTotalElements(), pageDatas.stream().map(ReportApContractDTO::new).collect(Collectors.toList()));

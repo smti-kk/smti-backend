@@ -241,6 +241,10 @@ Authorization: Token {{auth_token}}
 GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&pupulation-start=5000&pupulation-end=6000&sort=+organization.location.name
 Authorization: Token {{auth_token}}
 
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&ap=SMO
+Authorization: Token {{auth_token}}
+
 ### ********************************************************************************************************************
 ### REPORT --- AccessPoints -- Contract
 ### ********************************************************************************************************************
@@ -248,4 +252,12 @@ Authorization: Token {{auth_token}}
 ###
 #GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=10&location=1251&sort=+organization.location.name
 GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=100
+Authorization: Token {{auth_token}}
+
+###
+GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=100&contract=contr
+Authorization: Token {{auth_token}}
+
+###
+GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=100&contract-start=2020-05-26&location=4&contract=numb
 Authorization: Token {{auth_token}}

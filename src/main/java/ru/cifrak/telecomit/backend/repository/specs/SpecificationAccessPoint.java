@@ -3,9 +3,11 @@ package ru.cifrak.telecomit.backend.repository.specs;
 import org.springframework.data.jpa.domain.Specification;
 import ru.cifrak.telecomit.backend.entities.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class SpecificationAccessPoint {
+
     public static Specification<AccessPoint> inLocation(Location location) {
         return (root, cq, cb) -> cb.equal(root.get(AccessPoint_.organization).get(Organization_.location), location);
     }
@@ -44,5 +46,21 @@ public class SpecificationAccessPoint {
 
     public static Specification<AccessPoint> pEnd(Integer pEnd) {
         return (root, cq, cb) -> cb.and(cb.lessThanOrEqualTo(root.get(AccessPoint_.organization).get(Organization_.location).get(Location_.population), (pEnd)));
+    }
+
+   /* public static Specification<AccessPoint> ap(List<String> aps) {
+        return (root, cq, cb) -> cb.and(root.get("type").in(aps));
+    }*/
+
+    public static Specification<AccessPoint> contract(String contract) {
+        return (root, cq, cb) -> cb.like(cb.lower(cb.treat(root, ApContract.class).get(ApContract_.number)), "%" + contract.toLowerCase() + "%");
+    }
+
+    public static Specification<AccessPoint> cStart(LocalDate cStart) {
+        return (root, cq, cb) -> cb.and(cb.greaterThanOrEqualTo(cb.treat(root, ApContract.class).get(ApContract_.started), cStart));
+    }
+
+    public static Specification<AccessPoint> cEnd(LocalDate cEnd) {
+        return (root, cq, cb) -> cb.and(cb.lessThanOrEqualTo(cb.treat(root, ApContract.class).get(ApContract_.started), cEnd));
     }
 }
