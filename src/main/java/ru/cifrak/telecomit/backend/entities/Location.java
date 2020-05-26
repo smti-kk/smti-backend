@@ -24,6 +24,13 @@ import java.util.UUID;
 @NamedQuery(name = "Location.findAll", query = "SELECT c FROM Location c")
 @NamedEntityGraphs(value = {
         @NamedEntityGraph(
+                name = Location.SIMPLE,
+                attributeNodes = {
+                        @NamedAttributeNode(value = "geoData"),
+                        @NamedAttributeNode(value = "parent"),
+                }
+        ),
+        @NamedEntityGraph(
                 name = Location.WITH_FEATURES,
                 attributeNodes = {
                         @NamedAttributeNode(value = "geoData"),
@@ -65,6 +72,7 @@ import java.util.UUID;
 )
 public class Location implements Serializable {
     public static final String WITH_FEATURES = "Location[FtcFeatures]";
+    public static final String SIMPLE = "Location[Simple]";
     public static final String WITH_ORGANIZATIONS_ACCESSPOINTS = "Location[Organization]";
 
     private static final long serialVersionUID = 1L;

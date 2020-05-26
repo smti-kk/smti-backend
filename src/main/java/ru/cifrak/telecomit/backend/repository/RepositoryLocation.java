@@ -20,6 +20,7 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
     @Query("SELECT l FROM Location l where l.id = :id")
     Location get(@NotNull Integer id);
 
+    @EntityGraph(value = Location.SIMPLE)
     @Query("SELECT l from Location l where" +
             " l.type not like 'с/с' " +
             "and l.type not like 'тер' " +
