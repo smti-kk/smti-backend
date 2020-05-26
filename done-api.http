@@ -94,7 +94,7 @@ Authorization: Token {{auth_token}}
 ### ********************************************************************************************************************
 
 ###
-GET http://localhost:8080/api/location/
+GET http://localhost:8080/api/location?location=саяН
 Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/location/locations/

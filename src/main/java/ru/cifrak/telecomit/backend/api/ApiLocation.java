@@ -22,15 +22,15 @@ public class ApiLocation {
     }
 
     @GetMapping
-    public List<LocationSimple> location() {
-        return repository.locations().stream()
+    public List<LocationSimple> location(@RequestParam(value = "location") String name) {
+        return repository.locations(name).stream()
                 .map(LocationSimple::new)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/locations/")
     public List<LocationSimpleFilterDTO> locations() {
-        return repository.locations().stream()
+        return repository.locationFilter().stream()
                 .map(LocationSimpleFilterDTO::new)
                 .collect(Collectors.toList());
     }
