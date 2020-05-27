@@ -10,8 +10,7 @@ import ru.cifrak.telecomit.backend.entities.Location;
 public class LocationSimpleFilterDTO {
     private Integer id;
 
-    @JsonIgnoreProperties("parent")
-    private LocationSimpleFilterDTO parent;
+    private String parent;
 
     private String fullName;
 
@@ -27,6 +26,6 @@ public class LocationSimpleFilterDTO {
         this.type = entity.getType();
         this.population = entity.getPopulation();
         this.fullName = entity.getType() + " " + entity.getName();
-        this.parent = entity.getParent() != null ? new LocationSimpleFilterDTO(entity.getParent()) : null;
+        this.parent = entity.getParent() != null ? entity.getParent().getType() + " " + entity.getParent().getName() : null;
     }
 }
