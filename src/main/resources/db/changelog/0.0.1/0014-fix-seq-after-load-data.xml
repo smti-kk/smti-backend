@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="a-panov (generated)" id="1588933669859-1">
+        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE accesspoint_id_seq restart with 3803;</sql>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588933669859-3">
+        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE geodata_id_seq restart with 3106;</sql>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588933669859-6">
+        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE location_id_seq restart with 3113;</sql>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588933669859-7">
+        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE operator_id_seq restart with 11;</sql>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588933669859-8">
+        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE organization_id_seq restart with 3425;</sql>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588933669859-10">
+        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE typeinternetaccess_id_seq restart with 14;</sql>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588933669859-12">
+        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE typeorganization_id_seq restart with 9;</sql>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588933669859-13">
+        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE typesmo_id_seq restart with 6;</sql>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588933669859-14">
+        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE typetrunkchannel_id_seq restart with 6;</sql>
+    </changeSet>
+</databaseChangeLog>

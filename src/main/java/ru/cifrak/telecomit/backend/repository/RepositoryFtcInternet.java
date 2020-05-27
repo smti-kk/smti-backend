@@ -1,3 +1,4 @@
+/*
 package ru.cifrak.telecomit.backend.repository;
 
 
@@ -12,3 +13,4 @@ public interface RepositoryFtcInternet extends JpaRepository<FtcInternet, Intege
     @Query(value = "SELECT fi from FtcInternet fi where fi.catalogsLocation.id = ?1")
     List<FtcInternet> getByLocationId(Integer locationId);
 }
+*/

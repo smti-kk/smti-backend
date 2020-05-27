@@ -1,6 +1,7 @@
 package ru.cifrak.telecomit.backend.serializer;
 
-import ru.cifrak.telecomit.backend.domain.Signal;
+
+import ru.cifrak.telecomit.backend.entities.Signal;
 
 import javax.persistence.AttributeConverter;
 import java.util.Arrays;
@@ -21,10 +22,10 @@ public class SignalConverter implements AttributeConverter<List<Signal>, String>
             return Arrays
                     .stream(s.split(","))
                     .map(signalIdStr -> {
-                        if (signalIdStr.equals(Signal.ATV.getId().toString())) {
-                            return Signal.ATV;
-                        } else if (signalIdStr.equals(Signal.CTV.getId().toString())) {
-                            return Signal.CTV;
+                        if (signalIdStr.equals(Signal.ANLG.getId().toString())) {
+                            return Signal.ANLG;
+                        } else if (signalIdStr.equals(Signal.DIGT.getId().toString())) {
+                            return Signal.DIGT;
                         } else {
                             return null;
                         }

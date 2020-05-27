@@ -3,13 +3,13 @@ package ru.cifrak.telecomit.backend.api;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.cifrak.telecomit.backend.domain.CatalogsGovernmentDevelopmentProgram;
+import ru.cifrak.telecomit.backend.entities.GovernmentDevelopmentProgram;
 import ru.cifrak.telecomit.backend.repository.RepositoryGovernmentProgram;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/gov-program")
+@RequestMapping("/api/gov-program")
 public class ApiGovernmentProgram {
     private RepositoryGovernmentProgram repository;
 
@@ -18,7 +18,7 @@ public class ApiGovernmentProgram {
     }
 
     @GetMapping
-    public List<CatalogsGovernmentDevelopmentProgram> list() {
+    public List<GovernmentDevelopmentProgram> list() {
         return repository.findAll();
     }
 

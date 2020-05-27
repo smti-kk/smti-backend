@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.locationtech.jts.geom.MultiPolygon;
-import ru.cifrak.telecomit.backend.domain.CatalogsLocation;
+import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
@@ -23,10 +23,10 @@ public class LocationAreaBorders {
     @JsonDeserialize(using = GeometryDeserializer.class)
     private MultiPolygon type;
 
-    public LocationAreaBorders(CatalogsLocation entity) {
+    public LocationAreaBorders(Location entity) {
         this.id = entity.getId();
         this.name = entity.getName();
-        this.fullName = entity.getTypeLocation() + " " + entity.getName();
-        this.type = entity.getCatalogsGeolocation().getBorder();
+        this.fullName = entity.getType() + " " + entity.getName();
+        this.type = entity.getGeoData().getBorder();
     }
 }

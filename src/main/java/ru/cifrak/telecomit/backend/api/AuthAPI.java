@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.AuthFrontDTO;
 import ru.cifrak.telecomit.backend.api.dto.TokenDTO;
-import ru.cifrak.telecomit.backend.auth.entity.User;
 import ru.cifrak.telecomit.backend.auth.repository.UserRepository;
 import ru.cifrak.telecomit.backend.cache.entity.AuthTokenCache;
 import ru.cifrak.telecomit.backend.cache.entity.TempTokenCache;
 import ru.cifrak.telecomit.backend.cache.repository.TempTokenCacheRepository;
 import ru.cifrak.telecomit.backend.cache.service.AuthTokenCacheService;
+import ru.cifrak.telecomit.backend.entities.User;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;

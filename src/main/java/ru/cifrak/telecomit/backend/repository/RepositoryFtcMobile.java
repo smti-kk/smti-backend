@@ -1,3 +1,4 @@
+/*
 package ru.cifrak.telecomit.backend.repository;
 
 
@@ -11,3 +12,4 @@ public interface RepositoryFtcMobile extends JpaRepository<FtcMobile, Integer> {
     @Query(value = "SELECT fi from FtcMobile fi where fi.catalogsLocation.id = ?1")
     List<FtcMobile> getByLocationId(Integer locationId);
 }
+*/

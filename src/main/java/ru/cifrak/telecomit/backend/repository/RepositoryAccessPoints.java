@@ -1,18 +1,27 @@
 package ru.cifrak.telecomit.backend.repository;
 
 import org.locationtech.jts.geom.Polygon;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
-import ru.cifrak.telecomit.backend.domain.MonitoringAccesspointRe;
+import ru.cifrak.telecomit.backend.entities.AccessPoint;
 
 import java.util.List;
 
 
-public interface RepositoryAccessPoints extends JpaRepository<MonitoringAccesspointRe, Integer> {
+public interface RepositoryAccessPoints extends JpaRepository<AccessPoint, Integer>, JpaSpecificationExecutor {
 
-    @Query(value = "SELECT l from MonitoringAccesspointRe l " +
-            "where l.catalogsGovernmentDevelopmentProgram.shortName = :shortName" +
+    @Query(value = "SELECT l from AccessPoint l " +
+            "where l.governmentDevelopmentProgram.acronym = :shortName" +
             " and within(l.point, :bbox) = true")
-    List<MonitoringAccesspointRe> getAccessPointsByGovernmentProgramShortNameAndBbox(String shortName,
-                                                                                     Polygon bbox);
+    List<AccessPoint> getAccessPointsByGovernmentProgramShortNameAndBbox(String shortName,
+                                                                         Polygon bbox);
+
+    @EntityGraph(AccessPoint.REPORT_ALL)
+    @Override
+    Page findAll(Specification spec, Pageable pageable);
 }

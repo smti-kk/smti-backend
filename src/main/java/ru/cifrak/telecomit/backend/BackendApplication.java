@@ -8,10 +8,12 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.cifrak.telecomit.backend.auth.entity.User;
-import ru.cifrak.telecomit.backend.auth.entity.UserRole;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import ru.cifrak.telecomit.backend.entities.User;
+import ru.cifrak.telecomit.backend.entities.UserRole;
 import ru.cifrak.telecomit.backend.auth.service.UserService;
 import ru.cifrak.telecomit.backend.cache.repository.AuthTokenCacheRepository;
 
@@ -22,6 +24,8 @@ import java.util.Optional;
 @Slf4j
 @SpringBootApplication
 @EnableJpaRepositories
+//@EnableTransactionManagement
+@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EntityScan
 public class BackendApplication {
 
@@ -33,6 +37,7 @@ public class BackendApplication {
     public void doAfterAppStart(ApplicationReadyEvent event) {
         final ConfigurableApplicationContext context = event.getApplicationContext();
         BackendApplication.addAdminUser(context);
+        /*BackendApplication.addOperUser(context);*/
         BackendApplication.resetAuthTokenCache(context);
     }
 
@@ -54,11 +59,32 @@ public class BackendApplication {
         newUser.setPassword(passwordEncoder.encode("pwd"));
         newUser.getRoles().add(UserRole.ADMIN);
         newUser.getRoles().add(UserRole.OPERATOR);
-        newUser.getRoles().add(UserRole.USER);
         newUser.setCreateDateTime(nowTime);
         userService.save(newUser);
         log.info("user admin created with default password");
     }
+/*
+    public static void addOperUser(ApplicationContext context) {
+        final ZoneId zoneId = ZoneId.systemDefault(); // TODO get from properties
+        final LocalDateTime nowTime = LocalDateTime.now(zoneId);
+
+        final PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
+        final UserService userService = context.getBean(UserService.class);
+        final Optional<User> optionalUser = userService.findByUsername("oper");
+
+        if (optionalUser.isPresent()) {
+            return;
+        }
+
+        final User newUser = new User();
+        newUser.setUsername("oper");
+        newUser.setFirstName("oper");
+        newUser.setPassword(passwordEncoder.encode("pwd"));
+        newUser.getRoles().add(UserRole.OPERATOR);
+        newUser.setCreateDateTime(nowTime);
+        userService.save(newUser);
+        log.info("user oper created with default password");
+    }*/
 
     public static void resetAuthTokenCache(ApplicationContext context) {
         final AuthTokenCacheRepository authTokenCacheRepository = context.getBean(AuthTokenCacheRepository.class);

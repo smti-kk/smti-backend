@@ -1,17 +1,16 @@
 package ru.cifrak.telecomit.backend.api;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.cifrak.telecomit.backend.domain.CatalogsOrganizationtype;
-import ru.cifrak.telecomit.backend.domain.CatalogsSmotype;
+import ru.cifrak.telecomit.backend.entities.TypeSmo;
 import ru.cifrak.telecomit.backend.repository.RepositorySmoType;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/organization-smo-types")
+@RequestMapping("/api/type/smo")
 public class ApiSmoType {
     private RepositorySmoType repository;
 
@@ -19,9 +18,14 @@ public class ApiSmoType {
         this.repository = repository;
     }
 
-    @GetMapping
-    public List<CatalogsSmotype> list(){
+    @GetMapping("/")
+    public List<TypeSmo> list() {
         return repository.findAll();
+    }
+
+    @GetMapping("/{id}/")
+    public TypeSmo item(@PathVariable Integer id) {
+        return repository.findById(id).orElse(null);
     }
 
 }

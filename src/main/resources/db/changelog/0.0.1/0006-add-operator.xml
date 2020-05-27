@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="a-panov (generated)" id="1588583330870-11">
+        <createSequence incrementBy="1" sequenceName="operator_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588583330870-12">
+        <createTable tableName="operator">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="operator_id_seq">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="operatorPK"/>
+            </column>
+            <column name="contacts" type="TEXT"/>
+            <column name="icon" type="VARCHAR(100)"/>
+            <column name="inn" type="VARCHAR(12)"/>
+            <column name="juristic_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="kpp" type="VARCHAR(9)"/>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="services" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(5)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588583330870-13">
+        <addUniqueConstraint columnNames="id" constraintName="UC_OPERATORID_COL" tableName="operator"/>
+    </changeSet>
+</databaseChangeLog>

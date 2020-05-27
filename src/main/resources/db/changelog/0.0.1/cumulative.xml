@@ -1,4 +1,18 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <include file="0001-initialize-db.xml" relativeToChangelogFile="true" />
+    <include file="0002-add-user-role.xml" relativeToChangelogFile="true" />
+    <include file="0003-add-location-geodata.xml" relativeToChangelogFile="true" />
+    <include file="0004-add-types.xml" relativeToChangelogFile="true" />
+    <include file="0005-add-organization.xml" relativeToChangelogFile="true" />
+    <include file="0006-add-operator.xml" relativeToChangelogFile="true" />
+    <include file="0007-add-access-point.xml" relativeToChangelogFile="true" />
+    <include file="0008-add-infomat-trunkchannel.xml" relativeToChangelogFile="true" />
+    <include file="0009-load-data-operators.xml" relativeToChangelogFile="true" />
+    <include file="0010-load-data-types.xml" relativeToChangelogFile="true" />
+    <include file="0011-load-data-location.xml" relativeToChangelogFile="true" />
+    <include file="0012-load-data-organization-aps.xml" relativeToChangelogFile="true" />
+    <include file="0013-load-data-gov-progs.xml" relativeToChangelogFile="true" />
+    <include file="0014-fix-seq-after-load-data.xml" relativeToChangelogFile="true" />
+    <include file="0015-add-aps.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

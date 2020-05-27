@@ -1,3 +1,4 @@
+/*
 package ru.cifrak.telecomit.backend.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -27,3 +28,4 @@ public class TechnicalCapabilitiesDTO {
         this.location = new LocationTcDTO(location);
     }
 }
+*/

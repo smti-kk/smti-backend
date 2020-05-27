@@ -1,0 +1,23 @@
+GET http://localhost:8080/api/location?location=орл
+Authorization: Token cbe3af95fb45dfef7a9fa1f7c7d8d678b43faab4cd1e5e5ddd62c690a255bf74
+
+<> 2020-05-26T041801.200.json
+
+###
+
+GET http://localhost:8080/api/location?location=саяН
+Authorization: Token cbe3af95fb45dfef7a9fa1f7c7d8d678b43faab4cd1e5e5ddd62c690a255bf74
+
+<> 2020-05-26T041746.200.json
+
+###
+
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+
+{"email": "admin", "password": "pwd"}
+
+<> 2020-05-26T041743.200.json
+
+###
+

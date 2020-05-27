@@ -1,17 +1,21 @@
 package ru.cifrak.telecomit.backend.api;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.cifrak.telecomit.backend.domain.CatalogsOperator;
+import ru.cifrak.telecomit.backend.entities.Operator;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
 
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/operator")
+@RequestMapping("/api/operator")
 public class ApiOperator {
     private RepositoryOperator repository;
 
@@ -19,11 +23,20 @@ public class ApiOperator {
         this.repository = repository;
     }
 
+    @GetMapping("/{id}/")
+    public ResponseEntity<Operator> item(@NotNull @PathVariable Integer id) {
+        Optional<Operator> item = repository.findById(id);
+        if (item.isPresent()){
+            return ResponseEntity.ok(item.get());
+        } else
+            return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/grouped")
-    public Map<String, List<CatalogsOperator>> grouped() {
-        Map<String, List<CatalogsOperator>> map = new HashMap<>();
-        map.put("internet",repository.internet());
-        map.put("cellurar", repository.mobile());
+    public Map<String, List<Operator>> grouped() {
+        Map<String, List<Operator>> map = new HashMap<>();
+        map.put("internet", repository.internet());
+        map.put("mobile", repository.mobile());
         map.put("ats", repository.ats());
         map.put("radio", repository.radio());
         map.put("post", repository.postal());
@@ -32,32 +45,32 @@ public class ApiOperator {
     }
 
     @GetMapping("/internet")
-    public List<CatalogsOperator> internet() {
+    public List<Operator> internet() {
         return repository.internet();
     }
 
     @GetMapping("/mobile")
-    public List<CatalogsOperator> mobile() {
+    public List<Operator> mobile() {
         return repository.mobile();
     }
 
     @GetMapping("/postal")
-    public List<CatalogsOperator> postal() {
+    public List<Operator> postal() {
         return repository.postal();
     }
 
     @GetMapping("/ats")
-    public List<CatalogsOperator> ats() {
+    public List<Operator> ats() {
         return repository.ats();
     }
 
     @GetMapping("/radio")
-    public List<CatalogsOperator> radio() {
+    public List<Operator> radio() {
         return repository.radio();
     }
 
     @GetMapping("/tv")
-    public List<CatalogsOperator> television() {
+    public List<Operator> television() {
         return repository.television();
     }
 

@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 import org.springframework.lang.NonNull;
-import ru.cifrak.telecomit.backend.auth.entity.User;
+import ru.cifrak.telecomit.backend.entities.User;
 
 import javax.persistence.Id;
 import java.io.Serializable;

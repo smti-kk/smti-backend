@@ -6,14 +6,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.locationtech.jts.geom.Point;
-import ru.cifrak.telecomit.backend.domain.CatalogsGovernmentDevelopmentProgram;
-import ru.cifrak.telecomit.backend.domain.MonitoringAccesspointRe;
-import ru.cifrak.telecomit.backend.domain.MonitoringConnectionMetric;
-import ru.cifrak.telecomit.backend.serializer.ConnectionMetricSerializer;
+import ru.cifrak.telecomit.backend.entities.AccessPoint;
+import ru.cifrak.telecomit.backend.entities.GovernmentDevelopmentProgram;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
-
-import java.util.Comparator;
 
 @Data
 @AllArgsConstructor
@@ -24,25 +20,25 @@ public class AccessPointSimple {
     @JsonDeserialize(using = GeometryDeserializer.class)
     private Point point;
 
-    @JsonSerialize(using = ConnectionMetricSerializer.class)
-    private MonitoringConnectionMetric avstatus;
+//    @JsonSerialize(using = ConnectionMetricSerializer.class)
+//    private MonitoringConnectionMetric avstatus;
 
     @JsonProperty(value = "government_program")
-    private CatalogsGovernmentDevelopmentProgram governmentProgram;
+    private GovernmentDevelopmentProgram governmentProgram;
 
-    public AccessPointSimple(MonitoringAccesspointRe entity) {
+    public AccessPointSimple(AccessPoint entity) {
         this.id = entity.getId();
         this.point = entity.getPoint();
 
-        this.governmentProgram = new CatalogsGovernmentDevelopmentProgram(
-                entity.getCatalogsGovernmentDevelopmentProgram().getId(),
-                entity.getCatalogsGovernmentDevelopmentProgram().getDescription(),
-                entity.getCatalogsGovernmentDevelopmentProgram().getFullName(),
-                entity.getCatalogsGovernmentDevelopmentProgram().getShortName()
+        this.governmentProgram = new GovernmentDevelopmentProgram(
+                entity.getGovernmentDevelopmentProgram().getId(),
+                entity.getGovernmentDevelopmentProgram().getDescription(),
+                entity.getGovernmentDevelopmentProgram().getName(),
+                entity.getGovernmentDevelopmentProgram().getAcronym()
         );
 
-        this.avstatus = entity.getMonitoringConnectionMetrics().stream()
-                .min(Comparator.comparingLong((mcm) -> mcm.getTimeMark().getTime()))
-                .orElse(null);
+//        this.avstatus = entity.getMonitoringConnectionMetrics().stream()
+//                .min(Comparator.comparingLong((mcm) -> mcm.getTimeMark().getTime()))
+//                .orElse(null);
     }
 }

@@ -1,7 +1,7 @@
 package ru.cifrak.telecomit.backend.cache.service;
 
 import org.springframework.stereotype.Service;
-import ru.cifrak.telecomit.backend.auth.entity.User;
+import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.cache.entity.AuthTokenCache;
 import ru.cifrak.telecomit.backend.cache.repository.AuthTokenCacheRepository;
 import ru.cifrak.telecomit.backend.utils.Utils;
