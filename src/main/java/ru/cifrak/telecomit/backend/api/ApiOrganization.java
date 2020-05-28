@@ -7,13 +7,14 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.api.dto.OrganizationDTO;
 import ru.cifrak.telecomit.backend.api.dto.OrganizationMoreAccessPointDTO;
+import ru.cifrak.telecomit.backend.api.dto.OrganizationShortDTO;
 import ru.cifrak.telecomit.backend.api.dto.OrganizationWithAccessPointsDTO;
 import ru.cifrak.telecomit.backend.auth.service.UserService;
 import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.entities.User;
-import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
-import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
+import ru.cifrak.telecomit.backend.repository.*;
 
+import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,10 +26,16 @@ import java.util.stream.Collectors;
 public class ApiOrganization {
     private final RepositoryOrganization rOrganization;
     private final RepositoryAccessPoints rAccessPoints;
+    private final RepositoryLocation rLocation;
+    private final RepositorySmoType rTypeSmo;
+    private final RepositoryOrganizationType rTypeOrganization;
 
-    public ApiOrganization(RepositoryOrganization repository, RepositoryAccessPoints rAccessPoints) {
+    public ApiOrganization(RepositoryOrganization repository, RepositoryAccessPoints rAccessPoints, RepositoryLocation rLocation, RepositorySmoType rTypeSmo, RepositoryOrganizationType rTypeOrganization) {
         this.rOrganization = repository;
         this.rAccessPoints = rAccessPoints;
+        this.rLocation = rLocation;
+        this.rTypeSmo = rTypeSmo;
+        this.rTypeOrganization = rTypeOrganization;
     }
 
     @GetMapping
@@ -58,23 +65,26 @@ public class ApiOrganization {
         return rOrganization.saveAndFlush(item);
     }
 
+
+    @Transactional
     @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Organization> updateOrganization(@PathVariable Integer id, @RequestBody Organization value) throws ResourceNotFoundException {
-        Organization item = rOrganization.getOne(id);
+    public ResponseEntity<OrganizationDTO> updateOrganization(@PathVariable(name = "id") Organization item, @RequestBody OrganizationShortDTO value) throws ResourceNotFoundException {
+        log.info("->PUT /api/organization/{}", item.getId());
         item.setAddress(value.getAddress());
         item.setFias(value.getFias());
         item.setName(value.getName());
         item.setInn(value.getInn());
         item.setKpp(value.getKpp());
         item.setAcronym(value.getAcronym());
-        item.setLocation(value.getLocation());
+        item.setLocation(rLocation.getOne(value.getLocation()));
         //TODO: make this work later, when we have some real data...
 //        item.setParent(value.getParent());
 //        item.setChildren(value.getChildren());
-        item.setType(value.getType());
-        item.setSmo(value.getSmo());
+        item.setType(rTypeOrganization.getOne(value.getType()));
+        item.setSmo(rTypeSmo.getOne(value.getSmo()));
         Organization saved = rOrganization.save(item);
-        return ResponseEntity.ok(saved);
+        log.info("<-PUT /api/organization/{}", item.getId());
+        return ResponseEntity.ok(new OrganizationDTO(saved));
     }
 
     @GetMapping("/{id}/ap/")

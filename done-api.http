@@ -183,6 +183,27 @@ Content-Type: application/json
 
 }
 
+
+###
+PUT http://localhost:8080/api/organization/342/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "addres",
+  "fias": "23400000-0000-0000-0000-000000000001",
+  "name": "Тест организация Тест организация Тест организация ",
+  "inn": "223456789012",
+  "kpp": "223456789",
+  "acronym": "7-tst",
+  "location": 2125,
+  "parent": null,
+  "children": [],
+  "type": 3,
+  "smo": 2
+
+}
+
 ###
 GET http://localhost:8080/api/organization/3/ap/
 Authorization: Token {{auth_token}}
