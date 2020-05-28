@@ -208,6 +208,32 @@ Content-Type: application/json
 GET http://localhost:8080/api/organization/3/ap/
 Authorization: Token {{auth_token}}
 
+###
+POST http://localhost:8080/api/organization/3/ap/
+Authorization: Token {{auth_token}}
+
+{
+  "address": "ftgnjfgmn",
+  "billing_id": null,
+  "internetAccess": 3,
+  "contractor": "hmhm",
+  "customer": null,
+  "description": null,
+  "government_program": 2,
+  "ip_config": null,
+  "max_amount": null,
+  "name": " КГБУЗ \"Красноярский краевой психоневрологический диспансер №1\" Филиал 7(г.Ачинск) ККПНД №1",
+  "node": "fghmhmhm",
+  "operator": null,
+  "quality": "good",
+  "state": null,
+  "ucn": null,
+  "visible": true,
+  "point": "SRID=4326;POINT (90.9261111 56.8919444)",
+
+  "id": null
+}
+
 
 ### ********************************************************************************************************************
 ### REPORT --- AccessPoints -- all by ORGANIZATION
@@ -264,7 +290,7 @@ GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&organiz
 Authorization: Token {{auth_token}}
 
 ###
-GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&pupulation-start=5000&pupulation-end=6000&sort=+organization.location.name
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&population-start=5000&population-end=6000&sort=+organization.location.name
 Authorization: Token {{auth_token}}
 
 ###

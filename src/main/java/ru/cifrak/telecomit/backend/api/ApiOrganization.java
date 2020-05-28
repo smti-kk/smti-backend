@@ -5,14 +5,14 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import ru.cifrak.telecomit.backend.api.dto.OrganizationDTO;
-import ru.cifrak.telecomit.backend.api.dto.OrganizationMoreAccessPointDTO;
-import ru.cifrak.telecomit.backend.api.dto.OrganizationShortDTO;
-import ru.cifrak.telecomit.backend.api.dto.OrganizationWithAccessPointsDTO;
+import ru.cifrak.telecomit.backend.api.dto.*;
 import ru.cifrak.telecomit.backend.auth.service.UserService;
+import ru.cifrak.telecomit.backend.entities.AccessPoint;
+import ru.cifrak.telecomit.backend.entities.ApSMO;
 import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.repository.*;
+//import ru.cifrak.telecomit.backend.utils.ApBuilder;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
@@ -94,4 +94,18 @@ public class ApiOrganization {
         return rAccessPoints.getAllByOrganizationId(id).stream().map(OrganizationMoreAccessPointDTO::new).collect(Collectors.toList());
     }
 
+ /*   @PostMapping(value = "/{id}/ap/", consumes = "application/json", produces = "application/json")
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    public ResponseEntity<AccessPoint> createAP(Principal principal, @PathVariable(name = "id") Organization organization, @RequestBody AccessPointNewDTO item) {
+        log.info("->POST /api/organization/{}/ap", organization.getId());
+        switch (item.getType()){
+            case "SMO":
+                ApSMO ent = ApBuilder.build().convert(organization, item);
+                rAccessPoints.save(ent);
+        }
+
+//        final User user = UserService.getUser(principal);
+
+//        return ResponseEntityrOrganization.saveAndFlush(item);
+    }*/
 }

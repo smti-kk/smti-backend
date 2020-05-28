@@ -22,7 +22,7 @@ public class LocationSimple {
 
     private String type;
 
-    private Integer pupulation;
+    private Integer population;
 
     @JsonProperty("geo_data")
     @JsonSerialize(using = GeometrySerializer.class)
@@ -41,7 +41,7 @@ public class LocationSimple {
                 ? entity.getGeoData().getAdministrativeCenter()
                 : null;
         this.parent = entity.getParent() != null ? entity.getParent().getType() + " " + entity.getParent().getName() : null;
-        this.pupulation = entity.getPopulation();
+        this.population = entity.getPopulation();
 //        this.infomat = entity.getInfomats().size();
     }
 }

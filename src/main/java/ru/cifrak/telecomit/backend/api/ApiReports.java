@@ -59,8 +59,8 @@ public class ApiReports {
             @RequestParam(name = "parents", required = false) List<Location> parents,
             @RequestParam(name = "organization", required = false) String organization,
             @RequestParam(name = "contractor", required = false) String contractor,
-            @RequestParam(name = "pupulation-start", required = false) Integer pStart,
-            @RequestParam(name = "pupulation-end", required = false) Integer pEnd,
+            @RequestParam(name = "population-start", required = false) Integer pStart,
+            @RequestParam(name = "population-end", required = false) Integer pEnd,
             @RequestParam(name = "ap", required = false) List<String> ap,
             @RequestParam(name = "sort", required = false) String sort
     ) {
@@ -133,8 +133,8 @@ public class ApiReports {
             @RequestParam(name = "parents", required = false) List<Location> parents,
             @RequestParam(name = "organization", required = false) String organization,
             @RequestParam(name = "contractor", required = false) String contractor,
-            @RequestParam(name = "pupulation-start", required = false) Integer pStart,
-            @RequestParam(name = "pupulation-end", required = false) Integer pEnd,
+            @RequestParam(name = "population-start", required = false) Integer pStart,
+            @RequestParam(name = "population-end", required = false) Integer pEnd,
             @RequestParam(name = "contract", required = false) String contract,
             @RequestParam(name = "contract-start", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cStart,
             @RequestParam(name = "contract-end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cEnd,
