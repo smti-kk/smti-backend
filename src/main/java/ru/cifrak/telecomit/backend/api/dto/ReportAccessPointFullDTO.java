@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.locationtech.jts.geom.Point;
 import ru.cifrak.telecomit.backend.entities.*;
+import ru.cifrak.telecomit.backend.entities.AccessPointFull;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
@@ -41,6 +42,16 @@ public class ReportAccessPointFullDTO {
         } else if (entity.getClass().isAssignableFrom(ApContract.class)) {
             this.type = "CONTRACT";
         }
+        this.organization = entity.getOrganization() != null ? new ReportOrganizationDTO(entity.getOrganization()) : null;
+    }
+
+    public ReportAccessPointFullDTO(AccessPointFull entity) {
+        this.id = entity.getId();
+        this.address = entity.getAddress();
+        this.contractor = entity.getContractor();
+        this.declaredSpeed = entity.getDeclaredSpeed();
+        this.internetAccess = entity.getInternetAccess() != null ? new TypeInternetAccessDTO(entity.getInternetAccess()) : null;
+        this.type = entity.getType().getName();
         this.organization = entity.getOrganization() != null ? new ReportOrganizationDTO(entity.getOrganization()) : null;
     }
 }

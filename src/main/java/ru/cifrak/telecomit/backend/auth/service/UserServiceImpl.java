@@ -36,9 +36,9 @@ public class UserServiceImpl implements UserService {
         final Optional<User> optionalUser = userRepository.findById(authToken.getUserId());
 
         // Update authToken expire time // TODO move out to another service
-        if (optionalUser.isPresent()) {
-            authTokenCacheRepository.save(authToken);
-        }
+//        if (optionalUser.isPresent()) {
+//            authTokenCacheRepository.save(authToken);
+//        }
 
         return optionalUser;
 

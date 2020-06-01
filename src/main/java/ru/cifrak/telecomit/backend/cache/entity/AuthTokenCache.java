@@ -38,8 +38,11 @@ public class AuthTokenCache implements Serializable {
         this.userId = user.getId();
     }
 
-    @TimeToLive
-    public long getTimeToLive() {
-        return 1 * 60 * 60;
-    }
+    //TODO: this comments is a fix for very quickly api interaction from frontend
+    // and this TTL shoud be more workable desision
+    // for now we just commented out
+//    @TimeToLive
+//    public long getTimeToLive() {
+//        return 1 * 60 * 60;
+//    }
 }
