@@ -15,4 +15,5 @@
     <include file="0013-load-data-gov-progs.xml" relativeToChangelogFile="true" />
     <include file="0014-fix-seq-after-load-data.xml" relativeToChangelogFile="true" />
     <include file="0015-add-aps.xml" relativeToChangelogFile="true" />
+    <include file="0016-add-tech-caps.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
