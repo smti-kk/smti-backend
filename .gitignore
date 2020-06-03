@@ -103,3 +103,4 @@ local.properties
 ### IDEA ###
 .idea
 backend.iml
+.m2
