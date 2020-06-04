@@ -66,6 +66,7 @@
             <column name="key_request_for_change" type="INTEGER"/>
             <column name="key_type_mobile" type="INTEGER"/>
             <column name="key_type_trunkchannel" type="INTEGER"/>
+            <column name="state" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
     <changeSet author="a-panov (generated)" id="1591170220933-22">

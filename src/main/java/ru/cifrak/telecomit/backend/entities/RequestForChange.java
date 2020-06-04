@@ -26,7 +26,7 @@ public class RequestForChange extends Auditing implements Serializable {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private PetitionStatus status;
+    private RequestStatus status;
 
     @ManyToOne
     @JoinColumn(name = "key_user", nullable = false)

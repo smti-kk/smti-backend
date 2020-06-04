@@ -1,7 +1,5 @@
 package ru.cifrak.telecomit.backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
@@ -88,7 +86,7 @@ public class AccessPointFull extends AuditingSoftDelete implements Serializable 
 
     //bi-directional many-to-one association to CatalogsInternetaccesstype
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "key_type_internet_access")
+    @JoinColumn(name = "key_type_internet_access", nullable = false)
     private TypeInternetAccess internetAccess;
 
     //bi-directional many-to-one association to CatalogsOperator

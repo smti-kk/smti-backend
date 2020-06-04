@@ -1,6 +1,6 @@
 package ru.cifrak.telecomit.backend.entities;
 
-public enum PetitionStatus {
+public enum RequestStatus {
     ON_AGREEMENT,
     ACCEPTED,
     REJECTED,

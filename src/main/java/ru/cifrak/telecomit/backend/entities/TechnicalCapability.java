@@ -57,4 +57,8 @@ public class TechnicalCapability extends Auditing implements Serializable {
 
     @Column
     private Integer govYearComplete;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private TcState state;
 }
