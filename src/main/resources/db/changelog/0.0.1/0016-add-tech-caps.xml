@@ -8,7 +8,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1591170220933-20">
         <createTable tableName="request_for_change">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="request_for_change_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="request_for_changePK"/>
             </column>
             <column name="created_by" type="VARCHAR(255)"/>
@@ -35,7 +35,7 @@
             <column name="split" type="VARCHAR(31)">
                 <constraints nullable="false"/>
             </column>
-            <column name="id" type="BIGINT">
+            <column name="id" type="BIGINT" defaultValueSequenceNext="technical_capability_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="technical_capabilityPK"/>
             </column>
             <column name="created_by" type="VARCHAR(255)"/>

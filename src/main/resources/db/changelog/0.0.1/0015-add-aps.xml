@@ -8,7 +8,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1590166261789-17">
         <createTable tableName="hardware">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="hardware_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="hardwarePK"/>
             </column>
             <column name="name" type="VARCHAR(256)">
@@ -18,7 +18,7 @@
     </changeSet>
     <changeSet author="a-panov (generated)" id="1590166261789-18">
         <createTable tableName="software">
-            <column name="id" type="INTEGER">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="software_id_seq">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="softwarePK"/>
             </column>
             <column name="name" type="VARCHAR(256)">

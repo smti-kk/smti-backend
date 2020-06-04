@@ -1,16 +1,19 @@
 package ru.cifrak.telecomit.backend.entities;
 
 
+/**
+ * Качество услуги
+ */
 public enum ServiceQuality {
     GOOD,
-    SATISFACTORILY,
+    NORMAL,
     ABSENT;
 
     @Override
     public String toString() {
         switch (this) {
             case GOOD:   return "Хорошо";
-            case SATISFACTORILY:  return "Удовлетворительно";
+            case NORMAL:  return "Удовлетворительно";
             case ABSENT:  return "Отсутствует";
             default:    throw new IllegalArgumentException();
         }
