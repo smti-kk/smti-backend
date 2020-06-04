@@ -32,6 +32,7 @@ public class TcAts extends TechnicalCapability {
     /**
      * Максимальное количество абонентов
      */
+    @PositiveOrZero
     @Column
     private Integer subscribers;
 }

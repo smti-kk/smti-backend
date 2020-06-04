@@ -7,6 +7,14 @@ Content-Type: application/json
 
 > {% client.global.set("auth_token", response.body.token); %}
 
+### LOGIN USER *** FOO *** with taking TOKEN
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+
+{"email": "foo", "password": "pwd"}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
 
 ### ********************************************************************************************************************
 ### Operators
@@ -211,6 +219,7 @@ Authorization: Token {{auth_token}}
 ###
 POST http://localhost:8080/api/organization/3/ap/
 Authorization: Token {{auth_token}}
+Content-Type: application/json
 
 {
   "address": "ftgnjfgmn",
@@ -312,4 +321,13 @@ Authorization: Token {{auth_token}}
 
 ###
 GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=100&contract-start=2020-05-26&location=4&contract=numb
+Authorization: Token {{auth_token}}
+
+##########################################################################################
+###
+GET http://localhost:8080/api/foo/w/
+Authorization: Token {{auth_token}}
+
+###
+GET http://localhost:8080/api/foo/w/3
 Authorization: Token {{auth_token}}
