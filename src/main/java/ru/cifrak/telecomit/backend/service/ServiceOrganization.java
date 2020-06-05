@@ -9,7 +9,6 @@ import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
 import java.util.List;
 
 @Transactional
-
 @Service
 public class ServiceOrganization {
     private final RepositoryOrganization rOrganization;

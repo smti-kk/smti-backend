@@ -2,6 +2,8 @@ package ru.cifrak.telecomit.backend.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import ru.cifrak.telecomit.backend.serializer.SignalConverter;
+import ru.cifrak.telecomit.backend.serializer.SignalOneConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,6 +17,7 @@ import javax.validation.constraints.NotNull;
 public class TcRadio extends TechnicalCapability {
     @NotNull
     @Column
-    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.STRING)
+    @Convert(converter = SignalOneConverter.class)
     private Signal type;
 }

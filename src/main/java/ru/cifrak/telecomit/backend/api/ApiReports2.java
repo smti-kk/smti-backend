@@ -30,6 +30,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * ---------------------------------------------------------------------------------
+ * THIS IS EXPERIMENTAL FILE FOR APPROVE EXPECTATION FOR NEW ENTITY MODEL ON THE SAME TABLE
+ * SUCCESSFUL !!!!!
+ * TODO: INSERT INTO BUSINESS PIPELINE MORE PROPERLY WITH NAMING AND SO ON
+ */
 @Slf4j
 
 @RestController

@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,6 +18,7 @@ public class TcInternet extends TechnicalCapability {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_type_trunkchannel")
+    @JsonIgnore
     private TypeTrunkChannel trunkChannel;
 
     /**

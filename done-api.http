@@ -325,9 +325,23 @@ Authorization: Token {{auth_token}}
 
 ##########################################################################################
 ###
-GET http://localhost:8080/api/foo/w/
+GET http://localhost:8080/api/tc/ats/
 Authorization: Token {{auth_token}}
-
 ###
-GET http://localhost:8080/api/foo/w/3
+GET http://localhost:8080/api/tc/internet/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/tc/mobile/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/tc/post/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/tc/radio/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/tc/tv/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/tc/w/post/
 Authorization: Token {{auth_token}}

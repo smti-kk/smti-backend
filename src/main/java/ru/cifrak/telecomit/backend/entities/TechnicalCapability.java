@@ -1,5 +1,7 @@
 package ru.cifrak.telecomit.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -15,6 +17,7 @@ import java.io.Serializable;
 @Table
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "split", discriminatorType = DiscriminatorType.STRING)
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class TechnicalCapability extends Auditing implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -30,10 +33,12 @@ public class TechnicalCapability extends Auditing implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_location", nullable = false)
+    @JsonIgnore
     private Location location;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_operator", nullable = false)
+    @JsonIgnore
     private Operator operator;
 
     @Enumerated(EnumType.STRING)
@@ -42,6 +47,7 @@ public class TechnicalCapability extends Auditing implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_request_for_change")
+    @JsonIgnore
     private RequestForChange request;
 
     /**

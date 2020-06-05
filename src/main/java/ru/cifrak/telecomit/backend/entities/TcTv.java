@@ -15,9 +15,9 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue("TV")
-public class TcTV extends TechnicalCapability {
+public class TcTv extends TechnicalCapability {
     @NotNull
-    @Column(nullable = false, length = 3)
+    @Column
     @Convert(converter = SignalConverter.class)
     private List<Signal> type;
 
