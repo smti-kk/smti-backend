@@ -39,7 +39,7 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="technical_capabilityPK"/>
             </column>
             <column name="created_by" type="VARCHAR(255)"/>
-            <column name="created" type="TIMESTAMP WITHOUT TIME ZONE">
+            <column name="created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueDate="now()">
                 <constraints nullable="false"/>
             </column>
             <column name="modified_by" type="VARCHAR(255)"/>
