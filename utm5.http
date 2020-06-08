@@ -1,0 +1,8 @@
+###
+POST http://espd-utm5-app.cifra-k.ru:9080/api/login
+Content-Type: application/json
+
+{
+    "username": "init",
+    "password": "init"
+}

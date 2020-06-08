@@ -33,12 +33,10 @@ public class TechnicalCapability extends Auditing implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_location", nullable = false)
-    @JsonIgnore
     private Location location;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_operator", nullable = false)
-    @JsonIgnore
     private Operator operator;
 
     @Enumerated(EnumType.STRING)
@@ -47,7 +45,6 @@ public class TechnicalCapability extends Auditing implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_request_for_change")
-    @JsonIgnore
     private RequestForChange request;
 
     /**
