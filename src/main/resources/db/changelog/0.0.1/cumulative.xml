@@ -16,4 +16,5 @@
     <include file="0014-fix-seq-after-load-data.xml" relativeToChangelogFile="true" />
     <include file="0015-add-aps.xml" relativeToChangelogFile="true" />
     <include file="0016-add-tech-caps.xml" relativeToChangelogFile="true" />
+    <include file="0017-add-monitoring-to-ap.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
