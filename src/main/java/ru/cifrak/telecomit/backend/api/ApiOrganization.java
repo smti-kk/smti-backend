@@ -12,6 +12,7 @@ import ru.cifrak.telecomit.backend.auth.service.UserService;
 import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.repository.*;
+import ru.cifrak.telecomit.backend.service.ServiceOrganization;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
@@ -28,13 +29,15 @@ public class ApiOrganization {
     private final RepositoryLocation rLocation;
     private final RepositorySmoType rTypeSmo;
     private final RepositoryOrganizationType rTypeOrganization;
+    private final ServiceOrganization sOrganization;
 
-    public ApiOrganization(RepositoryOrganization repository, RepositoryAccessPoints rAccessPoints, RepositoryLocation rLocation, RepositorySmoType rTypeSmo, RepositoryOrganizationType rTypeOrganization) {
+    public ApiOrganization(RepositoryOrganization repository, RepositoryAccessPoints rAccessPoints, RepositoryLocation rLocation, RepositorySmoType rTypeSmo, RepositoryOrganizationType rTypeOrganization, ServiceOrganization sOrganization) {
         this.rOrganization = repository;
         this.rAccessPoints = rAccessPoints;
         this.rLocation = rLocation;
         this.rTypeSmo = rTypeSmo;
         this.rTypeOrganization = rTypeOrganization;
+        this.sOrganization = sOrganization;
     }
 
     @GetMapping
@@ -93,18 +96,24 @@ public class ApiOrganization {
         return rAccessPoints.getAllByOrganizationId(id).stream().map(OrganizationMoreAccessPointDTO::new).collect(Collectors.toList());
     }
 
- /*   @PostMapping(value = "/{id}/ap/", consumes = "application/json", produces = "application/json")
+    @GetMapping("/{id}/ap/{apid}/init-monitoring")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    public ResponseEntity<AccessPoint> createAP(Principal principal, @PathVariable(name = "id") Organization organization, @RequestBody AccessPointNewDTO item) {
-        log.info("->POST /api/organization/{}/ap", organization.getId());
-        switch (item.getType()){
-            case "SMO":
-                ApSMO ent = ApBuilder.build().convert(organization, item);
-                rAccessPoints.save(ent);
+    public ResponseEntity<String> initMonitoring(@PathVariable Integer id, @PathVariable Integer apid) {
+        log.info("->GET /{}/ap/{}/init-monitoring", id, apid);
+        try {
+            sOrganization.initializeMonitoringOnAp(id, apid);
+            log.info("<-GET /{}/ap/{}/init-monitoring", id, apid);
+            return ResponseEntity
+                    .ok()
+                    .header("Content-Type", "application/json")
+                    .body("{\"result\": \"access point enabled in monitoring system\"}");
+        } catch (Exception e) {
+            log.warn("->GET /{}/ap/{}/init-monitoring :EXCEPTION {}", id, apid, e.getMessage());
+            return ResponseEntity
+                    .ok()
+                    .header("Content-Type", "application/json")
+                    .body("{\"result\": \"error: access point NOT enabled in monitoring system due: " + e.getMessage() + "\"}");
         }
+    }
 
-//        final User user = UserService.getUser(principal);
-
-//        return ResponseEntityrOrganization.saveAndFlush(item);
-    }*/
 }
