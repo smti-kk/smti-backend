@@ -58,10 +58,29 @@ public class ApiOrganization {
 
     @PostMapping(value = "/", consumes = "application/json", produces = "application/json")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    public Organization createItem(Principal principal, @RequestBody Organization item) {
+    public ResponseEntity<OrganizationShortDTO> createItem(Principal principal, @RequestBody OrganizationShortDTO value) {
         log.info("->POST /api/organization/ ");
         final User user = UserService.getUser(principal);
-        return rOrganization.saveAndFlush(item);
+        Organization item = new Organization();
+        item.setAddress(value.getAddress());
+        item.setFias(value.getFias());
+        item.setName(value.getName());
+        item.setInn(value.getInn());
+        item.setKpp(value.getKpp());
+        item.setAcronym(value.getAcronym());
+        item.setLocation(rLocation.getOne(value.getLocation()));
+        //TODO: make this work later, when we have some real data...
+//        item.setParent(value.getParent());
+//        item.setChildren(value.getChildren());
+        if (value.getType() != null) {
+            item.setType(rTypeOrganization.getOne(value.getType()));
+        }
+        if (value.getSmo() != null) {
+            item.setSmo(rTypeSmo.getOne(value.getSmo()));
+        }
+        Organization saved = rOrganization.save(item);
+        log.info("<-POST /api/organization/", item.getId());
+        return ResponseEntity.ok(new OrganizationShortDTO(saved));
     }
 
 
