@@ -14,7 +14,7 @@ public class ReportApContractDTO {
     private TypeInternetAccessDTO internetAccess;
     private String type;
     private ReportOrganizationDTO organization;
-    private Long amout;
+    private Long amount;
     private String number;
 
 
@@ -26,7 +26,7 @@ public class ReportApContractDTO {
         this.internetAccess = entity.getInternetAccess() != null ? new TypeInternetAccessDTO(entity.getInternetAccess()) : null;
         this.type = "CONTRACT";
         this.organization = entity.getOrganization() != null ? new ReportOrganizationDTO(entity.getOrganization()) : null;
-        this.amout = entity.getAmount();
+        this.amount = entity.getAmount();
         this.number = entity.getNumber();
     }
 }
