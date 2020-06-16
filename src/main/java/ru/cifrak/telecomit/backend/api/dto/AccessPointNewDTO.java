@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -19,6 +20,8 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class AccessPointNewDTO {
     private String address;
     private Integer billing_id;
@@ -26,6 +29,7 @@ public class AccessPointNewDTO {
     private String contractor;
     private String customer;
     private String description;
+    private String declaredSpeed;
     private Integer government_program;
     private String ip_config;
     private String max_amount;
@@ -37,5 +41,7 @@ public class AccessPointNewDTO {
     private String ucn;
     private Boolean visible;
     private String type;
+    @JsonSerialize(using = GeometrySerializer.class)
+    @JsonDeserialize(using = GeometryDeserializer.class)
     private Point point;
 }

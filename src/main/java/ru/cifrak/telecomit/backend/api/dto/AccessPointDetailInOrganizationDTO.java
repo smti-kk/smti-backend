@@ -9,11 +9,17 @@ import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * <b>DTO</b> <i>Access Point</i> with all common properties, except ORGANIZATION.
+ * <br/>With all subtypes for each Type.
+ */
 @Data
 @AllArgsConstructor
-public class OrganizationMoreAccessPointDTO {
+public class AccessPointDetailInOrganizationDTO {
+    // COMMON FIELDS
     private Integer id;
 
     @JsonSerialize(using = GeometrySerializer.class)
@@ -41,13 +47,27 @@ public class OrganizationMoreAccessPointDTO {
     private Integer ucn;
     private LocalDateTime updatedAt;
     private Boolean visible;
-
     private OperatorSimpleDTO operator;
     private TypeInternetAccessDTO internetAccess;
     private String type;
 
+    // SMO
+    // -- NA
+    // ESPD
+    // -- NA
+    // RSMO
+    // -- NA
+    // ZSPD
+    private String hardware;
+    private String software;
+    // CONTRACT
+    private String number;
+    private Long amount;
+    private LocalDate started;
+    private LocalDate ended;
 
-    public OrganizationMoreAccessPointDTO(AccessPoint entity) {
+    public AccessPointDetailInOrganizationDTO(AccessPoint entity) {
+        // COMMON FIELDS
         this.id = entity.getId();
         this.point = entity.getPoint();
         this.address = entity.getAddress();
@@ -86,10 +106,16 @@ public class OrganizationMoreAccessPointDTO {
             this.type = "ESPD";
         } else if (entity.getClass().isAssignableFrom(ApZSPD.class)) {
             this.type = "ZSPD";
+            this.hardware = ((ApZSPD) entity).getHardware() != null? ((ApZSPD) entity).getHardware().getName() : null;
+            this.software = ((ApZSPD) entity).getSoftware() != null? ((ApZSPD) entity).getSoftware().getName() : null;
         } else if (entity.getClass().isAssignableFrom(ApRSMO.class)) {
             this.type = "RSMO";
         } else if (entity.getClass().isAssignableFrom(ApContract.class)) {
             this.type = "CONTRACT";
+            this.number = ((ApContract)entity).getNumber();
+            this.amount = ((ApContract)entity).getAmount();
+            this.started = ((ApContract)entity).getStarted();
+            this.ended = ((ApContract)entity).getEnded();
         }
     }
 }

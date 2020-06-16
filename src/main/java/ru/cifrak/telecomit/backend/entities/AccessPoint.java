@@ -2,11 +2,8 @@ package ru.cifrak.telecomit.backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.vladmihalcea.hibernate.type.basic.Inet;
-import com.vladmihalcea.hibernate.type.basic.PostgreSQLInetType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.TypeDef;
 import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
@@ -37,7 +34,7 @@ import java.io.Serializable;
                         @NamedAttributeNode("governmentDevelopmentProgram"),
                         @NamedAttributeNode("internetAccess"),
                         @NamedAttributeNode("operator"),
-                        @NamedAttributeNode(value = "organization",subgraph = "org-loc"),
+                        @NamedAttributeNode(value = "organization", subgraph = "org-loc"),
                 },
                 subgraphs = {
                         @NamedSubgraph(
@@ -107,8 +104,10 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @Column(length = 500)
     private String node;
 
-    //    @JsonSerialize(using = GeometrySerializer.class)
-//    @JsonDeserialize(using = GeometryDeserializer.class)
+    //TODO: check about this value
+    // and if this is good, then make migration for it
+    // columnDefinition = "geometry(Point,4326)"
+    // from this resource i'v saw https://stackoverflow.com/questions/59291785/error-de-serializing-geometry-with-jackson
     @Column(nullable = false)
     private Point point;
 

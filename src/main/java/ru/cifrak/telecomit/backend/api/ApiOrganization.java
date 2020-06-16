@@ -4,17 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import ru.cifrak.telecomit.backend.api.dto.OrganizationDTO;
-import ru.cifrak.telecomit.backend.api.dto.OrganizationMoreAccessPointDTO;
-import ru.cifrak.telecomit.backend.api.dto.OrganizationShortDTO;
-import ru.cifrak.telecomit.backend.api.dto.OrganizationWithAccessPointsDTO;
-import ru.cifrak.telecomit.backend.auth.service.UserService;
+import ru.cifrak.telecomit.backend.api.dto.*;
 import ru.cifrak.telecomit.backend.entities.Organization;
-import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.repository.*;
+import ru.cifrak.telecomit.backend.service.ServiceAccessPoint;
 
 import javax.transaction.Transactional;
-import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,13 +23,16 @@ public class ApiOrganization {
     private final RepositoryLocation rLocation;
     private final RepositorySmoType rTypeSmo;
     private final RepositoryOrganizationType rTypeOrganization;
+    private final ServiceAccessPoint accesspoints;
 
-    public ApiOrganization(RepositoryOrganization repository, RepositoryAccessPoints rAccessPoints, RepositoryLocation rLocation, RepositorySmoType rTypeSmo, RepositoryOrganizationType rTypeOrganization) {
+
+    public ApiOrganization(RepositoryOrganization repository, RepositoryAccessPoints rAccessPoints, RepositoryLocation rLocation, RepositorySmoType rTypeSmo, RepositoryOrganizationType rTypeOrganization, ServiceAccessPoint accesspoints) {
         this.rOrganization = repository;
         this.rAccessPoints = rAccessPoints;
         this.rLocation = rLocation;
         this.rTypeSmo = rTypeSmo;
         this.rTypeOrganization = rTypeOrganization;
+        this.accesspoints = accesspoints;
     }
 
     @GetMapping
@@ -58,9 +56,8 @@ public class ApiOrganization {
 
     @PostMapping(value = "/", consumes = "application/json", produces = "application/json")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    public ResponseEntity<OrganizationShortDTO> createItem(Principal principal, @RequestBody OrganizationShortDTO value) {
+    public ResponseEntity<OrganizationShortDTO> createItem(@RequestBody OrganizationShortDTO value) {
         log.info("->POST /api/organization/ ");
-        final User user = UserService.getUser(principal);
         Organization item = new Organization();
         item.setAddress(value.getAddress());
         item.setFias(value.getFias());
@@ -79,7 +76,7 @@ public class ApiOrganization {
             item.setSmo(rTypeSmo.getOne(value.getSmo()));
         }
         Organization saved = rOrganization.save(item);
-        log.info("<-POST /api/organization/", item.getId());
+        log.info("<-POST /api/organization/{}", item.getId());
         return ResponseEntity.ok(new OrganizationShortDTO(saved));
     }
 
@@ -107,23 +104,26 @@ public class ApiOrganization {
 
     @GetMapping("/{id}/ap/")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    public List<OrganizationMoreAccessPointDTO> apsByOrganization(@PathVariable Integer id) {
+    public List<AccessPointDetailInOrganizationDTO> apsByOrganization(@PathVariable Integer id) {
         log.info("->GET /api/organization/{}/ap", id);
-        return rAccessPoints.getAllByOrganizationId(id).stream().map(OrganizationMoreAccessPointDTO::new).collect(Collectors.toList());
+        return rAccessPoints.getAllByOrganizationId(id).stream().map(AccessPointDetailInOrganizationDTO::new).collect(Collectors.toList());
     }
 
- /*   @PostMapping(value = "/{id}/ap/", consumes = "application/json", produces = "application/json")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    public ResponseEntity<AccessPoint> createAP(Principal principal, @PathVariable(name = "id") Organization organization, @RequestBody AccessPointNewDTO item) {
+    @PostMapping(value = "/{id}/ap/", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> createAP(
+            @PathVariable(name = "id") final Organization organization,
+            @RequestBody final AccessPointNewDTO dto
+    ) {
         log.info("->POST /api/organization/{}/ap", organization.getId());
-        switch (item.getType()){
-            case "SMO":
-                ApSMO ent = ApBuilder.build().convert(organization, item);
-                rAccessPoints.save(ent);
+        AccessPointDetailInOrganizationDTO bNew;
+        try {
+            bNew = accesspoints.giveNewCreatedAccessPoint(organization, dto);
+            log.info("<-POST /api/organization/{}/ap/{}", organization.getId(), bNew.getId());
+            return ResponseEntity.ok(bNew);
+        } catch (Exception e) {
+            log.error("<-POST /api/organization/{}/ap/ :: {}", organization.getId(), e.getMessage());
+            return ResponseEntity.ok("{\"exception\":\"" + e.getMessage() + "\"}");
         }
-
-//        final User user = UserService.getUser(principal);
-
-//        return ResponseEntityrOrganization.saveAndFlush(item);
-    }*/
+    }
 }
