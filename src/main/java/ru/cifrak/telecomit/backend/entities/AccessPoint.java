@@ -73,7 +73,10 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @Column
     private Integer billingId;
 
-    //TODO: всё таки разобраться что это за штука и или текстом или еще как
+    /**
+     * Год когда закончилась гос.программа.
+     * <br/>Нам интересен только год, месяц и день не интересно.
+     */
     @Column
     private Integer completed;
 
@@ -95,9 +98,13 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @Column
     private Integer maxAmount;
 
+    //TODO: for future thoughts:
+    // this information we taking from monitoring system (i.e. Zabbix)
     @Column(name = "net_traffic_last_month")
     private Long netTrafficLastMonth;
 
+    //TODO: for future thoughts:
+    // this information we taking from monitoring system (i.e. Zabbix)
     @Column(name = "net_traffic_last_week")
     private Long netTrafficLastWeek;
 
@@ -118,6 +125,7 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @Column(length = 4)
     private String state;
 
+    @Column
     private Integer ucn;
 
     @Column(nullable = false)

@@ -16,13 +16,18 @@ public class ServiceAccessPoint {
     private final RepositoryLocation rLocation;
     private final RepositorySmoType rTypeSmo;
     private final RepositoryOrganizationType rTypeOrganization;
+    private final RepositoryGovernmentProgram rGovernmentProgram;
+    private final RepositoryInternetAccessType rInternetAccessType;
 
-    public ServiceAccessPoint(RepositoryOrganization rOrganization, RepositoryAccessPoints rAccessPoints, RepositoryLocation rLocation, RepositorySmoType rTypeSmo, RepositoryOrganizationType rTypeOrganization) {
+
+    public ServiceAccessPoint(RepositoryOrganization rOrganization, RepositoryAccessPoints rAccessPoints, RepositoryLocation rLocation, RepositorySmoType rTypeSmo, RepositoryOrganizationType rTypeOrganization, RepositoryGovernmentProgram rGovernmentProgram, RepositoryInternetAccessType rInternetAccessType) {
         this.rOrganization = rOrganization;
         this.rAccessPoints = rAccessPoints;
         this.rLocation = rLocation;
         this.rTypeSmo = rTypeSmo;
         this.rTypeOrganization = rTypeOrganization;
+        this.rGovernmentProgram = rGovernmentProgram;
+        this.rInternetAccessType = rInternetAccessType;
     }
 
     public AccessPointDetailInOrganizationDTO giveNewCreatedAccessPoint(@NotNull final Organization organization, @NotNull final AccessPointNewDTO dto) throws Exception {
@@ -45,11 +50,19 @@ public class ServiceAccessPoint {
             case "ZSPD":
                 final ApZSPD zspd = new ApZSPD();
                 initializeWithCommonFields(zspd, organization, dto);
+                //TODO: here we should insert real data
+                zspd.setHardware(null);
+                //TODO: here we should insert real data
+                zspd.setSoftware(null);
                 rAccessPoints.save(zspd);
                 return new AccessPointDetailInOrganizationDTO(zspd);
             case "CONTRACT":
                 final ApContract contract = new ApContract();
                 initializeWithCommonFields(contract, organization, dto);
+                contract.setNumber(dto.getNumber());
+                contract.setAmount(dto.getAmount());
+                contract.setStarted(dto.getStarted());
+                contract.setEnded(dto.getEnded());
                 rAccessPoints.save(contract);
                 return new AccessPointDetailInOrganizationDTO(contract);
             default:
@@ -65,21 +78,18 @@ public class ServiceAccessPoint {
         item.setDeclaredSpeed(dto.getDeclaredSpeed());
         item.setDescription(dto.getDescription());
         item.setIpConfig(dto.getIp_config());
-//                item.setMaxAmount(dto.get);
-//                item.setNetTrafficLastMonth(dto.get);
-//                item.setNetTrafficLastWeek(dto.get);
+        item.setMaxAmount(dto.getMax_amount());
         item.setNode(dto.getNode());
         dto.getPoint().setSRID(4326);
         item.setPoint(dto.getPoint());
         item.setQuality(dto.getQuality());
         item.setState(dto.getState());
         item.setOrganization(organization);
-//                item.setUcn(dto.getUcn());
+        item.setUcn(dto.getUcn());
         item.setVisible(dto.getVisible());
-//                item.setGovernmentDevelopmentProgram( dto.getGovernment_program());
-//                item.setInternetAccess(r dto.getInternetAccess());
-//                item.setCompleted(dto.getBilling_id());
-//                item.setOperator(dto.getOperator());
+        item.setGovernmentDevelopmentProgram(dto.getGovernment_program() != null ? rGovernmentProgram.getOne(dto.getGovernment_program()) : null);
+        item.setInternetAccess(dto.getInternetAccess() != null ? rInternetAccessType.getOne(dto.getInternetAccess()) : null);
+        item.setCompleted(dto.getCompleted());
         item.setDeleted(Boolean.FALSE);
         return item;
     }
