@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.entities;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 
@@ -20,10 +21,11 @@ import java.io.Serializable;
 })
 
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @NoArgsConstructor
 
 @Entity
-@Table
+@Table(name = "access_point")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 //@NamedEntityGraph(name = "AccessPointLocation", attributeNodes = {@NamedAttributeNode(value = "loc")})
@@ -65,6 +67,7 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @SequenceGenerator(name = "ACCESSPOINT_ID_GENERATOR", sequenceName = "accesspoint_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ACCESSPOINT_ID_GENERATOR")
     @Column(unique = true, nullable = false)
+    @EqualsAndHashCode.Include
     private Integer id;
 
     @Column(length = 1000)

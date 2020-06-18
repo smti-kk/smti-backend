@@ -8,6 +8,7 @@ import ru.cifrak.telecomit.backend.api.dto.*;
 import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.repository.*;
 import ru.cifrak.telecomit.backend.service.ServiceAccessPoint;
+import ru.cifrak.telecomit.backend.service.ServiceOrganization;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -24,15 +25,17 @@ public class ApiOrganization {
     private final RepositorySmoType rTypeSmo;
     private final RepositoryOrganizationType rTypeOrganization;
     private final ServiceAccessPoint accesspoints;
+    private final ServiceOrganization sOrganization;
 
 
-    public ApiOrganization(RepositoryOrganization repository, RepositoryAccessPoints rAccessPoints, RepositoryLocation rLocation, RepositorySmoType rTypeSmo, RepositoryOrganizationType rTypeOrganization, ServiceAccessPoint accesspoints) {
+    public ApiOrganization(RepositoryOrganization repository, RepositoryAccessPoints rAccessPoints, RepositoryLocation rLocation, RepositorySmoType rTypeSmo, RepositoryOrganizationType rTypeOrganization, ServiceAccessPoint accesspoints, ServiceOrganization sOrganization) {
         this.rOrganization = repository;
         this.rAccessPoints = rAccessPoints;
         this.rLocation = rLocation;
         this.rTypeSmo = rTypeSmo;
         this.rTypeOrganization = rTypeOrganization;
         this.accesspoints = accesspoints;
+        this.sOrganization = sOrganization;
     }
 
     @GetMapping
@@ -124,6 +127,26 @@ public class ApiOrganization {
         } catch (Exception e) {
             log.error("<-POST /api/organization/{}/ap/ :: {}", organization.getId(), e.getMessage());
             return ResponseEntity.ok("{\"exception\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping("/{id}/ap/{apid}/init-monitoring")
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    public ResponseEntity<String> initMonitoring(@PathVariable Integer id, @PathVariable Integer apid) {
+        log.info("->GET /{}/ap/{}/init-monitoring", id, apid);
+        try {
+            sOrganization.initializeMonitoringOnAp(id, apid);
+            log.info("<-GET /{}/ap/{}/init-monitoring", id, apid);
+            return ResponseEntity
+                    .ok()
+                    .header("Content-Type", "application/json")
+                    .body("{\"result\": \"access point enabled in monitoring system\"}");
+        } catch (Exception e) {
+            log.warn("->GET /{}/ap/{}/init-monitoring :EXCEPTION {}", id, apid, e.getMessage());
+            return ResponseEntity
+                    .ok()
+                    .header("Content-Type", "application/json")
+                    .body("{\"result\": \"error: access point NOT enabled in monitoring system due: " + e.getMessage() + "\"}");
         }
     }
 }

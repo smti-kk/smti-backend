@@ -6,3 +6,60 @@ Content-Type: application/json
     "username": "init",
     "password": "init"
 }
+
+> {% client.global.set("session_id", response.body.session_id); %}
+
+###
+GET http://espd-utm5-app.cifra-k.ru:9080/api/users/accounts?account_id=1
+Authorization: session_id {{session_id}}
+
+###
+GET http://espd-utm5-app.cifra-k.ru:9080/api/users/?user_id=2
+Authorization: session_id {{session_id}}
+
+
+### ---------------------------------------------------------------------------
+POST http://espd-utm5-app.cifra-k.ru:9080/api/users/
+Content-Type: application/json
+Authorization: session_id {{session_id}}
+
+{"login": "foo-test-1",
+  "password": "foo",
+  "full_name": "foo-test-1",
+  "is_juridical": false,
+  "juridical_address": "",
+  "actual_address": "",
+  "flat_number": "",
+  "entrance": "",
+  "floor": "",
+  "district": "",
+  "building": "",
+  "passport": "",
+  "house_id": 0,
+  "work_telephone": "",
+  "home_telephone": "",
+  "mobile_telephone": "",
+  "web_page": "",
+  "icq_number": "",
+  "tax_number": "",
+  "kpp_number": "",
+  "email": "",
+  "bank_id": 0,
+  "bank_account": "",
+  "comments": "",
+  "personal_manager": "",
+  "connect_date": 0,
+  "is_send_invoice": false,
+  "advance_payment": 0,
+  "router_id": 0,
+  "port_number": 0,
+  "binded_currency_id": 0,
+  "additional_params": [],
+  "groups": [102],
+  "is_blocked": false,
+  "balance": 0,
+  "credit": 0,
+  "vat_rate": 0,
+  "sale_tax_rate": 0,
+  "int_status": 0
+}
