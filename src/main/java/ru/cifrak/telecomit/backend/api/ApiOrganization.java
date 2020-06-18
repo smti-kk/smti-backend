@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-
 @RestController
 @RequestMapping("/api/organization")
 public class ApiOrganization {
@@ -142,7 +141,7 @@ public class ApiOrganization {
                     .header("Content-Type", "application/json")
                     .body("{\"result\": \"access point enabled in monitoring system\"}");
         } catch (Exception e) {
-            log.warn("->GET /{}/ap/{}/init-monitoring :EXCEPTION {}", id, apid, e.getMessage());
+            log.warn("<-GET /{}/ap/{}/init-monitoring :EXCEPTION {}", id, apid, e.getMessage());
             return ResponseEntity
                     .ok()
                     .header("Content-Type", "application/json")
