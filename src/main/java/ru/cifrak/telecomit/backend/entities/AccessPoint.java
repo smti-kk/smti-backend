@@ -2,11 +2,8 @@ package ru.cifrak.telecomit.backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.vladmihalcea.hibernate.type.basic.Inet;
-import com.vladmihalcea.hibernate.type.basic.PostgreSQLInetType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.TypeDef;
 import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
@@ -37,7 +34,7 @@ import java.io.Serializable;
                         @NamedAttributeNode("governmentDevelopmentProgram"),
                         @NamedAttributeNode("internetAccess"),
                         @NamedAttributeNode("operator"),
-                        @NamedAttributeNode(value = "organization",subgraph = "org-loc"),
+                        @NamedAttributeNode(value = "organization", subgraph = "org-loc"),
                 },
                 subgraphs = {
                         @NamedSubgraph(
@@ -76,7 +73,10 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @Column
     private Integer billingId;
 
-    //TODO: всё таки разобраться что это за штука и или текстом или еще как
+    /**
+     * Год когда закончилась гос.программа.
+     * <br/>Нам интересен только год, месяц и день не интересно.
+     */
     @Column
     private Integer completed;
 
@@ -98,17 +98,23 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @Column
     private Integer maxAmount;
 
+    //TODO: for future thoughts:
+    // this information we taking from monitoring system (i.e. Zabbix)
     @Column(name = "net_traffic_last_month")
     private Long netTrafficLastMonth;
 
+    //TODO: for future thoughts:
+    // this information we taking from monitoring system (i.e. Zabbix)
     @Column(name = "net_traffic_last_week")
     private Long netTrafficLastWeek;
 
     @Column(length = 500)
     private String node;
 
-    //    @JsonSerialize(using = GeometrySerializer.class)
-//    @JsonDeserialize(using = GeometryDeserializer.class)
+    //TODO: check about this value
+    // and if this is good, then make migration for it
+    // columnDefinition = "geometry(Point,4326)"
+    // from this resource i'v saw https://stackoverflow.com/questions/59291785/error-de-serializing-geometry-with-jackson
     @Column(nullable = false)
     private Point point;
 
@@ -119,6 +125,7 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @Column(length = 4)
     private String state;
 
+    @Column
     private Integer ucn;
 
     @Column(nullable = false)

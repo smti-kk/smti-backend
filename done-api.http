@@ -216,13 +216,13 @@ Content-Type: application/json
 GET http://localhost:8080/api/organization/3/ap/
 Authorization: Token {{auth_token}}
 
-###
+###            SMO
 POST http://localhost:8080/api/organization/3/ap/
 Authorization: Token {{auth_token}}
 Content-Type: application/json
 
 {
-  "address": "ftgnjfgmn",
+  "address": "bar test 1",
   "billing_id": null,
   "internetAccess": 3,
   "contractor": "hmhm",
@@ -238,10 +238,153 @@ Content-Type: application/json
   "state": null,
   "ucn": null,
   "visible": true,
-  "point": "SRID=4326;POINT (90.9261111 56.8919444)",
-
+  "point": {
+    "type": "Point",
+    "coordinates": [
+      96.0456,
+      56.6763888
+    ]
+  },
+  "type": "SMO",
   "id": null
 }
+
+###            ESPD
+POST http://localhost:8080/api/organization/3/ap/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "bar test 2",
+  "billing_id": null,
+  "internetAccess": 3,
+  "contractor": "hmhm",
+  "customer": null,
+  "description": null,
+  "government_program": 2,
+  "ip_config": null,
+  "max_amount": null,
+  "name": " КГБУЗ \"Красноярский краевой психоневрологический диспансер №1\" Филиал 7(г.Ачинск) ККПНД №1",
+  "node": "fghmhmhm",
+  "operator": null,
+  "quality": "good",
+  "state": null,
+  "ucn": null,
+  "visible": true,
+  "point": {
+    "type": "Point",
+    "coordinates": [
+      96.0456,
+      56.6763888
+    ]
+  },
+  "type": "ESPD",
+  "id": null
+}
+
+###            RSMO
+POST http://localhost:8080/api/organization/3/ap/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "bar test 2",
+  "billing_id": null,
+  "internetAccess": 3,
+  "contractor": "hmhm",
+  "customer": null,
+  "description": null,
+  "government_program": 2,
+  "ip_config": null,
+  "max_amount": null,
+  "name": " КГБУЗ \"Красноярский краевой психоневрологический диспансер №1\" Филиал 7(г.Ачинск) ККПНД №1",
+  "node": "fghmhmhm",
+  "operator": null,
+  "quality": "good",
+  "state": null,
+  "ucn": null,
+  "visible": true,
+  "point": {
+    "type": "Point",
+    "coordinates": [
+      96.0456,
+      56.6763888
+    ]
+  },
+  "type": "RSMO",
+  "id": null
+}
+
+###            ZSPD
+POST http://localhost:8080/api/organization/3/ap/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "bar test ZSPD",
+  "billing_id": null,
+  "internetAccess": 3,
+  "contractor": "hmhm",
+  "customer": null,
+  "description": null,
+  "government_program": 2,
+  "ip_config": null,
+  "max_amount": null,
+  "name": " КГБУЗ \"Красноярский краевой психоневрологический диспансер №1\" Филиал 7(г.Ачинск) ККПНД №1",
+  "node": "fghmhmhm",
+  "operator": null,
+  "quality": "good",
+  "state": null,
+  "ucn": null,
+  "visible": true,
+  "point": {
+    "type": "Point",
+    "coordinates": [
+      96.0456,
+      56.6763888
+    ]
+  },
+  "type": "ZSPD",
+  "id": null
+}
+
+###            CONTRACT
+POST http://localhost:8080/api/organization/3/ap/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "bar test CONTRACT",
+  "billing_id": null,
+  "internetAccess": 3,
+  "contractor": "hmhm",
+  "customer": null,
+  "description": null,
+  "government_program": 2,
+  "ip_config": null,
+  "max_amount": null,
+  "name": " КГБУЗ \"Красноярский краевой психоневрологический диспансер №1\" Филиал 7(г.Ачинск) ККПНД №1",
+  "node": "fghmhmhm",
+  "operator": null,
+  "quality": "good",
+  "state": null,
+  "ucn": null,
+  "visible": true,
+  "point": {
+    "type": "Point",
+    "coordinates": [
+      96.0456,
+      56.6763888
+    ]
+  },
+  "type": "CONTRACT",
+  "id": null,
+  "number": "12-3/12",
+  "amount": 10012,
+  "started": "2020-01-01",
+  "ended": "2020-12-01"
+}
+
 
 
 ### ********************************************************************************************************************

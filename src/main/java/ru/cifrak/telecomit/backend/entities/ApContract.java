@@ -15,7 +15,6 @@ import java.time.LocalDate;
 public class ApContract extends AccessPoint{
     @Column
     private String number;
-    //TODO: ask Lev about contract
     @Column
     private Long amount;
     @Column
