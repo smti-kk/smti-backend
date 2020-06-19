@@ -1,5 +1,8 @@
 package ru.cifrak.telecomit.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -60,7 +63,7 @@ public class ServiceOrganization {
 
     //TODO: implement fully for ticket #473
     private void insertIntoUTM5(AccessPoint ap) {
-        log.info("::[->]:: insert into UTM5");
+        log.info("[ ->] insert into UTM5");
         WebClient client = WebClient
                 .builder()
                 .baseUrl(utm5Config.getHost())
@@ -71,21 +74,21 @@ public class ServiceOrganization {
         Map<String, String> auth = new HashMap<>();
         auth.put("username", utm5Config.getLogin());
         auth.put("password", utm5Config.getPassword());
-        log.info("auth account: {}", auth);
+        log.info("[   ] auth account: {}", auth);
         WebClient.RequestHeadersSpec<?> authenticate = client
                 .post()
                 .uri("/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(auth));
         String resp = authenticate.retrieve().bodyToMono(String.class).block();
-        log.info("::  []::authenticated: {}", resp);
-        log.info("::  []::go for create user");
-        log.info("::[<-]:: insert into UTM5");
+        log.info("[   ] authenticated: {}", resp);
+        log.info("[   ] go for create user");
+        log.info("[ <-] insert into UTM5");
     }
 
     //TODO: ticket #475
-    private void insertIntoZabbix(AccessPoint ap) {
-        log.info("::[->]:: insert into ZABBIX");
+    private void insertIntoZabbix(AccessPoint ap) throws JsonProcessingException {
+        log.info("[ ->] insert into ZABBIX");
         WebClient client = WebClient
                 .builder()
                 .baseUrl(zabbixConfig.getHost())
@@ -93,26 +96,28 @@ public class ServiceOrganization {
                 .defaultUriVariables(Collections.singletonMap("url", zabbixConfig.getHost()))
                 .build();
 
-        String auth = "{\n" +
-                "  \"jsonrpc\": \"2.0\",\n" +
-                "  \"method\": \"user.login\",\n" +
-                "  \"params\": {\n" +
-                "    \"user\": \"" + zabbixConfig.getLogin() + "\",\n" +
-                "    \"password\": \"" + zabbixConfig.getPassword() + "\"\n" +
-                "  },\n" +
-                "  \"id\": 1,\n" +
-                "  \"auth\": null\n" +
-                "}";
+        ObjectMapper mapper = new ObjectMapper();
+
+        ObjectNode jsonRPCParams = mapper.createObjectNode();
+        jsonRPCParams.put("user", zabbixConfig.getLogin());
+        jsonRPCParams.put("password", zabbixConfig.getPassword());
+
+        ObjectNode jsonRPC = mapper.createObjectNode();
+        jsonRPC.put("jsonrpc", "2.0");
+        jsonRPC.put("method", "user.login");
+        jsonRPC.set("params", jsonRPCParams);
+        jsonRPC.put("id", 100);
+        jsonRPC.set("auth", null);
 
         WebClient.RequestHeadersSpec<?> authenticate = client
                 .post()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(auth));
+                .body(BodyInserters.fromValue(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRPC)));
         String resp = authenticate.retrieve().bodyToMono(String.class).block();
-        log.info("::  []::authenticated: {}", resp);
-        log.info("::  []::go for create user");
+        log.info("[   ] authenticated: {}", resp);
+        log.info("[   ] go for create user");
         //TODO:
         // создать, что?
-        log.info("::[<-]:: insert into ZABBIX");
+        log.info("[ <-] insert into ZABBIX");
     }
 }
