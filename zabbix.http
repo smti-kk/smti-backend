@@ -1,4 +1,4 @@
-###
+###      Authorization
 POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
 Content-Type: application/json
 
@@ -15,9 +15,7 @@ Content-Type: application/json
 
 > {% client.global.set("auth", response.body.result); %}
 
-
-
-###
+###      get all hosts
 POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
 Content-Type: application/json
 
@@ -33,6 +31,104 @@ Content-Type: application/json
             "interfaceid",
             "ip"
         ]
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
+###      get all group of hosts
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "hostgroup.get",
+    "params": {
+        "output": ["groupid","name"]
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
+
+
+###      get Templates
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "template.get",
+    "params": {
+        "output": ["templateid","name"]
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
+###      create HOST
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "host.create",
+    "params": {
+        "host": "1.002.foo-bar.ru",
+        "interfaces": [
+            {
+                "type": 2,
+                "main": 1,
+                "useip": 1,
+                "ip": "192.168.3.1",
+                "dns": "",
+                "port": "161"
+            }
+        ],
+        "groups": [
+            {
+                "groupid": "34"
+            }
+        ],
+        "tags": [
+            {
+                "tag": "project",
+                "value": "telecom-it"
+            }
+        ],
+        "templates": [
+            {
+                "templateid": "10233"
+            }
+        ],
+        "macros": [
+            {
+                "macro": "{$SNMP_COMMUNITY}",
+                "value": "ESPD_monitor"
+            }
+        ]
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
+###      get STATUS OF HOST
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "trigger.get",
+    "params": {
+        "output": [
+            "extend"
+        ],
+        "selectTags": "extend",
+        "selectHosts": ["hostid","name"],
+        "filter": {
+             "value": "1"
+        }
+
     },
     "id": 2,
     "auth": "{{auth}}"

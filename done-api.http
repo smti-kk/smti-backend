@@ -496,5 +496,3 @@ Authorization: Token {{auth_token}}
 ### goo org and ap
 GET http://localhost:8080/api/organization/3410/ap/3802/init-monitoring
 Authorization: Token {{auth_token}}
-
-### Resp: {"session_id" : "Q2RQ0DRJKRETPVzxlFrXL8b7mtKLHIGhIh5JuWcF"}

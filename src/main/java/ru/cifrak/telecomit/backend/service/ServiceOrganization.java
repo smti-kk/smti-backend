@@ -58,6 +58,7 @@ public class ServiceOrganization {
         }
     }
 
+    //TODO: implement fully for ticket #473
     private void insertIntoUTM5(AccessPoint ap) {
         log.info("::[->]:: insert into UTM5");
         WebClient client = WebClient
@@ -82,6 +83,7 @@ public class ServiceOrganization {
         log.info("::[<-]:: insert into UTM5");
     }
 
+    //TODO: ticket #475
     private void insertIntoZabbix(AccessPoint ap) {
         log.info("::[->]:: insert into ZABBIX");
         WebClient client = WebClient
@@ -91,10 +93,6 @@ public class ServiceOrganization {
                 .defaultUriVariables(Collections.singletonMap("url", zabbixConfig.getHost()))
                 .build();
 
-        /*Map<String, String> auth = new HashMap<>();
-        auth.put("username", zabbixConfig.getLogin());
-        auth.put("password", zabbixConfig.getPassword());
-        log.info("auth account: {}", auth);*/
         String auth = "{\n" +
                 "  \"jsonrpc\": \"2.0\",\n" +
                 "  \"method\": \"user.login\",\n" +
@@ -108,12 +106,13 @@ public class ServiceOrganization {
 
         WebClient.RequestHeadersSpec<?> authenticate = client
                 .post()
-//                .uri("/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(auth));
         String resp = authenticate.retrieve().bodyToMono(String.class).block();
         log.info("::  []::authenticated: {}", resp);
         log.info("::  []::go for create user");
+        //TODO:
+        // создать, что?
         log.info("::[<-]:: insert into ZABBIX");
     }
 }
