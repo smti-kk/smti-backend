@@ -133,3 +133,40 @@ Content-Type: application/json
     "id": 2,
     "auth": "{{auth}}"
 }
+
+
+
+
+###################################################
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{  "jsonrpc" : "2.0",
+  "method" : "host.create",
+  "params" : {
+    "host" : "hostName",
+    "interfaces" : [ {
+      "type" : 2,
+      "main" : 1,
+      "useip" : 1,
+      "ip" : "macro",
+      "port" : "161"
+    } ],
+    "groups" : [ {
+      "groupid" : "34"
+    } ],
+    "tags" : [ {
+      "tag" : "project",
+      "value" : "telecom-it"
+    } ],
+    "templates" : [ {
+      "templateid" : "10233"
+    } ],
+    "macros" : [ {
+      "macro" : "{$SNMP_COMMUNITY}",
+      "value" : "ESPD_monitor"
+    } ]
+  },
+  "id" : 101,
+  "auth" : "d7b5befea060a3cea989d73dcdb51f7a"
+}

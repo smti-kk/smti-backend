@@ -129,12 +129,13 @@ public class ApiOrganization {
         }
     }
 
-    @GetMapping("/{id}/ap/{apid}/init-monitoring")
+    @PostMapping("/{id}/ap/{apid}/init-monitoring")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    public ResponseEntity<String> initMonitoring(@PathVariable Integer id, @PathVariable Integer apid) {
+    public ResponseEntity<String> initMonitoring(@PathVariable Integer id, @PathVariable Integer apid,
+                                                 @RequestBody final MonitoringAccessPointWizardDTO wizard) {
         log.info("->GET /{}/ap/{}/init-monitoring", id, apid);
         try {
-            sOrganization.initializeMonitoringOnAp(id, apid);
+            sOrganization.initializeMonitoringOnAp(id, apid, wizard);
             log.info("<-GET /{}/ap/{}/init-monitoring", id, apid);
             return ResponseEntity
                     .ok()
