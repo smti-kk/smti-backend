@@ -2,7 +2,6 @@ package ru.cifrak.telecomit.backend.entities.external;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.cifrak.telecomit.backend.entities.Auditing;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,5 +21,11 @@ public class MonitoringAccessPoint implements Serializable {
 
     @Column
     private String login;
+
+    @Column
+    private String device;
+
+    @Column
+    private String sensor;
 
 }

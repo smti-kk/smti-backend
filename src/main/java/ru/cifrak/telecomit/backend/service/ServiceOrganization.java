@@ -16,7 +16,11 @@ import ru.cifrak.telecomit.backend.api.dto.OrganizationDTO;
 import ru.cifrak.telecomit.backend.api.dto.ZabbixDTO;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.Organization;
+import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
+import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
 import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
+import ru.cifrak.telecomit.backend.repository.RepositoryJournalMAP;
+import ru.cifrak.telecomit.backend.repository.RepositoryMonitoringAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
 import ru.cifrak.telecomit.backend.security.UTM5Config;
 import ru.cifrak.telecomit.backend.security.ZabbixConfig;
@@ -33,12 +37,16 @@ import java.util.Map;
 public class ServiceOrganization {
     private final RepositoryOrganization rOrganization;
     private final RepositoryAccessPoints rAccessPoints;
+    private final RepositoryMonitoringAccessPoints rMonitoringAccessPoints;
+    private final RepositoryJournalMAP rJournalMAP;
     private final UTM5Config utm5Config;
     private final ZabbixConfig zabbixConfig;
 
-    public ServiceOrganization(RepositoryOrganization rOrganization, RepositoryAccessPoints rAccessPoints, UTM5Config utm5Config, ZabbixConfig zabbixConfig) {
+    public ServiceOrganization(RepositoryOrganization rOrganization, RepositoryAccessPoints rAccessPoints, RepositoryMonitoringAccessPoints rMonitoringAccessPoints, RepositoryJournalMAP rJournalMAP, UTM5Config utm5Config, ZabbixConfig zabbixConfig) {
         this.rOrganization = rOrganization;
         this.rAccessPoints = rAccessPoints;
+        this.rMonitoringAccessPoints = rMonitoringAccessPoints;
+        this.rJournalMAP = rJournalMAP;
         this.utm5Config = utm5Config;
         this.zabbixConfig = zabbixConfig;
     }
@@ -55,6 +63,10 @@ public class ServiceOrganization {
 
     public String initializeMonitoringOnAp(Integer id, Integer apid, MonitoringAccessPointWizardDTO wizard) throws Exception {
         AccessPoint ap = rAccessPoints.getOne(apid);
+        MonitoringAccessPoint map = new MonitoringAccessPoint();
+        JournalMAP jmap = new JournalMAP();
+        jmap.setAp(ap);
+        jmap.setActive(Boolean.TRUE);
         if (ap.getOrganization().getId().equals(id)) {
             //TODO: wrap with try-catch
             insertIntoUTM5(ap);
@@ -85,12 +97,17 @@ public class ServiceOrganization {
                         .body(BodyInserters.fromValue(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRPC)));
 
                 String resp = authenticate.retrieve().bodyToMono(String.class).block();
-                Map<String, String> map = mapper.readValue(resp, Map.class);
+                Map<String, String> respAuthentication = mapper.readValue(resp, Map.class);
 
-                log.info("[   ] authenticated: {}", map.get("result"));
+                log.info("[   ] authenticated: {}", respAuthentication.get("result"));
                 log.info("[   ] go for create user");
-                insertIntoZabbix(client, map.get("result"), wizard.getDevice());
-                insertIntoZabbix(client, map.get("result"), wizard.getSensor());
+                String device = insertIntoZabbix(client, respAuthentication.get("result"), wizard.getDevice());
+                String sensor = insertIntoZabbix(client, respAuthentication.get("result"), wizard.getSensor());
+                map.setDevice(device);
+                map.setSensor(sensor);
+                rMonitoringAccessPoints.save(map);
+                jmap.setMap(map);
+                rJournalMAP.save(jmap);
             } catch (Exception e) {
                 throw e;
             }
@@ -127,9 +144,9 @@ public class ServiceOrganization {
     }
 
     //TODO: ticket #475
-    private void insertIntoZabbix(WebClient client, String authToken, ZabbixDTO zabbix) throws JsonProcessingException {
-        log.info("[ ->] insert into ZABBIX");
-        createHost(client, authToken,
+    private String insertIntoZabbix(WebClient client, String authToken, ZabbixDTO zabbix) throws JsonProcessingException {
+        log.info("[ <>] insert into ZABBIX");
+        return createHostAndGiveIdentification(client, authToken,
                 zabbix.getHostName(),
                 zabbix.getIp(),
                 zabbix.getGroupid(),
@@ -139,16 +156,16 @@ public class ServiceOrganization {
                 zabbix.getMacro(),
                 zabbix.getMacroValue()
         );
-        log.info("[ <-] insert into ZABBIX");
+
     }
 
-    private String createHost(final WebClient client, String authToken,
-                              String hostName,
-                              String ip,
-                              String groupid,
-                              String tag, String tagValue,
-                              String templateid,
-                              String macro, String macroValue
+    private String createHostAndGiveIdentification (final WebClient client, String authToken,
+                                                   String hostName,
+                                                   String ip,
+                                                   String groupid,
+                                                   String tag, String tagValue,
+                                                   String templateid,
+                                                   String macro, String macroValue
     ) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
@@ -208,7 +225,12 @@ public class ServiceOrganization {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRPC)));
         String rpcResponce = requestNewHost.retrieve().bodyToMono(String.class).block();
-        log.info("[   ] [   ]:responce: {} ", rpcResponce);
-        return rpcResponce;
+        Map<String, Object> map = mapper.readValue(rpcResponce, Map.class);
+        Map<String, List<String>> respResult;
+        respResult = (Map<String, List<String>>) map.get("result");
+        List<String> respHostIds = respResult.get("hostids");
+        String respHostId = respHostIds.get(0);
+        log.info("[   ] [   ]:responce: {} ", respHostId);
+        return respHostId;
     }
 }
