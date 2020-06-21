@@ -494,5 +494,31 @@ GET http://localhost:8080/api/organization/11/ap/24/init-monitoring
 Authorization: Token {{auth_token}}
 
 ### goo org and ap
-GET http://localhost:8080/api/organization/3410/ap/3802/init-monitoring
+POST http://localhost:8080/api/organization/3410/ap/3802/init-monitoring
 Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+    "utm5": { "name": "utm5-host" },
+    "device": {
+     "hostName": "test-device",
+     "ip": "127.0.0.1",
+     "groupid": "34",
+     "tag": "project",
+     "tagValue": "telecom-it",
+     "templateid": "10233",
+     "macro": "{$SNMP_COMMUNITY}",
+     "macroValue": "ESPD_monitor"
+     },
+     "sensor": {
+     "hostName": "test-sensor",
+     "ip": "127.0.0.2",
+     "groupid": "34",
+     "tag": "project",
+     "tagValue": "telecom-it",
+     "templateid": "10233",
+     "macro": "{$SNMP_COMMUNITY}",
+     "macroValue": "ESPD_monitor"
+     }
+
+}
