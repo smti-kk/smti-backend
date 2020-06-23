@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class JournalMAP extends Auditing implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @SequenceGenerator(name = "JMPA_ID_GENERATOR", sequenceName = "jmpa_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "JMPA_ID_GENERATOR", sequenceName = "jmpa_id_seq", allocationSize = 1, schema = "external_systems")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "JMPA_ID_GENERATOR")
     @Column(unique = true, nullable = false)
     private Long id;

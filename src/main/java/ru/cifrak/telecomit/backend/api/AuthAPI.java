@@ -47,25 +47,28 @@ public class AuthAPI {
         final Optional<User> userOptional = userRepository.findByUsername(data.getEmail());
 
         if (!userOptional.isPresent()) {
+            log.info("<- [api] auth/login/");
             return ResponseEntity.badRequest().build();
         }
 
         final User user = userOptional.get();
 
         if (!passwordEncoder.matches(data.getPassword(), user.getPassword())) {
+            log.info("<- [api] auth/login/");
             return ResponseEntity.badRequest().build();
         }
 
         final Optional<AuthTokenCache> optionalAuthToken = authTokenCacheService.findByUser(user);
 
         if (optionalAuthToken.isPresent()) {
+            log.info("<- [api] auth/login/");
             return ResponseEntity.ok(new TokenDTO(optionalAuthToken.get().getId()));
         }
 
         final ZoneId zoneId = ZoneId.systemDefault(); // TODO get from properties
 
         final AuthTokenCache newAuthTokenCache = authTokenCacheService.createForUser(user, zoneId);
-
+        log.info("<- [api] auth/login/");
         return ResponseEntity.ok(new TokenDTO(newAuthTokenCache.getId()));
     }
 
