@@ -68,7 +68,8 @@ public class ServiceOrganization {
         jmap.setAp(ap);
         jmap.setActive(Boolean.TRUE);
         if (ap.getOrganization().getId().equals(id)) {
-            //TODO: wrap with try-catch
+            //TODO: ticket #473
+            // wrap with try-catch
             insertIntoUTM5(ap);
             try {
                 WebClient client = WebClient
@@ -111,14 +112,13 @@ public class ServiceOrganization {
             } catch (Exception e) {
                 throw e;
             }
-            //TODO: some here we should save monitoring data IDs and so on.`
             return "Access Point has bean initialized in monitorings.";
         } else {
             throw new Exception("You cannot init Access Point in non belonging Organization");
         }
     }
 
-    //TODO: implement fully for ticket #473
+    //TODO: ticket #473
     private void insertIntoUTM5(AccessPoint ap) {
         log.info("[ ->] insert into UTM5");
         WebClient client = WebClient
@@ -143,8 +143,7 @@ public class ServiceOrganization {
         log.info("[ <-] insert into UTM5");
     }
 
-    //TODO: ticket #475
-    private String insertIntoZabbix(WebClient client, String authToken, ZabbixDTO zabbix) throws JsonProcessingException {
+    private String insertIntoZabbix(WebClient client, String authToken, ZabbixDTO zabbix) throws Exception {
         log.info("[ <>] insert into ZABBIX");
         return createHostAndGiveIdentification(client, authToken,
                 zabbix.getHostName(),
@@ -166,7 +165,7 @@ public class ServiceOrganization {
                                                    String tag, String tagValue,
                                                    String templateid,
                                                    String macro, String macroValue
-    ) throws JsonProcessingException {
+    ) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
 
         ObjectNode jsonRPCParams = mapper.createObjectNode();
@@ -228,9 +227,15 @@ public class ServiceOrganization {
         Map<String, Object> map = mapper.readValue(rpcResponce, Map.class);
         Map<String, List<String>> respResult;
         respResult = (Map<String, List<String>>) map.get("result");
-        List<String> respHostIds = respResult.get("hostids");
-        String respHostId = respHostIds.get(0);
-        log.info("[   ] [   ]:responce: {} ", respHostId);
-        return respHostId;
+        if (respResult !=null) {
+            List<String> respHostIds = respResult.get("hostids");
+            String respHostId = respHostIds.get(0);
+            log.info("[   ] [   ]:responce: {} ", respHostId);
+            return respHostId;
+        } else {
+            //TODO:[generate TICKET]: make ZabbixNameExistsException
+            // and make round to try get ID from this name.
+            throw new Exception("Such name exists");
+        }
     }
 }

@@ -501,7 +501,7 @@ Content-Type: application/json
 {
     "utm5": { "name": "utm5-host" },
     "device": {
-     "hostName": "test-device-2",
+     "hostName": "test-device-3",
      "ip": "127.0.0.1",
      "groupid": "34",
      "tag": "project",
@@ -511,7 +511,7 @@ Content-Type: application/json
      "macroValue": "ESPD_monitor"
      },
      "sensor": {
-     "hostName": "test-sensor-2",
+     "hostName": "test-sensor-3",
      "ip": "127.0.0.2",
      "groupid": "34",
      "tag": "project",
