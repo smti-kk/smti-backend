@@ -13,9 +13,7 @@ import ru.cifrak.telecomit.backend.entities.TypeInternetAccess;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 
 @Data
 @AllArgsConstructor
@@ -52,7 +50,7 @@ public class AccessPointFull {
     private Long netTrafficLastMonth;
     @JsonProperty(value = "net_traffic_last_week")
     private Long netTrafficLastWeek;
-    private String node;
+    private String networks;
     private String quality;
     private String state;
     private Integer ucn;
@@ -80,7 +78,7 @@ public class AccessPointFull {
         this.maxAmount = entity.getMaxAmount();
         this.netTrafficLastMonth = entity.getNetTrafficLastMonth();
         this.netTrafficLastWeek = entity.getNetTrafficLastWeek();
-        this.node = entity.getNode();
+        this.networks = entity.getNetworks();
         this.quality = entity.getQuality();
         this.state = entity.getState();
         this.ucn = entity.getUcn();

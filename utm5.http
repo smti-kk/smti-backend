@@ -21,7 +21,7 @@ Authorization: session_id {{session_id}}
 ### ---------------------------------------------------------------------------
 POST http://espd-utm5-app.cifra-k.ru:9080/api/users/
 Content-Type: application/json
-Authorization: session_id {{session_id}}
+
 
 {"login": "foo-test-1",
   "password": "foo",
@@ -63,3 +63,20 @@ Authorization: session_id {{session_id}}
   "sale_tax_rate": 0,
   "int_status": 0
 }
+
+### ---------------------------------------------------------------------------
+POST http://espd-utm5-app.cifra-k.ru:9080/api/users/
+Content-Type: application/json
+Authorization: session_id {{session_id}}
+
+{"login": "foo-test-2",
+  "password": "foo",
+  "full_name": "foo-test-2",
+  "is_juridical": false,
+  "connect_date": 0,
+  "is_send_invoice": false,
+  "additional_params": [],
+  "groups": [102],
+  "is_blocked": false
+}
+

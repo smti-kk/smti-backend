@@ -69,8 +69,11 @@ public class ServiceOrganization {
         jmap.setActive(Boolean.TRUE);
         if (ap.getOrganization().getId().equals(id)) {
             //TODO: ticket #473
-            // wrap with try-catch
-            insertIntoUTM5(ap);
+            try {
+                insertIntoUTM5(ap, wizard.getUtm5().getName());
+            } catch (Exception e) {
+                throw e;
+            }
             try {
                 WebClient client = WebClient
                         .builder()
@@ -119,7 +122,7 @@ public class ServiceOrganization {
     }
 
     //TODO: ticket #473
-    private void insertIntoUTM5(AccessPoint ap) {
+    private void insertIntoUTM5(AccessPoint ap, String userLogin) throws JsonProcessingException {
         log.info("[ ->] insert into UTM5");
         WebClient client = WebClient
                 .builder()
@@ -131,15 +134,75 @@ public class ServiceOrganization {
         Map<String, String> auth = new HashMap<>();
         auth.put("username", utm5Config.getLogin());
         auth.put("password", utm5Config.getPassword());
-        log.info("[   ] auth account: {}", auth);
         WebClient.RequestHeadersSpec<?> authenticate = client
                 .post()
                 .uri("/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(auth));
         String resp = authenticate.retrieve().bodyToMono(String.class).block();
+
+        log.info("[   ] go for create user");
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, String> map = mapper.readValue(resp, Map.class);
+        String authToken = map.get("session_id");
+        ObjectNode jsonParams = mapper.createObjectNode();
+        jsonParams.put("login", userLogin);
+        jsonParams.put("password", utm5Config.getUserpwd());
+        jsonParams.put("full_name", "foo-test-1");
+        jsonParams.put("is_juridical", false);
+        jsonParams.put("juridical_address", "");
+        jsonParams.put("actual_address", "");
+        jsonParams.put("flat_number", "");
+        jsonParams.put("entrance", "");
+        jsonParams.put("floor", "");
+        jsonParams.put("district", "");
+        jsonParams.put("building", "");
+        jsonParams.put("passport", "");
+        jsonParams.put("house_id", 0);
+        jsonParams.put("work_telephone", "");
+        jsonParams.put("home_telephone", "");
+        jsonParams.put("mobile_telephone", "");
+        jsonParams.put("web_page", "");
+        jsonParams.put("icq_number", "");
+        jsonParams.put("tax_number", "");
+        jsonParams.put("kpp_number", "");
+        jsonParams.put("email", "");
+        jsonParams.put("bank_id", 0);
+        jsonParams.put("bank_account", "");
+        jsonParams.put("comments", "");
+        jsonParams.put("personal_manager", "");
+        jsonParams.put("connect_date", 0);
+        jsonParams.put("is_send_invoice", false);
+        jsonParams.put("advance_payment", 0);
+        jsonParams.put("router_id", 0);
+        jsonParams.put("port_number", 0);
+        jsonParams.put("binded_currency_id", 0);
+        ArrayNode jsonParamsAdditionalArray = mapper.createArrayNode();
+        jsonParams.set("additional_params", jsonParamsAdditionalArray);
+        ArrayNode jsonParamsGroupsArray = mapper.createArrayNode();
+//        jsonParamsGroupsArray.add(102);
+        jsonParams.set("groups", jsonParamsGroupsArray);
+        jsonParams.put("is_blocked", false);
+        jsonParams.put("balance", 0);
+        jsonParams.put("credit", 0);
+        jsonParams.put("vat_rate", 0);
+        jsonParams.put("sale_tax_rate", 0);
+        jsonParams.put("int_status", 0);
+        WebClient.RequestHeadersSpec<?> responceCreateNewClient = client
+                .post()
+                .uri("/api/users/")
+                .contentType(MediaType.APPLICATION_JSON)
+//                .cookie("session_id",authToken)
+                .header("Authorization", "session_id undefined")
+                .header("Cookie", "session_id="+authToken)
+//                .body(BodyInserters.fromValue(jsonParams));
+        .body(BodyInserters.fromValue(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonParams)));
+//        log.info("[   ] resp-obj: {}",responceCreateNewClient.);
+        String responceCreateNewClientResult = responceCreateNewClient.retrieve().bodyToMono(String.class).block();
+
         log.info("[   ] authenticated: {}", resp);
         log.info("[   ] go for create user");
+        Map<String, Object> responce = mapper.readValue(responceCreateNewClientResult, Map.class);
         log.info("[ <-] insert into UTM5");
     }
 
@@ -222,7 +285,7 @@ public class ServiceOrganization {
         WebClient.RequestHeadersSpec<?> requestNewHost = client
                 .post()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRPC)));
+                .body(BodyInserters.fromValue(jsonRPC));
         String rpcResponce = requestNewHost.retrieve().bodyToMono(String.class).block();
         Map<String, Object> map = mapper.readValue(rpcResponce, Map.class);
         Map<String, List<String>> respResult;

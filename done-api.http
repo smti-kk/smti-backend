@@ -499,9 +499,9 @@ Authorization: Token {{auth_token}}
 Content-Type: application/json
 
 {
-    "utm5": { "name": "utm5-host" },
+    "utm5": { "name": "utm5-host-2" },
     "device": {
-     "hostName": "test-device-3",
+     "hostName": "test-device-4",
      "ip": "127.0.0.1",
      "groupid": "34",
      "tag": "project",
@@ -511,7 +511,7 @@ Content-Type: application/json
      "macroValue": "ESPD_monitor"
      },
      "sensor": {
-     "hostName": "test-sensor-3",
+     "hostName": "test-sensor-4",
      "ip": "127.0.0.2",
      "groupid": "34",
      "tag": "project",

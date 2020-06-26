@@ -95,6 +95,11 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @Column(columnDefinition = "text")
     private String description;
 
+
+    /**
+     * IP адресс точки подключения.
+     * Адресс самой точки. Используется в UTM5 и Zabbix.
+     */
     @Column(columnDefinition = "text")
     private String ipConfig;
 
@@ -102,17 +107,23 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     private Integer maxAmount;
 
     //TODO: for future thoughts:
-    // this information we taking from monitoring system (i.e. Zabbix)
+    // this information we taking from monitoring system (i.e. UTM5)
     @Column(name = "net_traffic_last_month")
     private Long netTrafficLastMonth;
 
     //TODO: for future thoughts:
-    // this information we taking from monitoring system (i.e. Zabbix)
+    // this information we taking from monitoring system (i.e. UTM5)
     @Column(name = "net_traffic_last_week")
     private Long netTrafficLastWeek;
 
-    @Column(length = 500)
-    private String node;
+    /**
+     * Список сетей, которые распологаются за этой точкой доступа.
+     * Эта информация необходима, для билинговой системы UTM5.
+     * Шаблон-разделитель "; " - точка с запятой и пробел.
+     * А дальше стандартно хх.хх.хх.хх/хх
+     */
+    @Column(columnDefinition = "text")
+    private String networks;
 
     //TODO: check about this value
     // and if this is good, then make migration for it
