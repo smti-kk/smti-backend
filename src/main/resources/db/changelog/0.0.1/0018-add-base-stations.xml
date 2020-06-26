@@ -1,0 +1,33 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="vitaliy (generated)" id="1591930644841-23">
+        <createTable tableName="base_station">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="base_stationPK"/>
+            </column>
+            <column name="action_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="coverage_radius" type="FLOAT8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="point" type="GEOMETRY">
+                <constraints nullable="false"/>
+            </column>
+            <column name="prop_height" type="FLOAT8"/>
+            <column name="mobile_type_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operator_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="vitaliy (generated)" id="1591930644841-66">
+        <addForeignKeyConstraint baseColumnNames="mobile_type_id" baseTableName="base_station" constraintName="FK36l8rlax7jrp6qwgs3xcmfunq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="type_mobile" validate="true"/>
+    </changeSet>
+    <changeSet author="vitaliy (generated)" id="1591930644841-67">
+        <addForeignKeyConstraint baseColumnNames="operator_id" baseTableName="base_station" constraintName="FK3yxljqkesc3bpwg4f95ha7g2o" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="operator" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
