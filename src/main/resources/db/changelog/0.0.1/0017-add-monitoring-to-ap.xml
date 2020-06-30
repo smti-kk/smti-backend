@@ -34,7 +34,10 @@
             <column name="id" type="INTEGER">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="monitoring_access_pointPK"/>
             </column>
-            <column name="login" type="VARCHAR(255)"/>
+            <column name="user" type="INTEGER"/>
+            <column name="account" type="INTEGER"/>
+            <column name="traffic" type="INTEGER"/>
+            <column name="service" type="INTEGER"/>
             <column name="device" type="VARCHAR(255)"/>
             <column name="sensor" type="VARCHAR(255)"/>
         </createTable>
