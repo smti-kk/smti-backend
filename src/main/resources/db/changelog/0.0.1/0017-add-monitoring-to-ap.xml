@@ -34,12 +34,12 @@
             <column name="id" type="INTEGER">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="monitoring_access_pointPK"/>
             </column>
-            <column name="user" type="INTEGER"/>
-            <column name="account" type="INTEGER"/>
-            <column name="traffic" type="INTEGER"/>
-            <column name="service" type="INTEGER"/>
-            <column name="device" type="VARCHAR(255)"/>
-            <column name="sensor" type="VARCHAR(255)"/>
+            <column name="id_user" type="INTEGER"/>
+            <column name="id_account" type="INTEGER"/>
+            <column name="id_traffic" type="INTEGER"/>
+            <column name="id_service" type="INTEGER"/>
+            <column name="id_device" type="VARCHAR(255)"/>
+            <column name="id_sensor" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
     <changeSet author="a-panov (generated)" id="1591669644857-25">

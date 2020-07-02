@@ -21,22 +21,22 @@ public class MonitoringAccessPoint implements Serializable {
 
     // UTM5 properties
     @Column
-    private Integer user;
+    private Integer idUser;
 
     @Column
-    private Integer account;
+    private Integer idAccount;
 
     @Column
-    private Integer traffic;
+    private Integer idTraffic;
 
     @Column
-    private Integer service;
+    private Integer idService;
 
     // ZABBIX properties
     @Column
-    private String device;
+    private String idDevice;
 
     @Column
-    private String sensor;
+    private String idSensor;
 
 }

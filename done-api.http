@@ -493,15 +493,24 @@ Authorization: Token {{auth_token}}
 GET http://localhost:8080/api/organization/11/ap/24/init-monitoring
 Authorization: Token {{auth_token}}
 
+### LOGIN USER with taking TOKEN
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+//{"username": "admin", "password": "pwd"}
+
+{"email": "admin", "password": "pwd"}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
 ### goo org and ap
-POST http://localhost:8080/api/organization/3410/ap/3802/init-monitoring
+POST http://localhost:8080/api/organization/3410/ap/3424/init-monitoring
+#POST http://localhost:8080/api/organization/3410/ap/3802/init-monitoring
 Authorization: Token {{auth_token}}
 Content-Type: application/json
 
 {
-    "utm5": { "name": "utm5-host-2" },
     "device": {
-     "hostName": "test-device-4",
+     "hostName": "test-device-12",
      "ip": "127.0.0.1",
      "groupid": "34",
      "tag": "project",
@@ -511,7 +520,7 @@ Content-Type: application/json
      "macroValue": "ESPD_monitor"
      },
      "sensor": {
-     "hostName": "test-sensor-4",
+     "hostName": "test-sensor-12",
      "ip": "127.0.0.2",
      "groupid": "34",
      "tag": "project",

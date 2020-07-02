@@ -55,7 +55,7 @@ Content-Type: application/json
   "port_number": 0,
   "binded_currency_id": 0,
   "additional_params": [],
-  "groups": [102],
+  "groups": [],
   "is_blocked": false,
   "balance": 0,
   "credit": 0,
@@ -64,19 +64,196 @@ Content-Type: application/json
   "int_status": 0
 }
 
-### ---------------------------------------------------------------------------
-POST http://espd-utm5-app.cifra-k.ru:9080/api/users/
-Content-Type: application/json
-Authorization: session_id {{session_id}}
 
-{"login": "foo-test-2",
-  "password": "foo",
-  "full_name": "foo-test-2",
-  "is_juridical": false,
-  "connect_date": 0,
-  "is_send_invoice": false,
-  "additional_params": [],
-  "groups": [102],
-  "is_blocked": false
+### ---- Get all user service links
+GET http://espd-utm5-app.cifra-k.ru:9080/api/users/servicelinks?user_id=7
+Content-Type: application/json
+
+
+
+### ---- Get ip groups or something
+GET http://espd-utm5-app.cifra-k.ru:9080/api/users/ip_groups?account_id=7
+Content-Type: application/json
+
+
+
+### ---- Get ip Get iptraffic
+GET http://espd-utm5-app.cifra-k.ru:9080/api/users/servicelinks/iptraffic?slink_id=7
+Content-Type: application/json
+
+
+#########################################
+### ---- вот чему за сегодня я должен научиться!!!!!!!!!!!!!!!!!
+## User/ServiceLinks - Post iptraffic
+POST http://espd-utm5-app.cifra-k.ru:9080/api/users/servicelinks/iptraffic
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "account_id": 1,
+  "service_id": 1,
+  "tplink_id": 0,
+  "accounting_period_id": 1,
+  "start_date": 0,
+  "expire_date": 0,
+  "policy_id": 1,
+  "cost_coef": 1,
+  "house_comment": "",
+  "comment": "",
+  "unabon": 0,
+  "house_id": 0,
+  "unprepay": 0,
+  "ip_group": [
+    {
+      "ip": "0.0.0.0",
+      "mask": 32,
+      "mac": "",
+      "login": "",
+      "allowed_cid": "",
+      "password": "",
+      "pool_name": "",
+      "flags": 0,
+      "nfprovider_id": 0,
+      "switch_id": 0,
+      "port_id": 0,
+      "vlan_id": 0,
+      "pool_id": 0,
+      "owner_id": 0,
+      "owner_type": 0,
+      "dhcp_options": [
+        {
+          "id": 1,
+          "type": 1,
+          "value": 100
+        },
+        {
+          "id": 2,
+          "type": 2,
+          "value": "String value"
+        },
+        {
+          "id": 3,
+          "type": 3,
+          "value": "1.2.3.4"
+        },
+        {
+          "id": 4,
+          "type": 4,
+          "value": "FFA"
+        },
+        {
+          "id": 5,
+          "type": 5,
+          "addresses": [
+            "1.1.1.1"
+          ]
+        }
+      ],
+      "isg_attrs": [
+        {
+          "isg_attr_id": 1,
+          "isg_attr_value": "ABC"
+        }
+      ]
+    }
+  ],
+  "quotas_count": [
+    {
+      "tclass": 10,
+      "traffic_quota": 100
+    }
+  ]
 }
 
+
+########################################################################################################################
+########################################################################################################################
+###################################### TASKS         ###################################################################
+########################################################################################################################
+
+######################## Get Tariff plans all
+### Вот этой штукой можно добывать, и отдавать на фронт для выбора тарифа, а сейчас можно, просто по дефолту
+### получать список, и выбирать первый попавшийся.
+### Сейчас для эксперимента, можно выбрать айди 2
+GET http://espd-utm5-app.cifra-k.ru:9080/api/tariffing/tariffs
+
+### User/TariffLinks - Get tariff links ### как я помню, эту штуку вроде как не использую, дальше.
+### хотя функционал довольно интересный
+GET http://espd-utm5-app.cifra-k.ru:9080/api/users/tarifflinks?user_id=7&account_id=7
+
+### User/TariffLinks - Get accounting periods
+GET http://espd-utm5-app.cifra-k.ru:9080/api/tariffing/accounting_periods
+
+######################## Create Tariff link to user
+### User/TariffLinks - Post tariff link
+### вот этой штукой мы привяжем тарифный план к пользователю. Да и тут тоже аккаунт необходим для пользователя.
+### т.е. вот опять то самое место где необходим этот аккаут пользователя.
+### Потому, что на пользователе может быть дофига всяких аккаунтов. Для чего это необходимо? "саа".
+###
+### Так, наконец!!!! этой штукой мы создаем таррифик линк
+POST http://espd-utm5-app.cifra-k.ru:9080/api/users/tarifflinks
+Content-Type: application/json
+
+{
+    "user_id": 17,
+    "account_id": 18,
+    "first_tariff_id": 2,
+    "second_tariff_id": 0,
+    "accounting_period_id": 2,
+    "tariff_link_id": 0,
+    "change_now": false
+}
+
+
+
+######################## Create service link for user
+### User/ServiceLinks - Post iptraffic
+### чую что вот этой штукой и необходимо создавать сервисные линки
+## возможно это последний шаг в этой штукенции
+
+POST http://espd-utm5-app.cifra-k.ru:9080/api/users/servicelinks/iptraffic
+Content-Type: application/json
+
+{
+  "user_id": 36,
+  "account_id": 37,
+  "service_id": 6,
+  "tplink_id": 33,
+  "accounting_period_id": 2,
+  "start_date": 0,
+  "expire_date": 0,
+  "policy_id": 1,
+  "cost_coef": 1,
+  "house_comment": "",
+  "comment": "",
+  "unabon": 0,
+  "house_id": 0,
+  "unprepay": 0,
+  "ip_group": [
+    {
+      "ip": "192.168.2.2",
+      "mask": 32,
+      "mac": "",
+      "login": "",
+      "allowed_cid": "",
+      "password": "",
+      "pool_name": "",
+      "flags": 0,
+      "nfprovider_id": 0,
+      "switch_id": 0,
+      "port_id": 0,
+      "vlan_id": 0,
+      "pool_id": 0,
+      "owner_id": 0,
+      "owner_type": 0,
+      "dhcp_options": [],
+      "isg_attrs": []
+    }
+  ],
+  "quotas_count": [
+    {
+      "tclass": 10,
+      "traffic_quota": 100
+    }
+  ]
+}

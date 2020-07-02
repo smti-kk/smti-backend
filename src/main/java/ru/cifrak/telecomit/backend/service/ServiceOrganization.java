@@ -5,12 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import ru.cifrak.telecomit.backend.api.dto.MonitoringAccessPointWizardDTO;
 import ru.cifrak.telecomit.backend.api.dto.OrganizationDTO;
 import ru.cifrak.telecomit.backend.api.dto.ZabbixDTO;
@@ -24,6 +26,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryMonitoringAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
 import ru.cifrak.telecomit.backend.security.UTM5Config;
 import ru.cifrak.telecomit.backend.security.ZabbixConfig;
+import ru.cifrak.telecomit.backend.utils.IpReversed;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,9 +71,8 @@ public class ServiceOrganization {
         jmap.setAp(ap);
         jmap.setActive(Boolean.TRUE);
         if (ap.getOrganization().getId().equals(id)) {
-            //TODO: ticket #473
             try {
-                insertIntoUTM5(ap, wizard.getUtm5().getName());
+                insertIntoUTM5(ap, map);
             } catch (Exception e) {
                 throw e;
             }
@@ -107,8 +109,9 @@ public class ServiceOrganization {
                 log.info("[   ] go for create user");
                 String device = insertIntoZabbix(client, respAuthentication.get("result"), wizard.getDevice());
                 String sensor = insertIntoZabbix(client, respAuthentication.get("result"), wizard.getSensor());
-                map.setDevice(device);
-                map.setSensor(sensor);
+                map.setIdDevice(device);
+                map.setIdSensor(sensor);
+                log.debug("map: {}", map);
                 rMonitoringAccessPoints.save(map);
                 jmap.setMap(map);
                 rJournalMAP.save(jmap);
@@ -121,8 +124,8 @@ public class ServiceOrganization {
         }
     }
 
-    //TODO: ticket #473
-    private void insertIntoUTM5(AccessPoint ap, String userLogin) throws JsonProcessingException {
+    //TODO:[generate TICKET]: possible to use DTO instead of manual construct
+    private void insertIntoUTM5(AccessPoint ap, MonitoringAccessPoint map) throws JsonProcessingException {
         log.info("[ ->] insert into UTM5");
         WebClient client = WebClient
                 .builder()
@@ -130,25 +133,31 @@ public class ServiceOrganization {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultUriVariables(Collections.singletonMap("url", utm5Config.getHost()))
                 .build();
-
-        Map<String, String> auth = new HashMap<>();
-        auth.put("username", utm5Config.getLogin());
-        auth.put("password", utm5Config.getPassword());
-        WebClient.RequestHeadersSpec<?> authenticate = client
+        // STEP-1: AUTHORIZATION
+        Map<String, String> jsonRequestAuthorization = new HashMap<>();
+        jsonRequestAuthorization.put("username", utm5Config.getLogin());
+        jsonRequestAuthorization.put("password", utm5Config.getPassword());
+        WebClient.RequestHeadersSpec<?> apiAuthenticate = client
                 .post()
                 .uri("/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(auth));
-        String resp = authenticate.retrieve().bodyToMono(String.class).block();
-
+                .body(BodyInserters.fromValue(jsonRequestAuthorization));
+        String jsonResponseAuthentication = apiAuthenticate.retrieve().bodyToMono(String.class).block();
+        log.debug("[   ] authenticated: {}", jsonResponseAuthentication);
         log.info("[   ] go for create user");
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, String> map = mapper.readValue(resp, Map.class);
-        String authToken = map.get("session_id");
-        ObjectNode jsonParams = mapper.createObjectNode();
-        jsonParams.put("login", userLogin);
+
+        // STEP-2: CREATE NEW USER IN UTM5
+        ObjectMapper jsonMapper = new ObjectMapper();
+        Map<String, String> mapAuthorization = jsonMapper.readValue(jsonResponseAuthentication, Map.class);
+        String sessionId = mapAuthorization.get("session_id");
+        ObjectNode jsonParams = jsonMapper.createObjectNode();
+        jsonParams.put("login", "telecomit-" + ap.getId());
         jsonParams.put("password", utm5Config.getUserpwd());
-        jsonParams.put("full_name", "foo-test-1");
+        if (ap.getOrganization().getAcronym() != null && !ap.getOrganization().getAcronym().isEmpty()) {
+            jsonParams.put("full_name", ap.getOrganization().getAcronym() + " (" + ap.getAddress() + ")");
+        } else {
+            jsonParams.put("full_name", ap.getOrganization().getId() + " (" + ap.getAddress() + ")");
+        }
         jsonParams.put("is_juridical", false);
         jsonParams.put("juridical_address", "");
         jsonParams.put("actual_address", "");
@@ -177,10 +186,9 @@ public class ServiceOrganization {
         jsonParams.put("router_id", 0);
         jsonParams.put("port_number", 0);
         jsonParams.put("binded_currency_id", 0);
-        ArrayNode jsonParamsAdditionalArray = mapper.createArrayNode();
+        ArrayNode jsonParamsAdditionalArray = jsonMapper.createArrayNode();
         jsonParams.set("additional_params", jsonParamsAdditionalArray);
-        ArrayNode jsonParamsGroupsArray = mapper.createArrayNode();
-//        jsonParamsGroupsArray.add(102);
+        ArrayNode jsonParamsGroupsArray = jsonMapper.createArrayNode();
         jsonParams.set("groups", jsonParamsGroupsArray);
         jsonParams.put("is_blocked", false);
         jsonParams.put("balance", 0);
@@ -188,25 +196,141 @@ public class ServiceOrganization {
         jsonParams.put("vat_rate", 0);
         jsonParams.put("sale_tax_rate", 0);
         jsonParams.put("int_status", 0);
-        WebClient.RequestHeadersSpec<?> responceCreateNewClient = client
+        log.debug("{}", jsonParams);
+        WebClient.RequestHeadersSpec<?> apiCreateClient = client
                 .post()
                 .uri("/api/users/")
                 .contentType(MediaType.APPLICATION_JSON)
-//                .cookie("session_id",authToken)
                 .header("Authorization", "session_id undefined")
-                .header("Cookie", "session_id="+authToken)
-//                .body(BodyInserters.fromValue(jsonParams));
-        .body(BodyInserters.fromValue(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonParams)));
-//        log.info("[   ] resp-obj: {}",responceCreateNewClient.);
-        String responceCreateNewClientResult = responceCreateNewClient.retrieve().bodyToMono(String.class).block();
+                .header("Cookie", "session_id=" + sessionId)
+                .body(BodyInserters.fromValue(jsonParams));
+        //TODO:[generate TICKET]: needed error handling
+        String jsonResponseCreateClient = apiCreateClient.retrieve().bodyToMono(String.class).block();
+        Map<String, Integer> mapNewUserCredential = jsonMapper.readValue(jsonResponseCreateClient, Map.class);
+        map.setIdUser(mapNewUserCredential.get("user_id"));
+        map.setIdAccount(mapNewUserCredential.get("account_id"));
 
-        log.info("[   ] authenticated: {}", resp);
-        log.info("[   ] go for create user");
-        Map<String, Object> responce = mapper.readValue(responceCreateNewClientResult, Map.class);
+        // STEP-3: CREATE TARIFF LINK TO USER
+        ObjectNode jsonNewTariffLink = jsonMapper.createObjectNode();
+        jsonNewTariffLink.put("user_id", map.getIdUser());
+        jsonNewTariffLink.put("account_id", map.getIdAccount());
+        //TODO:[generate TICKET]: this value should choose from system
+        jsonNewTariffLink.put("first_tariff_id", 2);
+        jsonNewTariffLink.put("second_tariff_id", 0);
+        //TODO:[generate TICKET]: this value should choose from system
+        jsonNewTariffLink.put("accounting_period_id", 14);
+        jsonNewTariffLink.put("tariff_link_id", 0);
+        jsonNewTariffLink.put("change_now", false);
+        log.debug("{}", jsonNewTariffLink);
+        WebClient.RequestHeadersSpec<?> apiCreateTraffic = client
+                .post()
+                .uri("/api/users/tarifflinks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "session_id undefined")
+                .header("Cookie", "session_id=" + sessionId)
+                .body(BodyInserters.fromValue(jsonNewTariffLink));
+        //TODO:[generate TICKET]: needed error handling
+        String jsonResponseCreateTraffic = apiCreateTraffic.retrieve().bodyToMono(String.class).block();
+        Map<String, Integer> mapNewTrafficCredential = jsonMapper.readValue(jsonResponseCreateTraffic, Map.class);
+        map.setIdTraffic(mapNewTrafficCredential.get("tariff_link_id"));
+
+        // STEP-3: CREATE SERVICE LINK FOR USER
+        ObjectNode jsonNewServiceLink = jsonMapper.createObjectNode();
+        jsonNewServiceLink.put("user_id", map.getIdUser());
+        jsonNewServiceLink.put("account_id", map.getIdAccount());
+        //TODO:[generate TICKET]: this value should choose from system
+        jsonNewServiceLink.put("service_id", 6);
+        jsonNewServiceLink.put("tplink_id", map.getIdTraffic());
+        //TODO:[generate TICKET]: this value should choose from system
+        jsonNewServiceLink.put("accounting_period_id", 2);
+        jsonNewServiceLink.put("start_date", 0);
+        jsonNewServiceLink.put("expire_date", 0);
+        jsonNewServiceLink.put("policy_id", 1);
+        jsonNewServiceLink.put("cost_coef", 1);
+        jsonNewServiceLink.put("house_comment", "");
+        jsonNewServiceLink.put("comment", "");
+        jsonNewServiceLink.put("unabon", 0);
+        jsonNewServiceLink.put("house_id", 0);
+        jsonNewServiceLink.put("unprepay", 0);
+//        ip_group
+        ArrayNode jsonNewServiceLinkIPGroup = jsonMapper.createArrayNode();
+        // IP node by AP
+        ObjectNode ipItem = jsonMapper.createObjectNode();
+        ipItem.put("ip", new IpReversed(ap.getIpConfig()).ip());
+        ipItem.put("mask", Integer.valueOf(new IpReversed(ap.getIpConfig()).mask()));
+        ipItem.put("mac", "");
+        ipItem.put("login", "");
+        ipItem.put("allowed_cid", "");
+        ipItem.put("password", "");
+        ipItem.put("pool_name", "");
+        ipItem.put("flags", 0);
+        ipItem.put("nfprovider_id", 0);
+        ipItem.put("switch_id", 0);
+        ipItem.put("port_id", 0);
+        ipItem.put("vlan_id", 0);
+        ipItem.put("pool_id", 0);
+        ipItem.put("owner_id", 0);
+        ipItem.put("owner_type", 0);
+        ipItem.set("dhcp_options", jsonMapper.createArrayNode());
+        ipItem.set("isg_attrs", jsonMapper.createArrayNode());
+        jsonNewServiceLinkIPGroup.add(ipItem);
+        // IP nodes by AP-networks
+        if (ap.getNetworks() != null && !ap.getNetworks().isEmpty()) {
+            String[] networks = ap.getNetworks().split("; ");
+            for (String network : networks) {
+                ObjectNode networkItem = jsonMapper.createObjectNode();
+                networkItem.put("ip", new IpReversed(network).ip());
+                networkItem.put("mask", Integer.valueOf(new IpReversed(network).mask()));
+                networkItem.put("mac", "");
+                networkItem.put("login", "");
+                networkItem.put("allowed_cid", "");
+                networkItem.put("password", "");
+                networkItem.put("pool_name", "");
+                networkItem.put("flags", 0);
+                networkItem.put("nfprovider_id", 0);
+                networkItem.put("switch_id", 0);
+                networkItem.put("port_id", 0);
+                networkItem.put("vlan_id", 0);
+                networkItem.put("pool_id", 0);
+                networkItem.put("owner_id", 0);
+                networkItem.put("owner_type", 0);
+                networkItem.set("dhcp_options", jsonMapper.createArrayNode());
+                networkItem.set("isg_attrs", jsonMapper.createArrayNode());
+                jsonNewServiceLinkIPGroup.add(networkItem);
+            }
+        }
+
+        jsonNewServiceLink.set("ip_group", jsonNewServiceLinkIPGroup);
+//        quotas_count
+        ArrayNode jsonNewServiceLinkQuotasCount = jsonMapper.createArrayNode();
+        ObjectNode quotaItem = jsonMapper.createObjectNode();
+        quotaItem.put("tclass", 10);
+        quotaItem.put("traffic_quota", 100);
+        jsonNewServiceLinkQuotasCount.add(quotaItem);
+        jsonNewServiceLink.set("quotas_count", jsonNewServiceLinkQuotasCount);
+        log.debug("{}", jsonNewServiceLink);
+        WebClient.RequestHeadersSpec<?> apiCreateService = client
+                .post()
+                .uri("/api/users/servicelinks/iptraffic")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "session_id undefined")
+                .header("Cookie", "session_id=" + sessionId)
+                .body(BodyInserters.fromValue(jsonNewServiceLink));
+        //TODO:[generate TICKET]: needed error handling
+        String jsonResponseCreateService = null;
+        try {
+            jsonResponseCreateService = apiCreateService.retrieve().bodyToMono(String.class).block();
+        } catch (WebClientResponseException e) {
+            log.error("{}", e.getResponseBodyAsString());
+        }
+        Map<String, Integer> mapNewServiceCredential = jsonMapper.readValue(jsonResponseCreateService, Map.class);
+        map.setIdService(mapNewServiceCredential.get("service_link_id"));
+
+        // STEP-LAST: END
         log.info("[ <-] insert into UTM5");
     }
 
-    private String insertIntoZabbix(WebClient client, String authToken, ZabbixDTO zabbix) throws Exception {
+    private String insertIntoZabbix(WebClient client, String authToken, @NotNull ZabbixDTO zabbix) throws Exception {
         log.info("[ <>] insert into ZABBIX");
         return createHostAndGiveIdentification(client, authToken,
                 zabbix.getHostName(),
@@ -221,7 +345,7 @@ public class ServiceOrganization {
 
     }
 
-    private String createHostAndGiveIdentification (final WebClient client, String authToken,
+    private String createHostAndGiveIdentification(final @NotNull WebClient client, String authToken,
                                                    String hostName,
                                                    String ip,
                                                    String groupid,
@@ -290,7 +414,7 @@ public class ServiceOrganization {
         Map<String, Object> map = mapper.readValue(rpcResponce, Map.class);
         Map<String, List<String>> respResult;
         respResult = (Map<String, List<String>>) map.get("result");
-        if (respResult !=null) {
+        if (respResult != null) {
             List<String> respHostIds = respResult.get("hostids");
             String respHostId = respHostIds.get(0);
             log.info("[   ] [   ]:responce: {} ", respHostId);
