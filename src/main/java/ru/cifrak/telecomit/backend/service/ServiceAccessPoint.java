@@ -79,7 +79,7 @@ public class ServiceAccessPoint {
         item.setDescription(dto.getDescription());
         item.setIpConfig(dto.getIp_config());
         item.setMaxAmount(dto.getMax_amount());
-        item.setNode(dto.getNode());
+        item.setNetworks(dto.getNode());
         dto.getPoint().setSRID(4326);
         item.setPoint(dto.getPoint());
         item.setQuality(dto.getQuality());

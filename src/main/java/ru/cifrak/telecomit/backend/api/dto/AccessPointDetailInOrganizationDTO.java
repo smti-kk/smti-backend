@@ -27,10 +27,11 @@ public class AccessPointDetailInOrganizationDTO {
     private Point point;
 
     private GovernmentDevelopmentProgram governmentProgram;
+    private Integer completed;
+    private String state;
 
     private String address;
     private Integer billingId;
-    private Integer completed;
     private String contractor;
     private LocalDateTime createdAt;
     private String customer;
@@ -41,9 +42,8 @@ public class AccessPointDetailInOrganizationDTO {
     private String name;
     private Long netTrafficLastMonth;
     private Long netTrafficLastWeek;
-    private String node;
+    private String networks;
     private String quality;
-    private String state;
     private Integer ucn;
     private LocalDateTime updatedAt;
     private Boolean visible;
@@ -82,7 +82,7 @@ public class AccessPointDetailInOrganizationDTO {
         this.maxAmount = entity.getMaxAmount();
         this.netTrafficLastMonth = entity.getNetTrafficLastMonth();
         this.netTrafficLastWeek = entity.getNetTrafficLastWeek();
-        this.node = entity.getNode();
+        this.networks = entity.getNetworks();
         this.quality = entity.getQuality();
         this.state = entity.getState();
         this.ucn = entity.getUcn();

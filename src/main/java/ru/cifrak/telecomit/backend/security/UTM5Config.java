@@ -11,4 +11,5 @@ public class UTM5Config {
     private String host;
     private String login;
     private String password;
+    private String userpwd;
 }

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class MonitoringAccessPointWizardDTO {
-    private UTM5DTO utm5;
     private ZabbixDTO device;
     private ZabbixDTO sensor;
 }

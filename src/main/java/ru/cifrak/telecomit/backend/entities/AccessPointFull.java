@@ -60,8 +60,8 @@ public class AccessPointFull extends AuditingSoftDelete implements Serializable 
     @Column(name = "net_traffic_last_week")
     private Long netTrafficLastWeek;
 
-    @Column(length = 500)
-    private String node;
+    @Column(columnDefinition = "text")
+    private String networks;
 
     //    @JsonSerialize(using = GeometrySerializer.class)
 //    @JsonDeserialize(using = GeometryDeserializer.class)
