@@ -30,8 +30,8 @@ echo "Building ${hub}/${project} (${GIT_BRANCH_SHORT}) at ${GIT_COMMIT_SHORT}"
 
 echo "${GIT_BRANCH_SHORT}.${GIT_COMMIT_SHORT}" > ${DIR}/revision
 
-if [[ -z "${JENKINS_HOME}" ]]; then
-  echo "build without jenkins"
+if [[ -z "${JENKINS_HOME}" ]] && [[ -z "${CI}" ]]; then
+  echo "build without ci"
   ./mvnw -Dmaven.repo.local=.m2 install -DskipTests
 fi
 
