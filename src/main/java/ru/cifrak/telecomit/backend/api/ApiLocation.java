@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.LocationSimple;
 import ru.cifrak.telecomit.backend.api.dto.LocationSimpleFilterDTO;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
-import ru.cifrak.telecomit.backend.utils.BboxFactory;
+import ru.cifrak.telecomit.backend.service.BboxFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,13 +32,6 @@ public class ApiLocation {
     public List<LocationSimpleFilterDTO> locations() {
         return repository.locationFilter().stream()
                 .map(LocationSimpleFilterDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping(params = "bbox")
-    public List<LocationSimple> locationsByBbox(@RequestParam("bbox") List<Double> bbox) {
-        return repository.locationsByBbox(new BboxFactory().createPolygon(bbox)).stream()
-                .map(LocationSimple::new)
                 .collect(Collectors.toList());
     }
 

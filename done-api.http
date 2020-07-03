@@ -15,6 +15,9 @@ Content-Type: application/json
 
 > {% client.global.set("auth_token", response.body.token); %}
 
+###
+GET http://localhost:8080/auth/account_info/
+Authorization: Token {{auth_token}}
 
 ### ********************************************************************************************************************
 ### Operators

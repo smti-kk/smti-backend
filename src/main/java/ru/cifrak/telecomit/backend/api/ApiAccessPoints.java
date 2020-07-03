@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.AccessPointSimple;
 import ru.cifrak.telecomit.backend.api.enums.GovernmentProgram;
 import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
-import ru.cifrak.telecomit.backend.utils.BboxFactory;
+import ru.cifrak.telecomit.backend.service.BboxFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
