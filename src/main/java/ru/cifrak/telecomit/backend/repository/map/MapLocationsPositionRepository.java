@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.repository;
+package ru.cifrak.telecomit.backend.repository.map;
 
 import org.locationtech.jts.geom.Polygon;
 import org.springframework.data.jpa.repository.Query;
@@ -9,7 +9,11 @@ import ru.cifrak.telecomit.backend.repository.dto.MapLocation;
 
 import java.util.List;
 
-public interface MapLocationsRepository extends Repository<Location, Integer> {
+/**
+ * Предоставление информации о локациях
+ * <br/> из базы данных для схемы-карты
+ */
+public interface MapLocationsPositionRepository extends Repository<MapLocation, Integer> {
 
     @Query("SELECT new ru.cifrak.telecomit.backend.repository.dto.MapLocation(l.id, g.administrativeCenter)" +
             " FROM Location l" +

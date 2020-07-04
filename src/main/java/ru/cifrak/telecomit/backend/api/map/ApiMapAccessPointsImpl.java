@@ -1,7 +1,7 @@
-package ru.cifrak.telecomit.backend.api;
+package ru.cifrak.telecomit.backend.api.map;
 
 import org.springframework.web.bind.annotation.RestController;
-import ru.cifrak.telecomit.backend.repository.MapAccessPointRepository;
+import ru.cifrak.telecomit.backend.repository.map.MapAccessPointRepository;
 import ru.cifrak.telecomit.backend.repository.dto.MapAccessPoint;
 import ru.cifrak.telecomit.backend.service.BboxFactory;
 

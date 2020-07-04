@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.repository;
+package ru.cifrak.telecomit.backend.repository.map;
 
 import org.locationtech.jts.geom.Polygon;
 import org.springframework.data.jpa.repository.Query;
@@ -8,6 +8,10 @@ import ru.cifrak.telecomit.backend.repository.dto.MapAccessPoint;
 
 import java.util.List;
 
+/**
+ * Предоставление информации о точках подключения
+ * <br/> из базы данных для схемы-карты
+ */
 public interface MapAccessPointRepository extends Repository<MapAccessPoint, Integer> {
     @Query("SELECT new ru.cifrak.telecomit.backend.repository.dto.MapAccessPoint(ap.id, ap.point)" +
             " FROM MapAccessPoint ap " +
