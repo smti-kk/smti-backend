@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.repository.dto;
+package ru.cifrak.telecomit.backend.entities.map;
 
 import lombok.Getter;
 
@@ -18,7 +18,7 @@ public class ShortLocation {
     private String type;
     private String name;
 
-    @OneToMany()
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "key_location")
     private List<ShortTechnicalCapability> technicalCapability;
 

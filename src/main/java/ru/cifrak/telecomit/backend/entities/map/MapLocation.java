@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.repository.dto;
+package ru.cifrak.telecomit.backend.entities.map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

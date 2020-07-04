@@ -2,9 +2,10 @@ package ru.cifrak.telecomit.backend.api.map;
 
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
-import ru.cifrak.telecomit.backend.repository.dto.ShortLocation;
+import ru.cifrak.telecomit.backend.entities.map.ShortLocation;
 import ru.cifrak.telecomit.backend.repository.map.MapLocationsPositionRepository;
-import ru.cifrak.telecomit.backend.repository.dto.MapLocation;
+import ru.cifrak.telecomit.backend.entities.map.MapLocation;
+import ru.cifrak.telecomit.backend.repository.map.MapLocationsRepository;
 import ru.cifrak.telecomit.backend.service.BboxFactory;
 
 import java.util.List;
@@ -12,11 +13,14 @@ import java.util.List;
 @RestController
 public class ApiMapLocationsImpl implements ApiMapLocations {
     private final MapLocationsPositionRepository mapLocationsPositionRepository;
+    private final MapLocationsRepository mapLocationsRepository;
     private final BboxFactory bboxFactory;
 
     public ApiMapLocationsImpl(MapLocationsPositionRepository mapLocationsPositionRepository,
+                               MapLocationsRepository mapLocationsRepository,
                                BboxFactory bboxFactory) {
         this.mapLocationsPositionRepository = mapLocationsPositionRepository;
+        this.mapLocationsRepository = mapLocationsRepository;
         this.bboxFactory = bboxFactory;
     }
 
@@ -33,10 +37,11 @@ public class ApiMapLocationsImpl implements ApiMapLocations {
     }
 
     @Override
-    public ShortLocation get(ShortLocation id) throws NotFoundException {
-        if (id == null) {
+    public ShortLocation get(Integer id) throws NotFoundException {
+        ShortLocation location = mapLocationsRepository.get(id);
+        if (location == null) {
             throw new NotFoundException();
         }
-        return id;
+        return location;
     }
 }

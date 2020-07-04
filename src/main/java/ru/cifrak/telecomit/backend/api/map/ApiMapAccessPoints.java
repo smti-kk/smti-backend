@@ -3,7 +3,7 @@ package ru.cifrak.telecomit.backend.api.map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.cifrak.telecomit.backend.repository.dto.MapAccessPoint;
+import ru.cifrak.telecomit.backend.entities.map.MapAccessPoint;
 
 import java.util.List;
 

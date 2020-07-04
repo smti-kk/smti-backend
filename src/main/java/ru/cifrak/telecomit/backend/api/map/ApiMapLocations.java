@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
-import ru.cifrak.telecomit.backend.repository.dto.MapLocation;
-import ru.cifrak.telecomit.backend.repository.dto.ShortLocation;
+import ru.cifrak.telecomit.backend.entities.map.MapLocation;
+import ru.cifrak.telecomit.backend.entities.map.ShortLocation;
 
 import java.util.List;
 
@@ -19,5 +19,5 @@ public interface ApiMapLocations {
     List<MapLocation> listByBbox(@RequestParam("bbox") List<Double> bbox);
 
     @GetMapping("/{id}")
-    ShortLocation get(@PathVariable ShortLocation id) throws NotFoundException;
+    ShortLocation get(@PathVariable Integer id) throws NotFoundException;
 }
