@@ -1,6 +1,7 @@
 package ru.cifrak.telecomit.backend.api.map;
 
 import org.springframework.web.bind.annotation.RestController;
+import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
 import ru.cifrak.telecomit.backend.repository.dto.ShortLocation;
 import ru.cifrak.telecomit.backend.repository.map.MapLocationsPositionRepository;
 import ru.cifrak.telecomit.backend.repository.dto.MapLocation;
@@ -32,9 +33,9 @@ public class ApiMapLocationsImpl implements ApiMapLocations {
     }
 
     @Override
-    public ShortLocation get(ShortLocation id) {
+    public ShortLocation get(ShortLocation id) throws NotFoundException {
         if (id == null) {
-
+            throw new NotFoundException();
         }
         return id;
     }

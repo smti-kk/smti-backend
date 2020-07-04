@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.exception;
+package ru.cifrak.telecomit.backend.exceptions;
 
 public class ItemNotFoundException extends RuntimeException {
     public ItemNotFoundException(Integer id) {
