@@ -1,6 +1,7 @@
 package ru.cifrak.telecomit.backend.entities.map;
 
 import lombok.Getter;
+import org.springframework.data.annotation.Immutable;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  */
 @Getter
 @Entity
+@Immutable
 @Table(name = "location")
 public class ShortLocation {
     @Id
@@ -21,6 +23,7 @@ public class ShortLocation {
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "key_location")
     private List<ShortTechnicalCapability> technicalCapability;
+
 
     public ShortLocation() {
     }

@@ -6,6 +6,7 @@ import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import ru.cifrak.telecomit.backend.entities.map.MapAccessPoint;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,4 +25,10 @@ public interface MapAccessPointRepository extends Repository<MapAccessPoint, Int
             "   and within(ap.point, :bbox) = true")
     List<MapAccessPoint> findAllByBbox(@Param("bbox") Polygon bbox,
                                        @Param("type") String type);
+
+    @Query("SELECT new ru.cifrak.telecomit.backend.entities.map.MapAccessPoint(ap.id, ap.point)" +
+            " FROM MapAccessPoint ap " +
+            " WHERE ap.type = :type and ap.modified > :modified")
+    List<MapAccessPoint> findByModifiedAndType(@Param("type") String type,
+                                               @Param("modified") Date modified);
 }

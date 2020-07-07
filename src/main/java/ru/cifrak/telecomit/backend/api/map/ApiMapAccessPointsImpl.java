@@ -5,6 +5,7 @@ import ru.cifrak.telecomit.backend.repository.map.MapAccessPointRepository;
 import ru.cifrak.telecomit.backend.entities.map.MapAccessPoint;
 import ru.cifrak.telecomit.backend.service.BboxFactory;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -28,5 +29,10 @@ public class ApiMapAccessPointsImpl implements ApiMapAccessPoints {
                 bboxFactory.createPolygon(bbox),
                 type
         );
+    }
+
+    @Override
+    public List<MapAccessPoint> list(String type, Date modified) {
+        return mapAccessPointRepository.findByModifiedAndType(type, modified);
     }
 }

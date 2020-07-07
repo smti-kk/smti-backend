@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
 import ru.cifrak.telecomit.backend.entities.map.MapLocation;
 import ru.cifrak.telecomit.backend.entities.map.ShortLocation;
+import ru.cifrak.telecomit.backend.repository.map.MapLocationSearchResult;
 
 import java.util.List;
 
@@ -20,4 +21,7 @@ public interface ApiMapLocations {
 
     @GetMapping("/{id}")
     ShortLocation get(@PathVariable Integer id) throws NotFoundException;
+
+    @GetMapping(params = "search")
+    List<MapLocationSearchResult> get(@RequestParam("search") String searchString);
 }
