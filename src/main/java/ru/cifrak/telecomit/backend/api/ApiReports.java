@@ -82,7 +82,7 @@ public class ApiReports {
         }
         Specification<AccessPoint> spec = Specification.where(null);
         if (location != null) {
-            spec = spec.and(SpecificationAccessPoint.inLocation(location));
+            spec = spec != null ? spec.and(SpecificationAccessPoint.inLocation(location)) : null;
         }
         if (type != null) {
             spec = spec.and(SpecificationAccessPoint.withType(type));

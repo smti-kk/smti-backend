@@ -1,21 +1,21 @@
 package ru.cifrak.telecomit.backend.api;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.entities.locationsummary.DetailLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryDetailLocation;
 
-import java.util.List;
-
 @RestController
-public class ApiLocationSummaryImpl implements ApiLocationSummary {
+public class ApiLocationDetailImpl implements ApiLocationDetail {
     private final RepositoryDetailLocation repositoryDetailLocation;
 
-    public ApiLocationSummaryImpl(RepositoryDetailLocation repositoryDetailLocation) {
+    public ApiLocationDetailImpl(RepositoryDetailLocation repositoryDetailLocation) {
         this.repositoryDetailLocation = repositoryDetailLocation;
     }
 
     @Override
-    public List<DetailLocation> getAll() {
-        return repositoryDetailLocation.findAll();
+    public Page<DetailLocation> getList(Pageable pageable) {
+        return repositoryDetailLocation.findAll(pageable);
     }
 }
