@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface RepositoryUser extends JpaRepository<User, Long> {
     Optional<User> findByOid(Long oid);
     Optional<User> findByUsername(String phone);
     Optional<User> findByPhone(String phone);
