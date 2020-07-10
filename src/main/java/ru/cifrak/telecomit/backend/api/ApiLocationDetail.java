@@ -16,6 +16,10 @@ public interface ApiLocationDetail {
     Page<DetailLocation> getList(Pageable pageable,
                                  @RequestParam(name = "mobile-type", required = false) List<Integer> typeMobiles,
                                  @RequestParam(name = "internet-type", required = false) List<Integer> internetTypes,
-                                 @RequestParam(name = "is-logical-or", defaultValue = "true") Boolean isLogicalOr
+                                 @RequestParam(name = "internet-operators", required = false) List<Integer> internetOperators,
+                                 @RequestParam(name = "cellular-operators", required = false) List<Integer> cellularOperators,
+                                 @RequestParam(name = "is-logical-or", defaultValue = "true") Boolean isLogicalOr,
+                                 @RequestParam(name = "location", required = false) String location,
+                                 @RequestParam(name = "parent", required = false) String parent
     );
 }

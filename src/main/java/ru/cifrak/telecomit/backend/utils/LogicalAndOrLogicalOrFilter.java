@@ -5,7 +5,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import javax.annotation.Nullable;
 
 public class LogicalAndOrLogicalOrFilter {
-    private final LogicalAndOrLogicalOrFilterType type;
+    private LogicalAndOrLogicalOrFilterType type;
     private BooleanExpression filter;
 
     public LogicalAndOrLogicalOrFilter(LogicalAndOrLogicalOrFilterType type) {
@@ -30,5 +30,9 @@ public class LogicalAndOrLogicalOrFilter {
     @Nullable
     public BooleanExpression build() {
         return this.filter;
+    }
+
+    public void setType(LogicalAndOrLogicalOrFilterType type) {
+        this.type = type;
     }
 }
