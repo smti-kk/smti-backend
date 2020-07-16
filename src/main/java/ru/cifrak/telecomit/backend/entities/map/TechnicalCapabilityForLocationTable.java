@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "v_technical_capability_active")
 @Getter
 @Immutable
-public class ShortTechnicalCapability {
+public class TechnicalCapabilityForLocationTable {
     @Id
     private Long id;
 
@@ -46,6 +46,6 @@ public class ShortTechnicalCapability {
     @Enumerated(EnumType.STRING)
     private TcState state;
 
-    public ShortTechnicalCapability() {
+    public TechnicalCapabilityForLocationTable() {
     }
 }

@@ -22,7 +22,7 @@ public class ShortLocation {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "key_location")
-    private List<ShortTechnicalCapability> technicalCapability;
+    private List<TechnicalCapabilityForLocationTable> technicalCapability;
 
 
     public ShortLocation() {

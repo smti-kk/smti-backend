@@ -1,9 +1,9 @@
-package ru.cifrak.telecomit.backend.api.service;
+package ru.cifrak.telecomit.backend.service;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
-import ru.cifrak.telecomit.backend.entities.locationsummary.QDetailLocation;
-import ru.cifrak.telecomit.backend.entities.map.QShortTechnicalCapability;
+import ru.cifrak.telecomit.backend.entities.locationsummary.QLocationForTable;
+import ru.cifrak.telecomit.backend.entities.map.QTechnicalCapabilityForLocationTable;
 import ru.cifrak.telecomit.backend.utils.LogicalAndOrLogicalOrFilter;
 import ru.cifrak.telecomit.backend.utils.LogicalAndOrLogicalOrFilterType;
 
@@ -32,8 +32,8 @@ public class DetailLocationFilterBuilder {
         if (mobileTypes != null) {
             for (Integer typeMobile : mobileTypes) {
                 filter = filter.with(
-                        QDetailLocation.detailLocation
-                                .shortTechnicalCapability
+                        QLocationForTable.locationForTable
+                                .technicalCapabilities
                                 .any()
                                 .typeMobile.id.eq(typeMobile)
                 );
@@ -46,8 +46,8 @@ public class DetailLocationFilterBuilder {
         if (internetTypes != null) {
             for (Integer trunkChannel : internetTypes) {
                 filter = filter.with(
-                        QDetailLocation.detailLocation
-                                .shortTechnicalCapability
+                        QLocationForTable.locationForTable
+                                .technicalCapabilities
                                 .any()
                                 .trunkChannel.id.eq(trunkChannel)
                 );
@@ -59,7 +59,7 @@ public class DetailLocationFilterBuilder {
     public DetailLocationFilterBuilder location(@Nullable String location) {
         if (location != null) {
             filter = filter.with(
-                    QDetailLocation.detailLocation
+                    QLocationForTable.locationForTable
                             .name
                             .lower()
                             .like("%" + location.toLowerCase() + "%")
@@ -71,7 +71,7 @@ public class DetailLocationFilterBuilder {
     public DetailLocationFilterBuilder parent(@Nullable String parent) {
         if (parent != null) {
             filter = filter.with(
-                    QDetailLocation.detailLocation
+                    QLocationForTable.locationForTable
                             .locationParent
                             .name
                             .lower()
@@ -82,17 +82,17 @@ public class DetailLocationFilterBuilder {
     }
 
     public DetailLocationFilterBuilder internetOperators(@Nullable List<Integer> operators) {
-        QDetailLocation detailLocation = QDetailLocation.detailLocation;
-        QShortTechnicalCapability technicalCapability = QShortTechnicalCapability.shortTechnicalCapability;
+        QLocationForTable locationForTable = QLocationForTable.locationForTable;
+        QTechnicalCapabilityForLocationTable tc = QTechnicalCapabilityForLocationTable.technicalCapabilityForLocationTable;
         if (operators != null) {
             for (Integer operatorId : operators) {
                 BooleanExpression predicate = JPAExpressions
                         .selectOne()
-                        .from(technicalCapability)
+                        .from(tc)
                         .where(
-                                technicalCapability.type.eq("INET")
-                                        .and(technicalCapability.operatorId.eq(operatorId))
-                                        .and(detailLocation.id.eq(technicalCapability.locationId))
+                                tc.type.eq("INET")
+                                        .and(tc.operatorId.eq(operatorId))
+                                        .and(locationForTable.id.eq(tc.locationId))
                         )
                         .exists();
                 filter = filter.with(predicate);
@@ -102,17 +102,17 @@ public class DetailLocationFilterBuilder {
     }
 
     public DetailLocationFilterBuilder cellularOperators(@Nullable List<Integer> operators) {
-        QDetailLocation detailLocation = QDetailLocation.detailLocation;
-        QShortTechnicalCapability technicalCapability = QShortTechnicalCapability.shortTechnicalCapability;
+        QLocationForTable locationForTable = QLocationForTable.locationForTable;
+        QTechnicalCapabilityForLocationTable tc = QTechnicalCapabilityForLocationTable.technicalCapabilityForLocationTable;
         if (operators != null) {
             for (Integer operatorId : operators) {
                 BooleanExpression predicate = JPAExpressions
                         .selectOne()
-                        .from(technicalCapability)
+                        .from(tc)
                         .where(
-                                technicalCapability.type.eq("MOBILE")
-                                        .and(technicalCapability.operatorId.eq(operatorId))
-                                        .and(detailLocation.id.eq(technicalCapability.locationId))
+                                tc.type.eq("MOBILE")
+                                        .and(tc.operatorId.eq(operatorId))
+                                        .and(locationForTable.id.eq(tc.locationId))
                         )
                         .exists();
                 filter = filter.with(predicate);
@@ -124,7 +124,7 @@ public class DetailLocationFilterBuilder {
     @NotNull
     public BooleanExpression build() {
         BooleanExpression expression = filter.build();
-        BooleanExpression withoutNpRnSSTer = QDetailLocation.detailLocation
+        BooleanExpression withoutNpRnSSTer = QLocationForTable.locationForTable
                 .type.notIn(Arrays.asList("р-н", "край", "с/с", "тер"));
         if (expression != null) {
             return expression.and(withoutNpRnSSTer);

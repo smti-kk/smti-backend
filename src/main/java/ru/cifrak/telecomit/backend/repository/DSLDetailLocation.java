@@ -10,18 +10,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
-import ru.cifrak.telecomit.backend.entities.locationsummary.DetailLocation;
-import ru.cifrak.telecomit.backend.entities.locationsummary.QDetailLocation;
+import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
+import ru.cifrak.telecomit.backend.entities.locationsummary.QLocationForTable;
 
 
-public interface DSLDetailLocation extends JpaRepository<DetailLocation, Integer>,
-        QuerydslPredicateExecutor<DetailLocation>, QuerydslBinderCustomizer<EntityPathBase<QDetailLocation>> {
+public interface DSLDetailLocation extends JpaRepository<LocationForTable, Integer>,
+        QuerydslPredicateExecutor<LocationForTable>, QuerydslBinderCustomizer<EntityPathBase<QLocationForTable>> {
     @Override
-    default void customize(QuerydslBindings bindings, EntityPathBase<QDetailLocation> root) {
+    default void customize(QuerydslBindings bindings, EntityPathBase<QLocationForTable> root) {
     }
 
     @Override
     @EntityGraph("detail-locations")
     @NotNull
-    Page<DetailLocation> findAll(@NotNull Predicate predicate, @NotNull Pageable pageable);
+    Page<LocationForTable> findAll(@NotNull Predicate predicate, @NotNull Pageable pageable);
 }
