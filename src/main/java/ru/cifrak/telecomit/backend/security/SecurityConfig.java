@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -50,12 +51,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/auth", "/api/exchange_temp_token").permitAll()
+                .antMatchers("/api/import/**").permitAll()
                 .antMatchers("/api/esia-auth/**").permitAll()
 //                .antMatchers("/api/**").hasAuthority()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().disable()
             ;
+        }
+
+        @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring().mvcMatchers("/api/import/**");
         }
 
         public RequestHeaderAuthenticationFilter requestHeaderAuthenticationFilter() throws Exception {
