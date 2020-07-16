@@ -90,7 +90,7 @@ public class AuthAPI {
     public ResponseEntity<User> account_info() {
         log.info("-> [api] auth/account_info");
         final Optional<User> userOptional = userRepository.findByUsername("admin");
-
+        log.info("<- [api] auth/account_info");
         return ResponseEntity.ok(userOptional.get());
     }
 }

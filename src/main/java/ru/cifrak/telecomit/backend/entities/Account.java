@@ -1,36 +1,35 @@
 package ru.cifrak.telecomit.backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 
 @Entity
 @Table(name = "app_user")
-@Immutable
 
 @NamedEntityGraph(
-        name = "account_roles",
+        name = Account.WITH_ALL,
         attributeNodes = {
-                @NamedAttributeNode("roles")
+                @NamedAttributeNode("roles"),
+                @NamedAttributeNode(value = "locations", subgraph = Account.WITH_SG)
+        },
+        subgraphs = {
+                @NamedSubgraph(name = Account.WITH_SG, attributeNodes = {@NamedAttributeNode("parent")})
         }
 )
 public class Account {
+    public static final String WITH_ALL = "account_roles";
+    public static final String WITH_SG = "account_location_parent";
+
     @Id
     private Long id;
 
     @Column
     private String username;
-
-    @JsonIgnore
-    @Column
-    private String password;
 
     @Column(name = "is_active")
     private Boolean isActive;
@@ -39,8 +38,7 @@ public class Account {
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "id"))
     @Column
     @Enumerated(EnumType.STRING)
-//    @Fetch(FetchMode.JOIN)
-    private List<UserRole> roles = new ArrayList<>();
+    private Set<UserRole> roles = new HashSet<>();
 
     @Column(name = "first_name")
     private String firstName;
@@ -52,17 +50,11 @@ public class Account {
     private String patronymicName;
 
     @Column
-    private String phone;
-
-    @Column
-    private String passport;
-
-    @Column
     private String email;
 
-    @Column
-    private String location;
+    //    @JsonIgnoreProperties("parent")
+    @OneToMany
+    @JoinTable(name = "user_locations", joinColumns = {@JoinColumn(name = "key_user")}, inverseJoinColumns = {@JoinColumn(name = "key_location")})
+    private Set<DLocationBase> locations;
 
-    @Column(name = "create_date_time")
-    private LocalDateTime createDateTime;
 }
