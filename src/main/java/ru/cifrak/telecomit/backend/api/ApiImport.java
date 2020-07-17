@@ -11,6 +11,8 @@ import ru.cifrak.telecomit.backend.service.storage.StorageService;
 @RequestMapping("/api/import")
 public class ApiImport {
     private final StorageService storageService;
+    // Service serviceOfImoport;
+
 
     private RepositoryOperator repository;
 
@@ -20,15 +22,33 @@ public class ApiImport {
     }
 
     @PostMapping("/location")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes) {
+    public String handleFileUpload(@RequestParam("file") MultipartFile file) {
+//    public String handleFileUpload(@RequestParam("file") MultipartFile file,
+//                                   RedirectAttributes redirectAttributes) {
 
-        storageService.store(file);
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
+//        storageService.store(file);
+//        redirectAttributes.addFlashAttribute("message",
+//                "You successfully uploaded " + file.getOriginalFilename() + "!");
 
-        return "redirect:/";
+        // Locations
+        // todo: fillup list of Location entitis
+        // magic with Apache POI
+        // List<Entity> entities =  servicePOI.getEntitiesFromDTO(List<DTO> items);
+        // for ech new Location(); loc.setName(importedLoc.getName)
+        // todo: save this list
+        // serviceOfImport.pushImportedLocations(List<Location>locs)
+        //
+        // Tech.Caps
+        // todo: fillup list of Texh.Caps entitis
+        // magic with Apache POI
+        // for ech new Location(); loc.setName(importedLoc.getName)
+        // todo: save this list
+        // serviceOfImport.pushTechCaps(List<Location>locs)
+
+        return "Ku: " + file.getName();
     }
+
+
 //    @PostMapping("/location")
 //    public String item() {
 //        return "'name': 'ok from import'";
