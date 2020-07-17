@@ -52,7 +52,6 @@ public class Account {
     @Column
     private String email;
 
-    //    @JsonIgnoreProperties("parent")
     @OneToMany
     @JoinTable(name = "user_locations", joinColumns = {@JoinColumn(name = "key_user")}, inverseJoinColumns = {@JoinColumn(name = "key_location")})
     private Set<DLocationBase> locations;

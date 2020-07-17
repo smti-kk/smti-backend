@@ -39,6 +39,8 @@ public class ApiUser {
         item.setFirstName(value.getFirstName());
         item.setLastName(value.getLastName());
         item.setPatronymicName(value.getPatronymicName());
+        item.setLocations(value.getLocations());
+        item.setIsActive(value.getIsActive());
         item = rAccount.save(item);
         log.info("<-PUT /api/user/::{}", value.getId());
         return ResponseEntity.ok(item);
