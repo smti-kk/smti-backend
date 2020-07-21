@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="a-panov" id="1" labels="create">
+        <createTable tableName="user_locations">
+            <column name="key_user" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_location" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="2" labels="create">
+        <addForeignKeyConstraint baseColumnNames="key_user" baseTableName="user_locations" constraintName="fk_user_locations_user" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="app_user" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="key_location" baseTableName="user_locations" constraintName="fk_user_locations_location" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="location" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
