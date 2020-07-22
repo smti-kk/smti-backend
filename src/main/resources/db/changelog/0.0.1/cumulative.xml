@@ -18,4 +18,5 @@
     <include file="0016-add-tech-caps.xml" relativeToChangelogFile="true" />
     <include file="0017-add-monitoring-to-ap.xml" relativeToChangelogFile="true" />
     <include file="0018-ref-ap-column.xml" relativeToChangelogFile="true" />
+    <include file="0019-add-user-locations.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

@@ -14,10 +14,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.cifrak.telecomit.backend.entities.User;
-import ru.cifrak.telecomit.backend.entities.UserRole;
 import ru.cifrak.telecomit.backend.auth.service.UserService;
 import ru.cifrak.telecomit.backend.cache.repository.AuthTokenCacheRepository;
+import ru.cifrak.telecomit.backend.entities.User;
+import ru.cifrak.telecomit.backend.entities.UserRole;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -94,6 +94,7 @@ public class BackendApplication {
         log.info("AuthTokenCache clean");
     }
 
+    //TODO: explore and control this module, how it works
     @Bean
     public Module configureObjectMapper() {
         return new Hibernate5Module();
