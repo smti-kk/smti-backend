@@ -9,8 +9,6 @@ backend.iml
 docker-compose.yml
 done-api.http
 HELP.adoc
-mvnw
-mvnw.cmd
 package.json
 pom.xml
 README.adoc
