@@ -1,14 +1,11 @@
+###
+### TEMPLATED PATTERNS
+###
 # Compiled class file
 *.class
 
 # Log file
 *.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
 
 # Package Files #
 *.jar
@@ -78,9 +75,6 @@ local.properties
 # Code Recommenders
 .recommenders/
 
-# Annotation Processing
-.apt_generated/
-
 # Scala IDE specific (Scala & Java development for Eclipse)
 .cache-main
 .scala_dependencies
@@ -102,6 +96,13 @@ local.properties
 
 ### IDEA ###
 .idea
+
+###
+### PROJECT SPECIFIC
+###
 backend.iml
 .m2
 data
+application.properties
+docker/revision
+payload
