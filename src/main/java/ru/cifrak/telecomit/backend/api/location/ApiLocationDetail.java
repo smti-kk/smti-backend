@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.api.location;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
@@ -23,6 +24,9 @@ public interface ApiLocationDetail {
                                    @RequestParam(name = "location", required = false) String location,
                                    @RequestParam(name = "parent", required = false) String parent
     );
+
+    @GetMapping("/{id}")
+    LocationForTable getOne(@PathVariable Integer id);
 
     @GetMapping("/parents")
     List<LocationParent> parents();

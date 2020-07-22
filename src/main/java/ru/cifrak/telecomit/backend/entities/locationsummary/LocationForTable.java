@@ -1,6 +1,6 @@
 package ru.cifrak.telecomit.backend.entities.locationsummary;
 
-import lombok.Getter;
+import lombok.Data;
 import org.springframework.data.annotation.Immutable;
 import ru.cifrak.telecomit.backend.entities.map.TechnicalCapabilityForLocationTable;
 
@@ -10,7 +10,7 @@ import java.util.Set;
 @Entity
 @Table(name = "location")
 @Immutable
-@Getter
+@Data
 @NamedEntityGraphs({
         @NamedEntityGraph(
                 name = "detail-locations",
