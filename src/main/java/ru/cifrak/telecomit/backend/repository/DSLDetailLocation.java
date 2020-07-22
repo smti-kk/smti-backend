@@ -13,6 +13,8 @@ import org.springframework.data.querydsl.binding.QuerydslBindings;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
 import ru.cifrak.telecomit.backend.entities.locationsummary.QLocationForTable;
 
+import java.util.Optional;
+
 
 public interface DSLDetailLocation extends JpaRepository<LocationForTable, Integer>,
         QuerydslPredicateExecutor<LocationForTable>, QuerydslBinderCustomizer<EntityPathBase<QLocationForTable>> {
@@ -24,4 +26,9 @@ public interface DSLDetailLocation extends JpaRepository<LocationForTable, Integ
     @EntityGraph("detail-locations")
     @NotNull
     Page<LocationForTable> findAll(@NotNull Predicate predicate, @NotNull Pageable pageable);
+
+    @Override
+    @EntityGraph("detail-locations")
+    @NotNull
+    Optional<LocationForTable> findById(@NotNull Integer id);
 }
