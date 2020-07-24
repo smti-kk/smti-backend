@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import ru.cifrak.telecomit.backend.entities.Location;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface RepositoryLocation extends JpaRepository<Location, Integer> {
@@ -66,4 +67,6 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
             " where l.type not in ('р-н', 'край', 'с/с', 'тер') and l.name like '%Орловк%'"
     )
     Page<Location> findAllReportOrganization(Pageable pageable);
+
+    Location findByFias(UUID fias);
 }
