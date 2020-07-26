@@ -1,21 +1,20 @@
 package ru.cifrak.telecomit.backend.entities.map;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import org.springframework.data.annotation.Immutable;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.Data;
 import ru.cifrak.telecomit.backend.entities.GovernmentDevelopmentProgram;
 import ru.cifrak.telecomit.backend.entities.TcState;
 import ru.cifrak.telecomit.backend.entities.TypeMobile;
 import ru.cifrak.telecomit.backend.entities.TypeTrunkChannel;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "v_technical_capability_active")
-@Getter
-@Immutable
+@Data
 public class TechnicalCapabilityForLocationTable {
     @Id
     private Long id;
@@ -26,20 +25,19 @@ public class TechnicalCapabilityForLocationTable {
     @Column(name = "split")
     private String type;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "key_government_program")
     private GovernmentDevelopmentProgram governmentDevelopmentProgram;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "key_type_trunkchannel")
     private TypeTrunkChannel trunkChannel;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "key_type_mobile")
     private TypeMobile typeMobile;
 
     @Column(name = "key_location")
-    @JsonIgnore
     private Integer locationId;
 
     @Column

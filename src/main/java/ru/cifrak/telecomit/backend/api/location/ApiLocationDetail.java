@@ -2,19 +2,17 @@ package ru.cifrak.telecomit.backend.api.location;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
+import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
 
 import java.util.List;
 
 @RequestMapping("/api/detail-locations")
 public interface ApiLocationDetail {
 
-    @GetMapping
+    @GetMapping()
     Page<LocationForTable> getList(Pageable pageable,
                                    @RequestParam(name = "mobile-type", required = false) List<Integer> typeMobiles,
                                    @RequestParam(name = "internet-type", required = false) List<Integer> internetTypes,
@@ -30,4 +28,8 @@ public interface ApiLocationDetail {
 
     @GetMapping("/parents")
     List<LocationParent> parents();
+
+    @PostMapping("/{locationId}/tcs")
+    void save(@RequestBody List<WritableTc> writableTcs,
+              @PathVariable Integer locationId);
 }

@@ -55,12 +55,12 @@ public class LocationForTable {
     @JoinColumn(name = "parent_id")
     private LocationParent locationParent;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "key_location")
     private Set<TechnicalCapabilityForLocationTable> technicalCapabilities;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "key_location")
+    @JoinColumn(name = "key_location", updatable = false)
     private Set<OrganizationForLocationTable> organizations;
 
     public LocationForTable() {
