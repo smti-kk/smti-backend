@@ -71,10 +71,12 @@ public class ParsingExcelLocations {
 
     private LocationFromExcelDTO getDataFromRow(Row row) {
         return new LocationFromExcelDTO(
+                row.getCell(1).getStringCellValue().trim(),
+                row.getCell(2).getStringCellValue().trim(),
                 UUID.fromString(row.getCell(5).getStringCellValue().trim()),
                 row.getCell(4).getStringCellValue().trim(),
                 (int) row.getCell(6).getNumericCellValue(),
-                row.getCell(4).getStringCellValue().trim()
+                row.getCell(3).getStringCellValue().trim()
         );
     }
 

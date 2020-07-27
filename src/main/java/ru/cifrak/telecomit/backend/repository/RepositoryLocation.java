@@ -69,4 +69,12 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
     Page<Location> findAllReportOrganization(Pageable pageable);
 
     Location findByFias(UUID fias);
+
+    @Query("SELECT distinct l.type from Location l")
+    List<String> findAllTypes();
+
+    Location findByNameAndType(String name, String type);
+
+    @Query("SELECT max(l.level) from Location l")
+    int findMaxLevel();
 }
