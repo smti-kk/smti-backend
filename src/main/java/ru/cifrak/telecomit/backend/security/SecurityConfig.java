@@ -53,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth", "/api/exchange_temp_token").permitAll()
                 .antMatchers("/api/import/**").permitAll()
                 .antMatchers("/api/esia-auth/**").permitAll()
+                .antMatchers("/api/**").permitAll()
 //                .antMatchers("/api/**").hasAuthority()
                 .anyRequest().authenticated()
                 .and()

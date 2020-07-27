@@ -181,19 +181,15 @@ public class GeometrySerializer extends JsonSerializer<Geometry> {
 
     private void writePoint(JsonGenerator jgen, Point p)
             throws JsonGenerationException, IOException {
-        jgen.writeStartObject();
-        jgen.writeStringField("type", "Point");
-        jgen.writeFieldName("coordinates");
         writePointCoords(jgen, p);
-        jgen.writeEndObject();
     }
 
     private void writePointCoords(JsonGenerator jgen, Point p)
             throws IOException, JsonGenerationException {
-        jgen.writeStartArray();
-        jgen.writeNumber(p.getX());
-        jgen.writeNumber(p.getY());
-        jgen.writeEndArray();
+        jgen.writeStartObject();
+        jgen.writeNumberField("lng", p.getX());
+        jgen.writeNumberField("lat", p.getY());
+        jgen.writeEndObject();
     }
 
 }

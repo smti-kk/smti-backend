@@ -1,6 +1,5 @@
 package ru.cifrak.telecomit.backend.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
@@ -15,10 +14,8 @@ import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 public class LocationAreaBorders {
     private Integer id;
     private String name;
-    @JsonProperty("full_name")
     private String fullName;
 
-    @JsonProperty("border_geojson")
     @JsonSerialize(using = GeometrySerializer.class)
     @JsonDeserialize(using = GeometryDeserializer.class)
     private MultiPolygon type;

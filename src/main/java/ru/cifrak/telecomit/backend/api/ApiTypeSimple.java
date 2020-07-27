@@ -7,9 +7,6 @@ import ru.cifrak.telecomit.backend.entities.Signal;
 import ru.cifrak.telecomit.backend.entities.TypeAccessPoint;
 import ru.cifrak.telecomit.backend.entities.TypePost;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/type/")
 public class ApiTypeSimple {

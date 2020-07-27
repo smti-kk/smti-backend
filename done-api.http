@@ -15,6 +15,9 @@ Content-Type: application/json
 
 > {% client.global.set("auth_token", response.body.token); %}
 
+###
+GET http://localhost:8080/auth/account_info/
+Authorization: Token {{auth_token}}
 
 ### ********************************************************************************************************************
 ### Operators
@@ -533,6 +536,13 @@ Content-Type: application/json
 }
 
 
+### goo org and ap
+GET http://localhost:8080/api/user/
+#POST http://localhost:8080/api/organization/3410/ap/3802/init-monitoring
+Authorization: Token {{auth_token}}
+Content-Type: application/json
 
 
-
+###
+GET http://localhost:8080/api/location/base/
+Authorization: Token {{auth_token}}

@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
@@ -162,6 +163,7 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     //bi-directional many-to-one association to CatalogsOrganization
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_organization")
+    @JsonIgnore
     private Organization organization;
 
 }
