@@ -1,7 +1,7 @@
 package ru.cifrak.telecomit.backend.repository;
 
 import org.jetbrains.annotations.NotNull;
-import org.locationtech.jts.geom.Polygon;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -63,6 +63,7 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
     )
     Page<Location> findAllReportOrganization(Pageable pageable);
 
+    @Nullable
     Location findByFias(UUID fias);
 
     @Query("SELECT distinct l.type from Location l")
