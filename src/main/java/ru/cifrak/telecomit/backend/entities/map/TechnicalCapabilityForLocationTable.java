@@ -1,16 +1,12 @@
 package ru.cifrak.telecomit.backend.entities.map;
 
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
-import ru.cifrak.telecomit.backend.entities.GovernmentDevelopmentProgram;
-import ru.cifrak.telecomit.backend.entities.TcState;
-import ru.cifrak.telecomit.backend.entities.TypeMobile;
-import ru.cifrak.telecomit.backend.entities.TypeTrunkChannel;
+import ru.cifrak.telecomit.backend.entities.*;
+import ru.cifrak.telecomit.backend.serializer.SignalConverter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "v_technical_capability_active")
@@ -29,20 +25,30 @@ public class TechnicalCapabilityForLocationTable {
     @JoinColumn(name = "key_government_program")
     private GovernmentDevelopmentProgram governmentDevelopmentProgram;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "key_type_trunkchannel")
     private TypeTrunkChannel trunkChannel;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Column(name = "type")
+    @Convert(converter = SignalConverter.class)
+    private List<Signal> tvOrRadioTypes;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "key_type_mobile")
     private TypeMobile typeMobile;
 
     @Column(name = "key_location")
     private Integer locationId;
 
+    @Column(name = "type_post")
+    @Enumerated(EnumType.STRING)
+    private TypePost typePost;
+
     @Column
     @Enumerated(EnumType.STRING)
     private TcState state;
+
+    private Integer govYearComplete;
 
     public TechnicalCapabilityForLocationTable() {
     }

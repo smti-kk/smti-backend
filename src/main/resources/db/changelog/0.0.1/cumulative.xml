@@ -22,4 +22,17 @@
     <include file="0020-add-base-stations.xml" relativeToChangelogFile="true" />
     <include file="0021-add-view-technical-capabililties.xml" relativeToChangelogFile="true" />
     <include file="0022-ref-trunk-types.xml" relativeToChangelogFile="true" />
+    <include file="0023-add-location-features-request-table.xml" relativeToChangelogFile="true" />
+    <include file="0024-create_features_editing_sequence.xml" relativeToChangelogFile="true" />
+    <include file="0025-create_previous_value_column_to_location_features.xml" relativeToChangelogFile="true" />
+    <include file="0026-added_status_column_to_request.xml" relativeToChangelogFile="true" />
+    <include file="0027-added_to_feature_editings_actions_description.xml" relativeToChangelogFile="true" />
+    <include file="0028-added_constraints_and_feature_edit_sequence.xml" relativeToChangelogFile="true" />
+    <include file="0029-rename-table-editing_features.xml" relativeToChangelogFile="true" />
+    <include file="0030-add-column-new-value-to-location-edition.xml" relativeToChangelogFile="true" />
+    <include file="0031-add-column-type_post-to-tc.xml" relativeToChangelogFile="true" />
+    <include file="0032-recreate-view-technical-capabililties.xml" relativeToChangelogFile="true" />
+    <include file="0034-clean-gov-programs-2.xml" relativeToChangelogFile="true" />
+    <include file="0035-add-payphones-and-infomat.xml" relativeToChangelogFile="true" />
+    <include file="0036-add-rostelecom-postal.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

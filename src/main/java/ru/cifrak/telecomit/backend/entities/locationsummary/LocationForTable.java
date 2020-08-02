@@ -24,6 +24,7 @@ import java.util.Set;
                                 name = "detail-location-tcs",
                                 attributeNodes = {
                                         @NamedAttributeNode("trunkChannel"),
+                                        @NamedAttributeNode("tvOrRadioTypes"),
                                         @NamedAttributeNode("typeMobile"),
                                         @NamedAttributeNode("governmentDevelopmentProgram"),
                                 }

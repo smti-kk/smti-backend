@@ -8,7 +8,8 @@ public enum TcState {
     ARCHIVE,
     ACTIVE,
     PLAN1YEAR,
-    PLAN2YEAR;
+    PLAN2YEAR,
+    WAIT_FOR_STATE_TO_BE_SET;
 
     @Override
     public String toString() {

@@ -25,6 +25,12 @@ public interface RepositoryOperator extends JpaRepository<Operator, Integer> {
     @Query("SELECT o from Operator o where o.services LIKE '%radio%' ")
     List<Operator> radio();
 
+    @Query("SELECT o from Operator o where o.services LIKE '%payphone%' ")
+    List<Operator> payphone();
+
+    @Query("SELECT o from Operator o where o.services LIKE '%infomat%' ")
+    List<Operator> infomat();
+
     @Query("SELECT o from Operator o where o.services LIKE '%postal%' ")
     List<Operator> postal();
 

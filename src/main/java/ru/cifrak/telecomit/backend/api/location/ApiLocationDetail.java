@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
-import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
 
 import java.util.List;
 
@@ -29,7 +28,6 @@ public interface ApiLocationDetail {
     @GetMapping("/parents")
     List<LocationParent> parents();
 
-    @PostMapping("/{locationId}/tcs")
-    void save(@RequestBody List<WritableTc> writableTcs,
-              @PathVariable Integer locationId);
+    @GetMapping("/gov-years")
+    List<Integer> govProgramYears();
 }
