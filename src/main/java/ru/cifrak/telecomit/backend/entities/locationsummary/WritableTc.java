@@ -12,6 +12,7 @@ import ru.cifrak.telecomit.backend.serializer.SignalConverter;
 import ru.cifrak.telecomit.backend.serializer.SignalDeserializer;
 
 import javax.persistence.*;
+import java.time.Year;
 import java.util.List;
 import java.util.Objects;
 
@@ -95,5 +96,9 @@ public class WritableTc {
                 getTvOrRadioTypes(),
                 getGovYearComplete()
         );
+    }
+
+    public boolean isPlan() {
+        return governmentDevelopmentProgram != null && govYearComplete >= Year.now().getValue();
     }
 }

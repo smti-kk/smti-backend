@@ -1,10 +1,16 @@
 package ru.cifrak.telecomit.backend.entities.locationsummary;
 
 import lombok.Data;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.service.ServiceWritableTc;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import static ru.cifrak.telecomit.backend.entities.locationsummary.EditingRequestStatus.ACCEPTED;
@@ -12,6 +18,7 @@ import static ru.cifrak.telecomit.backend.entities.locationsummary.EditingReques
 
 @Data
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class LocationFeaturesEditingRequest {
     @Id
     @SequenceGenerator(name = "LOCATION_FEATURES_EDITING_GENERATOR", sequenceName = "location_features_editing_id_seq", allocationSize = 1)
@@ -28,6 +35,18 @@ public class LocationFeaturesEditingRequest {
 
     @Enumerated(EnumType.STRING)
     private EditingRequestStatus status = WAIT_FOR_STATE_TO_BE_SET;
+
+    @CreatedDate
+    private LocalDateTime created;
+
+    @LastModifiedDate
+    private LocalDateTime modified;
+
+    @CreatedBy
+    private String createdBy;
+
+    @LastModifiedBy
+    private String modifiedBy;
 
     public LocationFeaturesEditingRequest(Integer locationId,
                                           String comment,
