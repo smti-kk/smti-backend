@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.api.service;
+package ru.cifrak.telecomit.backend.api.service.imp.tcinternet;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import ru.cifrak.telecomit.backend.entities.Location;
 
 @AllArgsConstructor
 @Getter
-public class LocationFromExcelDTO {
+public class TcInternetFromExcelDTO {
 
     private final String npp;
 
@@ -23,7 +23,7 @@ public class LocationFromExcelDTO {
 
     private final String type;
 
-    public LocationFromExcelDTO(Row row) {
+    public TcInternetFromExcelDTO(Row row) {
         this(
                 row.getCell(0).getStringCellValue().trim(),
                 row.getCell(1).getStringCellValue().trim().toLowerCase(),

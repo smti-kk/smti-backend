@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.api.service;
+package ru.cifrak.telecomit.backend.api.service.imp.location;
 
 import lombok.SneakyThrows;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -38,11 +38,25 @@ public class LocationsFromExcelDTO implements LocationsDTOFromExcel {
         Row row;
         for (int i = 2; i < sheet.getPhysicalNumberOfRows(); i++) {
             row = sheet.getRow(i);
-            row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
-            row.getCell(6).setCellType(Cell.CELL_TYPE_STRING);
-            locations.add(new LocationFromExcelDTO(row));
+            if (row != null) {
+                row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+                row.getCell(6).setCellType(Cell.CELL_TYPE_STRING);
+                if (this.notEmptyRow(row)) {
+                    locations.add(new LocationFromExcelDTO(row));
+                }
+            }
         }
         return locations;
+    }
+
+    private boolean notEmptyRow(Row row) {
+        return !row.getCell(0).getStringCellValue().trim().isEmpty()
+                || !row.getCell(1).getStringCellValue().trim().isEmpty()
+                || !row.getCell(2).getStringCellValue().trim().isEmpty()
+                || !row.getCell(5).getStringCellValue().trim().isEmpty()
+                || !row.getCell(4).getStringCellValue().trim().isEmpty()
+                || !row.getCell(6).getStringCellValue().trim().isEmpty()
+                || !row.getCell(3).getStringCellValue().trim().isEmpty();
     }
 
 //    private ExcelFormat getFormat(String file) {

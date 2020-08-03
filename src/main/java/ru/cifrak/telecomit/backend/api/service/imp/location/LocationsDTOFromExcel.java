@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.api.service;
+package ru.cifrak.telecomit.backend.api.service.imp.location;
 
 import org.springframework.web.multipart.MultipartFile;
 

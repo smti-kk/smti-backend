@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.api.service;
+package ru.cifrak.telecomit.backend.api.service.imp.location;
 
 import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.entities.Location;
@@ -18,6 +18,7 @@ public class LocationsSaveService {
     public void saveLocations(List<LocationFromExcelDTO> locationsDTO) {
         for (LocationFromExcelDTO locationDTO : locationsDTO){
             Location locationByFias = repository.findByFias(UUID.fromString(locationDTO.getFias()));
+            Location parent = this.getLocationDTOParent(locationDTO);
             int level = this.getLocationDTOLevel(locationDTO);
             if (locationByFias != null) {
                 if (locationDTO.needUpdateName(locationByFias)) {
@@ -29,8 +30,11 @@ public class LocationsSaveService {
                 if (locationDTO.needUpdateType(locationByFias)) {
                     locationByFias.setType(locationDTO.getType());
                 }
-                if (locationByFias.getLevel() != 0 && level != locationByFias.getLevel()) {
+                if (locationByFias.getLevel() != 0 && locationByFias.getLevel() != level) {
                     locationByFias.setLevel(level);
+                }
+                if (parent != null && !parent.equals(locationByFias.getParent())) {
+                    locationByFias.setParent(parent);
                 }
             } else {
                 locationByFias = new Location();
@@ -39,6 +43,7 @@ public class LocationsSaveService {
                 locationByFias.setPopulation(Integer.parseInt(locationDTO.getPopulation()));
                 locationByFias.setType(locationDTO.getType());
                 locationByFias.setLevel(level);
+                locationByFias.setParent(parent);
             }
             // TODO: Transaction.
             repository.save(locationByFias);
@@ -52,5 +57,9 @@ public class LocationsSaveService {
             level = mo.getLevel() + 1;
         }
         return level;
+    }
+
+    private Location getLocationDTOParent(LocationFromExcelDTO locationDTO) {
+        return repository.findByNameAndType(locationDTO.getNameMO(), locationDTO.getTypeMO());
     }
 }

@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.api.service;
+package ru.cifrak.telecomit.backend.api.service.imp.location;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -8,7 +8,6 @@ import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.UUID;
 
 public class LocationsFromExcelDTOValidated implements LocationsDTOFromExcel {
 
@@ -58,7 +57,6 @@ public class LocationsFromExcelDTOValidated implements LocationsDTOFromExcel {
                     + " position type error, must be in {"
                     + String.join(", ", repository.findAllTypes()) + "}.");
         }
-
 
         badLocationDTO = this.checkPopulation(locationsDTO);
         if (badLocationDTO != null) {
