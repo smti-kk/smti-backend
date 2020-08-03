@@ -61,6 +61,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             ;
         }
 
+        /**
+         * TODO: Владимир порекомендовал использовать по условию:
+         *  - https://mattermost.cifra-k.ru/test/pl/1dt86r8t67datcyh5jcwhrcm4y;
+         *  - https://mattermost.cifra-k.ru/test/pl/qaj1uyrhyfbd8nufdweo863ifh.
+         */
         @Override
         public void configure(WebSecurity web) throws Exception {
             web.ignoring().mvcMatchers("/api/import/**");

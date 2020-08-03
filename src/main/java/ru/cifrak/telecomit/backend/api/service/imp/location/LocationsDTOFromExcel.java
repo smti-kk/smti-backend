@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface LocationsDTOFromExcel {
 
-    List<LocationFromExcelDTO> getLocationsDTO() throws LocationDTOFormatException;
+    List<LocationFromExcelDTO> getLocationsDTO() throws FromExcelDTOFormatException;
 
     MultipartFile getFile();
 }

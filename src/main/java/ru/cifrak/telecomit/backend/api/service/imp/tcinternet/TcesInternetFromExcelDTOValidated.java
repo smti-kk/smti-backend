@@ -1,21 +1,24 @@
-package ru.cifrak.telecomit.backend.api.service.imp.location;
+package ru.cifrak.telecomit.backend.api.service.imp.tcinternet;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
-import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
+import ru.cifrak.telecomit.backend.api.service.imp.location.FromExcelDTOFormatException;
+import ru.cifrak.telecomit.backend.api.service.imp.location.LocationFromExcelDTO;
+import ru.cifrak.telecomit.backend.api.service.imp.location.LocationsDTOFromExcel;
+import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-public class LocationsFromExcelDTOValidated implements LocationsDTOFromExcel {
+public class TcesInternetFromExcelDTOValidated implements TcesInternetDTOFromExcel {
 
-    private final RepositoryLocation repository;
+    private final RepositoryWritableTc repository;
 
-    private final LocationsDTOFromExcel origin;
+    private final TcesInternetDTOFromExcel origin;
 
-    public LocationsFromExcelDTOValidated(RepositoryLocation repository, LocationsDTOFromExcel origin) {
+    public TcesInternetFromExcelDTOValidated(RepositoryWritableTc repository, TcesInternetDTOFromExcel origin) {
         this.repository = repository;
         this.origin = origin;
     }
@@ -26,45 +29,45 @@ public class LocationsFromExcelDTOValidated implements LocationsDTOFromExcel {
     }
 
     @Override
-    public List<LocationFromExcelDTO> getLocationsDTO() throws FromExcelDTOFormatException {
+    public List<TcInternetFromExcelDTO> getTcesInternetDTO() throws FromExcelDTOFormatException {
         this.checkFormatFile(this.getFile());
 
-        return this.checkLocations(origin.getLocationsDTO());
+        return this.checkTcesInternet(origin.getTcesInternetDTO());
     }
 
-    private List<LocationFromExcelDTO> checkLocations(List<LocationFromExcelDTO> locationsDTO)
+    private List<TcInternetFromExcelDTO> checkTcesInternet(List<TcInternetFromExcelDTO> tcesInternetDTO)
             throws FromExcelDTOFormatException {
         String badLocationDTO;
 
-        if (!this.checkFullnessNpp(locationsDTO)) {
-            throw new FromExcelDTOFormatException("Not all npp are filled.");
-        }
+//        if (!this.checkFullnessNpp(locationsDTO)) {
+//            throw new FromExcelDTOFormatException("Not all npp are filled.");
+//        }
+//
+//        badLocationDTO = this.checkFullnessCells(locationsDTO);
+//        if (badLocationDTO != null) {
+//            throw new FromExcelDTOFormatException("In " + badLocationDTO + " position not all cells are filled.");
+//        }
+//
+//        badLocationDTO = this.checkFiases(locationsDTO);
+//        if (badLocationDTO != null) {
+//            throw new FromExcelDTOFormatException("In " + badLocationDTO
+//                    + " position FIAS error, must be in GUID-format.");
+//        }
+//
+//        badLocationDTO = this.checkTypes(locationsDTO);
+//        if (badLocationDTO != null) {
+//            throw new FromExcelDTOFormatException("In " + badLocationDTO
+//                    + " position type error, must be in {"
+//                    + String.join(", ", repository.findAllTypes()) + "}.");
+//        }
+//
+//        badLocationDTO = this.checkPopulation(locationsDTO);
+//        if (badLocationDTO != null) {
+//            throw new FromExcelDTOFormatException("In " + badLocationDTO
+//                    + " position population format error, must be in numeric format.");
+//        }
 
-        badLocationDTO = this.checkFullnessCells(locationsDTO);
-        if (badLocationDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badLocationDTO + " position not all cells are filled.");
-        }
-
-        badLocationDTO = this.checkFiases(locationsDTO);
-        if (badLocationDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badLocationDTO
-                    + " position FIAS error, must be in GUID-format.");
-        }
-
-        badLocationDTO = this.checkTypes(locationsDTO);
-        if (badLocationDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badLocationDTO
-                    + " position type error, must be in {"
-                    + String.join(", ", repository.findAllTypes()) + "}.");
-        }
-
-        badLocationDTO = this.checkPopulation(locationsDTO);
-        if (badLocationDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badLocationDTO
-                    + " position population format error, must be in numeric format.");
-        }
-
-        return locationsDTO;
+        return tcesInternetDTO;
     }
 
     private String checkPopulation(List<LocationFromExcelDTO> locationsDTO) {
@@ -155,17 +158,17 @@ public class LocationsFromExcelDTOValidated implements LocationsDTOFromExcel {
         return result;
     }
 
-    private String checkTypes(List<LocationFromExcelDTO> locationsDTO) {
-        String result = null;
-        // TODO: List<String> -> List<Locations>
-        List<String> typesOfLocationsDTO = repository.findAllTypes();
-        for (LocationFromExcelDTO locationDTO : locationsDTO) {
-            if (!typesOfLocationsDTO.contains(locationDTO.getType())
-                    || !typesOfLocationsDTO.contains(locationDTO.getTypeMO())) {
-                result = locationDTO.getNpp();
-                break;
-            }
-        }
-        return result;
-    }
+//    private String checkTypes(List<LocationFromExcelDTO> locationsDTO) {
+//        String result = null;
+//        // TODO: List<String> -> List<Locations>
+//        List<String> typesOfLocationsDTO = repository.findAllTypes();
+//        for (LocationFromExcelDTO locationDTO : locationsDTO) {
+//            if (!typesOfLocationsDTO.contains(locationDTO.getType())
+//                    || !typesOfLocationsDTO.contains(locationDTO.getTypeMO())) {
+//                result = locationDTO.getNpp();
+//                break;
+//            }
+//        }
+//        return result;
+//    }
 }
