@@ -7,6 +7,7 @@ import ru.cifrak.telecomit.backend.serializer.SignalOneConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 
 @Data
@@ -19,5 +20,5 @@ public class TcRadio extends TechnicalCapability {
     @Column
 //    @Enumerated(EnumType.STRING)
     @Convert(converter = SignalOneConverter.class)
-    private Signal type;
+    private List<Signal> type;
 }

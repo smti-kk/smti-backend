@@ -33,7 +33,7 @@ public class TokenUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException(String.format("User '%s' is inactive. Access denied", user.getUsername()));
         }
 
-        return new ProjectUserDetails(optionalUser.get());
+        return optionalUser.get();
     }
 
     private static String removeStart(String str, String remove) {

@@ -1,0 +1,17 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="vitaliy (generated)" id="1596171232390-45">
+        <addForeignKeyConstraint baseColumnNames="tc_id" baseTableName="feature_edit" constraintName="FKgy6lyquhxp7h3a4idtq1kceef" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="technical_capability" validate="true"/>
+    </changeSet>
+    <changeSet author="vitaliy (generated)" id="1596171232390-47">
+        <addForeignKeyConstraint baseColumnNames="feature_edits_id" baseTableName="location_features_editing_request_feature_edit" constraintName="FKj14omt6jhcx4192km4nrgakjc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="feature_edit" validate="true"/>
+    </changeSet>
+    <changeSet author="vitaliy (generated)" id="1596171232390-50">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="location_features_editing_request" constraintName="FKs224ywns58hnpot038146qojy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="app_user" validate="true"/>
+    </changeSet>
+    <changeSet author="vitaliy (generated)" id="1596171492068-34">
+        <createSequence incrementBy="1" sequenceName="features_edit_id_seq" startValue="1"/>
+    </changeSet>
+</databaseChangeLog>

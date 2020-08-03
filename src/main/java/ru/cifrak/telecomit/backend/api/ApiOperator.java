@@ -41,6 +41,8 @@ public class ApiOperator {
         map.put("radio", repository.radio());
         map.put("post", repository.postal());
         map.put("television", repository.television());
+        map.put("payphone", repository.payphone());
+        map.put("infomat", repository.infomat());
         return map;
     }
 

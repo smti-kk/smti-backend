@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="vitaliy (generated)" id="1596169120364-34">
+        <createTable tableName="feature_edit">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="feature_editPK"/>
+            </column>
+            <column name="action" type="VARCHAR(255)"/>
+            <column name="tc_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vitaliy (generated)" id="1596169120364-70">
+        <dropColumn columnName="key_request_for_edition" tableName="technical_capability"/>
+    </changeSet>
+    <changeSet author="vitaliy (generated)" id="1596169450596-73">
+        <dropColumn columnName="previous_value_id" tableName="technical_capability"/>
+    </changeSet>
+    <changeSet author="vitaliy (generated)" id="1596169450596-36">
+        <createTable tableName="location_features_editing_request_feature_edit">
+            <column name="location_features_editing_request_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="feature_edits_id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

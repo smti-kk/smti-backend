@@ -5,12 +5,16 @@ import ru.cifrak.telecomit.backend.entities.Signal;
 
 import javax.persistence.AttributeConverter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SignalConverter implements AttributeConverter<List<Signal>, String> {
     @Override
     public String convertToDatabaseColumn(List<Signal> signals) {
+        if (signals == null || signals.isEmpty()) {
+            return null;
+        }
         return signals.stream()
                 .map(s -> s.getId().toString())
                 .collect(Collectors.joining(","));
@@ -32,6 +36,6 @@ public class SignalConverter implements AttributeConverter<List<Signal>, String>
                     })
                     .collect(Collectors.toList());
         }
-        return null;
+        return Collections.emptyList();
     }
 }

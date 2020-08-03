@@ -4,17 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
-import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
-import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
+import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
 import ru.cifrak.telecomit.backend.repository.DSLDetailLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
 import ru.cifrak.telecomit.backend.service.LocationService;
 
 import javax.annotation.Nullable;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Slf4j
@@ -22,15 +19,14 @@ import java.util.List;
 public class ApiLocationDetailImpl implements ApiLocationDetail {
     private final LocationService locationService;
     private final DSLDetailLocation repository;
-    private final RepositoryWritableTc rWritableTc;
+    private final RepositoryWritableTc writableTcRepo;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    public ApiLocationDetailImpl(LocationService locationService, DSLDetailLocation repository, RepositoryWritableTc rWritableTc) {
+    public ApiLocationDetailImpl(LocationService locationService,
+                                 DSLDetailLocation repository,
+                                 RepositoryWritableTc writableTcRepo) {
         this.locationService = locationService;
         this.repository = repository;
-        this.rWritableTc = rWritableTc;
+        this.writableTcRepo = writableTcRepo;
     }
 
     @Override
@@ -64,8 +60,7 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
                 .orElseThrow(NotFoundException::new);
     }
 
-    @Override
-    public void save(List<WritableTc> writableTcs, Integer locationId) {
-        rWritableTc.saveAll(writableTcs);
+    public List<Integer> govProgramYears() {
+        return writableTcRepo.existGovCompleteYears();
     }
 }

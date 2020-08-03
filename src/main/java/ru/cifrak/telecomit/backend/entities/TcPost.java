@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @DiscriminatorValue("POST")
 public class TcPost extends TechnicalCapability {
     @NotNull
-    @Column
+    @Column(name = "type_post")
     @Enumerated(EnumType.STRING)
     private TypePost type;
 }

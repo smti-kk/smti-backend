@@ -6,12 +6,15 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -25,7 +28,7 @@ import java.util.List;
 @Table(name = "app_user", indexes = {
         @Index(columnList = "oid", name = "oid_idx"),
 })
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
     @Id
     @SequenceGenerator(name = "USER_ID_GENERATOR", sequenceName = "app_user_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_ID_GENERATOR")
@@ -84,4 +87,29 @@ public class User implements Serializable {
     @NonNull
     @Column(name = "create_date_time", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private LocalDateTime createDateTime;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

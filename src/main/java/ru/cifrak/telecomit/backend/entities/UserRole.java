@@ -2,7 +2,7 @@ package ru.cifrak.telecomit.backend.entities;
 
 import org.springframework.security.core.GrantedAuthority;
 
-public enum UserRole {
+public enum UserRole implements GrantedAuthority {
     ADMIN,
     GUEST,
     MUNICIPALITY,
@@ -23,11 +23,11 @@ public enum UserRole {
 
     public GrantedAuthority toAuthority() {
         final String roleName = this.name();
-        return new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return String.format("ROLE_%s", roleName);
-            }
-        };
+        return (GrantedAuthority) () -> String.format("ROLE_%s", roleName);
+    }
+
+    @Override
+    public String getAuthority() {
+        return toAuthority().getAuthority();
     }
 }
