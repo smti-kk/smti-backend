@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.entities.locationsummary;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
 import ru.cifrak.telecomit.backend.entities.ServiceQuality;
 import ru.cifrak.telecomit.backend.entities.Signal;
 import ru.cifrak.telecomit.backend.entities.TcState;
-import ru.cifrak.telecomit.backend.serializer.IntegerSignalConverter;
 import ru.cifrak.telecomit.backend.serializer.SignalConverter;
 import ru.cifrak.telecomit.backend.serializer.SignalDeserializer;
 
@@ -65,6 +65,7 @@ public class WritableTc {
     public WritableTc() {
     }
 
+    @JsonIgnore
     public boolean hasSameEqualsProperties(@Nullable WritableTc lf) {
         if (lf == null) {
             return false;
@@ -81,6 +82,7 @@ public class WritableTc {
     }
 
 
+    @JsonIgnore
     public WritableTc cloneWithNullId() {
         return new WritableTc(
                 null,
@@ -98,6 +100,7 @@ public class WritableTc {
         );
     }
 
+    @JsonIgnore
     public boolean isPlan() {
         return governmentDevelopmentProgram != null && govYearComplete >= Year.now().getValue();
     }

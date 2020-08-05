@@ -1,20 +1,17 @@
 package ru.cifrak.telecomit.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
+import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
+import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -41,9 +38,10 @@ public class GeoData implements Serializable {
     @Column(name = "administrative_center")
     private Point administrativeCenter;
 
-    /*@JsonSerialize(using = GeometrySerializer.class)
-    @JsonDeserialize(using = GeometryDeserializer.class)*/
+    @JsonSerialize(using = GeometrySerializer.class)
+    @JsonDeserialize(using = GeometryDeserializer.class)
     @Column(name = "border")
+    @JsonProperty("geometry")
     private MultiPolygon border;
 
     @Column

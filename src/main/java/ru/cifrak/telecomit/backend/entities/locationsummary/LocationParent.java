@@ -2,6 +2,7 @@ package ru.cifrak.telecomit.backend.entities.locationsummary;
 
 import lombok.Getter;
 import org.springframework.data.annotation.Immutable;
+import ru.cifrak.telecomit.backend.entities.Location;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,4 +18,14 @@ public class LocationParent {
     private String type;
     private String name;
     private Integer level;
+
+    public LocationParent(Location location) {
+        this.id = location.getId();
+        this.type = location.getType();
+        this.name = location.getName();
+        this.level = location.getLevel();
+    }
+
+    public LocationParent() {
+    }
 }

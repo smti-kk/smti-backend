@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class IntegerSignalConverter implements AttributeConverter<List<Integer>, String> {
+public class IntegerConverter implements AttributeConverter<List<Integer>, String> {
     @Override
     public String convertToDatabaseColumn(List<Integer> integers) {
         if (integers == null) {

@@ -15,15 +15,16 @@ public class LocationAreaBorders {
     private Integer id;
     private String name;
     private String fullName;
+    private String type = "Feature";
 
     @JsonSerialize(using = GeometrySerializer.class)
     @JsonDeserialize(using = GeometryDeserializer.class)
-    private MultiPolygon type;
+    private MultiPolygon geometry;
 
     public LocationAreaBorders(Location entity) {
         this.id = entity.getId();
         this.name = entity.getName();
         this.fullName = entity.getType() + " " + entity.getName();
-        this.type = entity.getGeoData().getBorder();
+        this.geometry = entity.getGeoData().getBorder();
     }
 }

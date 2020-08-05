@@ -13,17 +13,15 @@ import java.util.List;
  * Предоставление информации о локациях
  * <br/> из базы данных для схемы-карты
  */
-public interface MapLocationsPositionRepository extends Repository<Location, Integer> {
+public interface MapLocationsPositionRepository extends Repository<MapLocation, Integer> {
 
-    @Query("SELECT new ru.cifrak.telecomit.backend.entities.map.MapLocation(l.id, g.administrativeCenter)" +
-            " FROM Location l" +
-            " LEFT JOIN GeoData g on l.geoData = g" +
+    @Query("SELECT l" +
+            " FROM MapLocation l" +
             " where l.type not in ('р-н', 'край', 'с/с', 'тер') and l.geoData is not null")
     List<MapLocation> findAll();
 
-    @Query("SELECT new ru.cifrak.telecomit.backend.entities.map.MapLocation(l.id, g.administrativeCenter)" +
-            " FROM Location l" +
-            " LEFT JOIN GeoData g on l.geoData = g" +
+    @Query("SELECT l" +
+            " FROM MapLocation l" +
             " where l.type not in ('р-н', 'край', 'с/с', 'тер') " +
             "   and l.geoData is not null" +
             "   and within(l.geoData.administrativeCenter, :bbox) = true")
