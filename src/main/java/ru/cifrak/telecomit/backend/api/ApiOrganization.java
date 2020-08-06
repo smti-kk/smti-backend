@@ -38,11 +38,13 @@ public class ApiOrganization {
     }
 
     @GetMapping
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     public List<Organization> list() {
         return rOrganization.findAll();
     }
 
     @GetMapping(params = "location")
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     public List<OrganizationWithAccessPointsDTO> listByLocationId(@RequestParam("location") Integer locationId) {
         return rOrganization.findAllByLocationId(locationId).stream()
                 .map(OrganizationWithAccessPointsDTO::new)
@@ -84,6 +86,7 @@ public class ApiOrganization {
 
 
     @Transactional
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<OrganizationDTO> updateOrganization(@PathVariable(name = "id") Organization item, @RequestBody OrganizationShortDTO value) {
         log.info("->PUT /api/organization/{}", item.getId());

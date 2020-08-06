@@ -16,6 +16,6 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
 
     @Override
     public List<LocationFeaturesEditingRequestFull> requests(Integer locationId) {
-        return repositoryFeaturesRequests.findAllByLocationId(locationId);
+        return repositoryFeaturesRequests.findAllByLocationIdOrderByCreatedDesc(locationId);
     }
 }

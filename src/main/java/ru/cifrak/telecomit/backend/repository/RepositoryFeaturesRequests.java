@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface RepositoryFeaturesRequests extends JpaRepository<LocationFeaturesEditingRequestFull, Integer> {
-    List<LocationFeaturesEditingRequestFull> findAllByLocationId(Integer locationId);
+    List<LocationFeaturesEditingRequestFull> findAllByLocationIdOrderByCreatedDesc(Integer locationId);
 }
