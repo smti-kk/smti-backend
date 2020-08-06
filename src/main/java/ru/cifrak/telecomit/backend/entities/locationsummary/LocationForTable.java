@@ -2,9 +2,11 @@ package ru.cifrak.telecomit.backend.entities.locationsummary;
 
 import lombok.Data;
 import org.springframework.data.annotation.Immutable;
+import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.entities.map.TechnicalCapabilityForLocationTable;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -63,6 +65,9 @@ public class LocationForTable {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_location", updatable = false)
     private Set<OrganizationForLocationTable> organizations;
+
+    @OneToMany(mappedBy = "locationParent", fetch = FetchType.LAZY)
+    private List<LocationForTable> children;
 
     public LocationForTable() {
     }

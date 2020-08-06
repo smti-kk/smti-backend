@@ -118,6 +118,9 @@ public class Location implements Serializable {
 
     @OneToMany(mappedBy = "location")
     private List<Organization> organizations;
+
+    @OneToMany
+    private List<TechnicalCapability> technicalCapabilities;
 /*
     @OneToMany(mappedBy = "locationStart")
     private List<TrunkChannel> trunkChannelsStart;

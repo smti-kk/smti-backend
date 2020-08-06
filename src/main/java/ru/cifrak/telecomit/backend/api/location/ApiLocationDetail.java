@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.api.location;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+import ru.cifrak.telecomit.backend.api.dto.LocationProvidingInfo;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 
@@ -30,4 +31,10 @@ public interface ApiLocationDetail {
 
     @GetMapping("/gov-years")
     List<Integer> govProgramYears();
+
+    @GetMapping("/location-providing-info/{locationId}")
+    LocationProvidingInfo locationProvidingInfo(@PathVariable Integer locationId);
+
+    @PostMapping("/export-excel")
+    void exportExcel(@RequestBody List<Integer> locationIds);
 }

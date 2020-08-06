@@ -3,7 +3,9 @@ package ru.cifrak.telecomit.backend.api.location;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.cifrak.telecomit.backend.api.dto.LocationProvidingInfo;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
@@ -60,7 +62,16 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
                 .orElseThrow(NotFoundException::new);
     }
 
+    public LocationProvidingInfo locationProvidingInfo(Integer locationId) {
+        return new LocationProvidingInfo(repository.getOne(locationId));
+    }
+
     public List<Integer> govProgramYears() {
         return writableTcRepo.existGovCompleteYears();
+    }
+
+    public void exportExcel(List<Integer> locationIds) {
+        List<LocationForTable> allById = repository.findAllById(locationIds);
+        // todo: implement me pls
     }
 }
