@@ -104,7 +104,7 @@ public class GeometryDeserializer extends JsonDeserializer<Geometry> {
     }
 
     private Coordinate parseCoordinateAsLatLng(JsonNode obj) {
-        return new Coordinate(obj.get("lat").asDouble(), obj.get("lng").asDouble());
+        return new Coordinate(obj.get("lng").asDouble(), obj.get("lat").asDouble());
     }
 
     private Coordinate[] parseLineString(JsonNode array) {

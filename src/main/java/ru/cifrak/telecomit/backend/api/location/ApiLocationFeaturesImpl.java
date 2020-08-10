@@ -54,11 +54,11 @@ public class ApiLocationFeaturesImpl implements ApiLocationFeatures {
         });
         repositoryFeatureEdits.saveAll(eReq.getFeatureEdits());
         LocationFeaturesEditingRequest savedRequest = featuresRequests.save(eReq);
-//        if (!user.getRoles().contains(UserRole.MUNICIPALITY) &&
-//                (user.getRoles().contains(UserRole.OPERATOR) || user.getRoles().contains(UserRole.ADMIN))
-//        ) {
-//            savedRequest.accept(serviceWritableTc);
-//            featuresRequests.save(savedRequest);
-//        }
+        if (!user.getRoles().contains(UserRole.MUNICIPALITY) &&
+                (user.getRoles().contains(UserRole.OPERATOR) || user.getRoles().contains(UserRole.ADMIN))
+        ) {
+            savedRequest.accept(serviceWritableTc);
+            featuresRequests.save(savedRequest);
+        }
     }
 }
