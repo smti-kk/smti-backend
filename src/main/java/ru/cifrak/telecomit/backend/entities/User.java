@@ -94,6 +94,14 @@ public class User implements Serializable, UserDetails {
     @JsonIgnore
     private LocalDateTime createDateTime;
 
+    @OneToMany
+    @JoinTable(
+            name = "user_locations",
+            inverseJoinColumns = @JoinColumn(name = "key_location"),
+            joinColumns = @JoinColumn(name = "key_user")
+    )
+    private List<Location> locations;
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {

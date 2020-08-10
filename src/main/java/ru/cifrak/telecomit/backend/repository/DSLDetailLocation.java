@@ -33,4 +33,11 @@ public interface DSLDetailLocation extends JpaRepository<LocationForTable, Integ
     @EntityGraph("detail-locations")
     @NotNull
     Optional<LocationForTable> findById(@NotNull Integer id);
+
+    @EntityGraph("detail-locations")
+    @NotNull
+    @Query("SELECT l FROM LocationForTable l where " +
+            " exists (SELECT 1 FROM User u where u.id = :userId " +
+            "           and l.id in (select ul.id from u.locations ul))")
+    List<LocationForTable> findByUserId(@NotNull Long userId);
 }

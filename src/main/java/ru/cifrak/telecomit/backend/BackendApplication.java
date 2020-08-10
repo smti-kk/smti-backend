@@ -39,8 +39,9 @@ public class BackendApplication {
     public void doAfterAppStart(ApplicationReadyEvent event) {
         final ConfigurableApplicationContext context = event.getApplicationContext();
         BackendApplication.addAdminUser(context);
+        BackendApplication.addMunicipalityUser(context);
         /*BackendApplication.addOperUser(context);*/
-        BackendApplication.resetAuthTokenCache(context);
+//        BackendApplication.resetAuthTokenCache(context);
     }
 
     public static void addAdminUser(ApplicationContext context) {
@@ -64,6 +65,28 @@ public class BackendApplication {
         newUser.setCreateDateTime(nowTime);
         userService.save(newUser);
         log.info("user admin created with default password");
+    }
+
+    public static void addMunicipalityUser(ApplicationContext context) {
+        final ZoneId zoneId = ZoneId.systemDefault(); // TODO get from properties
+        final LocalDateTime nowTime = LocalDateTime.now(zoneId);
+
+        final PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
+        final UserService userService = context.getBean(UserService.class);
+        final Optional<User> optionalUser = userService.findByUsername("artur");
+
+        if (optionalUser.isPresent()) {
+            return;
+        }
+
+        final User newUser = new User();
+        newUser.setUsername("artur");
+        newUser.setFirstName("Артур");
+        newUser.setPassword(passwordEncoder.encode("pwd"));
+        newUser.getRoles().add(UserRole.MUNICIPALITY);
+        newUser.setCreateDateTime(nowTime);
+        userService.save(newUser);
+        log.info("user municipality artur created with default password");
     }
 /*
     public static void addOperUser(ApplicationContext context) {

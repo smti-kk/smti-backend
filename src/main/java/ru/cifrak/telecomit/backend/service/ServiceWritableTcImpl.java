@@ -36,6 +36,27 @@ public class ServiceWritableTcImpl implements ServiceWritableTc {
     }
 
     @Override
+    public void editMunicipalityLocationFeatures(Set<FeatureEdit> features, Integer locationId) {
+        features.forEach(f -> {
+            switch (f.getAction()) {
+                case UPDATE:
+                    f.getNewValue().setGovernmentDevelopmentProgram(null);
+                    f.getNewValue().setGovYearComplete(null);
+                    updateAndSave(f.getTc(), f.getNewValue());
+                    break;
+                case CREATE:
+                    f.getTc().setGovernmentDevelopmentProgram(null);
+                    f.getTc().setGovYearComplete(null);
+                    createNewAndSave(f.getTc(), locationId);
+                    break;
+                case DELETE:
+                    moveToArchiveAndSave(f.getTc());
+                    break;
+            }
+        });
+    }
+
+    @Override
     public Set<FeatureEdit> defineEditActions(Set<WritableTc> features, Integer locationId) {
         List<WritableTc> existActiveLocationFeatures = repositoryWritableTc.findAllByLocationIdAndState(
                 locationId,

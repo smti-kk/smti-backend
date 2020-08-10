@@ -51,6 +51,12 @@ public class ApiOrganization {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/{locationId}/count")
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    public Integer countByLocationId(@PathVariable Integer locationId) {
+        return rOrganization.countAllByLocationId(locationId);
+    }
+
     @GetMapping("/{id}/")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     public OrganizationDTO item(@PathVariable Integer id) {

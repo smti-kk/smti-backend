@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.LocationProvidingInfo;
+import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
@@ -73,5 +74,9 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
     public void exportExcel(List<Integer> locationIds) {
         List<LocationForTable> allById = repository.findAllById(locationIds);
         // todo: implement me pls
+    }
+
+    public List<LocationForTable> byUser(User user) {
+        return repository.findByUserId(user.getId());
     }
 }

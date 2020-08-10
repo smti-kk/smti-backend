@@ -57,17 +57,23 @@ public class LocationProvidingInfo {
         return new FeatureProvidingInfo(
                 countProvided[0].intValue(),
                 populationsProvided[0].intValue(),
-                (int) Math.round(countProvided[0] / locations.size() * 100),
-                (int) Math.round(populationsProvided[0] / population * 100)
+                (int) (countProvided[0] / locations.size() * 100),
+                (int) (populationsProvided[0] / population * 100)
         );
     }
 
     private List<LocationForTable> geChilds(LocationForTable location) {
         List<LocationForTable> childs = new ArrayList<>();
+        if (location.getPopulation() != 0 && location.getPopulation() != null) {
+            childs.add(location);
+        }
         location.getChildren().forEach(c -> {
             if (c.getChildren().isEmpty()) {
                 childs.add(c);
             } else {
+                if (c.getPopulation() != null) {
+                    childs.add(c);
+                }
                 childs.addAll(geChilds(c));
             }
         });

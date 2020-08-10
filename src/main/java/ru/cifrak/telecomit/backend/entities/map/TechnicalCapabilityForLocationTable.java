@@ -6,6 +6,8 @@ import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.serializer.SignalConverter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Entity
@@ -49,6 +51,15 @@ public class TechnicalCapabilityForLocationTable {
     private TcState state;
 
     private Integer govYearComplete;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ServiceQuality quality;
+
+    @NotNull
+    @PositiveOrZero
+    @Column
+    private Integer payphones;
 
     public TechnicalCapabilityForLocationTable() {
     }

@@ -21,16 +21,24 @@ public class LocationFeaturesEditingRequestFull {
     @SequenceGenerator(name = "LOCATION_FEATURES_EDITING_GENERATOR", sequenceName = "location_features_editing_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "LOCATION_FEATURES_EDITING_GENERATOR")
     private Integer id;
-    private Integer locationId;
+
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private LocationForTable location;
+
     private String comment;
+
+    private String declineComment;
 
     @ManyToOne
     private User user;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "location_features_editing_request_feature_edits",
+    @JoinTable(
+            name = "location_features_editing_request_feature_edits",
             joinColumns = @JoinColumn(name = "location_features_editing_request_id"),
-            inverseJoinColumns = @JoinColumn(name = "feature_edits_id"))
+            inverseJoinColumns = @JoinColumn(name = "feature_edits_id")
+    )
     private Set<FeatureEditFull> featureEdits;
 
     @Enumerated(EnumType.STRING)

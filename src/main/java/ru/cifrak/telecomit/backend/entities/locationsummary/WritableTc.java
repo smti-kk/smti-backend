@@ -12,6 +12,7 @@ import ru.cifrak.telecomit.backend.serializer.SignalConverter;
 import ru.cifrak.telecomit.backend.serializer.SignalDeserializer;
 
 import javax.persistence.*;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.Year;
 import java.util.List;
 import java.util.Objects;
@@ -62,7 +63,38 @@ public class WritableTc {
 
     private Integer govYearComplete;
 
+    @PositiveOrZero
+    @Column
+    private Integer payphones;
+
     public WritableTc() {
+    }
+
+    public WritableTc(Integer id,
+                      Integer operatorId,
+                      String type,
+                      Integer governmentDevelopmentProgram,
+                      Integer trunkChannel,
+                      Integer typeMobile,
+                      Integer locationId,
+                      ServiceQuality quality,
+                      String typePost,
+                      List<Signal> tvOrRadioTypes,
+                      Integer govYearComplete,
+                      Integer payphones
+    ) {
+        this.id = id;
+        this.operatorId = operatorId;
+        this.type = type;
+        this.governmentDevelopmentProgram = governmentDevelopmentProgram;
+        this.trunkChannel = trunkChannel;
+        this.typeMobile = typeMobile;
+        this.locationId = locationId;
+        this.quality = quality;
+        this.typePost = typePost;
+        this.tvOrRadioTypes = tvOrRadioTypes;
+        this.govYearComplete = govYearComplete;
+        this.payphones = payphones;
     }
 
     @JsonIgnore
@@ -78,6 +110,7 @@ public class WritableTc {
                 Objects.equals(lf.getTvOrRadioTypes(), getTvOrRadioTypes()) &&
                 Objects.equals(lf.getGovYearComplete(), getGovYearComplete()) &&
                 Objects.equals(lf.getQuality(), getQuality()) &&
+                Objects.equals(lf.getPayphones(), getPayphones()) &&
                 Objects.equals(lf.getTypePost(), getTypePost());
     }
 
@@ -93,10 +126,10 @@ public class WritableTc {
                 getTypeMobile(),
                 getLocationId(),
                 getQuality(),
-                getState(),
                 getTypePost(),
                 getTvOrRadioTypes(),
-                getGovYearComplete()
+                getGovYearComplete(),
+                getPayphones()
         );
     }
 
