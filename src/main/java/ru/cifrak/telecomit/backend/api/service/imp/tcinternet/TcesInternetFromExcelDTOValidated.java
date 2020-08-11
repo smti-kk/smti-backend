@@ -1,25 +1,36 @@
 package ru.cifrak.telecomit.backend.api.service.imp.tcinternet;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
-import ru.cifrak.telecomit.backend.api.service.imp.location.FromExcelDTOFormatException;
-import ru.cifrak.telecomit.backend.api.service.imp.location.LocationFromExcelDTO;
-import ru.cifrak.telecomit.backend.api.service.imp.location.LocationsDTOFromExcel;
+import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
+import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
+import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
+import ru.cifrak.telecomit.backend.repository.RepositoryTypeTruncChannel;
 import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 
 public class TcesInternetFromExcelDTOValidated implements TcesInternetDTOFromExcel {
 
-    private final RepositoryWritableTc repository;
+    private final RepositoryOperator repositoryOperator;
+
+    private final RepositoryLocation repositoryLocation;
+
+    private final RepositoryTypeTruncChannel repositoryTypeTruncChannel;
 
     private final TcesInternetDTOFromExcel origin;
 
-    public TcesInternetFromExcelDTOValidated(RepositoryWritableTc repository, TcesInternetDTOFromExcel origin) {
-        this.repository = repository;
+    public TcesInternetFromExcelDTOValidated(
+            RepositoryOperator repositoryOperator,
+            RepositoryLocation repositoryLocation,
+            RepositoryTypeTruncChannel repositoryTypeTruncChannel,
+            TcesInternetDTOFromExcel origin) {
+        this.repositoryOperator = repositoryOperator;
+        this.repositoryLocation = repositoryLocation;
+        this.repositoryTypeTruncChannel = repositoryTypeTruncChannel;
         this.origin = origin;
     }
 
@@ -37,44 +48,71 @@ public class TcesInternetFromExcelDTOValidated implements TcesInternetDTOFromExc
 
     private List<TcInternetFromExcelDTO> checkTcesInternet(List<TcInternetFromExcelDTO> tcesInternetDTO)
             throws FromExcelDTOFormatException {
-        String badLocationDTO;
+        String badTcInternetDTO;
 
-//        if (!this.checkFullnessNpp(locationsDTO)) {
-//            throw new FromExcelDTOFormatException("Not all npp are filled.");
-//        }
-//
-//        badLocationDTO = this.checkFullnessCells(locationsDTO);
-//        if (badLocationDTO != null) {
-//            throw new FromExcelDTOFormatException("In " + badLocationDTO + " position not all cells are filled.");
-//        }
-//
-//        badLocationDTO = this.checkFiases(locationsDTO);
-//        if (badLocationDTO != null) {
-//            throw new FromExcelDTOFormatException("In " + badLocationDTO
-//                    + " position FIAS error, must be in GUID-format.");
-//        }
-//
-//        badLocationDTO = this.checkTypes(locationsDTO);
-//        if (badLocationDTO != null) {
-//            throw new FromExcelDTOFormatException("In " + badLocationDTO
-//                    + " position type error, must be in {"
-//                    + String.join(", ", repository.findAllTypes()) + "}.");
-//        }
-//
-//        badLocationDTO = this.checkPopulation(locationsDTO);
-//        if (badLocationDTO != null) {
-//            throw new FromExcelDTOFormatException("In " + badLocationDTO
-//                    + " position population format error, must be in numeric format.");
-//        }
+        if (!this.checkFullnessNpp(tcesInternetDTO)) {
+            throw new FromExcelDTOFormatException("Not all npp are filled.");
+        }
+
+        badTcInternetDTO = this.checkFullnessCells(tcesInternetDTO);
+        if (badTcInternetDTO != null) {
+            throw new FromExcelDTOFormatException("In " + badTcInternetDTO + " position not all cells are filled.");
+        }
+
+        badTcInternetDTO = this.checkFiasesGUID(tcesInternetDTO);
+        if (badTcInternetDTO != null) {
+            throw new FromExcelDTOFormatException("In " + badTcInternetDTO
+                    + " position FIAS error, must be in GUID-format.");
+        }
+
+        badTcInternetDTO = this.checkFiases(tcesInternetDTO);
+        if (badTcInternetDTO != null) {
+            throw new FromExcelDTOFormatException("In " + badTcInternetDTO
+                    + " position location FIAS error, not found in BD.");
+        }
+
+        badTcInternetDTO = this.checkOperators(tcesInternetDTO);
+        if (badTcInternetDTO != null) {
+            throw new FromExcelDTOFormatException("In " + badTcInternetDTO
+                    + " position operator error, not found in BD.");
+        }
+
+        badTcInternetDTO = this.checkChannel(tcesInternetDTO);
+        if (badTcInternetDTO != null) {
+            throw new FromExcelDTOFormatException("In " + badTcInternetDTO
+                    + " position type channel error, not found in BD.");
+        }
 
         return tcesInternetDTO;
     }
 
-    private String checkPopulation(List<LocationFromExcelDTO> locationsDTO) {
+    private String checkChannel(List<TcInternetFromExcelDTO> tcesInternetDTO) {
         String result = null;
-        for (LocationFromExcelDTO locationDTO : locationsDTO) {
-            if (!locationDTO.getPopulation().matches("[0-9]+")) {
-                result = locationDTO.getNpp();
+        for (TcInternetFromExcelDTO TcInternetDTO : tcesInternetDTO) {
+            if (repositoryTypeTruncChannel.findByName(TcInternetDTO.getChannel()) == null) {
+                result = TcInternetDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkFiases(List<TcInternetFromExcelDTO> tcesInternetDTO) {
+        String result = null;
+        for (TcInternetFromExcelDTO TcInternetDTO : tcesInternetDTO) {
+            if (repositoryLocation.findByFias(UUID.fromString(TcInternetDTO.getFias())) == null) {
+                result = TcInternetDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkOperators(List<TcInternetFromExcelDTO> tcesInternetDTO) {
+        String result = null;
+        for (TcInternetFromExcelDTO TcInternetDTO : tcesInternetDTO) {
+            if (repositoryOperator.findByName(TcInternetDTO.getOperator()) == null) {
+                result = TcInternetDTO.getNpp();
                 break;
             }
         }
@@ -109,66 +147,49 @@ public class TcesInternetFromExcelDTOValidated implements TcesInternetDTOFromExc
         try {
             new XSSFWorkbook(is);
         } catch (Exception eXSSF) {
-            try {
-                new HSSFWorkbook(is);
-            } catch (Exception eHSSF) {
+//            try {
+//                new HSSFWorkbook(is);
+//            } catch (Exception eHSSF) {
                 result = false;
-            }
-        }
-        return result;
-    }
-
-    private boolean checkFullnessNpp(List<LocationFromExcelDTO> locationsDTO) {
-        boolean result = true;
-        for (LocationFromExcelDTO locationDTO : locationsDTO) {
-            if (locationDTO.getNpp().isEmpty()) {
-                result = false;
-                break;
-            }
-        }
-        return result;
-    }
-
-    private String checkFullnessCells(List<LocationFromExcelDTO> locationsDTO) {
-        String result = null;
-        for (LocationFromExcelDTO locationDTO : locationsDTO) {
-            if (locationDTO.getTypeMO().isEmpty()
-                    || locationDTO.getNameMO().isEmpty()
-                    || locationDTO.getType().isEmpty()
-                    || locationDTO.getName().isEmpty()
-                    || locationDTO.getFias().isEmpty()
-                    || locationDTO.getPopulation().isEmpty()
-            ) {
-                result = locationDTO.getNpp();
-                break;
-            }
-        }
-        return result;
-    }
-
-    private String checkFiases(List<LocationFromExcelDTO> locationsDTO) {
-        String result = null;
-        for (LocationFromExcelDTO locationDTO : locationsDTO) {
-            if (!locationDTO.getFias()
-                    .matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
-                result = locationDTO.getNpp();
-                break;
-            }
-        }
-        return result;
-    }
-
-//    private String checkTypes(List<LocationFromExcelDTO> locationsDTO) {
-//        String result = null;
-//        // TODO: List<String> -> List<Locations>
-//        List<String> typesOfLocationsDTO = repository.findAllTypes();
-//        for (LocationFromExcelDTO locationDTO : locationsDTO) {
-//            if (!typesOfLocationsDTO.contains(locationDTO.getType())
-//                    || !typesOfLocationsDTO.contains(locationDTO.getTypeMO())) {
-//                result = locationDTO.getNpp();
-//                break;
 //            }
-//        }
-//        return result;
-//    }
+        }
+        return result;
+    }
+
+    private boolean checkFullnessNpp(List<TcInternetFromExcelDTO> tcesInternetDTO) {
+        boolean result = true;
+        for (TcInternetFromExcelDTO TcInternetDTO : tcesInternetDTO) {
+            if (TcInternetDTO.getNpp().isEmpty()) {
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkFullnessCells(List<TcInternetFromExcelDTO> tcesInternetDTO) {
+        String result = null;
+        for (TcInternetFromExcelDTO TcInternetDTO : tcesInternetDTO) {
+            if (TcInternetDTO.getFias().isEmpty()
+                    || TcInternetDTO.getOperator().isEmpty()
+                    || TcInternetDTO.getChannel().isEmpty()
+            ) {
+                result = TcInternetDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkFiasesGUID(List<TcInternetFromExcelDTO> tcesInternetDTO) {
+        String result = null;
+        for (TcInternetFromExcelDTO TcInternetDTO : tcesInternetDTO) {
+            if (!TcInternetDTO.getFias()
+                    .matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
+                result = TcInternetDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
 }

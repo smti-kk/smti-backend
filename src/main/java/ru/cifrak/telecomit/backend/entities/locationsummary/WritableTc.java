@@ -7,11 +7,11 @@ import org.jetbrains.annotations.Nullable;
 import ru.cifrak.telecomit.backend.entities.ServiceQuality;
 import ru.cifrak.telecomit.backend.entities.Signal;
 import ru.cifrak.telecomit.backend.entities.TcState;
-import ru.cifrak.telecomit.backend.serializer.IntegerSignalConverter;
 import ru.cifrak.telecomit.backend.serializer.SignalConverter;
 import ru.cifrak.telecomit.backend.serializer.SignalDeserializer;
 
 import javax.persistence.*;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.Objects;
 
@@ -61,6 +61,20 @@ public class WritableTc {
 
     private Integer govYearComplete;
 
+    /**
+     * Количество ТАКСОФОНОВ
+     */
+    @PositiveOrZero
+    @Column
+    private Integer payphones;
+
+    /**
+     * Количество инфоматов
+     */
+    @PositiveOrZero
+    @Column
+    private Integer infomats;
+
     public WritableTc() {
     }
 
@@ -93,7 +107,9 @@ public class WritableTc {
                 getState(),
                 getTypePost(),
                 getTvOrRadioTypes(),
-                getGovYearComplete()
+                getGovYearComplete(),
+                getPayphones(),
+                getInfomats()
         );
     }
 }

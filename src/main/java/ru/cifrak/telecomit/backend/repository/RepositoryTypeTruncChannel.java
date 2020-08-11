@@ -12,6 +12,8 @@ import java.util.List;
 public interface RepositoryTypeTruncChannel extends JpaRepository<TypeTrunkChannel, Integer> {
      List<TypeTrunkChannel> findByNameStartingWith(String name);
 
+     TypeTrunkChannel findByName(String name);
+
      @Query("SELECT  l  from TypeTrunkChannel l  where l.id < 90 ")
      List<TypeTrunkChannel> foo();
 

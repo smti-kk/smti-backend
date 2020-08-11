@@ -1,13 +1,13 @@
-package ru.cifrak.telecomit.backend.api.service.imp.location;
+package ru.cifrak.telecomit.backend.api.service.imp.tcpost;
 
 import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
 
 import java.util.List;
 
-public interface LocationsDTOFromExcel {
+public interface TcesPostDTOFromExcel {
 
-    List<LocationFromExcelDTO> getLocationsDTO() throws FromExcelDTOFormatException;
+    List<TcPostFromExcelDTO> getTcesDTO() throws FromExcelDTOFormatException;
 
     MultipartFile getFile();
 }

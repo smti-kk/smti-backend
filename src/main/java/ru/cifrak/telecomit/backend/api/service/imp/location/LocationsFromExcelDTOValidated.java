@@ -1,8 +1,8 @@
 package ru.cifrak.telecomit.backend.api.service.imp.location;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
+import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 
 import java.io.IOException;
@@ -106,11 +106,11 @@ public class LocationsFromExcelDTOValidated implements LocationsDTOFromExcel {
         try {
             new XSSFWorkbook(is);
         } catch (Exception eXSSF) {
-            try {
-                new HSSFWorkbook(is);
-            } catch (Exception eHSSF) {
+//            try {
+//                new HSSFWorkbook(is);
+//            } catch (Exception eHSSF) {
                 result = false;
-            }
+//            }
         }
         return result;
     }

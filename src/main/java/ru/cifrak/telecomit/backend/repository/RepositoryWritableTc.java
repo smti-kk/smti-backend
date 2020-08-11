@@ -14,4 +14,10 @@ public interface RepositoryWritableTc extends JpaRepository<WritableTc, Integer>
 
     @Query("SELECT DISTINCT tc.govYearComplete FROM WritableTc tc where tc.govYearComplete is not NULL")
     List<Integer> existGovCompleteYears();
+
+    List<WritableTc> findByLocationIdAndOperatorIdAndType(
+            Integer locationId,
+            Integer operatorId,
+            String type
+    );
 }
