@@ -32,6 +32,11 @@ public class ApiOperator {
             return ResponseEntity.notFound().build();
     }
 
+    @GetMapping
+    List<Operator> findAll() {
+        return repository.findAll();
+    }
+
     @GetMapping("/grouped")
     public Map<String, List<Operator>> grouped() {
         Map<String, List<Operator>> map = new HashMap<>();

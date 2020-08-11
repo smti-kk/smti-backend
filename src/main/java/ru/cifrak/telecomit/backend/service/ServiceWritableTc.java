@@ -12,5 +12,6 @@ public interface ServiceWritableTc {
      * @param locationId локация, тех. возможности которой редактируются
      */
     void editLocationFeatures(Set<FeatureEdit> features, Integer locationId);
+    void editMunicipalityLocationFeatures(Set<FeatureEdit> features, Integer locationId);
     Set<FeatureEdit> defineEditActions(Set<WritableTc> features, Integer locationId);
 }

@@ -1,27 +1,26 @@
 package ru.cifrak.telecomit.backend.entities.map;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.locationtech.jts.geom.Geometry;
-import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
+import lombok.Data;
+import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 
+import javax.persistence.*;
+
+@Data
+@Entity
+@Table(name = "location")
 public class MapLocation {
-    private final Integer id;
+    @Id
+    private Integer id;
 
-    @JsonProperty("point")
-    @JsonSerialize(using = GeometrySerializer.class)
-    private final Geometry point;
+    @ManyToOne
+    private GeoDataShort geoData;
+    private String name;
+    private String type;
 
-    public MapLocation(Integer id, Geometry point) {
-        this.id = id;
-        this.point = point;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private LocationParent parent;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public Geometry getPoint() {
-        return point;
+    public MapLocation() {
     }
 }

@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,10 +44,12 @@ public class User implements Serializable, UserDetails {
 
     @NonNull
     @Column(nullable = false, columnDefinition = "text")
+    @JsonIgnore
     protected String password;
 
     @NonNull
     @Column(name = "is_active", nullable = false)
+    @JsonIgnore
     protected Boolean isActive = true;
 
     @NonNull
@@ -70,10 +73,12 @@ public class User implements Serializable, UserDetails {
     protected String patronymicName = "";
 
     @Column(columnDefinition = "text")
+    @JsonIgnore
     protected String phone;
 
     @NonNull
     @Column(nullable = false, columnDefinition = "text")
+    @JsonIgnore
     protected String passport = "";
 
     @NonNull
@@ -86,29 +91,43 @@ public class User implements Serializable, UserDetails {
 
     @NonNull
     @Column(name = "create_date_time", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    @JsonIgnore
     private LocalDateTime createDateTime;
 
+    @OneToMany
+    @JoinTable(
+            name = "user_locations",
+            inverseJoinColumns = @JoinColumn(name = "key_location"),
+            joinColumns = @JoinColumn(name = "key_user")
+    )
+    private List<Location> locations;
+
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }

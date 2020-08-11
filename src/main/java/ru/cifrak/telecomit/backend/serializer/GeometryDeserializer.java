@@ -24,40 +24,50 @@ public class GeometryDeserializer extends JsonDeserializer<Geometry> {
     }
 
     private Geometry parseGeometry(JsonNode root) {
-        String typeName = root.get("type").asText();
-        if (typeName.equals("Point")) {
-            return gf.createPoint(parseCoordinate(root
-                    .get("coordinates")));
-
-        } else if(typeName.equals("MultiPoint")) {
-            return gf.createMultiPoint(parseLineString(root.get("coordinates")));
-
-        } else if(typeName.equals("LineString")) {
-            return gf.createLineString(parseLineString(root.get("coordinates")));
-
-        } else if (typeName.equals("MultiLineString")) {
-            return gf.createMultiLineString(parseLineStrings(root
-                    .get("coordinates")));
-
-        } else if(typeName.equals("Polygon")) {
-            JsonNode arrayOfRings = root.get("coordinates");
-            return parsePolygonCoordinates(arrayOfRings);
-
-        } else if (typeName.equals("MultiPolygon")) {
-            JsonNode arrayOfPolygons = root.get("coordinates");
-            return gf.createMultiPolygon(parsePolygons(arrayOfPolygons));
-
-        } else if (typeName.equals("GeometryCollection")) {
-            return gf.createGeometryCollection(parseGeometries(root
-                    .get("geometries")));
+        JsonNode type = root.get("type");
+        String typeName;
+        if (type == null) {
+            typeName = "SimplePoint";
         } else {
-            throw new UnsupportedOperationException();
+            typeName = type.asText();
+        }
+        switch (typeName) {
+            case "SimplePoint":
+                return gf.createPoint(parseCoordinateAsLatLng(root));
+
+            case "Point":
+                return gf.createPoint(parseCoordinate(root
+                        .get("coordinates")));
+
+            case "MultiPoint":
+                return gf.createMultiPoint(parseLineString(root.get("coordinates")));
+
+            case "LineString":
+                return gf.createLineString(parseLineString(root.get("coordinates")));
+
+            case "MultiLineString":
+                return gf.createMultiLineString(parseLineStrings(root
+                        .get("coordinates")));
+
+            case "Polygon":
+                JsonNode arrayOfRings = root.get("coordinates");
+                return parsePolygonCoordinates(arrayOfRings);
+
+            case "MultiPolygon":
+                JsonNode arrayOfPolygons = root.get("coordinates");
+                return gf.createMultiPolygon(parsePolygons(arrayOfPolygons));
+
+            case "GeometryCollection":
+                return gf.createGeometryCollection(parseGeometries(root
+                        .get("geometries")));
+            default:
+                throw new UnsupportedOperationException();
         }
     }
 
     private Geometry[] parseGeometries(JsonNode arrayOfGeoms) {
         Geometry[] items = new Geometry[arrayOfGeoms.size()];
-        for(int i=0;i!=arrayOfGeoms.size();++i) {
+        for (int i = 0; i != arrayOfGeoms.size(); ++i) {
             items[i] = parseGeometry(arrayOfGeoms.get(i));
         }
         return items;
@@ -93,10 +103,14 @@ public class GeometryDeserializer extends JsonDeserializer<Geometry> {
         return new Coordinate(array.get(0).asDouble(), array.get(1).asDouble());
     }
 
+    private Coordinate parseCoordinateAsLatLng(JsonNode obj) {
+        return new Coordinate(obj.get("lng").asDouble(), obj.get("lat").asDouble());
+    }
+
     private Coordinate[] parseLineString(JsonNode array) {
         Coordinate[] points = new Coordinate[array.size()];
         for (int i = 0; i != array.size(); ++i) {
-            points[i] = parseCoordinate(array.get(i));
+            points[i] = parseCoordinateAsLatLng(array.get(i));
         }
         return points;
     }

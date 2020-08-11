@@ -20,6 +20,8 @@ public interface RepositoryOrganization extends JpaRepository<Organization, Inte
     @Query(value = "SELECT co from Organization co where co.location.id = :locationId")
     List<Organization> findAllByLocationId(Integer locationId);
 
+    Integer countAllByLocationId(Integer locationId);
+
     @EntityGraph(Organization.FULL)
     @Override
     Optional<Organization> findById(Integer integer);

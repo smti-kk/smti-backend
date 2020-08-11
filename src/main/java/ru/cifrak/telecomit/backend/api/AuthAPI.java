@@ -2,6 +2,7 @@ package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -87,10 +88,9 @@ public class AuthAPI {
     }
 
     @GetMapping("/account_info")
-    public ResponseEntity<User> account_info() {
+    public ResponseEntity<User> account_info(@AuthenticationPrincipal User user) {
         log.info("-> [api] auth/account_info");
-        final Optional<User> userOptional = userRepository.findByUsername("admin");
         log.info("<- [api] auth/account_info");
-        return ResponseEntity.ok(userOptional.get());
+        return ResponseEntity.ok(user);
     }
 }

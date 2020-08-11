@@ -31,7 +31,12 @@ public class BaseStationControllerImpl implements BaseStationController {
         baseStationsRepository.deleteById(baseStationId);
     }
 
-    public void save(BaseStation baseStation) {
-        baseStationsRepository.save(baseStation);
+    public BaseStation save(BaseStation baseStation) {
+        return baseStationsRepository.save(baseStation);
+    }
+
+    @Override
+    public BaseStation update(BaseStation baseStation) {
+        return baseStationsRepository.save(baseStation);
     }
 }

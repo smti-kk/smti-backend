@@ -38,15 +38,23 @@ public class ApiOrganization {
     }
 
     @GetMapping
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     public List<Organization> list() {
         return rOrganization.findAll();
     }
 
     @GetMapping(params = "location")
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     public List<OrganizationWithAccessPointsDTO> listByLocationId(@RequestParam("location") Integer locationId) {
         return rOrganization.findAllByLocationId(locationId).stream()
                 .map(OrganizationWithAccessPointsDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{locationId}/count")
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    public Integer countByLocationId(@PathVariable Integer locationId) {
+        return rOrganization.countAllByLocationId(locationId);
     }
 
     @GetMapping("/{id}/")
@@ -84,6 +92,7 @@ public class ApiOrganization {
 
 
     @Transactional
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<OrganizationDTO> updateOrganization(@PathVariable(name = "id") Organization item, @RequestBody OrganizationShortDTO value) {
         log.info("->PUT /api/organization/{}", item.getId());
@@ -125,7 +134,10 @@ public class ApiOrganization {
             return ResponseEntity.ok(bNew);
         } catch (Exception e) {
             log.error("<-POST /api/organization/{}/ap/ :: {}", organization.getId(), e.getMessage());
-            return ResponseEntity.ok("{\"exception\":\"" + e.getMessage() + "\"}");
+            return ResponseEntity
+                    .badRequest()
+                    .header("Content-Type", "application/json")
+                    .body("{\"error\":\"" + e.getMessage() + "\"}");
         }
     }
 
@@ -144,9 +156,9 @@ public class ApiOrganization {
         } catch (Exception e) {
             log.warn("<-GET /{}/ap/{}/init-monitoring :EXCEPTION {}", id, apid, e.getMessage());
             return ResponseEntity
-                    .ok()
+                    .badRequest()
                     .header("Content-Type", "application/json")
-                    .body("{\"result\": \"error: access point NOT enabled in monitoring system due: " + e.getMessage() + "\"}");
+                    .body("{\"error\": \"access point NOT enabled in monitoring system due: " + e.getMessage() + "\"}");
         }
     }
 }

@@ -31,4 +31,11 @@ public interface MapAccessPointRepository extends Repository<MapAccessPoint, Int
             " WHERE ap.type = :type and ap.modified > :modified")
     List<MapAccessPoint> findByModifiedAndType(@Param("type") String type,
                                                @Param("modified") Date modified);
+
+    @Query("SELECT l.id FROM Location l WHERE " +
+            "exists (" +
+            "   SELECT 1 FROM Organization o WHERE o.location.id = l.id and " +
+            "    exists (SELECT 1 FROM AccessPoint ap WHERE ap.organization.id = o.id and ap.id=:accessPointId)" +
+            ")")
+    Integer locationId(Integer accessPointId);
 }

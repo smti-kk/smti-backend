@@ -18,5 +18,8 @@ public interface BaseStationController {
     void remove(@PathVariable Integer baseStationId);
 
     @PostMapping
-    void save(@RequestBody BaseStation baseStation);
+    BaseStation save(@RequestBody BaseStation baseStation);
+
+    @PutMapping
+    BaseStation update(@RequestBody BaseStation baseStation);
 }

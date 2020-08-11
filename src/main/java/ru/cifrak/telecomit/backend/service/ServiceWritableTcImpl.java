@@ -6,6 +6,7 @@ import ru.cifrak.telecomit.backend.entities.locationsummary.FeatureEdit;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
 import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
 
+import java.time.Year;
 import java.util.List;
 import java.util.Set;
 
@@ -35,6 +36,27 @@ public class ServiceWritableTcImpl implements ServiceWritableTc {
     }
 
     @Override
+    public void editMunicipalityLocationFeatures(Set<FeatureEdit> features, Integer locationId) {
+        features.forEach(f -> {
+            switch (f.getAction()) {
+                case UPDATE:
+                    f.getNewValue().setGovernmentDevelopmentProgram(null);
+                    f.getNewValue().setGovYearComplete(null);
+                    updateAndSave(f.getTc(), f.getNewValue());
+                    break;
+                case CREATE:
+                    f.getTc().setGovernmentDevelopmentProgram(null);
+                    f.getTc().setGovYearComplete(null);
+                    createNewAndSave(f.getTc(), locationId);
+                    break;
+                case DELETE:
+                    moveToArchiveAndSave(f.getTc());
+                    break;
+            }
+        });
+    }
+
+    @Override
     public Set<FeatureEdit> defineEditActions(Set<WritableTc> features, Integer locationId) {
         List<WritableTc> existActiveLocationFeatures = repositoryWritableTc.findAllByLocationIdAndState(
                 locationId,
@@ -49,14 +71,22 @@ public class ServiceWritableTcImpl implements ServiceWritableTc {
     }
 
     public void updateAndSave(WritableTc previousValue, WritableTc newValue) {
-        previousValue.setState(TcState.ARCHIVE);
-        newValue.setState(TcState.ACTIVE);
+        if (newValue.isPlan()) {
+            newValue.setState(TcState.PLAN);
+        } else {
+            newValue.setState(TcState.ACTIVE);
+            previousValue.setState(TcState.ARCHIVE);
+        }
         repositoryWritableTc.save(previousValue);
         repositoryWritableTc.save(newValue);
     }
 
     public void createNewAndSave(WritableTc newTc, Integer locationId) {
-        newTc.setState(TcState.ACTIVE);
+        if (newTc.isPlan()) {
+            newTc.setState(TcState.PLAN);
+        } else {
+            newTc.setState(TcState.ACTIVE);
+        }
         newTc.setLocationId(locationId);
         repositoryWritableTc.save(newTc);
     }
