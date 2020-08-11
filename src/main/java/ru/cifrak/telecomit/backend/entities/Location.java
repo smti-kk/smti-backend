@@ -101,6 +101,7 @@ public class Location implements Serializable {
     @Column(nullable = false)
     private Integer population;
 
+    // TODO: Need type reference.
     @Column(name = "type", nullable = false, length = 32)
     private String type;
 

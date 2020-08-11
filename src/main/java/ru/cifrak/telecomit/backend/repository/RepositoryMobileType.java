@@ -6,4 +6,6 @@ import ru.cifrak.telecomit.backend.entities.TypeMobile;
 
 @Repository
 public interface RepositoryMobileType extends JpaRepository<TypeMobile, Integer> {
+
+    TypeMobile findByName(String name);
 }

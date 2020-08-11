@@ -1,7 +1,7 @@
 package ru.cifrak.telecomit.backend.repository;
 
 import org.jetbrains.annotations.NotNull;
-import org.locationtech.jts.geom.Polygon;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import ru.cifrak.telecomit.backend.entities.Location;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface RepositoryLocation extends JpaRepository<Location, Integer> {
@@ -61,4 +62,15 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
             " where l.type not in ('р-н', 'край', 'с/с', 'тер') and l.name like '%Орловк%'"
     )
     Page<Location> findAllReportOrganization(Pageable pageable);
+
+    @Nullable
+    Location findByFias(UUID fias);
+
+    @Query("SELECT distinct l.type from Location l")
+    List<String> findAllTypes();
+
+    Location findByNameAndType(String name, String type);
+
+    @Query("SELECT max(l.level) from Location l")
+    int findMaxLevel();
 }

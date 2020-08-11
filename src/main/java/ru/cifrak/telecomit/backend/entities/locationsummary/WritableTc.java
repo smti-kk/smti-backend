@@ -63,9 +63,19 @@ public class WritableTc {
 
     private Integer govYearComplete;
 
+    /**
+     * Количество ТАКСОФОНОВ
+     */
     @PositiveOrZero
     @Column
     private Integer payphones;
+
+    /**
+     * Количество инфоматов
+     */
+    @PositiveOrZero
+    @Column
+    private Integer infomats;
 
     public WritableTc() {
     }
@@ -81,7 +91,8 @@ public class WritableTc {
                       String typePost,
                       List<Signal> tvOrRadioTypes,
                       Integer govYearComplete,
-                      Integer payphones
+                      Integer payphones,
+                      Integer infomats
     ) {
         this.id = id;
         this.operatorId = operatorId;
@@ -95,6 +106,7 @@ public class WritableTc {
         this.tvOrRadioTypes = tvOrRadioTypes;
         this.govYearComplete = govYearComplete;
         this.payphones = payphones;
+        this.infomats = infomats;
     }
 
     @JsonIgnore
@@ -129,7 +141,8 @@ public class WritableTc {
                 getTypePost(),
                 getTvOrRadioTypes(),
                 getGovYearComplete(),
-                getPayphones()
+                getPayphones(),
+                getInfomats()
         );
     }
 

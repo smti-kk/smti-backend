@@ -34,4 +34,5 @@ public interface RepositoryOperator extends JpaRepository<Operator, Integer> {
     @Query("SELECT o from Operator o where o.services LIKE '%postal%' ")
     List<Operator> postal();
 
+    Operator findByName(String name);
 }
