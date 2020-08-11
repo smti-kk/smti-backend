@@ -255,7 +255,8 @@ public class ServiceOrganization {
 //        ip_group
         ArrayNode jsonNewServiceLinkIPGroup = jsonMapper.createArrayNode();
         // IP node by AP
-        ObjectNode ipItem = jsonMapper.createObjectNode();
+        // HINT: Commented out due task 1045, we do not need traffic count for hardware ap itself. For now...
+        /*ObjectNode ipItem = jsonMapper.createObjectNode();
         ipItem.put("ip", new IpReversed(ap.getIpConfig()).ip());
         ipItem.put("mask", Integer.valueOf(new IpReversed(ap.getIpConfig()).mask()));
         ipItem.put("mac", "");
@@ -273,7 +274,7 @@ public class ServiceOrganization {
         ipItem.put("owner_type", 0);
         ipItem.set("dhcp_options", jsonMapper.createArrayNode());
         ipItem.set("isg_attrs", jsonMapper.createArrayNode());
-        jsonNewServiceLinkIPGroup.add(ipItem);
+        jsonNewServiceLinkIPGroup.add(ipItem);*/
         // IP nodes by AP-networks
         if (ap.getNetworks() != null && !ap.getNetworks().isEmpty()) {
             String[] networks = ap.getNetworks().split("; ");
