@@ -134,7 +134,10 @@ public class ApiOrganization {
             return ResponseEntity.ok(bNew);
         } catch (Exception e) {
             log.error("<-POST /api/organization/{}/ap/ :: {}", organization.getId(), e.getMessage());
-            return ResponseEntity.ok("{\"exception\":\"" + e.getMessage() + "\"}");
+            return ResponseEntity
+                    .badRequest()
+                    .header("Content-Type", "application/json")
+                    .body("{\"error\":\"" + e.getMessage() + "\"}");
         }
     }
 
@@ -153,9 +156,9 @@ public class ApiOrganization {
         } catch (Exception e) {
             log.warn("<-GET /{}/ap/{}/init-monitoring :EXCEPTION {}", id, apid, e.getMessage());
             return ResponseEntity
-                    .ok()
+                    .badRequest()
                     .header("Content-Type", "application/json")
-                    .body("{\"result\": \"error: access point NOT enabled in monitoring system due: " + e.getMessage() + "\"}");
+                    .body("{\"error\": \"access point NOT enabled in monitoring system due: " + e.getMessage() + "\"}");
         }
     }
 }
