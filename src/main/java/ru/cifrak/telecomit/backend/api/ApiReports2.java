@@ -23,6 +23,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints2;
 import ru.cifrak.telecomit.backend.repository.RepositoryApContract;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.specs.SpecificationAccessPoint;
+import ru.cifrak.telecomit.backend.repository.specs.SpecificationAccessPoint2;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -89,38 +90,38 @@ public class ApiReports2 {
         }
         Specification<AccessPoint> spec = Specification.where(null);
         if (location != null) {
-            spec = spec.and(SpecificationAccessPoint.inLocation(location));
+            spec = spec.and(SpecificationAccessPoint2.inLocation(location));
         }
         if (type != null) {
-            spec = spec.and(SpecificationAccessPoint.withType(type));
+            spec = spec.and(SpecificationAccessPoint2.withType(type));
         }
         if (smo != null) {
-            spec = spec.and(SpecificationAccessPoint.withSmo(smo));
+            spec = spec.and(SpecificationAccessPoint2.withSmo(smo));
         }
         if (gdp != null) {
-            spec = spec.and(SpecificationAccessPoint.withGovProgram(gdp));
+            spec = spec.and(SpecificationAccessPoint2.withGovProgram(gdp));
         }
         if (inettype != null) {
-            spec = spec.and(SpecificationAccessPoint.withInetType(inettype));
+            spec = spec.and(SpecificationAccessPoint2.withInetType(inettype));
         }
         if (parents != null) {
-            spec = spec.and(SpecificationAccessPoint.inParent(parents));
+            spec = spec.and(SpecificationAccessPoint2.inParent(parents));
         }
         if (organization != null) {
-            spec = spec.and(SpecificationAccessPoint.withOrgname(organization));
+            spec = spec.and(SpecificationAccessPoint2.withOrgname(organization));
         }
         if (contractor != null) {
-            spec = spec.and(SpecificationAccessPoint.withOperator(contractor));
+            spec = spec.and(SpecificationAccessPoint2.withOperator(contractor));
         }
         if (pStart != null) {
-            spec = spec.and(SpecificationAccessPoint.pStart(pStart));
+            spec = spec.and(SpecificationAccessPoint2.pStart(pStart));
         }
         if (pEnd != null) {
-            spec = spec.and(SpecificationAccessPoint.pEnd(pEnd));
-        }/*
+            spec = spec.and(SpecificationAccessPoint2.pEnd(pEnd));
+        }
         if (ap != null) {
-            spec = spec.and(SpecificationAccessPoint.ap(ap));
-        }*/
+            spec = spec.and(SpecificationAccessPoint2.ap(ap));
+        }
         Page<AccessPointFull> pageDatas = rAccessPoints.findAll(spec, pageConfig);
         PaginatedList<ReportAccessPointFullDTO> pList = new PaginatedList<>(pageDatas.getTotalElements(), pageDatas.stream().map(ReportAccessPointFullDTO::new).collect(Collectors.toList()));
         log.info("<-GET /api/report/organization/");
