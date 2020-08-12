@@ -88,7 +88,7 @@ public class ApiReports2 {
         } else {
             pageConfig = PageRequest.of(page - 1, size);
         }
-        Specification<AccessPoint> spec = Specification.where(null);
+        Specification<AccessPointFull> spec = Specification.where(null);
         if (location != null) {
             spec = spec.and(SpecificationAccessPoint2.inLocation(location));
         }
