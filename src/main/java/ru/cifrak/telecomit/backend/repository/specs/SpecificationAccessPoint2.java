@@ -51,9 +51,9 @@ public class SpecificationAccessPoint2 {
         return (root, cq, cb) -> cb.and(root.get(AccessPointFull_.type).in(TypeAccessPoint.SMO,TypeAccessPoint.RSMO));
     }
 
-   /* public static Specification<AccessPointFull> ap(List<String> aps) {
+    public static Specification<AccessPointFull> ap(List<String> aps) {
         return (root, cq, cb) -> cb.and(root.get("type").in(aps));
-    }*/
+    }
 
 //    public static Specification<AccessPointFull> contract(String contract) {
 //        return (root, cq, cb) -> cb.like(cb.lower(cb.treat(root, ApContract.class).get(ApContract_.number)), "%" + contract.toLowerCase() + "%");

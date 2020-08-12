@@ -28,7 +28,10 @@ public class AccessPointFull extends AuditingSoftDelete implements Serializable 
     @Column
     private Integer billingId;
 
-    //TODO: всё таки разобраться что это за штука и или текстом или еще как
+    /**
+     * Год когда закончилась гос.программа.
+     * <br/>Нам интересен только год, месяц и день не интересно.
+     */
     @Column
     private Integer completed;
 
