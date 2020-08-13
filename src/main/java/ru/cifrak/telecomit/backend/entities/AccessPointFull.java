@@ -7,6 +7,7 @@ import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 
 @Data
@@ -14,10 +15,34 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "access_point")
+
+@NamedEntityGraphs({
+        @NamedEntityGraph(
+                name = AccessPointFull.REPORT_ALL,
+                attributeNodes = {
+                        @NamedAttributeNode("governmentDevelopmentProgram"),
+                        @NamedAttributeNode("internetAccess"),
+                        @NamedAttributeNode("operator"),
+                        @NamedAttributeNode(value = "organization", subgraph = "org-loc"),
+                },
+                subgraphs = {
+                        @NamedSubgraph(
+                                name = "org-loc",
+                                attributeNodes = {
+                                        @NamedAttributeNode("location"),
+                                        @NamedAttributeNode("type"),
+                                        @NamedAttributeNode("smo"),
+                                }
+                        )
+                }
+        )
+}
+)
+
 @Immutable
 public class AccessPointFull extends AuditingSoftDelete implements Serializable {
     private static final long serialVersionUID = 1L;
-    public static final String REPORT_ALL = "AccessPoint.REPORT_ALL";
+    public static final String REPORT_ALL = "AccessPointFull.REPORT_ALL";
 
     @Id
     private Integer id;
@@ -101,5 +126,15 @@ public class AccessPointFull extends AuditingSoftDelete implements Serializable 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_organization")
     private Organization organization;
+
+    // FIELDS FOR CONTRACT TYPE
+    @Column
+    private String number;
+    @Column
+    private Long amount;
+    @Column
+    private LocalDate started;
+    @Column
+    private LocalDate ended;
 
 }
