@@ -61,6 +61,6 @@ public class TcesInternetFromExcelDTO implements TcesInternetDTOFromExcel {
         } catch (Exception eXSSF) {
             this.book = new HSSFWorkbook(is);
         }
-        this.book.setMissingCellPolicy(Row.CREATE_NULL_AS_BLANK);
+        this.book.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
     }
 }
