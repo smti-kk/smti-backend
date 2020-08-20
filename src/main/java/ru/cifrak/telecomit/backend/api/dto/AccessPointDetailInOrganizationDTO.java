@@ -80,8 +80,8 @@ public class AccessPointDetailInOrganizationDTO {
         this.description = entity.getDescription();
         this.ipConfig = entity.getIpConfig();
         this.maxAmount = entity.getMaxAmount();
-        this.netTrafficLastMonth = entity.getNetTrafficLastMonth();
-        this.netTrafficLastWeek = entity.getNetTrafficLastWeek();
+//        this.netTrafficLastMonth = entity.getNetTrafficLastMonth();
+//        this.netTrafficLastWeek = entity.getNetTrafficLastWeek();
         this.networks = entity.getNetworks();
         this.quality = entity.getQuality();
         this.state = entity.getState();

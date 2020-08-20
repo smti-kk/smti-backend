@@ -1,6 +1,7 @@
 package ru.cifrak.telecomit.backend.entities.external;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.Auditing;
@@ -8,6 +9,10 @@ import ru.cifrak.telecomit.backend.entities.Auditing;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * Свзяка нашей Точки доступа и Мониторинговых параметров, а также статус, Активно/Неактивно
+ */
+@EqualsAndHashCode(callSuper = false)
 @Data
 @NoArgsConstructor
 

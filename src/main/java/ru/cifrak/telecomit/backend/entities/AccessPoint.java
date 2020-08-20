@@ -109,13 +109,13 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
 
     //TODO: for future thoughts:
     // this information we taking from monitoring system (i.e. UTM5)
-    @Column(name = "net_traffic_last_month")
-    private Long netTrafficLastMonth;
+//    @Column(name = "net_traffic_last_month")
+//    private Long netTrafficLastMonth;
 
     //TODO: for future thoughts:
     // this information we taking from monitoring system (i.e. UTM5)
-    @Column(name = "net_traffic_last_week")
-    private Long netTrafficLastWeek;
+//    @Column(name = "net_traffic_last_week")
+//    private Long netTrafficLastWeek;
 
     /**
      * Список сетей, которые распологаются за этой точкой доступа.

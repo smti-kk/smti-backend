@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * Параметры из внешних систем для мониторинга.
+ * Здесь хранятся параметры от  учетками в UTM5 и Zabbix.
+ */
 @Data
 @NoArgsConstructor
 

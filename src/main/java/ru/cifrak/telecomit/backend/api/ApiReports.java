@@ -3,32 +3,40 @@ package ru.cifrak.telecomit.backend.api;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import ru.cifrak.telecomit.backend.api.dto.PaginatedList;
-import ru.cifrak.telecomit.backend.api.dto.ReportAccessPointFullDTO;
-import ru.cifrak.telecomit.backend.api.dto.ReportApContractDTO;
+import org.springframework.web.bind.annotation.*;
+import ru.cifrak.telecomit.backend.api.dto.*;
 import ru.cifrak.telecomit.backend.entities.*;
+import ru.cifrak.telecomit.backend.entities.AccessPointFull;
 import ru.cifrak.telecomit.backend.repository.RepositoryAccessPointsFull;
 import ru.cifrak.telecomit.backend.repository.RepositoryApContract;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.specs.SpecificationAccessPointFull;
+import ru.cifrak.telecomit.backend.service.ServiceExternalReports;
+import ru.cifrak.telecomit.backend.utils.Converter;
+import ru.cifrak.telecomit.backend.utils.export.ExcelExporter;
+import ru.cifrak.telecomit.backend.utils.export.ExportToExcelConfiguration;
 
+import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 
@@ -38,12 +46,15 @@ public class ApiReports {
     private final RepositoryLocation rLocation;
     private final RepositoryAccessPointsFull rAccessPoints;
     private final RepositoryApContract rApContract;
+    private final ServiceExternalReports serviceExternalReports;
+
 
     @Autowired
-    public ApiReports(RepositoryLocation repository, RepositoryLocation rLocation, RepositoryAccessPointsFull rAccessPoints, RepositoryApContract rApContract) {
+    public ApiReports(RepositoryLocation repository, RepositoryLocation rLocation, RepositoryAccessPointsFull rAccessPoints, RepositoryApContract rApContract, ServiceExternalReports serviceExternalReports) {
         this.rLocation = rLocation;
         this.rAccessPoints = rAccessPoints;
         this.rApContract = rApContract;
+        this.serviceExternalReports = serviceExternalReports;
     }
 
     @GetMapping("/ap-all/")
@@ -215,4 +226,46 @@ public class ApiReports {
 
     }
 
+    @GetMapping(
+            value = "/export/map/"/*,
+            produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"*/
+    )
+    @ResponseBody
+    public ResponseEntity<ByteArrayResource> exportMonitoringAccessPointData(
+            @RequestParam(name = "start", required = false) Long start,
+            @RequestParam(name = "end", required = false) Long end) throws IOException {
+
+        Instant instantStart = Instant.ofEpochSecond(start);
+        Instant instantEnd = Instant.ofEpochSecond(end);
+
+        log.info("->GET /api/report/organization/export/map/:: start:{} end:{}", Converter.simpleDate(instantStart), Converter.simpleDate(instantEnd));
+        // xx. go for report data from utm5
+        List<UTM5ReportTrafficDTO> dataUtm5 = serviceExternalReports.getReportFromUTM5(start, end);
+//        List<ZabbixReportTrafficDTO> dataZabbix = serviceExternalReports.getReportFromZabbix(start, end);
+        List<ReportMapDTO> report = serviceExternalReports.blendData(dataUtm5);
+        IntStream.range(0, report.size()).forEach(i -> report.get(i).setPp(i + 1));
+//        List<AccessPoint> report = serviceExternalReports.blendData(dataUtm5, dataZabbix);
+
+        // xx. Forming excel file
+        ExportToExcelConfiguration<ReportMapDTO> exportToExcelConfiguration = new ExportToExcelConfiguration<>();
+        exportToExcelConfiguration.addColumn(0, Integer.class, ReportMapDTO::getPp, "№ п/п");
+        exportToExcelConfiguration.addColumn(1, Integer.class, ReportMapDTO::getUcn, "№ ТЗ");
+        exportToExcelConfiguration.addColumn(2, ReportMapDTO::getParent, "Район / гор. округ");
+        exportToExcelConfiguration.addColumn(3, ReportMapDTO::getLocation, "Населенный пункт");
+        exportToExcelConfiguration.addColumn(4, ReportMapDTO::getAddress, "Адрес");
+        exportToExcelConfiguration.addColumn(5, ReportMapDTO::getContractor, "Источник");
+        exportToExcelConfiguration.addColumn(6, ReportMapDTO::getOrganization, "Учреждение");
+        exportToExcelConfiguration.addColumn(7, ReportMapDTO::getConsumption, "Количество потребленного трафика сети Интернет, МБ");
+        ExcelExporter<ReportMapDTO> excelExporter = new ExcelExporter<>(exportToExcelConfiguration);
+
+        // xx. response back an a file
+        ByteArrayResource resource = new ByteArrayResource(excelExporter.exportToByteArray(report));
+        log.info("<-GET /api/report/organization/export/map/:: start:{} end:{}", Converter.simpleDate(instantStart), Converter.simpleDate(instantEnd));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + Converter.simpleDate(instantStart) + "-" + Converter.simpleDate(instantEnd) + ".xlsx\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
 }
