@@ -36,12 +36,4 @@ public class TcTv extends TechnicalCapability {
     @PositiveOrZero
     @Column
     private Integer aChannels;
-
-    /**
-     * Максимальное количество абонентов
-     */
-    @NotNull
-    @PositiveOrZero
-    @Column
-    private Integer subscribers;
 }

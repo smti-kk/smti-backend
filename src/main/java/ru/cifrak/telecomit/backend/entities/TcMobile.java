@@ -20,12 +20,4 @@ public class TcMobile extends TechnicalCapability {
     @JoinColumn(name = "key_type_mobile")
     @JsonIgnore
     private TypeMobile type;
-
-    /**
-     * Максимальное количество абонентов
-     */
-    @NotNull
-    @PositiveOrZero
-    @Column
-    private Integer subscribers;
 }
