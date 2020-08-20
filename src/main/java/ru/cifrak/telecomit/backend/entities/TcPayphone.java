@@ -15,5 +15,11 @@ import javax.validation.constraints.PositiveOrZero;
 @Entity
 @DiscriminatorValue("PAYPHONE")
 public class TcPayphone extends TechnicalCapability{
-
+    /**
+     * Количество Payphone (телефон - автомат)
+     */
+    @NotNull
+    @PositiveOrZero
+    @Column
+    private Integer quantity;
 }

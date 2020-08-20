@@ -15,5 +15,11 @@ import javax.validation.constraints.PositiveOrZero;
 @Entity
 @DiscriminatorValue("INFOMAT")
 public class TcInfomat extends TechnicalCapability {
-
+    /**
+     * Количество Infomat (информаты)
+     */
+    @NotNull
+    @PositiveOrZero
+    @Column
+    private Integer quantity;
 }
