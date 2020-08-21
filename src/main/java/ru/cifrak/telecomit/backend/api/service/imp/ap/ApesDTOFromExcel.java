@@ -1,13 +1,13 @@
-package ru.cifrak.telecomit.backend.api.service.imp.tcats;
+package ru.cifrak.telecomit.backend.api.service.imp.ap;
 
 import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
 
 import java.util.List;
 
-public interface TcesAtsDTOFromExcel {
+public interface ApesDTOFromExcel {
 
-    List<TcAtsFromExcelDTO> getTcesDTO() throws FromExcelDTOFormatException;
+    List<ApFromExcelDTO> getTcesDTO() throws FromExcelDTOFormatException;
 
     MultipartFile getFile();
 }

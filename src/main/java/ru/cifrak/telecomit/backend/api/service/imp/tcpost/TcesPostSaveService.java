@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.entities.ServiceQuality;
 import ru.cifrak.telecomit.backend.entities.TcAts;
 import ru.cifrak.telecomit.backend.entities.TcPost;
+import ru.cifrak.telecomit.backend.entities.TcState;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
@@ -40,6 +41,7 @@ public class TcesPostSaveService {
             );
             if (tcesByLocOpT.size() > 0) {
                 tcesByLocOpT.get(0).setTypePost(tcDTO.getTypePost());
+                tcesByLocOpT.get(0).setState(TcState.ACTIVE);
                 // TODO: Transaction.
                 repositoryWritableTc.save(tcesByLocOpT.get(0));
             } else {
@@ -49,6 +51,7 @@ public class TcesPostSaveService {
                 tcByLocOpT.setTypePost(tcDTO.getTypePost());
                 tcByLocOpT.setType(TcPost.class.getAnnotation(DiscriminatorValue.class).value());
                 tcByLocOpT.setQuality(ServiceQuality.NORMAL);
+                tcByLocOpT.setState(TcState.ACTIVE);
                 // TODO: Transaction.
                 repositoryWritableTc.save(tcByLocOpT);
             }

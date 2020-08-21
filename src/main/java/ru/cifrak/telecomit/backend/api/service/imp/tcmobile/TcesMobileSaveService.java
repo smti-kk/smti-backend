@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.entities.ServiceQuality;
 import ru.cifrak.telecomit.backend.entities.TcInternet;
 import ru.cifrak.telecomit.backend.entities.TcMobile;
+import ru.cifrak.telecomit.backend.entities.TcState;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
 import ru.cifrak.telecomit.backend.repository.*;
 
@@ -42,6 +43,7 @@ public class TcesMobileSaveService {
             );
             if (tcesByLocOpT.size() > 0) {
                 tcesByLocOpT.get(0).setTypeMobile(repositoryMobileType.findByName(tcDTO.getType()).getId());
+                tcesByLocOpT.get(0).setState(TcState.ACTIVE);
                 // TODO: Transaction.
                 repositoryWritableTc.save(tcesByLocOpT.get(0));
             } else {
@@ -51,6 +53,7 @@ public class TcesMobileSaveService {
                 tcByLocOpT.setTypeMobile(repositoryMobileType.findByName(tcDTO.getType()).getId());
                 tcByLocOpT.setType(TcMobile.class.getAnnotation(DiscriminatorValue.class).value());
                 tcByLocOpT.setQuality(ServiceQuality.NORMAL);
+                tcByLocOpT.setState(TcState.ACTIVE);
                 // TODO: Transaction.
                 repositoryWritableTc.save(tcByLocOpT);
             }

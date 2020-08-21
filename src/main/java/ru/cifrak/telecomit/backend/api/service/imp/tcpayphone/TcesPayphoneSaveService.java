@@ -1,8 +1,9 @@
-package ru.cifrak.telecomit.backend.api.service.imp.tcats;
+package ru.cifrak.telecomit.backend.api.service.imp.tcpayphone;
 
 import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.entities.ServiceQuality;
 import ru.cifrak.telecomit.backend.entities.TcAts;
+import ru.cifrak.telecomit.backend.entities.TcState;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class TcesAtsSaveService {
+public class TcesPayphoneSaveService {
 
     private final RepositoryWritableTc repositoryWritableTc;
 
@@ -21,7 +22,7 @@ public class TcesAtsSaveService {
 
     private final RepositoryOperator repositoryOperator;
 
-    public TcesAtsSaveService(
+    public TcesPayphoneSaveService(
             RepositoryWritableTc repositoryWritableTc,
             RepositoryLocation repositoryLocation,
             RepositoryOperator repositoryOperator) {
@@ -30,8 +31,8 @@ public class TcesAtsSaveService {
         this.repositoryOperator = repositoryOperator;
     }
 
-    public void saveTces(List<TcAtsFromExcelDTO> TcesDTO) {
-        for (TcAtsFromExcelDTO tcDTO : TcesDTO){
+    public void saveTces(List<TcPayphoneFromExcelDTO> TcesDTO) {
+        for (TcPayphoneFromExcelDTO tcDTO : TcesDTO){
             List<WritableTc> tcesByLocOpT = repositoryWritableTc.findByLocationIdAndOperatorIdAndType(
                     repositoryLocation.findByFias(UUID.fromString(tcDTO.getFias())).getId(),
                     repositoryOperator.findByName(tcDTO.getOperator()).getId(),
@@ -39,6 +40,7 @@ public class TcesAtsSaveService {
             );
             if (tcesByLocOpT.size() > 0) {
                 tcesByLocOpT.get(0).setPayphones(Integer.parseInt(tcDTO.getPayphones()));
+                tcesByLocOpT.get(0).setState(TcState.ACTIVE);
                 // TODO: Transaction.
                 repositoryWritableTc.save(tcesByLocOpT.get(0));
             } else {
@@ -48,6 +50,7 @@ public class TcesAtsSaveService {
                 tcByLocOpT.setPayphones(Integer.parseInt(tcDTO.getPayphones()));
                 tcByLocOpT.setType(TcAts.class.getAnnotation(DiscriminatorValue.class).value());
                 tcByLocOpT.setQuality(ServiceQuality.NORMAL);
+                tcByLocOpT.setState(TcState.ACTIVE);
                 // TODO: Transaction.
                 repositoryWritableTc.save(tcByLocOpT);
             }
