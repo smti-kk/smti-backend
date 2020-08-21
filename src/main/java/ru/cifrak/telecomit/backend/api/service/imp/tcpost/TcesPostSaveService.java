@@ -1,10 +1,7 @@
 package ru.cifrak.telecomit.backend.api.service.imp.tcpost;
 
 import org.springframework.stereotype.Service;
-import ru.cifrak.telecomit.backend.entities.ServiceQuality;
-import ru.cifrak.telecomit.backend.entities.TcAts;
-import ru.cifrak.telecomit.backend.entities.TcPost;
-import ru.cifrak.telecomit.backend.entities.TcState;
+import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTcForImport;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
@@ -40,7 +37,11 @@ public class TcesPostSaveService {
                     TcPost.class.getAnnotation(DiscriminatorValue.class).value()
             );
             if (tcesByLocOpT.size() > 0) {
-                tcesByLocOpT.get(0).setTypePost(tcDTO.getTypePost());
+                if (tcDTO.getTypePost().equals(TypePost.UPS.getName())) {
+                    tcesByLocOpT.get(0).setTypePost(TypePost.UPS.getId());
+                } else if (tcDTO.getTypePost().equals(TypePost.POST.getName())) {
+                    tcesByLocOpT.get(0).setTypePost(TypePost.POST.getId());
+                }
                 tcesByLocOpT.get(0).setState(TcState.ACTIVE);
                 // TODO: Transaction.
                 repositoryWritableTcForImport.save(tcesByLocOpT.get(0));
@@ -48,7 +49,11 @@ public class TcesPostSaveService {
                 WritableTcForImport tcByLocOpT = new WritableTcForImport();
                 tcByLocOpT.setLocationId(repositoryLocation.findByFias(UUID.fromString(tcDTO.getFias())).getId());
                 tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcDTO.getOperator()).getId());
-                tcByLocOpT.setTypePost(tcDTO.getTypePost());
+                if (tcDTO.getTypePost().equals(TypePost.UPS.getName())) {
+                    tcByLocOpT.setTypePost(TypePost.UPS.getId());
+                } else if (tcDTO.getTypePost().equals(TypePost.POST.getName())) {
+                    tcByLocOpT.setTypePost(TypePost.POST.getId());
+                }
                 tcByLocOpT.setType(TcPost.class.getAnnotation(DiscriminatorValue.class).value());
                 tcByLocOpT.setQuality(ServiceQuality.NORMAL);
                 tcByLocOpT.setState(TcState.ACTIVE);
