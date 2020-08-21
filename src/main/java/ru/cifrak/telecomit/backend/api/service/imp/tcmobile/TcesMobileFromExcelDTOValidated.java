@@ -48,36 +48,36 @@ public class TcesMobileFromExcelDTOValidated implements TcesMobileDTOFromExcel {
         String badTcMobileDTO;
 
         if (!this.checkFullnessNpp(tcesMobileDTO)) {
-            throw new FromExcelDTOFormatException("Not all npp are filled.");
+            throw new FromExcelDTOFormatException("Не все \"№ п/п\" заполнены.");
         }
 
         badTcMobileDTO = this.checkFullnessCells(tcesMobileDTO);
         if (badTcMobileDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badTcMobileDTO + " position not all cells are filled.");
+            throw new FromExcelDTOFormatException("В " + badTcMobileDTO + " позиции не все ячейки заполнены.");
         }
 
         badTcMobileDTO = this.checkFiasesGUID(tcesMobileDTO);
         if (badTcMobileDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badTcMobileDTO
-                    + " position FIAS error, must be in GUID-format.");
+            throw new FromExcelDTOFormatException("В " + badTcMobileDTO
+                    + " позиции ошибка в ФИАС, должен быть в GUID формате.");
         }
 
         badTcMobileDTO = this.checkFiases(tcesMobileDTO);
         if (badTcMobileDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badTcMobileDTO
-                    + " position location FIAS error, not found in BD.");
+            throw new FromExcelDTOFormatException("В " + badTcMobileDTO
+                    + " позиции ошибка в ФИАС населённого пункта, не найден в БД.");
         }
 
         badTcMobileDTO = this.checkOperators(tcesMobileDTO);
         if (badTcMobileDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badTcMobileDTO
-                    + " position operator error, not found in BD.");
+            throw new FromExcelDTOFormatException("В " + badTcMobileDTO
+                    + " позиции ошибка в операторе, не найден в БД.");
         }
 
         badTcMobileDTO = this.checkType(tcesMobileDTO);
         if (badTcMobileDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badTcMobileDTO
-                    + " position type error, not found in BD.");
+            throw new FromExcelDTOFormatException("В " + badTcMobileDTO
+                    + " позиции ошибка в типе, не найден в БД.");
         }
 
         return tcesMobileDTO;
@@ -125,7 +125,7 @@ public class TcesMobileFromExcelDTOValidated implements TcesMobileDTOFromExcel {
             result = this.checkExcelFormat(is);
         }
         if (!result) {
-            throw new FromExcelDTOFormatException("Wrong file type.");
+            throw new FromExcelDTOFormatException("Неправильный тип файла.");
         }
     }
 

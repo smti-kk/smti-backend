@@ -6,10 +6,11 @@ import ru.cifrak.telecomit.backend.entities.TcInternet;
 import ru.cifrak.telecomit.backend.entities.TcPost;
 import ru.cifrak.telecomit.backend.entities.TcState;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
+import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTcForImport;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
 import ru.cifrak.telecomit.backend.repository.RepositoryTypeTruncChannel;
-import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
+import ru.cifrak.telecomit.backend.repository.RepositoryWritableTcForImport;
 
 import javax.persistence.DiscriminatorValue;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @Service
 public class TcesInternetSaveService {
 
-    private final RepositoryWritableTc repositoryWritableTc;
+    private final RepositoryWritableTcForImport RepositoryWritableTcForImport;
 
     private final RepositoryLocation repositoryLocation;
 
@@ -27,11 +28,11 @@ public class TcesInternetSaveService {
     private final RepositoryTypeTruncChannel repositoryTypeTruncChannel;
 
     public TcesInternetSaveService(
-            RepositoryWritableTc repositoryWritableTc,
+            RepositoryWritableTcForImport RepositoryWritableTcForImport,
             RepositoryLocation repositoryLocation,
             RepositoryOperator repositoryOperator,
             RepositoryTypeTruncChannel repositoryTypeTruncChannel) {
-        this.repositoryWritableTc = repositoryWritableTc;
+        this.RepositoryWritableTcForImport = RepositoryWritableTcForImport;
         this.repositoryLocation = repositoryLocation;
         this.repositoryOperator = repositoryOperator;
         this.repositoryTypeTruncChannel = repositoryTypeTruncChannel;
@@ -39,7 +40,7 @@ public class TcesInternetSaveService {
 
     public void saveTcesInternet(List<TcInternetFromExcelDTO> TcesInternetDTO) {
         for (TcInternetFromExcelDTO tcDTO : TcesInternetDTO){
-            List<WritableTc> tcesByLocOpT = repositoryWritableTc.findByLocationIdAndOperatorIdAndType(
+            List<WritableTcForImport> tcesByLocOpT = RepositoryWritableTcForImport.findByLocationIdAndOperatorIdAndType(
                     repositoryLocation.findByFias(UUID.fromString(tcDTO.getFias())).getId(),
                     repositoryOperator.findByName(tcDTO.getOperator()).getId(),
                     TcInternet.class.getAnnotation(DiscriminatorValue.class).value()
@@ -48,9 +49,9 @@ public class TcesInternetSaveService {
                 tcesByLocOpT.get(0).setTrunkChannel(repositoryTypeTruncChannel.findByName(tcDTO.getChannel()).getId());
                 tcesByLocOpT.get(0).setState(TcState.ACTIVE);
                 // TODO: Transaction.
-                repositoryWritableTc.save(tcesByLocOpT.get(0));
+                RepositoryWritableTcForImport.save(tcesByLocOpT.get(0));
             } else {
-                WritableTc tcByLocOpT = new WritableTc();
+                WritableTcForImport tcByLocOpT = new WritableTcForImport();
                 tcByLocOpT.setLocationId(repositoryLocation.findByFias(UUID.fromString(tcDTO.getFias())).getId());
                 tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcDTO.getOperator()).getId());
                 tcByLocOpT.setTrunkChannel(repositoryTypeTruncChannel.findByName(tcDTO.getChannel()).getId());
@@ -58,7 +59,7 @@ public class TcesInternetSaveService {
                 tcByLocOpT.setQuality(ServiceQuality.NORMAL);
                 tcByLocOpT.setState(TcState.ACTIVE);
                 // TODO: Transaction.
-                repositoryWritableTc.save(tcByLocOpT);
+                RepositoryWritableTcForImport.save(tcByLocOpT);
             }
         }
     }

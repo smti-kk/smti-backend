@@ -88,7 +88,7 @@ public class LocationsFromExcelDTO implements LocationsDTOFromExcel {
 //            result = this.checkExcelFormat(is);
 //        }
 //        if (!result) {
-//            throw new LocationDTOFormatException("Wrong file type.");
+//            throw new LocationDTOFormatException("Неправильный тип файла.");
 //        }
 //    }
 //

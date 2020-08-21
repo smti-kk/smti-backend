@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.ServiceQuality;
 import ru.cifrak.telecomit.backend.entities.TcPost;
-import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
+import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTcForImport;
 import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
-import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
+import ru.cifrak.telecomit.backend.repository.RepositoryWritableTcForImport;
 
 import javax.persistence.DiscriminatorValue;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @Service
 public class ApesSaveService {
 
-    private final RepositoryWritableTc repositoryWritableTc;
+    private final RepositoryWritableTcForImport repositoryWritableTcForImport;
 
     private final RepositoryLocation repositoryLocation;
 
@@ -28,11 +28,11 @@ public class ApesSaveService {
     private final RepositoryAccessPoints repositoryAccessPoints;
 
     public ApesSaveService(
-            RepositoryWritableTc repositoryWritableTc,
+            RepositoryWritableTcForImport repositoryWritableTcForImport,
             RepositoryLocation repositoryLocation,
             RepositoryOperator repositoryOperator,
             RepositoryAccessPoints repositoryAccessPoints) {
-        this.repositoryWritableTc = repositoryWritableTc;
+        this.repositoryWritableTcForImport = repositoryWritableTcForImport;
         this.repositoryLocation = repositoryLocation;
         this.repositoryOperator = repositoryOperator;
         this.repositoryAccessPoints = repositoryAccessPoints;

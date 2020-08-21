@@ -44,23 +44,23 @@ public class ApesFromExcelDTOValidated implements ApesDTOFromExcel {
         String badDTO;
 
         if (!this.checkFullnessNpp(tcesDTO)) {
-            throw new FromExcelDTOFormatException("Not all npp are filled.");
+            throw new FromExcelDTOFormatException("Не все \"№ п/п\" заполнены.");
         }
 
         badDTO = this.checkFullnessCells(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badDTO + " position not all cells are filled.");
+            throw new FromExcelDTOFormatException("В " + badDTO + " позиции не все ячейки заполнены.");
         }
 
         badDTO = this.checkFiaseGUID(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badDTO
+            throw new FromExcelDTOFormatException("В " + badDTO
                     + " position organization FIAS error, must be in GUID-format.");
         }
 
         badDTO = this.checkTypeInternetAccess(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badDTO
+            throw new FromExcelDTOFormatException("В " + badDTO
                     + " position type internet access error, must be in {"
                     + String.join(", ", repositoryInternetAccessType.findAllTypes())
                     + "}.");
@@ -89,7 +89,7 @@ public class ApesFromExcelDTOValidated implements ApesDTOFromExcel {
             result = this.checkExcelFormat(is);
         }
         if (!result) {
-            throw new FromExcelDTOFormatException("Wrong file type.");
+            throw new FromExcelDTOFormatException("Неправильный тип файла.");
         }
     }
 

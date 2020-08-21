@@ -118,7 +118,7 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/location :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
     @PostMapping("/tc-internet")
@@ -138,7 +138,7 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/tc-internet :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
     @PostMapping("/tc-mobile")
@@ -158,7 +158,7 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/tc-mobile :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
     @PostMapping("/tc-payphone")
@@ -177,7 +177,7 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/tc-ats :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
     @PostMapping("/tc-tv")
@@ -196,7 +196,7 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/tc-tv :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
     @PostMapping("/tc-radio")
@@ -215,7 +215,7 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/tc-radio :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
     @PostMapping("/tc-post")
@@ -234,28 +234,8 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/tc-internet :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
-
-//    @PostMapping("/tc-payphone")
-//    public ResponseEntity<String> handleFileTcPayphone(@RequestParam("file") MultipartFile file) {
-//        try {
-//            tcesInternetSaveService.saveTcesInternet(
-//                    new TcesInternetFromExcelDTOValidated(
-//                            repositoryOperator,
-//                            repositoryLocation,
-//                            repositoryTypeTruncChannel,
-//                            new TcesInternetFromExcelDTO(file)
-//                    ).getTcesInternetDTO()
-//            );
-//        } catch (FromExcelDTOFormatException e) {
-//            // TODO: <-, -> ?
-//            log.error("<-POST /api/import/tc-internet :: {}", e.getMessage());
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//        log.info("POST /api/import/tc-internet :: {}", file.getOriginalFilename());
-//        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
-//    }
 
 //    @PostMapping("/tc-infomat")
 //    public ResponseEntity<String> handleFileTcInfomat(@RequestParam("file") MultipartFile file) {
@@ -275,7 +255,7 @@ public class ApiImport {
 //            return ResponseEntity.badRequest().body(e.getMessage());
 //        }
 //        log.info("POST /api/import/tc-infomat :: {}", file.getOriginalFilename());
-//        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+//        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
 //    }
 
     @PostMapping("/tc-access-point")
@@ -294,6 +274,6 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/tc-access-point :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 }
