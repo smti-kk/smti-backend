@@ -1,14 +1,11 @@
 package ru.cifrak.telecomit.backend.api.service.imp.tcradio;
 
 import org.springframework.stereotype.Service;
-import ru.cifrak.telecomit.backend.entities.ServiceQuality;
-import ru.cifrak.telecomit.backend.entities.Signal;
-import ru.cifrak.telecomit.backend.entities.TcRadio;
-import ru.cifrak.telecomit.backend.entities.TcTv;
-import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
+import ru.cifrak.telecomit.backend.entities.*;
+import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTcForImport;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
-import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
+import ru.cifrak.telecomit.backend.repository.RepositoryWritableTcForImport;
 
 import javax.persistence.DiscriminatorValue;
 import java.util.Arrays;
@@ -23,17 +20,17 @@ public class TcesRadioSaveService {
 
     private final static String CTV = "ЦТВ";
 
-    private final RepositoryWritableTc repositoryWritableTc;
+    private final RepositoryWritableTcForImport repositoryWritableTcForImport;
 
     private final RepositoryLocation repositoryLocation;
 
     private final RepositoryOperator repositoryOperator;
 
     public TcesRadioSaveService(
-            RepositoryWritableTc repositoryWritableTc,
+            RepositoryWritableTcForImport repositoryWritableTcForImport,
             RepositoryLocation repositoryLocation,
             RepositoryOperator repositoryOperator) {
-        this.repositoryWritableTc = repositoryWritableTc;
+        this.repositoryWritableTcForImport = repositoryWritableTcForImport;
         this.repositoryLocation = repositoryLocation;
         this.repositoryOperator = repositoryOperator;
     }
@@ -41,24 +38,26 @@ public class TcesRadioSaveService {
     public void saveTces(List<TcRadioFromExcelDTO> TcesDTO) {
         for (TcRadioFromExcelDTO tcTOO : TcesDTO){
             List<Signal> types = this.convertToEntityAttribute(tcTOO.getType().replaceAll(" ", ""));
-            List<WritableTc> tcesByLocOpT = repositoryWritableTc.findByLocationIdAndOperatorIdAndType(
+            List<WritableTcForImport> tcesByLocOpT = repositoryWritableTcForImport.findByLocationIdAndOperatorIdAndType(
                     repositoryLocation.findByFias(UUID.fromString(tcTOO.getFias())).getId(),
                     repositoryOperator.findByName(tcTOO.getOperator()).getId(),
                     TcRadio.class.getAnnotation(DiscriminatorValue.class).value()
             );
             if (tcesByLocOpT.size() > 0) {
                 tcesByLocOpT.get(0).setTvOrRadioTypes(types);
+                tcesByLocOpT.get(0).setState(TcState.ACTIVE);
                 // TODO: Transaction.
-                repositoryWritableTc.save(tcesByLocOpT.get(0));
+                repositoryWritableTcForImport.save(tcesByLocOpT.get(0));
             } else {
-                WritableTc tcByLocOpT = new WritableTc();
+                WritableTcForImport tcByLocOpT = new WritableTcForImport();
                 tcByLocOpT.setLocationId(repositoryLocation.findByFias(UUID.fromString(tcTOO.getFias())).getId());
                 tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcTOO.getOperator()).getId());
                 tcByLocOpT.setTvOrRadioTypes(types);
                 tcByLocOpT.setType(TcRadio.class.getAnnotation(DiscriminatorValue.class).value());
                 tcByLocOpT.setQuality(ServiceQuality.NORMAL);
+                tcByLocOpT.setState(TcState.ACTIVE);
                 // TODO: Transaction.
-                repositoryWritableTc.save(tcByLocOpT);
+                repositoryWritableTcForImport.save(tcByLocOpT);
             }
         }
     }

@@ -17,4 +17,6 @@ public interface RepositoryTypeTruncChannel extends JpaRepository<TypeTrunkChann
      @Query("SELECT  l  from TypeTrunkChannel l  where l.id < 90 ")
      List<TypeTrunkChannel> foo();
 
+     @Query("SELECT t.name from TypeInternetAccess t")
+     List<String> findAllTypes();
 }

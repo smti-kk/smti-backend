@@ -18,7 +18,6 @@ public class TcInfomat extends TechnicalCapability {
     /**
      * Количество Infomat (информаты)
      */
-    @NotNull
     @PositiveOrZero
     @Column
     private Integer quantity;

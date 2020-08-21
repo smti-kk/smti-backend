@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.api.service.imp.tcmobile;
+package ru.cifrak.telecomit.backend.api.service.imp.tcpayphone;
 
 import lombok.SneakyThrows;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -13,13 +13,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TcesMobileFromExcelDTO implements TcesMobileDTOFromExcel {
+public class TcesPayphoneFromExcelDTO implements TcesPayphoneDTOFromExcel {
 
     private Workbook book;
 
     private final MultipartFile file;
 
-    public TcesMobileFromExcelDTO(MultipartFile file) {
+    public TcesPayphoneFromExcelDTO(MultipartFile file) {
         this.file = file;
     }
 
@@ -29,9 +29,9 @@ public class TcesMobileFromExcelDTO implements TcesMobileDTOFromExcel {
     }
 
     @Override
-    public List<TcMobileFromExcelDTO> getTcesMobileDTO() {
+    public List<TcPayphoneFromExcelDTO> getTcesDTO() {
         setBook(file);
-        List<TcMobileFromExcelDTO> tces = new ArrayList<>();
+        List<TcPayphoneFromExcelDTO> tces = new ArrayList<>();
         Sheet sheet = this.book.getSheetAt(0);
         Row row;
         for (int i = 2; i < sheet.getPhysicalNumberOfRows(); i++) {
@@ -40,7 +40,7 @@ public class TcesMobileFromExcelDTO implements TcesMobileDTOFromExcel {
                 row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
                 row.getCell(7).setCellType(Cell.CELL_TYPE_STRING);
                 if (this.notEmptyRow(row)) {
-                    tces.add(new TcMobileFromExcelDTO(row));
+                    tces.add(new TcPayphoneFromExcelDTO(row));
                 }
             }
         }

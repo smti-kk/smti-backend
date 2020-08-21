@@ -52,36 +52,36 @@ public class TcesRadioFromExcelDTOValidated implements TcesRadioDTOFromExcel {
         String badDTO;
 
         if (!this.checkFullnessNpp(tcesDTO)) {
-            throw new FromExcelDTOFormatException("Not all npp are filled.");
+            throw new FromExcelDTOFormatException("Не все \"№ п/п\" заполнены.");
         }
 
         badDTO = this.checkFullnessCells(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badDTO + " position not all cells are filled.");
+            throw new FromExcelDTOFormatException("В " + badDTO + " позиции не все ячейки заполнены.");
         }
 
         badDTO = this.checkFiasesGUID(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badDTO
-                    + " position FIAS error, must be in GUID-format.");
+            throw new FromExcelDTOFormatException("В " + badDTO
+                    + " позиции ошибка в ФИАС, должен быть в GUID формате.");
         }
 
         badDTO = this.checkFiases(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badDTO
-                    + " position location FIAS error, not found in BD.");
+            throw new FromExcelDTOFormatException("В " + badDTO
+                    + " позиции ошибка в ФИАС населённого пункта, не найден в БД.");
         }
 
         badDTO = this.checkOperators(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badDTO
-                    + " position operator error, not found in BD.");
+            throw new FromExcelDTOFormatException("В " + badDTO
+                    + " позиции ошибка в операторе, не найден в БД.");
         }
 
         badDTO = this.checkType(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badDTO
-                    + " position type error, each element must be in {" + ATV + ", " + CTV +"}.");
+            throw new FromExcelDTOFormatException("В " + badDTO
+                    + " позиции ошибка в типе, должен быть одним из {" + ATV + ", " + CTV +"}.");
         }
 
         return tcesDTO;
@@ -144,7 +144,7 @@ public class TcesRadioFromExcelDTOValidated implements TcesRadioDTOFromExcel {
             result = this.checkExcelFormat(is);
         }
         if (!result) {
-            throw new FromExcelDTOFormatException("Wrong file type.");
+            throw new FromExcelDTOFormatException("Неправильный тип файла.");
         }
     }
 

@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.api.service.imp.tcats;
+package ru.cifrak.telecomit.backend.api.service.imp.tcpayphone;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.Row;
 
 @AllArgsConstructor
 @Getter
-public class TcAtsFromExcelDTO {
+public class TcPayphoneFromExcelDTO {
 
     private final String npp;
 
@@ -16,7 +16,7 @@ public class TcAtsFromExcelDTO {
 
     private final String payphones;
 
-    public TcAtsFromExcelDTO(Row row) {
+    public TcPayphoneFromExcelDTO(Row row) {
         this(
                 row.getCell(0).getStringCellValue().trim(),
                 row.getCell(5).getStringCellValue().trim(),

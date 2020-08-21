@@ -6,14 +6,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
+import ru.cifrak.telecomit.backend.api.service.imp.ap.ApesFromExcelDTO;
+import ru.cifrak.telecomit.backend.api.service.imp.ap.ApesFromExcelDTOValidated;
+import ru.cifrak.telecomit.backend.api.service.imp.ap.ApesSaveService;
 import ru.cifrak.telecomit.backend.api.service.imp.location.LocationsFromExcelDTO;
 import ru.cifrak.telecomit.backend.api.service.imp.location.LocationsFromExcelDTOValidated;
 import ru.cifrak.telecomit.backend.api.service.imp.location.LocationsSaveService;
-import ru.cifrak.telecomit.backend.api.service.imp.tcats.TcesAtsFromExcelDTO;
-import ru.cifrak.telecomit.backend.api.service.imp.tcats.TcesAtsFromExcelDTOValidated;
-import ru.cifrak.telecomit.backend.api.service.imp.tcats.TcesAtsSaveService;
-import ru.cifrak.telecomit.backend.api.service.imp.tcinfomat.TcesInfomatFromExcelDTO;
-import ru.cifrak.telecomit.backend.api.service.imp.tcinfomat.TcesInfomatFromExcelDTOValidated;
+import ru.cifrak.telecomit.backend.api.service.imp.tcpayphone.TcesPayphoneFromExcelDTO;
+import ru.cifrak.telecomit.backend.api.service.imp.tcpayphone.TcesPayphoneFromExcelDTOValidated;
+import ru.cifrak.telecomit.backend.api.service.imp.tcpayphone.TcesPayphoneSaveService;
 import ru.cifrak.telecomit.backend.api.service.imp.tcinfomat.TcesInfomatSaveService;
 import ru.cifrak.telecomit.backend.api.service.imp.tcinternet.TcesInternetFromExcelDTO;
 import ru.cifrak.telecomit.backend.api.service.imp.tcinternet.TcesInternetFromExcelDTOValidated;
@@ -47,6 +48,10 @@ public class ApiImport {
 
     private final RepositoryMobileType repositoryMobileType;
 
+    private final RepositoryOrganization repositoryOrganization;
+
+    private final RepositoryInternetAccessType repositoryInternetAccessType;
+
     private final LocationsSaveService locationsSaveService;
 
     private final TcesInternetSaveService tcesInternetSaveService;
@@ -57,11 +62,13 @@ public class ApiImport {
 
     private final TcesRadioSaveService tcesRadioSaveService;
 
-    private final TcesAtsSaveService tcesAtsSaveService;
+    private final TcesPayphoneSaveService tcesPayphoneSaveService;
 
     private final TcesPostSaveService tcesPostSaveService;
 
     private final TcesInfomatSaveService tcesInfomatSaveService;
+
+    private final ApesSaveService apesSaveService;
 
     @Autowired
     public ApiImport(
@@ -69,26 +76,32 @@ public class ApiImport {
             RepositoryOperator repositoryOperator,
             RepositoryTypeTruncChannel repositoryTypeTruncChannel,
             RepositoryMobileType repositoryMobileType,
+            RepositoryOrganization repositoryOrganization,
+            RepositoryInternetAccessType repositoryInternetAccessType,
             LocationsSaveService locationsSaveService,
             TcesInternetSaveService tcesInternetSaveService,
             TcesMobileSaveService tcesMobileSaveService,
             TcesTvSaveService tcesTvSaveService,
             TcesRadioSaveService tcesRadioSaveService,
-            TcesAtsSaveService tcesAtsSaveService,
+            TcesPayphoneSaveService tcesPayphoneSaveService,
             TcesPostSaveService tcesPostSaveService,
-            TcesInfomatSaveService tcesInfomatSaveService) {
+            TcesInfomatSaveService tcesInfomatSaveService,
+            ApesSaveService apesSaveService) {
         this.repositoryLocation = repositoryLocation;
         this.repositoryOperator = repositoryOperator;
         this.repositoryTypeTruncChannel = repositoryTypeTruncChannel;
         this.repositoryMobileType = repositoryMobileType;
+        this.repositoryOrganization = repositoryOrganization;
+        this.repositoryInternetAccessType = repositoryInternetAccessType;
         this.locationsSaveService = locationsSaveService;
         this.tcesInternetSaveService = tcesInternetSaveService;
         this.tcesMobileSaveService = tcesMobileSaveService;
         this.tcesTvSaveService = tcesTvSaveService;
         this.tcesRadioSaveService = tcesRadioSaveService;
-        this.tcesAtsSaveService = tcesAtsSaveService;
+        this.tcesPayphoneSaveService = tcesPayphoneSaveService;
         this.tcesPostSaveService = tcesPostSaveService;
         this.tcesInfomatSaveService = tcesInfomatSaveService;
+        this.apesSaveService = apesSaveService;
     }
 
     @PostMapping("/location")
@@ -105,7 +118,7 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/location :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
     @PostMapping("/tc-internet")
@@ -125,7 +138,7 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/tc-internet :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
     @PostMapping("/tc-mobile")
@@ -145,17 +158,17 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/tc-mobile :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
-    @PostMapping("/tc-ats")
+    @PostMapping("/tc-payphone")
     public ResponseEntity<String> handleFileTcAts(@RequestParam("file") MultipartFile file) {
         try {
-            tcesAtsSaveService.saveTces(
-                    new TcesAtsFromExcelDTOValidated(
+            tcesPayphoneSaveService.saveTces(
+                    new TcesPayphoneFromExcelDTOValidated(
                             repositoryOperator,
                             repositoryLocation,
-                            new TcesAtsFromExcelDTO(file)
+                            new TcesPayphoneFromExcelDTO(file)
                     ).getTcesDTO()
             );
         } catch (FromExcelDTOFormatException e) {
@@ -164,7 +177,7 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/tc-ats :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
     @PostMapping("/tc-tv")
@@ -183,7 +196,7 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/tc-tv :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
     @PostMapping("/tc-radio")
@@ -202,7 +215,7 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/tc-radio :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
     @PostMapping("/tc-post")
@@ -221,28 +234,8 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/tc-internet :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
-
-//    @PostMapping("/tc-payphone")
-//    public ResponseEntity<String> handleFileTcPayphone(@RequestParam("file") MultipartFile file) {
-//        try {
-//            tcesInternetSaveService.saveTcesInternet(
-//                    new TcesInternetFromExcelDTOValidated(
-//                            repositoryOperator,
-//                            repositoryLocation,
-//                            repositoryTypeTruncChannel,
-//                            new TcesInternetFromExcelDTO(file)
-//                    ).getTcesInternetDTO()
-//            );
-//        } catch (FromExcelDTOFormatException e) {
-//            // TODO: <-, -> ?
-//            log.error("<-POST /api/import/tc-internet :: {}", e.getMessage());
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//        log.info("POST /api/import/tc-internet :: {}", file.getOriginalFilename());
-//        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
-//    }
 
 //    @PostMapping("/tc-infomat")
 //    public ResponseEntity<String> handleFileTcInfomat(@RequestParam("file") MultipartFile file) {
@@ -262,26 +255,25 @@ public class ApiImport {
 //            return ResponseEntity.badRequest().body(e.getMessage());
 //        }
 //        log.info("POST /api/import/tc-infomat :: {}", file.getOriginalFilename());
-//        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
+//        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
 //    }
-//
-//    @PostMapping("/tc-access-point")
-//    public ResponseEntity<String> handleFileAccessPoint(@RequestParam("file") MultipartFile file) {
-//        try {
-//            tcesInternetSaveService.saveTcesInternet(
-//                    new TcesInternetFromExcelDTOValidated(
-//                            repositoryOperator,
-//                            repositoryLocation,
-//                            repositoryTypeTruncChannel,
-//                            new TcesInternetFromExcelDTO(file)
-//                    ).getTcesInternetDTO()
-//            );
-//        } catch (FromExcelDTOFormatException e) {
-//            // TODO: <-, -> ?
-//            log.error("<-POST /api/import/tc-internet :: {}", e.getMessage());
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//        log.info("POST /api/import/tc-internet :: {}", file.getOriginalFilename());
-//        return ResponseEntity.ok(file.getOriginalFilename() + " was imported.");
-//    }
+
+    @PostMapping("/tc-access-point")
+    public ResponseEntity<String> handleFileAccessPoint(@RequestParam("file") MultipartFile file) {
+        try {
+            apesSaveService.save(
+                    new ApesFromExcelDTOValidated(
+                            repositoryOrganization,
+                            repositoryInternetAccessType,
+                            new ApesFromExcelDTO(file)
+                    ).getTcesDTO()
+            );
+        } catch (FromExcelDTOFormatException e) {
+            // TODO: <-, -> ?
+            log.error("<-POST /api/import/tc-access-point :: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        log.info("POST /api/import/tc-access-point :: {}", file.getOriginalFilename());
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
+    }
 }

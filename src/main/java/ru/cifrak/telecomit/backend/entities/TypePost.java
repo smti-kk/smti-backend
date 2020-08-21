@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum TypePost {
-    UPS("UPS","УПС"),
+    UPS("UPS","ОПС"),
     POST("POST","Почтовая связь");
 
     private String id;
@@ -19,7 +19,7 @@ public enum TypePost {
     @Override
     public String toString() {
         switch (this) {
-            case UPS:   return "УПС";
+            case UPS:   return "ОПС";
             case POST:  return "Почтовая связь";
             default:    throw new IllegalArgumentException();
         }

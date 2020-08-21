@@ -76,7 +76,7 @@ public class LocationsFromExcelDTO implements LocationsDTOFromExcel {
         } catch (Exception eXSSF) {
             this.book = new HSSFWorkbook(is);
         }
-        this.book.setMissingCellPolicy(Row.CREATE_NULL_AS_BLANK);
+        this.book.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
     }
 
 //    private void getExcelFormatFile(MultipartFile file) throws LocationDTOFormatException {
@@ -88,7 +88,7 @@ public class LocationsFromExcelDTO implements LocationsDTOFromExcel {
 //            result = this.checkExcelFormat(is);
 //        }
 //        if (!result) {
-//            throw new LocationDTOFormatException("Wrong file type.");
+//            throw new LocationDTOFormatException("Неправильный тип файла.");
 //        }
 //    }
 //
