@@ -29,4 +29,16 @@ public class ReportApContractDTO {
         this.amount = entity.getAmount();
         this.number = entity.getNumber();
     }
+
+    public ReportApContractDTO(ru.cifrak.telecomit.backend.entities.AccessPointFull entity) {
+        this.id = entity.getId();
+        this.address = entity.getAddress();
+        this.contractor = entity.getContractor();
+        this.declaredSpeed = entity.getDeclaredSpeed();
+        this.internetAccess = entity.getInternetAccess() != null ? new TypeInternetAccessDTO(entity.getInternetAccess()) : null;
+        this.type = "CONTRACT";
+        this.organization = entity.getOrganization() != null ? new ReportOrganizationDTO(entity.getOrganization()) : null;
+        this.amount = entity.getAmount();
+        this.number = entity.getNumber();
+    }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="gleb (generated)" id="1">
+        <dropView viewName="v_technical_capability_active"></dropView>
+    </changeSet>
+    <changeSet author="gleb (generated)" id="2">
+        <dropColumn tableName="technical_capability" columnName="subscribers"></dropColumn>
+        <dropColumn tableName="technical_capability" columnName="capacity"></dropColumn>
+        <dropColumn tableName="technical_capability" columnName="payphones"></dropColumn>
+        <dropColumn tableName="technical_capability" columnName="throughput"></dropColumn>
+    </changeSet>
+    <changeSet author="gleb (generated)" id="3">
+    <addColumn tableName="technical_capability">
+        <column name="quantity" type="int4"/>
+    </addColumn>
+    </changeSet>
+    <changeSet author="gleb (generated)" id="4">
+        <createView viewName="v_technical_capability_active"
+                    schemaName="public">
+            SELECT tc.* FROM technical_capability tc WHERE tc.state::text = 'ACTIVE'::text;
+        </createView>
+    </changeSet>
+</databaseChangeLog>

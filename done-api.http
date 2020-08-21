@@ -398,10 +398,13 @@ Content-Type: application/json
 GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=2
 Authorization: Token {{auth_token}}
 ###
-GET http://localhost:8080/api/report-z/organization/ap-all/?page=1&size=100&type=7
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&type=7
 Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=2&smo=5
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=2&smo=5&ap=SMO
 Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&location=1251&gdp=1
@@ -449,7 +452,7 @@ GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&populat
 Authorization: Token {{auth_token}}
 
 ###
-GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&ap=SMO
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&ap=CONTRACT
 Authorization: Token {{auth_token}}
 
 ### ********************************************************************************************************************
