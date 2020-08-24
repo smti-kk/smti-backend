@@ -17,6 +17,12 @@ public interface RepositoryWritableTc extends JpaRepository<WritableTc, Integer>
 
     WritableTc findByLocationIdAndStateAndOperatorId(Integer locationId, TcState state, Integer operatorId);
 
+//    List<WritableTc> findByLocationIdAndOperatorIdAndType(
+//            Integer locationId,
+//            Integer operatorId,
+//            String type
+//    );
+
     List<WritableTc> findByLocationIdAndOperatorIdAndType(
             Integer locationId,
             Integer operatorId,

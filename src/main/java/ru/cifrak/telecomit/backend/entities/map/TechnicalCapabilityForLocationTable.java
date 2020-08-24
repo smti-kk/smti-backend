@@ -56,11 +56,6 @@ public class TechnicalCapabilityForLocationTable {
     @Column(nullable = false)
     private ServiceQuality quality;
 
-    @NotNull
-    @PositiveOrZero
-    @Column
-    private Integer payphones;
-
     public TechnicalCapabilityForLocationTable() {
     }
 }

@@ -13,10 +13,10 @@ import javax.validation.constraints.PositiveOrZero;
 @EqualsAndHashCode(callSuper = true)
 
 @Entity
-@DiscriminatorValue("INFOMAT")
-public class TcInfomat extends TechnicalCapability {
+@DiscriminatorValue("PAYPHONE")
+public class TcPayphone extends TechnicalCapability{
     /**
-     * Количество Infomat (информаты)
+     * Количество Payphone (телефон - автомат)
      */
     @PositiveOrZero
     @Column

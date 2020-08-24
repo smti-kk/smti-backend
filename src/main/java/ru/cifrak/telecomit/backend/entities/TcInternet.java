@@ -20,20 +20,4 @@ public class TcInternet extends TechnicalCapability {
     @JoinColumn(name = "key_type_trunkchannel")
     @JsonIgnore
     private TypeTrunkChannel trunkChannel;
-
-    /**
-     * Ширина магистрального канала (Мбит/с)
-     */
-    @NotNull
-    @NotEmpty
-    @Column
-    private String throughput;
-
-    /**
-     * Максимальное количество абонентов
-     */
-    @NotNull
-    @PositiveOrZero
-    @Column
-    private Integer subscribers;
 }
