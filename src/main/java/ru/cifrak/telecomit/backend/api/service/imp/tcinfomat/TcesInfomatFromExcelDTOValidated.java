@@ -71,19 +71,19 @@ public class TcesInfomatFromExcelDTOValidated implements TcesInfomatDTOFromExcel
                     + " позиции ошибка в операторе, не найден в БД.");
         }
 
-        badDTO = this.checkInfomats(tcesDTO);
+        badDTO = this.checkQuantity(tcesDTO);
         if (badDTO != null) {
             throw new FromExcelDTOFormatException("В " + badDTO
-                    + " позиции ошибка в количестве, должно быть в цифровом формате.");
+                    + " позиции ошибка в количестве, должно быть в числовом формате.");
         }
 
         return tcesDTO;
     }
 
-    private String checkInfomats(List<TcInfomatFromExcelDTO> tcesDTO) {
+    private String checkQuantity(List<TcInfomatFromExcelDTO> tcesDTO) {
         String result = null;
         for (TcInfomatFromExcelDTO TcDTO : tcesDTO) {
-            if (!TcDTO.getInfomats().matches("[0-9]+")) {
+            if (!TcDTO.getQuantity().matches("[0-9]+")) {
                 result = TcDTO.getNpp();
                 break;
             }
