@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.repository;
 
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
+import ru.cifrak.telecomit.backend.entities.Organization;
 
 import java.util.List;
 
@@ -26,4 +28,6 @@ public interface RepositoryAccessPoints extends JpaRepository<AccessPoint, Integ
     Page findAll(Specification spec, Pageable pageable);
 
     List<AccessPoint> getAllByOrganizationId(Integer id);
+
+    List<AccessPoint> findByPointAndOrganization(Point point, Organization organization);
 }
