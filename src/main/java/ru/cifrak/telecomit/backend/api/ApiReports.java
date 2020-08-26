@@ -2,6 +2,7 @@ package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.ptg.LessEqualPtg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -47,6 +48,7 @@ public class ApiReports {
     private final RepositoryAccessPointsFull rAccessPoints;
     private final RepositoryApContract rApContract;
     private final ServiceExternalReports serviceExternalReports;
+
 
 
     @Autowired
@@ -155,7 +157,8 @@ public class ApiReports {
                 page, size, location == null ? "" : location.getId(), type, smo, gdp, inettype, organization, contractor);
         //HINT: https://github.com/vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting
         Set<String> sortingFileds = new LinkedHashSet<>(
-                Arrays.asList(StringUtils.split(StringUtils.defaultIfEmpty(sort, ""), ",")));
+                Arrays.asList(StringUtils.split(StringUtils
+                        .defaultIfEmpty(sort, ""), ",")));
 
         List<Sort.Order> sortingOrders = sortingFileds.stream().map(this::getOrder)
                 .collect(Collectors.toList());
@@ -264,6 +267,103 @@ public class ApiReports {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + Converter.simpleDate(instantStart) + "-" + Converter.simpleDate(instantEnd) + ".xlsx\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
+
+    @GetMapping(value = "/ap-all/export")
+    @ResponseBody
+    public ResponseEntity<ByteArrayResource> exportAccessPointFull(
+            @RequestParam(name = "location", required = false) Location location,
+           @RequestParam(name = "type", required = false) TypeOrganization type,
+           @RequestParam(name = "smo", required = false) TypeSmo smo,
+           @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp,
+           @RequestParam(name = "inet", required = false) TypeInternetAccess inettype,
+           @RequestParam(name = "parents", required = false) List<Location> parents,
+           @RequestParam(name = "organization", required = false) String organization,
+           @RequestParam(name = "contractor", required = false) String contractor,
+           @RequestParam(name = "ap", required = false) List<TypeAccessPoint> ap
+            ) throws IOException {
+
+        Specification<AccessPointFull> spec = Specification.where(null);
+        if (location != null) {
+            spec = spec != null ? spec.and(SpecificationAccessPointFull.inLocation(location)) : null;
+        }
+        if (type != null) {
+            spec = spec.and(SpecificationAccessPointFull.withType(type));
+        }
+        if (smo != null) {
+            spec = spec.and(SpecificationAccessPointFull.withSmo(smo));
+        }
+        if (gdp != null) {
+            spec = spec.and(SpecificationAccessPointFull.withGovProgram(gdp));
+        }
+        if (inettype != null) {
+            spec = spec.and(SpecificationAccessPointFull.withInetType(inettype));
+        }
+        if (parents != null) {
+            spec = spec.and(SpecificationAccessPointFull.inParent(parents));
+        }
+        if (organization != null) {
+            spec = spec.and(SpecificationAccessPointFull.withOrgname(organization));
+        }
+        if (contractor != null) {
+            spec = spec.and(SpecificationAccessPointFull.withOperator(contractor));
+        }
+        if (ap != null) {
+            spec = spec.and(SpecificationAccessPointFull.type(ap));
+        }
+        log.info("->GET /api/report/organization/ap-all/export");
+
+        // xx. Forming excel file
+        ExportToExcelConfiguration<ExelReportAccessPointFullDTO> exportToExcelConfiguration = new ExportToExcelConfiguration<>();
+        exportToExcelConfiguration.addColumn(0, Integer.class, ExelReportAccessPointFullDTO::getPp, "№ п/п");
+        exportToExcelConfiguration.addColumn(1, Integer.class, ExelReportAccessPointFullDTO::getId, "ID учреждения");
+        exportToExcelConfiguration.addColumn(2, ExelReportAccessPointFullDTO::getMunicipalLocationType, "Вид муниципального образования");
+        exportToExcelConfiguration.addColumn(3, ExelReportAccessPointFullDTO::getMunicipalName, "Муниципальное образование");
+        exportToExcelConfiguration.addColumn(4, ExelReportAccessPointFullDTO::getLocationType, "Тип населенного пункта");
+        exportToExcelConfiguration.addColumn(5, ExelReportAccessPointFullDTO::getLocationName, "Наименование населенного пункта");
+        exportToExcelConfiguration.addColumn(6, ExelReportAccessPointFullDTO::getOKTMO, "ОКТМО");
+        exportToExcelConfiguration.addColumn(7, Integer.class, ExelReportAccessPointFullDTO::getNumberInhabitants, "Численность населения (данные Росстата)");
+        exportToExcelConfiguration.addColumn(8, ExelReportAccessPointFullDTO::getFullNameOrganization, "Полное наименование учреждения");
+        exportToExcelConfiguration.addColumn(9, ExelReportAccessPointFullDTO::getFIASOrganization, "Номер учреждения в ФИАС");
+        exportToExcelConfiguration.addColumn(10, ExelReportAccessPointFullDTO::getFullAddressOrganization, "Адрес учреждения");
+        exportToExcelConfiguration.addColumn(11, Double.class,ExelReportAccessPointFullDTO::getLatitude, "Широта");
+        exportToExcelConfiguration.addColumn(12, Double.class,ExelReportAccessPointFullDTO::getLongitude, "Долгота");
+        exportToExcelConfiguration.addColumn(13, ExelReportAccessPointFullDTO::getSMO, "Вид СЗО");
+        exportToExcelConfiguration.addColumn(14, ExelReportAccessPointFullDTO::getCompanyType, "Тип учреждения");
+        exportToExcelConfiguration.addColumn(15, Boolean.class,ExelReportAccessPointFullDTO::getPointView, "Отображается");
+        exportToExcelConfiguration.addColumn(16, ExelReportAccessPointFullDTO::getAccessPointCustomer, "Заказчик");
+        exportToExcelConfiguration.addColumn(17, ExelReportAccessPointFullDTO::getContract, "Контракт");
+        exportToExcelConfiguration.addColumn(18, Integer.class,ExelReportAccessPointFullDTO::getUcn, "Название узла согласно кодификатору");
+        exportToExcelConfiguration.addColumn(19, ExelReportAccessPointFullDTO::getAccessNode, "Узел доступа (Идентификатор узла для работы мониторинга)");
+        exportToExcelConfiguration.addColumn(20, ExelReportAccessPointFullDTO::getDescriptionAccess, "Описание");
+        exportToExcelConfiguration.addColumn(21, ExelReportAccessPointFullDTO::getIncludeType, "Тип подключения");
+        exportToExcelConfiguration.addColumn(22, ExelReportAccessPointFullDTO::getOperatorName, "Оператор связи");
+        exportToExcelConfiguration.addColumn(23, ExelReportAccessPointFullDTO::getDeclaredSpeed, "Скорость по контракту (Мбит/с)");
+        exportToExcelConfiguration.addColumn(24, ExelReportAccessPointFullDTO::getChannelWidth, "Ширина канала (Мбит/с)");
+        exportToExcelConfiguration.addColumn(25, ExelReportAccessPointFullDTO::getCommunicationAssessment, "Качество связи");
+        exportToExcelConfiguration.addColumn(26, Integer.class, ExelReportAccessPointFullDTO::getUcn, "Уникальный номер по контракту (ЕСПД, СЗО)");
+        exportToExcelConfiguration.addColumn(27, ExelReportAccessPointFullDTO::getGovernmentProgramName, "Государственная программа");
+        exportToExcelConfiguration.addColumn(28, ExelReportAccessPointFullDTO::getParticipationStatus, "Статус участия");
+        exportToExcelConfiguration.addColumn(29, Integer.class, ExelReportAccessPointFullDTO::getYearOverGovProgram, "Год реализации");
+        ExcelExporter<ExelReportAccessPointFullDTO> excelExporter = new ExcelExporter<>(exportToExcelConfiguration);
+
+        List<AccessPointFull> temp = rAccessPoints.findAll(spec);
+
+        List<ExelReportAccessPointFullDTO> rezult = temp
+                .stream()
+                .map(ExelReportAccessPointFullDTO::new)
+                .collect(Collectors.toList());
+
+        IntStream.range(0, rezult.size()).forEach(i -> rezult.get(i).setPp(i + 1));
+        ByteArrayResource resource = new ByteArrayResource(excelExporter.exportToByteArray(rezult));
+
+        log.info("<-GET /api/report/organization/ap-all/export");
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + ".xlsx\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(resource.contentLength())
                 .body(resource);

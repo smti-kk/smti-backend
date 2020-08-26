@@ -8,9 +8,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import ru.cifrak.telecomit.backend.entities.AccessPointFull;
 
+import java.util.List;
+
 
 public interface RepositoryAccessPointsFull extends JpaRepository<AccessPointFull, Integer>, JpaSpecificationExecutor {
     @EntityGraph(AccessPointFull.REPORT_ALL)
     @Override
     Page findAll(Specification spec, Pageable pageable);
+
+
+    @EntityGraph(AccessPointFull.REPORT_ALL)
+    @Override
+    List<AccessPointFull> findAll();
+
+    @Override
+    List findAll(Specification specification);
+
 }
