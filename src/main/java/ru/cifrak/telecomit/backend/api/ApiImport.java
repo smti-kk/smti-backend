@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
@@ -36,6 +37,9 @@ import ru.cifrak.telecomit.backend.api.service.imp.tcradio.TcesRadioSaveService;
 import ru.cifrak.telecomit.backend.api.service.imp.tctv.TcesTvFromExcelDTO;
 import ru.cifrak.telecomit.backend.api.service.imp.tctv.TcesTvFromExcelDTOValidated;
 import ru.cifrak.telecomit.backend.api.service.imp.tctv.TcesTvSaveService;
+import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelsFromExcelDTO;
+import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelsFromExcelDTOValidated;
+import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelsSaveService;
 import ru.cifrak.telecomit.backend.repository.*;
 
 // TODO: добавить метод handleFileTcpPayphone (?)
@@ -81,6 +85,8 @@ public class ApiImport {
 
     private final TcesAtsSaveService tcesAtsSaveService;
 
+    private final TrunkChannelsSaveService trunkChannelsSaveService;
+
     @Autowired
     public ApiImport(
             RepositoryLocation repositoryLocation,
@@ -100,7 +106,8 @@ public class ApiImport {
             TcesPostSaveService tcesPostSaveService,
             TcesInfomatSaveService tcesInfomatSaveService,
             ApesSaveService apesSaveService,
-            TcesAtsSaveService tcesAtsSaveService) {
+            TcesAtsSaveService tcesAtsSaveService,
+            TrunkChannelsSaveService trunkChannelsSaveService) {
         this.repositoryLocation = repositoryLocation;
         this.repositoryOperator = repositoryOperator;
         this.repositoryTypeTruncChannel = repositoryTypeTruncChannel;
@@ -119,8 +126,10 @@ public class ApiImport {
         this.tcesInfomatSaveService = tcesInfomatSaveService;
         this.apesSaveService = apesSaveService;
         this.tcesAtsSaveService = tcesAtsSaveService;
+        this.trunkChannelsSaveService = trunkChannelsSaveService;
     }
 
+//    @Secured({"ROLE_ADMIN"})
     @PostMapping("/location")
     public ResponseEntity<String> handleFileLocation(@RequestParam("file") MultipartFile file) {
         try {
@@ -138,6 +147,7 @@ public class ApiImport {
         return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
+//    @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-internet")
     public ResponseEntity<String> handleFileTcInternet(@RequestParam("file") MultipartFile file) {
         try {
@@ -158,6 +168,7 @@ public class ApiImport {
         return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
+//    @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-mobile")
     public ResponseEntity<String> handleFileTcMobile(@RequestParam("file") MultipartFile file) {
         try {
@@ -178,6 +189,7 @@ public class ApiImport {
         return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
+//    @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-payphone")
     public ResponseEntity<String> handleFileTcPayphone(@RequestParam("file") MultipartFile file) {
         try {
@@ -197,6 +209,7 @@ public class ApiImport {
         return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
+//    @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-infomat")
     public ResponseEntity<String> handleFileTcInfomat(@RequestParam("file") MultipartFile file) {
         try {
@@ -216,6 +229,7 @@ public class ApiImport {
         return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
+//    @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-ats")
     public ResponseEntity<String> handleFileTcAts(@RequestParam("file") MultipartFile file) {
         try {
@@ -235,6 +249,7 @@ public class ApiImport {
         return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
+//    @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-tv")
     public ResponseEntity<String> handleFileTcTv(@RequestParam("file") MultipartFile file) {
         try {
@@ -254,6 +269,7 @@ public class ApiImport {
         return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
+//    @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-radio")
     public ResponseEntity<String> handleFileTcRadio(@RequestParam("file") MultipartFile file) {
         try {
@@ -273,6 +289,7 @@ public class ApiImport {
         return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
+//    @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-post")
     public ResponseEntity<String> handleFileTcPost(@RequestParam("file") MultipartFile file) {
         try {
@@ -292,7 +309,8 @@ public class ApiImport {
         return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 
-    @PostMapping("/tc-ap")
+//    @Secured({"ROLE_ADMIN"})
+    @PostMapping("/access-point")
     public ResponseEntity<String> handleFileAccessPoint(@RequestParam("file") MultipartFile file) {
         try {
             apesSaveService.save(
@@ -306,10 +324,31 @@ public class ApiImport {
             );
         } catch (FromExcelDTOFormatException e) {
             // TODO: <-, -> ?
-            log.error("<-POST /api/import/tc-ap :: {}", e.getMessage());
+            log.error("<-POST /api/import/access-point :: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        log.info("POST /api/import/tc-ap :: {}", file.getOriginalFilename());
+        log.info("POST /api/import/access-point :: {}", file.getOriginalFilename());
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
+    }
+
+//    @Secured({"ROLE_ADMIN"})
+    @PostMapping("/trunk-channel")
+    public ResponseEntity<String> handleFileTrunkChannel(@RequestParam("file") MultipartFile file) {
+        try {
+            trunkChannelsSaveService.save(
+                    new TrunkChannelsFromExcelDTOValidated(
+                            repositoryLocation,
+                            repositoryOperator,
+                            repositoryTypeTruncChannel,
+                            new TrunkChannelsFromExcelDTO(file)
+                    ).getTcesDTO()
+            );
+        } catch (FromExcelDTOFormatException e) {
+            // TODO: <-, -> ?
+            log.error("<-POST /api/import/trunk-channel :: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        log.info("POST /api/import/trunk-channel :: {}", file.getOriginalFilename());
         return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 }

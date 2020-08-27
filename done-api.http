@@ -549,3 +549,8 @@ Content-Type: application/json
 ###
 GET http://localhost:8080/api/location/base/
 Authorization: Token {{auth_token}}
+
+
+###
+GET http://localhost:8080/api/trunk-channels/
+Authorization: Token {{auth_token}}
