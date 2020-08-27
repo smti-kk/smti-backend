@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.api.service.imp.tcats;
+package ru.cifrak.telecomit.backend.api.service.imp.tcpayphone;
 
 import lombok.SneakyThrows;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -13,13 +13,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TcesAtsFromExcelDTO implements TcesAtsDTOFromExcel {
+public class TcesPayphoneFromExcelDTO implements TcesPayphoneDTOFromExcel {
 
     private Workbook book;
 
     private final MultipartFile file;
 
-    public TcesAtsFromExcelDTO(MultipartFile file) {
+    public TcesPayphoneFromExcelDTO(MultipartFile file) {
         this.file = file;
     }
 
@@ -29,17 +29,18 @@ public class TcesAtsFromExcelDTO implements TcesAtsDTOFromExcel {
     }
 
     @Override
-    public List<TcAtsFromExcelDTO> getTcesDTO() {
+    public List<TcPayphoneFromExcelDTO> getTcesDTO() {
         setBook(file);
-        List<TcAtsFromExcelDTO> tces = new ArrayList<>();
+        List<TcPayphoneFromExcelDTO> tces = new ArrayList<>();
         Sheet sheet = this.book.getSheetAt(0);
         Row row;
         for (int i = 2; i < sheet.getPhysicalNumberOfRows(); i++) {
             row = sheet.getRow(i);
             if (row != null) {
                 row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+                row.getCell(7).setCellType(Cell.CELL_TYPE_STRING);
                 if (this.notEmptyRow(row)) {
-                    tces.add(new TcAtsFromExcelDTO(row));
+                    tces.add(new TcPayphoneFromExcelDTO(row));
                 }
             }
         }
@@ -49,7 +50,8 @@ public class TcesAtsFromExcelDTO implements TcesAtsDTOFromExcel {
     private boolean notEmptyRow(Row row) {
         return !row.getCell(0).getStringCellValue().trim().isEmpty()
                 || !row.getCell(5).getStringCellValue().trim().isEmpty()
-                || !row.getCell(6).getStringCellValue().trim().isEmpty();
+                || !row.getCell(6).getStringCellValue().trim().isEmpty()
+                || !row.getCell(7).getStringCellValue().trim().isEmpty();
     }
 
     @SneakyThrows

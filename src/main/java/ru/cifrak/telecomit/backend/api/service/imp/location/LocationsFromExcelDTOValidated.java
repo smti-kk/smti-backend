@@ -37,31 +37,31 @@ public class LocationsFromExcelDTOValidated implements LocationsDTOFromExcel {
         String badLocationDTO;
 
         if (!this.checkFullnessNpp(locationsDTO)) {
-            throw new FromExcelDTOFormatException("Not all npp are filled.");
+            throw new FromExcelDTOFormatException("Не все \"№ п/п\" заполнены.");
         }
 
         badLocationDTO = this.checkFullnessCells(locationsDTO);
         if (badLocationDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badLocationDTO + " position not all cells are filled.");
+            throw new FromExcelDTOFormatException("В " + badLocationDTO + " позиции не все ячейки заполнены.");
         }
 
         badLocationDTO = this.checkFiases(locationsDTO);
         if (badLocationDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badLocationDTO
-                    + " position FIAS error, must be in GUID-format.");
+            throw new FromExcelDTOFormatException("В " + badLocationDTO
+                    + " позиции ошибка в ФИАС, должен быть в GUID формате.");
         }
 
         badLocationDTO = this.checkTypes(locationsDTO);
         if (badLocationDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badLocationDTO
-                    + " position type error, must be in {"
+            throw new FromExcelDTOFormatException("В " + badLocationDTO
+                    + " позиции ошибка в типе, должен быть одним из {"
                     + String.join(", ", repository.findAllTypes()) + "}.");
         }
 
         badLocationDTO = this.checkPopulation(locationsDTO);
         if (badLocationDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badLocationDTO
-                    + " position population format error, must be in numeric format.");
+            throw new FromExcelDTOFormatException("В " + badLocationDTO
+                    + " позиции ошибка в населении, должно быть в числовом формате.");
         }
 
         return locationsDTO;
@@ -87,7 +87,7 @@ public class LocationsFromExcelDTOValidated implements LocationsDTOFromExcel {
             result = this.checkExcelFormat(is);
         }
         if (!result) {
-            throw new FromExcelDTOFormatException("Wrong file type.");
+            throw new FromExcelDTOFormatException("Неправильный тип файла.");
         }
     }
 

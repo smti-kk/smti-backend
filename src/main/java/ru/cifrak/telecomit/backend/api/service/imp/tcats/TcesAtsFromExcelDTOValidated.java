@@ -45,50 +45,33 @@ public class TcesAtsFromExcelDTOValidated implements TcesAtsDTOFromExcel {
         String badDTO;
 
         if (!this.checkFullnessNpp(tcesDTO)) {
-            throw new FromExcelDTOFormatException("Not all npp are filled.");
+            throw new FromExcelDTOFormatException("Не все \"№ п/п\" заполнены.");
         }
 
         badDTO = this.checkFullnessCells(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badDTO + " position not all cells are filled.");
+            throw new FromExcelDTOFormatException("В " + badDTO + " позиции не все ячейки заполнены.");
         }
 
         badDTO = this.checkFiasesGUID(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badDTO
-                    + " position FIAS error, must be in GUID-format.");
+            throw new FromExcelDTOFormatException("В " + badDTO
+                    + " позиции ошибка в ФИАС, должен быть в GUID формате.");
         }
 
         badDTO = this.checkFiases(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badDTO
-                    + " position location FIAS error, not found in BD.");
+            throw new FromExcelDTOFormatException("В " + badDTO
+                    + " позиции ошибка в ФИАС населённого пункта, не найден в БД.");
         }
 
         badDTO = this.checkOperators(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badDTO
-                    + " position operator error, not found in BD.");
-        }
-
-        badDTO = this.checkPayphones(tcesDTO);
-        if (badDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badDTO
-                    + " position payphones format error, must be in numeric format.");
+            throw new FromExcelDTOFormatException("В " + badDTO
+                    + " позиции ошибка в операторе, не найден в БД.");
         }
 
         return tcesDTO;
-    }
-
-    private String checkPayphones(List<TcAtsFromExcelDTO> tcesDTO) {
-        String result = null;
-        for (TcAtsFromExcelDTO TcDTO : tcesDTO) {
-            if (!TcDTO.getPayphones().matches("[0-9]+")) {
-                result = TcDTO.getNpp();
-                break;
-            }
-        }
-        return result;
     }
 
     private String checkFiases(List<TcAtsFromExcelDTO> tcesDTO) {
@@ -122,7 +105,7 @@ public class TcesAtsFromExcelDTOValidated implements TcesAtsDTOFromExcel {
             result = this.checkExcelFormat(is);
         }
         if (!result) {
-            throw new FromExcelDTOFormatException("Wrong file type.");
+            throw new FromExcelDTOFormatException("Неправильный тип файла.");
         }
     }
 
@@ -166,7 +149,6 @@ public class TcesAtsFromExcelDTOValidated implements TcesAtsDTOFromExcel {
         for (TcAtsFromExcelDTO TcDTO : tcesDTO) {
             if (TcDTO.getFias().isEmpty()
                     || TcDTO.getOperator().isEmpty()
-                    || TcDTO.getPayphones().isEmpty()
             ) {
                 result = TcDTO.getNpp();
                 break;

@@ -6,7 +6,6 @@ import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
 import ru.cifrak.telecomit.backend.repository.RepositoryTypeTruncChannel;
-import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,36 +50,36 @@ public class TcesInternetFromExcelDTOValidated implements TcesInternetDTOFromExc
         String badTcInternetDTO;
 
         if (!this.checkFullnessNpp(tcesInternetDTO)) {
-            throw new FromExcelDTOFormatException("Not all npp are filled.");
+            throw new FromExcelDTOFormatException("Не все \"№ п/п\" заполнены.");
         }
 
         badTcInternetDTO = this.checkFullnessCells(tcesInternetDTO);
         if (badTcInternetDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badTcInternetDTO + " position not all cells are filled.");
+            throw new FromExcelDTOFormatException("В " + badTcInternetDTO + " позиции не все ячейки заполнены.");
         }
 
         badTcInternetDTO = this.checkFiasesGUID(tcesInternetDTO);
         if (badTcInternetDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badTcInternetDTO
-                    + " position FIAS error, must be in GUID-format.");
+            throw new FromExcelDTOFormatException("В " + badTcInternetDTO
+                    + " позиции ошибка в ФИАС, должен быть в GUID формате.");
         }
 
         badTcInternetDTO = this.checkFiases(tcesInternetDTO);
         if (badTcInternetDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badTcInternetDTO
-                    + " position location FIAS error, not found in BD.");
+            throw new FromExcelDTOFormatException("В " + badTcInternetDTO
+                    + " позиции ошибка в ФИАС населённого пункта, не найден в БД.");
         }
 
         badTcInternetDTO = this.checkOperators(tcesInternetDTO);
         if (badTcInternetDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badTcInternetDTO
-                    + " position operator error, not found in BD.");
+            throw new FromExcelDTOFormatException("В " + badTcInternetDTO
+                    + " позиции ошибка в операторе, не найден в БД.");
         }
 
         badTcInternetDTO = this.checkChannel(tcesInternetDTO);
         if (badTcInternetDTO != null) {
-            throw new FromExcelDTOFormatException("In " + badTcInternetDTO
-                    + " position type channel error, not found in BD.");
+            throw new FromExcelDTOFormatException("В " + badTcInternetDTO
+                    + " позиции ошибка в типе канала, не найден в БД.");
         }
 
         return tcesInternetDTO;
@@ -128,7 +127,7 @@ public class TcesInternetFromExcelDTOValidated implements TcesInternetDTOFromExc
             result = this.checkExcelFormat(is);
         }
         if (!result) {
-            throw new FromExcelDTOFormatException("Wrong file type.");
+            throw new FromExcelDTOFormatException("Неправильный тип файла.");
         }
     }
 

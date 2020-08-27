@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.api.service.imp.tcinfomat;
+package ru.cifrak.telecomit.backend.api.service.imp.tcpayphone;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,18 +11,18 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
-public class TcesInfomatFromExcelDTOValidated implements TcesInfomatDTOFromExcel {
+public class TcesPayphoneFromExcelDTOValidated implements TcesPayphoneDTOFromExcel {
 
     private final RepositoryOperator repositoryOperator;
 
     private final RepositoryLocation repositoryLocation;
 
-    private final TcesInfomatDTOFromExcel origin;
+    private final TcesPayphoneDTOFromExcel origin;
 
-    public TcesInfomatFromExcelDTOValidated(
+    public TcesPayphoneFromExcelDTOValidated(
             RepositoryOperator repositoryOperator,
             RepositoryLocation repositoryLocation,
-            TcesInfomatDTOFromExcel origin) {
+            TcesPayphoneDTOFromExcel origin) {
         this.repositoryOperator = repositoryOperator;
         this.repositoryLocation = repositoryLocation;
         this.origin = origin;
@@ -34,13 +34,13 @@ public class TcesInfomatFromExcelDTOValidated implements TcesInfomatDTOFromExcel
     }
 
     @Override
-    public List<TcInfomatFromExcelDTO> getTcesDTO() throws FromExcelDTOFormatException {
+    public List<TcPayphoneFromExcelDTO> getTcesDTO() throws FromExcelDTOFormatException {
         this.checkFormatFile(this.getFile());
 
         return this.checkTces(origin.getTcesDTO());
     }
 
-    private List<TcInfomatFromExcelDTO> checkTces(List<TcInfomatFromExcelDTO> tcesDTO)
+    private List<TcPayphoneFromExcelDTO> checkTces(List<TcPayphoneFromExcelDTO> tcesDTO)
             throws FromExcelDTOFormatException {
         String badDTO;
 
@@ -80,9 +80,9 @@ public class TcesInfomatFromExcelDTOValidated implements TcesInfomatDTOFromExcel
         return tcesDTO;
     }
 
-    private String checkQuantity(List<TcInfomatFromExcelDTO> tcesDTO) {
+    private String checkQuantity(List<TcPayphoneFromExcelDTO> tcesDTO) {
         String result = null;
-        for (TcInfomatFromExcelDTO TcDTO : tcesDTO) {
+        for (TcPayphoneFromExcelDTO TcDTO : tcesDTO) {
             if (!TcDTO.getQuantity().matches("[0-9]+")) {
                 result = TcDTO.getNpp();
                 break;
@@ -91,9 +91,9 @@ public class TcesInfomatFromExcelDTOValidated implements TcesInfomatDTOFromExcel
         return result;
     }
 
-    private String checkFiases(List<TcInfomatFromExcelDTO> tcesDTO) {
+    private String checkFiases(List<TcPayphoneFromExcelDTO> tcesDTO) {
         String result = null;
-        for (TcInfomatFromExcelDTO TcDTO : tcesDTO) {
+        for (TcPayphoneFromExcelDTO TcDTO : tcesDTO) {
             if (repositoryLocation.findByFias(UUID.fromString(TcDTO.getFias())) == null) {
                 result = TcDTO.getNpp();
                 break;
@@ -102,9 +102,9 @@ public class TcesInfomatFromExcelDTOValidated implements TcesInfomatDTOFromExcel
         return result;
     }
 
-    private String checkOperators(List<TcInfomatFromExcelDTO> tcesDTO) {
+    private String checkOperators(List<TcPayphoneFromExcelDTO> tcesDTO) {
         String result = null;
-        for (TcInfomatFromExcelDTO TcDTO : tcesDTO) {
+        for (TcPayphoneFromExcelDTO TcDTO : tcesDTO) {
             if (repositoryOperator.findByName(TcDTO.getOperator()) == null) {
                 result = TcDTO.getNpp();
                 break;
@@ -150,9 +150,9 @@ public class TcesInfomatFromExcelDTOValidated implements TcesInfomatDTOFromExcel
         return result;
     }
 
-    private boolean checkFullnessNpp(List<TcInfomatFromExcelDTO> tcesDTO) {
+    private boolean checkFullnessNpp(List<TcPayphoneFromExcelDTO> tcesDTO) {
         boolean result = true;
-        for (TcInfomatFromExcelDTO TcDTO : tcesDTO) {
+        for (TcPayphoneFromExcelDTO TcDTO : tcesDTO) {
             if (TcDTO.getNpp().isEmpty()) {
                 result = false;
                 break;
@@ -161,9 +161,9 @@ public class TcesInfomatFromExcelDTOValidated implements TcesInfomatDTOFromExcel
         return result;
     }
 
-    private String checkFullnessCells(List<TcInfomatFromExcelDTO> tcesDTO) {
+    private String checkFullnessCells(List<TcPayphoneFromExcelDTO> tcesDTO) {
         String result = null;
-        for (TcInfomatFromExcelDTO TcDTO : tcesDTO) {
+        for (TcPayphoneFromExcelDTO TcDTO : tcesDTO) {
             if (TcDTO.getFias().isEmpty()
                     || TcDTO.getOperator().isEmpty()
             ) {
@@ -174,9 +174,9 @@ public class TcesInfomatFromExcelDTOValidated implements TcesInfomatDTOFromExcel
         return result;
     }
 
-    private String checkFiasesGUID(List<TcInfomatFromExcelDTO> tcesDTO) {
+    private String checkFiasesGUID(List<TcPayphoneFromExcelDTO> tcesDTO) {
         String result = null;
-        for (TcInfomatFromExcelDTO TcDTO : tcesDTO) {
+        for (TcPayphoneFromExcelDTO TcDTO : tcesDTO) {
             if (!TcDTO.getFias()
                     .matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
                 result = TcDTO.getNpp();

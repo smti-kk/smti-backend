@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.api.service.imp.tcats;
+package ru.cifrak.telecomit.backend.api.service.imp.ap;
 
 import lombok.SneakyThrows;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -13,13 +13,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TcesAtsFromExcelDTO implements TcesAtsDTOFromExcel {
+public class ApesFromExcelDTO implements ApesDTOFromExcel {
 
     private Workbook book;
 
     private final MultipartFile file;
 
-    public TcesAtsFromExcelDTO(MultipartFile file) {
+    public ApesFromExcelDTO(MultipartFile file) {
         this.file = file;
     }
 
@@ -29,17 +29,20 @@ public class TcesAtsFromExcelDTO implements TcesAtsDTOFromExcel {
     }
 
     @Override
-    public List<TcAtsFromExcelDTO> getTcesDTO() {
+    public List<ApFromExcelDTO> getTcesDTO() {
         setBook(file);
-        List<TcAtsFromExcelDTO> tces = new ArrayList<>();
+        List<ApFromExcelDTO> tces = new ArrayList<>();
         Sheet sheet = this.book.getSheetAt(0);
         Row row;
         for (int i = 2; i < sheet.getPhysicalNumberOfRows(); i++) {
             row = sheet.getRow(i);
             if (row != null) {
                 row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+                row.getCell(8).setCellType(Cell.CELL_TYPE_STRING);
+                row.getCell(9).setCellType(Cell.CELL_TYPE_STRING);
+                row.getCell(15).setCellType(Cell.CELL_TYPE_STRING);
                 if (this.notEmptyRow(row)) {
-                    tces.add(new TcAtsFromExcelDTO(row));
+                    tces.add(new ApFromExcelDTO(row));
                 }
             }
         }
@@ -49,7 +52,17 @@ public class TcesAtsFromExcelDTO implements TcesAtsDTOFromExcel {
     private boolean notEmptyRow(Row row) {
         return !row.getCell(0).getStringCellValue().trim().isEmpty()
                 || !row.getCell(5).getStringCellValue().trim().isEmpty()
-                || !row.getCell(6).getStringCellValue().trim().isEmpty();
+                || !row.getCell(6).getStringCellValue().trim().isEmpty()
+                || !row.getCell(7).getStringCellValue().trim().isEmpty()
+                || !row.getCell(8).getStringCellValue().trim().isEmpty()
+                || !row.getCell(9).getStringCellValue().trim().isEmpty()
+                || !row.getCell(9).getStringCellValue().trim().isEmpty()
+                || !row.getCell(10).getStringCellValue().trim().isEmpty()
+                || !row.getCell(11).getStringCellValue().trim().isEmpty()
+                || !row.getCell(12).getStringCellValue().trim().isEmpty()
+                || !row.getCell(13).getStringCellValue().trim().isEmpty()
+                || !row.getCell(14).getStringCellValue().trim().isEmpty()
+                || !row.getCell(15).getStringCellValue().trim().isEmpty();
     }
 
     @SneakyThrows

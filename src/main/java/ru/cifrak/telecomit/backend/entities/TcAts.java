@@ -13,26 +13,4 @@ import javax.validation.constraints.PositiveOrZero;
 @Entity
 @DiscriminatorValue("ATS")
 public class TcAts extends TechnicalCapability {
-    /**
-     * Количество ТАКСОФОНОВ
-     */
-    @NotNull
-    @PositiveOrZero
-    @Column
-    private Integer payphones;
-
-    /**
-     * Монтируемая ёмкость
-     */
-    @NotNull
-    @PositiveOrZero
-	@Column
-	private Integer capacity;
-
-    /**
-     * Максимальное количество абонентов
-     */
-    @PositiveOrZero
-    @Column
-    private Integer subscribers;
 }

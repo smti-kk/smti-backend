@@ -14,14 +14,11 @@ public class TcAtsFromExcelDTO {
 
     private final String operator;
 
-    private final String payphones;
-
     public TcAtsFromExcelDTO(Row row) {
         this(
                 row.getCell(0).getStringCellValue().trim(),
                 row.getCell(5).getStringCellValue().trim(),
-                row.getCell(6).getStringCellValue().trim(),
-                row.getCell(7).getStringCellValue().trim()
+                row.getCell(6).getStringCellValue().trim()
         );
     }
 }
