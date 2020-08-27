@@ -13,6 +13,11 @@ import java.time.LocalDate;
         @NamedEntityGraph(
                 name = "trunk_channel_full",
                 attributeNodes = {
+                        @NamedAttributeNode("locationStart"),
+                        @NamedAttributeNode("locationEnd"),
+                        @NamedAttributeNode("operator"),
+                        @NamedAttributeNode("typeTrunkChannel"),
+                        @NamedAttributeNode("program"),
                 }
         )
 )
