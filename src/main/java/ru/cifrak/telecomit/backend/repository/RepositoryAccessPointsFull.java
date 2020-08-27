@@ -21,6 +21,7 @@ public interface RepositoryAccessPointsFull extends JpaRepository<AccessPointFul
     @Override
     List<AccessPointFull> findAll();
 
+    @EntityGraph(AccessPointFull.REPORT_ALL_EXPORT)
     @Override
     List findAll(Specification specification);
 
