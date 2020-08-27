@@ -8,6 +8,7 @@ import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.entities.map.MapLocation;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Предоставление информации о локациях
@@ -26,4 +27,6 @@ public interface MapLocationsPositionRepository extends Repository<MapLocation, 
             "   and l.geoData is not null" +
             "   and within(l.geoData.administrativeCenter, :bbox) = true")
     List<MapLocation> findAllByBbox(@Param("bbox") Polygon bbox);
+
+    MapLocation findByFias(UUID uuid);
 }

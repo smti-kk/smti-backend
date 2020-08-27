@@ -7,6 +7,7 @@ import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.repository.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,9 +54,18 @@ public class ApesSaveService {
                 repositoryAccessPoints.save(apes.get(0));
             } else {
                 AccessPoint ap = new AccessPoint();
+                ap.setPoint(createPoint(tcDTO.getLatitude(), tcDTO.getLongitude()));
+                ap.setOrganization(getOrganization(tcDTO));
                 ap.setContractor(tcDTO.getContractor());
                 ap.setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
                 ap.setDeclaredSpeed(tcDTO.getDeclaredSpeed());
+                ap.setVisible(true);
+                ap.setCreatedDate(LocalDateTime.now());
+                ap.setMaxAmount(0);
+                ap.setDeleted(false);
+                ap.setModifiedDate(LocalDateTime.now());
+                ap.setCreatedBy("s");
+                ap.setModifiedBy("s");
                 // TODO: Transaction.
                 repositoryAccessPoints.save(ap);
             }
@@ -65,6 +75,7 @@ public class ApesSaveService {
     private Organization getOrganization(ApFromExcelDTO ap) {
         Organization organization = repositoryOrganization.findByFias(UUID.fromString(ap.getFias()));
         if (organization == null) {
+            organization = new Organization();
             organization.setFias(UUID.fromString(ap.getFias()));
             Location location = repositoryLocation.findByFias(UUID.fromString(ap.getFiasLocation()));
             if (location != null) {
@@ -74,6 +85,10 @@ public class ApesSaveService {
             organization.setAddress(ap.getAddress());
             organization.setSmo(repositorySmoType.findByName(ap.getSmo()));
             organization.setType(repositoryOrganizationType.findByName(ap.getType()));
+            organization.setAcronym("");
+            organization.setInn("");
+            organization.setKpp("");
+            repositoryOrganization.save(organization);
         }
         return organization;
     }
