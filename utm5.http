@@ -73,6 +73,7 @@ Content-Type: application/json
 
 ### ---- Get ip groups or something
 GET http://espd-utm5-app.cifra-k.ru:9080/api/users/ip_groups?account_id=7
+#GET http://espd-utm5-app.cifra-k.ru:9080/api/referencebooks/ip_zones
 Content-Type: application/json
 
 
@@ -257,3 +258,25 @@ Content-Type: application/json
     }
   ]
 }
+
+
+
+
+######################## Reports - Get report of traffic
+### пробуем делаем, забираем отчет по трафику
+###
+GET http://espd-utm5-app.cifra-k.ru:9080/api/reports/traffic?start=0&end=1577826000&user_id=0&account_id=0&accounting_period_id=0&group_id=0&type=0
+Authorization: session_id {{session_id}}
+Content-Type: application/json
+
+###
+GET http://espd-utm5-app.cifra-k.ru:9080/api/reports/traffic?start=1593536400&end=1597640673&user_id=0&account_id=0&accounting_period_id=0&group_id=0&type=0
+Authorization: session_id {{session_id}}
+Content-Type: application/json
+
+###
+#GET http://espd-utm5-app.cifra-k.ru:9080/api/reports/users_log?start=0&end=1572555600&user_id=0&action_id=0
+#GET http://espd-utm5-app.cifra-k.ru:9080/api/reports/users_log?start=0&end=1572555600&user_id=0&action_id=0
+#GET http://espd-utm5-app.cifra-k.ru:9080/api/reports/traffic?start=18444&end=18475&user_id=0&account_id=0&accounting_period_id=0&group_id=0&type=0
+Authorization: session_id {{session_id}}
+Content-Type: application/json

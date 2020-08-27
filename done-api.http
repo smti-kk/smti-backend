@@ -391,7 +391,7 @@ Content-Type: application/json
 
 
 ### ********************************************************************************************************************
-### REPORT --- AccessPoints -- all by ORGANIZATION
+### REPORT --- AccessPoints -- ORGANIZATION
 ### ********************************************************************************************************************
 
 ###
@@ -430,30 +430,31 @@ Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=&sort=organization
 Authorization: Token {{auth_token}}
-
 ###
 GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&sort=-organization,+organization.location&location=1251
 Authorization: Token {{auth_token}}
-
 ###
 GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&location=1251&sort=+organization.location,+organization.location.parent,+organization.location.population
 Authorization: Token {{auth_token}}
-
 ###
 GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&location=1251&sort=+organization.location.name
 Authorization: Token {{auth_token}}
-
 ###
 GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&organization=Пожарно-спасательная часть №95
 Authorization: Token {{auth_token}}
-
 ###
 GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&population-start=5000&population-end=6000&sort=+organization.location.name
 Authorization: Token {{auth_token}}
-
 ###
 GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&ap=CONTRACT
 Authorization: Token {{auth_token}}
+
+###       EXPORT REPORT IN EXCEL ABOUT MONITORING ACCESS POINTS BY PERIOD OF DATES
+### ********************************************************************************************************************
+###
+GET  http://localhost:8080/api/report/organization/export/map/?start=2020-05-26&end=2020-05-26
+#Authorization: Token {{auth_token}}
+
 
 ### ********************************************************************************************************************
 ### REPORT --- AccessPoints -- Contract
@@ -499,15 +500,6 @@ Authorization: Token {{auth_token}}
 GET http://localhost:8080/api/organization/11/ap/24/init-monitoring
 Authorization: Token {{auth_token}}
 
-### LOGIN USER with taking TOKEN
-POST http://localhost:8080/auth/login/
-Content-Type: application/json
-//{"username": "admin", "password": "pwd"}
-
-{"email": "admin", "password": "pwd"}
-
-> {% client.global.set("auth_token", response.body.token); %}
-
 ### goo org and ap
 POST http://localhost:8080/api/organization/3410/ap/3424/init-monitoring
 #POST http://localhost:8080/api/organization/3410/ap/3802/init-monitoring
@@ -550,7 +542,25 @@ Content-Type: application/json
 GET http://localhost:8080/api/location/base/
 Authorization: Token {{auth_token}}
 
+### LOGIN USER with taking TOKEN
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+//{"username": "admin", "password": "pwd"}
+
+{"email": "admin", "password": "pwd"}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
+### goo org and ap
+#GET http://localhost:8080/api/report/organization/export/map/?start=1593561600&end=1596240000
+GET http://localhost:8080/api/report/organization/export/map/?start=1596240000&end=1598918400
+Authorization: Token {{auth_token}}
+Content-Type: application/json
 
 ###
-GET http://localhost:8080/api/trunk-channels/
-Authorization: Token {{auth_token}}
+GET http://localhost:8080/api/report/organization/ap-all/export/
+#Authorization: Token {{auth_token}}
+
+###
+GET http://localhost:8080/api/report/organization/ap-all/export/?smo=5&inet=10
+#Authorization: Token {{auth_token}}

@@ -1,17 +1,9 @@
 package ru.cifrak.telecomit.backend.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.locationtech.jts.geom.Point;
 import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.AccessPointFull;
-import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
-import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
-
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -53,5 +45,9 @@ public class ReportAccessPointFullDTO {
         this.internetAccess = entity.getInternetAccess() != null ? new TypeInternetAccessDTO(entity.getInternetAccess()) : null;
         this.type = entity.getType().getName();
         this.organization = entity.getOrganization() != null ? new ReportOrganizationDTO(entity.getOrganization()) : null;
+    }
+
+    public String CustomOutputOfOrgName() {
+        return organization.getName();
     }
 }
