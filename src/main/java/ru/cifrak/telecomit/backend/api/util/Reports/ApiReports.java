@@ -1,8 +1,9 @@
-package ru.cifrak.telecomit.backend.api;
+package ru.cifrak.telecomit.backend.api.util.Reports;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.formula.ptg.LessEqualPtg;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -38,6 +39,8 @@ import java.time.format.FormatStyle;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static ru.cifrak.telecomit.backend.api.util.Reports.HelperReport.generateExelFormat;
 
 @Slf4j
 
@@ -83,7 +86,7 @@ public class ApiReports {
         Set<String> sortingFileds = new LinkedHashSet<>(
                 Arrays.asList(StringUtils.split(StringUtils.defaultIfEmpty(sort, ""), ",")));
 
-        List<Sort.Order> sortingOrders = sortingFileds.stream().map(this::getOrder)
+        List<Sort.Order> sortingOrders = sortingFileds.stream().map(HelperReport::getOrder)
                 .collect(Collectors.toList());
 
         Sort sortData = sortingOrders.isEmpty() ? null : Sort.by(sortingOrders);
@@ -160,7 +163,7 @@ public class ApiReports {
                 Arrays.asList(StringUtils.split(StringUtils
                         .defaultIfEmpty(sort, ""), ",")));
 
-        List<Sort.Order> sortingOrders = sortingFileds.stream().map(this::getOrder)
+        List<Sort.Order> sortingOrders = sortingFileds.stream().map(HelperReport::getOrder)
                 .collect(Collectors.toList());
 
         Sort sortData = sortingOrders.isEmpty() ? null : Sort.by(sortingOrders);
@@ -216,19 +219,6 @@ public class ApiReports {
         return pList;
     }
 
-    private Sort.Order getOrder(String value) {
-
-        if (StringUtils.startsWith(value, "-")) {
-            return new Sort.Order(Sort.Direction.DESC, StringUtils.substringAfter(value, "-"));
-        } else if (StringUtils.startsWith(value, "+")) {
-            return new Sort.Order(Sort.Direction.ASC, StringUtils.substringAfter(value, "+"));
-        } else {
-            // Sometimes '+' from query param can be replaced as ' '
-            return new Sort.Order(Sort.Direction.ASC, StringUtils.trim(value));
-        }
-
-    }
-
     @GetMapping(
             value = "/export/map/"/*,
             produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"*/
@@ -272,10 +262,10 @@ public class ApiReports {
                 .body(resource);
     }
 
-    @GetMapping(value = "/ap-all/export")
+    @GetMapping(value = "/ap-all/export/")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     @ResponseBody
-    public ResponseEntity<ByteArrayResource> exportReportContracts(
+    public ResponseEntity<ByteArrayResource> exportReportAll(
             @RequestParam(name = "location", required = false) Location location,
            @RequestParam(name = "type", required = false) TypeOrganization type,
            @RequestParam(name = "smo", required = false) TypeSmo smo,
@@ -284,10 +274,17 @@ public class ApiReports {
            @RequestParam(name = "parents", required = false) List<Location> parents,
            @RequestParam(name = "organization", required = false) String organization,
            @RequestParam(name = "contractor", required = false) String contractor,
-           @RequestParam(name = "ap", required = false) List<TypeAccessPoint> ap
+           @RequestParam(name = "ap", required = false) List<TypeAccessPoint> ap,
+            @RequestParam(name = "sort", required = false) String sort
             ) throws IOException {
 
+        Sort sortData = HelperReport.getSortRule(sort);
         Specification<AccessPointFull> spec = Specification.where(null);
+
+/*
+        Specification<AccessPointFull> spec = this.createSpecificationForSort(sort);
+*/
+
         if (location != null) {
             spec = spec != null ? spec.and(SpecificationAccessPointFull.inLocation(location)) : null;
         }
@@ -318,8 +315,9 @@ public class ApiReports {
         log.info("->GET /api/report/organization/ap-all/export");
 
         // xx. Forming excel file
-
-        List<AccessPointFull> temp = rAccessPoints.findAll(spec);
+        List<AccessPointFull> temp;
+        if (sortData == null)   temp = rAccessPoints.findAll(spec);
+        else temp = rAccessPoints.findAll(spec, sortData);
 
         List<ExelReportAccessPointFullDTO> rezult = temp
                 .stream()
@@ -338,10 +336,10 @@ public class ApiReports {
                 .body(resource);
     }
 
-    @GetMapping(value = "ap-contract/export")
+    @GetMapping(value = "/ap-contract/export/")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     @ResponseBody
-    public ResponseEntity<ByteArrayResource> exportAccessPointFull(
+    public ResponseEntity<ByteArrayResource> exportReportContract(
             @RequestParam(name = "location", required = false) Location location,
             @RequestParam(name = "type", required = false) TypeOrganization type,
             @RequestParam(name = "smo", required = false) TypeSmo smo,
@@ -357,18 +355,14 @@ public class ApiReports {
             @RequestParam(name = "contract-end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cEnd,
             @RequestParam(name = "sort", required = false) String sort
     ) throws IOException {
-        log.info("->GET /api/report/contract/[page={}, size={}, location={}, type={}, smo={}, gdp={}, inet={}, parents=xx, orgname={}, operator={} ]",
+
+        log.info("->GET /api/report/organization/ap-all/export [location={}, type={}, smo={}, gdp={}, inet={}, parents=xx, orgname={}, operator={} ]",
                 location == null ? "" : location.getId(), type, smo, gdp, inettype, organization, contractor);
         //HINT: https://github.com/vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting
-        Set<String> sortingFileds = new LinkedHashSet<>(
-                Arrays.asList(StringUtils.split(StringUtils
-                        .defaultIfEmpty(sort, ""), ",")));
 
-        List<Sort.Order> sortingOrders = sortingFileds.stream().map(this::getOrder)
-                .collect(Collectors.toList());
-
-        Sort sortData = sortingOrders.isEmpty() ? null : Sort.by(sortingOrders);
+        Sort sortData = HelperReport.getSortRule(sort);
         Specification<AccessPointFull> spec = Specification.where(SpecificationAccessPointFull.apcontract());
+
         if (location != null) {
             spec = spec.and(SpecificationAccessPointFull.inLocation(location));
         }
@@ -409,9 +403,11 @@ public class ApiReports {
             spec = spec.and(SpecificationAccessPointFull.cEnd(cEnd));
         }
 
-        List<AccessPointFull> temp = rAccessPoints.findAll(spec);
+        List<AccessPointFull> dbData;
+        if (sortData == null)   dbData = rAccessPoints.findAll(spec);
+        else dbData = rAccessPoints.findAll(spec, sortData);
 
-        List<ExelReportAccessPointFullDTO> rezult = temp
+        List<ExelReportAccessPointFullDTO> rezult = dbData
                 .stream()
                 .map(ExelReportAccessPointFullDTO::new)
                 .collect(Collectors.toList());
@@ -428,39 +424,5 @@ public class ApiReports {
                 .body(resource);
     }
 
-    private static ExcelExporter<ExelReportAccessPointFullDTO> generateExelFormat () {
-        ExportToExcelConfiguration<ExelReportAccessPointFullDTO> exportToExcelConfiguration = new ExportToExcelConfiguration<>();
-        exportToExcelConfiguration.addColumn(0, Integer.class, ExelReportAccessPointFullDTO::getPp, "№ п/п");
-        exportToExcelConfiguration.addColumn(1, Integer.class, ExelReportAccessPointFullDTO::getIdOrg, "ID учреждения");
-        exportToExcelConfiguration.addColumn(2, ExelReportAccessPointFullDTO::getMunicipalLocationType, "Вид муниципального образования");
-        exportToExcelConfiguration.addColumn(3, ExelReportAccessPointFullDTO::getMunicipalName, "Муниципальное образование");
-        exportToExcelConfiguration.addColumn(4, ExelReportAccessPointFullDTO::getLocationType, "Тип населенного пункта");
-        exportToExcelConfiguration.addColumn(5, ExelReportAccessPointFullDTO::getLocationName, "Наименование населенного пункта");
-        exportToExcelConfiguration.addColumn(6, ExelReportAccessPointFullDTO::getOKTMO, "ОКТМО");
-        exportToExcelConfiguration.addColumn(7, Integer.class, ExelReportAccessPointFullDTO::getNumberInhabitants, "Численность населения (данные Росстата)");
-        exportToExcelConfiguration.addColumn(8, ExelReportAccessPointFullDTO::getFullNameOrganization, "Полное наименование учреждения");
-        exportToExcelConfiguration.addColumn(9, ExelReportAccessPointFullDTO::getFIASOrganization, "Номер учреждения в ФИАС");
-        exportToExcelConfiguration.addColumn(10, ExelReportAccessPointFullDTO::getFullAddressOrganization, "Адрес учреждения");
-        exportToExcelConfiguration.addColumn(11, Double.class,ExelReportAccessPointFullDTO::getLatitude, "Широта");
-        exportToExcelConfiguration.addColumn(12, Double.class,ExelReportAccessPointFullDTO::getLongitude, "Долгота");
-        exportToExcelConfiguration.addColumn(13, ExelReportAccessPointFullDTO::getSMO, "Вид СЗО");
-        exportToExcelConfiguration.addColumn(14, ExelReportAccessPointFullDTO::getCompanyType, "Тип учреждения");
-        exportToExcelConfiguration.addColumn(15, Boolean.class,ExelReportAccessPointFullDTO::getPointView, "Отображается");
-        exportToExcelConfiguration.addColumn(16, ExelReportAccessPointFullDTO::getAccessPointCustomer, "Заказчик");
-        exportToExcelConfiguration.addColumn(17, ExelReportAccessPointFullDTO::getContract, "Контракт");
-        //кто это такой
-        exportToExcelConfiguration.addColumn(18, Integer.class,ExelReportAccessPointFullDTO::getUcn, "Название узла согласно кодификатору");
-        exportToExcelConfiguration.addColumn(19, ExelReportAccessPointFullDTO::getAccessNode, "Узел доступа (Идентификатор узла для работы мониторинга)");
-        exportToExcelConfiguration.addColumn(20, ExelReportAccessPointFullDTO::getDescriptionAccess, "Описание");
-        exportToExcelConfiguration.addColumn(21, ExelReportAccessPointFullDTO::getIncludeType, "Тип подключения");
-        exportToExcelConfiguration.addColumn(22, ExelReportAccessPointFullDTO::getOperatorName, "Оператор связи");
-        exportToExcelConfiguration.addColumn(23, ExelReportAccessPointFullDTO::getDeclaredSpeed, "Скорость по контракту (Мбит/с)");
-        exportToExcelConfiguration.addColumn(24, ExelReportAccessPointFullDTO::getChannelWidth, "Ширина канала (Мбит/с)");
-        exportToExcelConfiguration.addColumn(25, ExelReportAccessPointFullDTO::getCommunicationAssessment, "Качество связи");
-        exportToExcelConfiguration.addColumn(26, Integer.class, ExelReportAccessPointFullDTO::getUcn, "Уникальный номер по контракту (ЕСПД, СЗО)");
-        exportToExcelConfiguration.addColumn(27, ExelReportAccessPointFullDTO::getGovernmentProgramName, "Государственная программа");
-        exportToExcelConfiguration.addColumn(28, ExelReportAccessPointFullDTO::getParticipationStatus, "Статус участия");
-        exportToExcelConfiguration.addColumn(29, Integer.class, ExelReportAccessPointFullDTO::getYearOverGovProgram, "Год реализации");
-        return new ExcelExporter<>(exportToExcelConfiguration);
-    }
+
 }
