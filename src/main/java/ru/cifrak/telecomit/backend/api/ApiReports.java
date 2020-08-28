@@ -275,7 +275,7 @@ public class ApiReports {
     @GetMapping(value = "/ap-all/export")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     @ResponseBody
-    public ResponseEntity<ByteArrayResource> exportAccessPointFull(
+    public ResponseEntity<ByteArrayResource> exportReportContracts(
             @RequestParam(name = "location", required = false) Location location,
            @RequestParam(name = "type", required = false) TypeOrganization type,
            @RequestParam(name = "smo", required = false) TypeSmo smo,
@@ -318,6 +318,117 @@ public class ApiReports {
         log.info("->GET /api/report/organization/ap-all/export");
 
         // xx. Forming excel file
+
+        List<AccessPointFull> temp = rAccessPoints.findAll(spec);
+
+        List<ExelReportAccessPointFullDTO> rezult = temp
+                .stream()
+                .map(ExelReportAccessPointFullDTO::new)
+                .collect(Collectors.toList());
+
+        IntStream.range(0, rezult.size()).forEach(i -> rezult.get(i).setPp(i + 1));
+        ByteArrayResource resource = new ByteArrayResource(generateExelFormat().exportToByteArray(rezult));
+
+        log.info("<-GET /api/report/organization/ap-all/export");
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + ".xlsx\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
+
+    @GetMapping(value = "ap-contract/export")
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    @ResponseBody
+    public ResponseEntity<ByteArrayResource> exportAccessPointFull(
+            @RequestParam(name = "location", required = false) Location location,
+            @RequestParam(name = "type", required = false) TypeOrganization type,
+            @RequestParam(name = "smo", required = false) TypeSmo smo,
+            @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp,
+            @RequestParam(name = "inet", required = false) TypeInternetAccess inettype,
+            @RequestParam(name = "parents", required = false) List<Location> parents,
+            @RequestParam(name = "organization", required = false) String organization,
+            @RequestParam(name = "contractor", required = false) String contractor,
+            @RequestParam(name = "population-start", required = false) Integer pStart,
+            @RequestParam(name = "population-end", required = false) Integer pEnd,
+            @RequestParam(name = "contract", required = false) String contract,
+            @RequestParam(name = "contract-start", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cStart,
+            @RequestParam(name = "contract-end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cEnd,
+            @RequestParam(name = "sort", required = false) String sort
+    ) throws IOException {
+        log.info("->GET /api/report/contract/[page={}, size={}, location={}, type={}, smo={}, gdp={}, inet={}, parents=xx, orgname={}, operator={} ]",
+                location == null ? "" : location.getId(), type, smo, gdp, inettype, organization, contractor);
+        //HINT: https://github.com/vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting
+        Set<String> sortingFileds = new LinkedHashSet<>(
+                Arrays.asList(StringUtils.split(StringUtils
+                        .defaultIfEmpty(sort, ""), ",")));
+
+        List<Sort.Order> sortingOrders = sortingFileds.stream().map(this::getOrder)
+                .collect(Collectors.toList());
+
+        Sort sortData = sortingOrders.isEmpty() ? null : Sort.by(sortingOrders);
+        Specification<AccessPointFull> spec = Specification.where(SpecificationAccessPointFull.apcontract());
+        if (location != null) {
+            spec = spec.and(SpecificationAccessPointFull.inLocation(location));
+        }
+        if (type != null) {
+            spec = spec.and(SpecificationAccessPointFull.withType(type));
+        }
+        if (smo != null) {
+            spec = spec.and(SpecificationAccessPointFull.withSmo(smo));
+        }
+        if (gdp != null) {
+            spec = spec.and(SpecificationAccessPointFull.withGovProgram(gdp));
+        }
+        if (inettype != null) {
+            spec = spec.and(SpecificationAccessPointFull.withInetType(inettype));
+        }
+        if (parents != null) {
+            spec = spec.and(SpecificationAccessPointFull.inParent(parents));
+        }
+        if (organization != null) {
+            spec = spec.and(SpecificationAccessPointFull.withOrgname(organization));
+        }
+        if (contractor != null) {
+            spec = spec.and(SpecificationAccessPointFull.withOperator(contractor));
+        }
+        if (pStart != null) {
+            spec = spec.and(SpecificationAccessPointFull.pStart(pStart));
+        }
+        if (pEnd != null) {
+            spec = spec.and(SpecificationAccessPointFull.pEnd(pEnd));
+        }
+        if (contract != null) {
+            spec = spec.and(SpecificationAccessPointFull.contract(contract));
+        }
+        if (cStart != null) {
+            spec = spec.and(SpecificationAccessPointFull.cStart(cStart));
+        }
+        if (cEnd != null) {
+            spec = spec.and(SpecificationAccessPointFull.cEnd(cEnd));
+        }
+
+        List<AccessPointFull> temp = rAccessPoints.findAll(spec);
+
+        List<ExelReportAccessPointFullDTO> rezult = temp
+                .stream()
+                .map(ExelReportAccessPointFullDTO::new)
+                .collect(Collectors.toList());
+
+        IntStream.range(0, rezult.size()).forEach(i -> rezult.get(i).setPp(i + 1));
+        ByteArrayResource resource = new ByteArrayResource(generateExelFormat().exportToByteArray(rezult));
+
+        log.info("<-GET /api/report/organization/ap-all/export");
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + ".xlsx\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
+
+    private static ExcelExporter<ExelReportAccessPointFullDTO> generateExelFormat () {
         ExportToExcelConfiguration<ExelReportAccessPointFullDTO> exportToExcelConfiguration = new ExportToExcelConfiguration<>();
         exportToExcelConfiguration.addColumn(0, Integer.class, ExelReportAccessPointFullDTO::getPp, "№ п/п");
         exportToExcelConfiguration.addColumn(1, Integer.class, ExelReportAccessPointFullDTO::getIdOrg, "ID учреждения");
@@ -350,24 +461,6 @@ public class ApiReports {
         exportToExcelConfiguration.addColumn(27, ExelReportAccessPointFullDTO::getGovernmentProgramName, "Государственная программа");
         exportToExcelConfiguration.addColumn(28, ExelReportAccessPointFullDTO::getParticipationStatus, "Статус участия");
         exportToExcelConfiguration.addColumn(29, Integer.class, ExelReportAccessPointFullDTO::getYearOverGovProgram, "Год реализации");
-        ExcelExporter<ExelReportAccessPointFullDTO> excelExporter = new ExcelExporter<>(exportToExcelConfiguration);
-
-        List<AccessPointFull> temp = rAccessPoints.findAll(spec);
-
-        List<ExelReportAccessPointFullDTO> rezult = temp
-                .stream()
-                .map(ExelReportAccessPointFullDTO::new)
-                .collect(Collectors.toList());
-
-        IntStream.range(0, rezult.size()).forEach(i -> rezult.get(i).setPp(i + 1));
-        ByteArrayResource resource = new ByteArrayResource(excelExporter.exportToByteArray(rezult));
-
-        log.info("<-GET /api/report/organization/ap-all/export");
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + ".xlsx\"")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .contentLength(resource.contentLength())
-                .body(resource);
+        return new ExcelExporter<>(exportToExcelConfiguration);
     }
 }
