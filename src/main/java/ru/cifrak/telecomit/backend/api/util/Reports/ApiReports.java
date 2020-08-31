@@ -263,7 +263,7 @@ public class ApiReports {
     }
 
     @GetMapping(value = "/ap-all/export/")
-    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+//    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     @ResponseBody
     public ResponseEntity<ByteArrayResource> exportReportAll(
             @RequestParam(name = "location", required = false) Location location,
@@ -337,7 +337,7 @@ public class ApiReports {
     }
 
     @GetMapping(value = "/ap-contract/export/")
-    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+//    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     @ResponseBody
     public ResponseEntity<ByteArrayResource> exportReportContract(
             @RequestParam(name = "location", required = false) Location location,
