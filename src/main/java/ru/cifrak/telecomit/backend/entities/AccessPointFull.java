@@ -35,6 +35,31 @@ import java.time.LocalDate;
                                 }
                         )
                 }
+        ),
+        @NamedEntityGraph(
+                name = AccessPointFull.REPORT_ALL_EXPORT,
+                attributeNodes = {
+                        @NamedAttributeNode("governmentDevelopmentProgram"),
+                        @NamedAttributeNode("internetAccess"),
+                        @NamedAttributeNode("operator"),
+                        @NamedAttributeNode(value = "organization", subgraph = "org-loc-1"),
+                },
+                subgraphs = {
+                        @NamedSubgraph(
+                                name = "org-loc-1",
+                                attributeNodes = {
+                                        @NamedAttributeNode(value = "location", subgraph = "org-loc-parent"),
+                                        @NamedAttributeNode("type"),
+                                        @NamedAttributeNode("smo"),
+                                }
+                        ),
+                        @NamedSubgraph(
+                                name = "org-loc-parent",
+                                attributeNodes = {
+                                        @NamedAttributeNode("parent")
+                                }
+                        )
+                }
         )
 }
 )
@@ -43,6 +68,7 @@ import java.time.LocalDate;
 public class AccessPointFull extends AuditingSoftDelete implements Serializable {
     private static final long serialVersionUID = 1L;
     public static final String REPORT_ALL = "AccessPointFull.REPORT_ALL";
+    public static final String REPORT_ALL_EXPORT = "AccessPointFull.REPORT_ALL_EXPORT";
 
     @Id
     private Integer id;

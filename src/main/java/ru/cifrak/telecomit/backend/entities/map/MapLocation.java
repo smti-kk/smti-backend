@@ -4,6 +4,7 @@ import lombok.Data;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -16,6 +17,9 @@ public class MapLocation {
     private GeoDataShort geoData;
     private String name;
     private String type;
+
+    @Column
+    private UUID fias;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
