@@ -170,3 +170,64 @@ Content-Type: application/json
   "id" : 101,
   "auth" : "d7b5befea060a3cea989d73dcdb51f7a"
 }
+
+
+###      CREATE new main SERVICE
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "service.create",
+    "params": {
+        "name": "telecom-test-01",
+        "algorithm": 1,
+        "showsla": 1,
+        "goodsla": 99.99,
+        "sortorder": 1
+    },
+    "auth": "038e1d7b1735c6a5436ee9eae095879e",
+    "id": 1,
+    "auth": "{{auth}}"
+}
+
+### ###  serviceids": [ "100" ]
+
+###      CREATE new SIBLING SERVICE
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "service.create",
+    "params": {
+        "name": "telecom-test-02-01",
+        "algorithm": 1,
+        "showsla": 1,
+        "goodsla": 99.99,
+        "sortorder": 1,
+        "parentid": null
+    },
+    "auth": "038e1d7b1735c6a5436ee9eae095879e",
+    "id": 1,
+    "auth": "{{auth}}"
+}
+
+
+###      Get all triggers for Access Point
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "trigger.get",
+    "params": {
+        "hostids": "10434",
+        "output": ["triggerid","description"]
+    },
+    "auth": "038e1d7b1735c6a5436ee9eae095879e",
+    "id": 1,
+    "auth": "{{auth}}"
+}
+
+

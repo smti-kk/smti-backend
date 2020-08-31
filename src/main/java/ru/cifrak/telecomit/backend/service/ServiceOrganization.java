@@ -15,7 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import ru.cifrak.telecomit.backend.api.dto.MonitoringAccessPointWizardDTO;
 import ru.cifrak.telecomit.backend.api.dto.OrganizationDTO;
-import ru.cifrak.telecomit.backend.api.dto.ZabbixDTO;
+import ru.cifrak.telecomit.backend.api.dto.external.*;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
@@ -72,56 +72,185 @@ public class ServiceOrganization {
         jmap.setActive(Boolean.TRUE);
         if (ap.getOrganization().getId().equals(id)) {
             try {
-                insertIntoUTM5(ap, map);
+//                insertIntoUTM5(ap, map);
             } catch (Exception e) {
-                throw e;
+                throw new Exception("UTM5:error: " + e.getMessage());
             }
             try {
-                WebClient client = WebClient
-                        .builder()
-                        .baseUrl(zabbixConfig.getHost())
-                        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .defaultUriVariables(Collections.singletonMap("url", zabbixConfig.getHost()))
-                        .build();
-
-                ObjectMapper mapper = new ObjectMapper();
-
-                ObjectNode jsonRPCParams = mapper.createObjectNode();
-                jsonRPCParams.put("user", zabbixConfig.getLogin());
-                jsonRPCParams.put("password", zabbixConfig.getPassword());
-
-                ObjectNode jsonRPC = mapper.createObjectNode();
-                jsonRPC.put("jsonrpc", "2.0");
-                jsonRPC.put("method", "user.login");
-                jsonRPC.set("params", jsonRPCParams);
-                jsonRPC.put("id", 100);
-                jsonRPC.set("auth", null);
-
-                WebClient.RequestHeadersSpec<?> authenticate = client
-                        .post()
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRPC)));
-
-                String resp = authenticate.retrieve().bodyToMono(String.class).block();
-                Map<String, String> respAuthentication = mapper.readValue(resp, Map.class);
-
-                log.info("[   ] authenticated: {}", respAuthentication.get("result"));
-                log.info("[   ] go for create user");
-                String device = insertIntoZabbix(client, respAuthentication.get("result"), wizard.getDevice());
-                String sensor = insertIntoZabbix(client, respAuthentication.get("result"), wizard.getSensor());
-                map.setIdDevice(device);
-                map.setIdSensor(sensor);
-                log.debug("map: {}", map);
-                rMonitoringAccessPoints.save(map);
-                jmap.setMap(map);
-                rJournalMAP.save(jmap);
+                insertIntoZabbix(ap, map, wizard);
             } catch (Exception e) {
-                throw e;
+                throw new Exception("ZABBIX:error: " + e.getMessage());
             }
+            log.debug("map: {}", map);
+            log.info("[   >] save monitoring access point");
+            rMonitoringAccessPoints.save(map);
+            log.info("[   <] save monitoring access point");
+            jmap.setMap(map);
+            log.info("[   >] save journal map");
+            rJournalMAP.save(jmap);
+            log.info("[   <] save journal map");
             return "Access Point has bean initialized in monitorings.";
         } else {
             throw new Exception("You cannot init Access Point in non belonging Organization");
         }
+    }
+
+    private void insertIntoZabbix(AccessPoint ap, MonitoringAccessPoint map, MonitoringAccessPointWizardDTO wizard) throws Exception {
+        WebClient client = WebClient
+                .builder()
+                .baseUrl(zabbixConfig.getHost())
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultUriVariables(Collections.singletonMap("url", zabbixConfig.getHost()))
+                .build();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        WebClient.RequestHeadersSpec<?> authenticate = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoAuth()));
+
+        String resp = authenticate.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponse respAuthentication = mapper.readValue(resp, ExtZabbixDtoResponse.class);
+
+        String authToken = (String) respAuthentication.getResult();
+        // xx. Завести устройство и сенсор в заббикс...
+        log.info("[   ] authenticated: {}", authToken);
+                log.info("[   ] -> create device");
+                String device = insertIntoZabbix(client, authToken, wizard.getDevice());
+                log.info("[   ] <- create device");
+                if (wizard.getSensor() != null) {
+                    log.info("[   ] -> create sensor");
+                    String sensor = insertIntoZabbix(client, authToken, wizard.getSensor());
+                    log.info("[   ] <- create sensor");
+                    map.setIdSensor(sensor);
+                }
+                map.setIdDevice(device);
+
+
+        // ###### ********* ###### ********* ###### ********* ###### ********* ###### ********* ###### *********
+//        String mapDeviceHostName = "m000U.00.CityName";
+//        String mapSensorHostName = "m000U.s.00.CityName";
+        // ###### ********* ###### ********* ###### ********* ###### ********* ###### ********* ###### *********
+
+        // xx. Спросить тригеры которые получились для оборудования и для сенсора
+        log.info("[   ] -> get triggers for device");
+        WebClient.RequestHeadersSpec<?> triggersDevice = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("trigger.get", new ExtZabbixDtoGetTrgiggerParams(map.getIdDevice()), 42, authToken)));
+        String triggersResponce = triggersDevice.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseTriggers listOfTriggersDevice = mapper.readValue(triggersResponce, ExtZabbixDtoResponseTriggers.class);
+        log.info("[   ] <- get triggers for device");
+        log.info("[   ] -> get triggers for sensor");
+        WebClient.RequestHeadersSpec<?> triggersSensor = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("trigger.get", new ExtZabbixDtoGetTrgiggerParams(map.getIdSensor()), 42, authToken)));
+        String triggersSensorResponce = triggersSensor.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseTriggers listOfTriggersSensor = mapper.readValue(triggersSensorResponce, ExtZabbixDtoResponseTriggers.class);
+        log.info("[   ] <- get triggers for sensor");
+
+        // xx. Скорее всего сохранить эти тригеры в нашей БД (да. но если руками заббикс крутить, то эти данные могут протухнуть)
+        // тут проинициализировать точки этими данными от тригерров
+
+        // xx. Создать сервисы для девайса и для сенсора
+        log.info("[   ] -> go for create services");
+        WebClient.RequestHeadersSpec<?> xxx = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("service.create",
+                        new ExtZabbixDtoCreateNewService(ap),
+                        42,
+                        authToken
+                )));
+        String serviceResponce = xxx.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseService service = mapper.readValue(serviceResponce, ExtZabbixDtoResponseService.class);
+        log.info("[   ] <- go for create services:: {}", service);
+        // xx.xx. Услуга передача данных
+        log.info("[   ] -> go for create services data");
+        WebClient.RequestHeadersSpec<?> xxxY = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("service.create",
+                        new ExtZabbixDtoCreateNewService("Уровень SLA по передаче данных", Long.valueOf(service.getResult().get(0))),
+                        42,
+                        authToken
+                )));
+        String responseServiceData = xxxY.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseService serviceData = mapper.readValue(responseServiceData, ExtZabbixDtoResponseService.class);
+        log.info("[   ] <- go for create services data:: {}", serviceData);
+        // xx.xx.xx. Услуга High ICMP ping loss
+        log.info("[   ] -> go for create services data :High ICMP ping loss:");
+        WebClient.RequestHeadersSpec<?> xxxYL = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("service.create",
+                        new ExtZabbixDtoCreateNewService(wizard.getDevice().getHostName() + ": High ICMP ping loss", Long.valueOf(serviceData.getResult().get(0)), Long.valueOf(listOfTriggersDevice.getResult().stream().filter(i -> i.getDescription().equals("High ICMP ping loss")).findFirst().get().getTriggerid())),
+                        42,
+                        authToken
+                )));
+        String responseServiceDataLoss = xxxYL.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseService serviceDataLoss = mapper.readValue(responseServiceDataLoss, ExtZabbixDtoResponseService.class);
+        log.info("[   ] <- go for create services data :High ICMP ping loss: :: {}", serviceDataLoss);
+
+        // xx.xx.xx. Услуга High ICMP ping response time
+        log.info("[   ] -> go for create services data :High ICMP ping response time:");
+        WebClient.RequestHeadersSpec<?> xxxYRT = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("service.create",
+                        new ExtZabbixDtoCreateNewService(wizard.getDevice().getHostName() + ": High ICMP ping response time", Long.valueOf(serviceData.getResult().get(0)), Long.valueOf(listOfTriggersDevice.getResult().stream().filter(i -> i.getDescription().equals("High ICMP ping response time")).findFirst().get().getTriggerid())),
+                        42,
+                        authToken
+                )));
+        String responseServiceDataResponseTime = xxxYRT.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseService serviceDataResponseTime = mapper.readValue(responseServiceDataResponseTime, ExtZabbixDtoResponseService.class);
+        log.info("[   ] <- go for create services data :High ICMP ping response time: :: {}", serviceDataResponseTime);
+
+        // xx.xx.xx. Услуга Unavailable by ICMP ping
+        log.info("[   ] -> go for create services data :Unavailable by ICMP ping:");
+        WebClient.RequestHeadersSpec<?> xxxYP = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("service.create",
+                        new ExtZabbixDtoCreateNewService(wizard.getDevice().getHostName() + ": Unavailable by ICMP ping", Long.valueOf(serviceData.getResult().get(0)), Long.valueOf(listOfTriggersDevice.getResult().stream().filter(i -> i.getDescription().equals("Unavailable by ICMP ping")).findFirst().get().getTriggerid())),
+                        42,
+                        authToken
+                )));
+        String responseServiceDataPing = xxxYP.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseService serviceDataPing = mapper.readValue(responseServiceDataPing, ExtZabbixDtoResponseService.class);
+        log.info("[   ] <- go for create services data :Unavailable by ICMP ping: :: {}", serviceDataPing);
+        //----------- if sensor exists --------------
+        // xx.xx. Услуга электросвязь
+        log.info("[   ] -> go for create services electricity");
+        WebClient.RequestHeadersSpec<?> xxxYY = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("service.create",
+                        new ExtZabbixDtoCreateNewService("Доступность узла связи электроэнергия", Long.valueOf(service.getResult().get(0))),
+                        42,
+                        authToken
+                )));
+        String responseServiceElectricity = xxxYY.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseService serviceElectricity = mapper.readValue(responseServiceElectricity, ExtZabbixDtoResponseService.class);
+        log.info("[   ] <- go for create services electricity:: {}", serviceElectricity);
+
+        // xx.xx.xx. Услуга Unavailable by ICMP ping Energy
+        log.info("[   ] -> go for create services data :Unavailable by ICMP ping Energy:");
+        WebClient.RequestHeadersSpec<?> xxxZE = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("service.create",
+                        new ExtZabbixDtoCreateNewService(wizard.getSensor().getHostName() + ": Unavailable by ICMP ping Energy", Long.valueOf(serviceElectricity.getResult().get(0)), Long.valueOf(listOfTriggersSensor.getResult().stream().filter(i -> i.getDescription().equals("Unavailable by ICMP ping")).findFirst().get().getTriggerid())),
+                        42,
+                        authToken
+                )));
+        String responseServiceElectricityPing = xxxZE.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseService serviceElectricityPing = mapper.readValue(responseServiceElectricityPing, ExtZabbixDtoResponseService.class);
+        log.info("[   ] <- go for create services data :Unavailable by ICMP ping Energy: :: {}", serviceElectricityPing);
+
+        // xx. Сохранить услуги...
     }
 
     //TODO:[generate TICKET]: possible to use DTO instead of manual construct
@@ -331,7 +460,7 @@ public class ServiceOrganization {
         log.info("[ <-] insert into UTM5");
     }
 
-    private String insertIntoZabbix(WebClient client, String authToken, @NotNull ZabbixDTO zabbix) throws Exception {
+    private String insertIntoZabbix(WebClient client, String authToken, @NotNull ExtZabbixDto zabbix) throws Exception {
         log.info("[ <>] insert into ZABBIX");
         return createHostAndGiveIdentification(client, authToken,
                 zabbix.getHostName(),
