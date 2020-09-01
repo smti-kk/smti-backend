@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.api;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +29,7 @@ public class ApiGEO {
      * @return Location DTO with id and name and POLIGON of border
      */
     @GetMapping("/location-area")
+    @Cacheable("location_areas")
     public List<LocationAreaBorders> locations() {
         return repository.areaBorders().stream()
                 .map(LocationAreaBorders::new)

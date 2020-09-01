@@ -4,11 +4,12 @@ import lombok.Getter;
 import ru.cifrak.telecomit.backend.entities.GovernmentDevelopmentProgram;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter
 @Entity
 @Table(name = "access_point")
-public class AccessPointForTable {
+public class AccessPointForTable implements Serializable {
     @Id
     private Integer id;
     private String type;
