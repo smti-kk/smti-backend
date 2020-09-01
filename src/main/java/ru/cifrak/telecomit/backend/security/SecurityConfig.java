@@ -51,7 +51,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/auth", "/api/exchange_temp_token").permitAll()
-                .antMatchers("/api/import/**").permitAll()
                 .antMatchers("/api/esia-auth/**").permitAll()
                 .antMatchers("/api/**").permitAll()
 //                .antMatchers("/api/**").hasAuthority()
@@ -66,10 +65,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          *  - https://mattermost.cifra-k.ru/test/pl/1dt86r8t67datcyh5jcwhrcm4y;
          *  - https://mattermost.cifra-k.ru/test/pl/qaj1uyrhyfbd8nufdweo863ifh.
          */
-        @Override
+/*        @Override
         public void configure(WebSecurity web) throws Exception {
             web.ignoring().mvcMatchers("/api/import/**");
-        }
+        }*/
 
         public RequestHeaderAuthenticationFilter requestHeaderAuthenticationFilter() throws Exception {
             RequestHeaderAuthenticationFilter requestHeaderAuthenticationFilter = new RequestHeaderAuthenticationFilter();

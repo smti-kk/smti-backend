@@ -1,13 +1,14 @@
 package ru.cifrak.telecomit.backend.api.service.imp.ap;
 
-import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.repository.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +43,7 @@ public class ApesSaveService {
     }
 
     public void save(List<ApFromExcelDTO> TcesDTO) {
-        for (ApFromExcelDTO tcDTO : TcesDTO){
+        for (ApFromExcelDTO tcDTO : TcesDTO) {
             List<AccessPoint> apes = repositoryAccessPoints.findByPointAndOrganization(
                     createPoint(tcDTO.getLatitude(), tcDTO.getLongitude()),
                     getOrganization(tcDTO));
@@ -60,12 +61,8 @@ public class ApesSaveService {
                 ap.setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
                 ap.setDeclaredSpeed(tcDTO.getDeclaredSpeed());
                 ap.setVisible(true);
-                ap.setCreatedDate(LocalDateTime.now());
                 ap.setMaxAmount(0);
                 ap.setDeleted(false);
-                ap.setModifiedDate(LocalDateTime.now());
-                ap.setCreatedBy("s");
-                ap.setModifiedBy("s");
                 // TODO: Transaction.
                 repositoryAccessPoints.save(ap);
             }
