@@ -37,14 +37,13 @@ public class ExtZabbixDtoCreateNewService {
 
     public ExtZabbixDtoCreateNewService(final AccessPoint ap) {
         this(new StringBuilder()
-                .append("telecom: org[")
+                .append("telecom:org:")
                 .append(ap.getOrganization().getId())
-                .append("]")
-                .append(" (")
+                .append(":")
                 .append(ap.getOrganization().getAddress())
-                .append(") - [")
+                .append(":ap:")
                 .append(ap.getId())
-                .append("] : ")
+                .append(":")
                 .append(ap.getAddress())
                 .toString(), 1, 1, 99.99, 1, null, null);
     }

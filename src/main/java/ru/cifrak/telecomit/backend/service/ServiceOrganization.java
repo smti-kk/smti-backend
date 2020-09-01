@@ -116,29 +116,26 @@ public class ServiceOrganization {
         String authToken = (String) respAuthentication.getResult();
         // xx. Завести устройство и сенсор в заббикс...
         log.info("[   ] authenticated: {}", authToken);
-                log.info("[   ] -> create device");
-                String device = insertIntoZabbix(client, authToken, wizard.getDevice());
-                log.info("[   ] <- create device");
-                if (wizard.getSensor() != null) {
-                    log.info("[   ] -> create sensor");
-                    String sensor = insertIntoZabbix(client, authToken, wizard.getSensor());
-                    log.info("[   ] <- create sensor");
-                    map.setIdSensor(sensor);
-                }
-                map.setIdDevice(device);
-
-
-        // ###### ********* ###### ********* ###### ********* ###### ********* ###### ********* ###### *********
-//        String mapDeviceHostName = "m000U.00.CityName";
-//        String mapSensorHostName = "m000U.s.00.CityName";
-        // ###### ********* ###### ********* ###### ********* ###### ********* ###### ********* ###### *********
+        log.info("[   ] -> create device");
+        String device = insertIntoZabbix(client, authToken, wizard.getDevice());
+        log.info("[   ] <- create device");
+        if (wizard.getSensor() != null) {
+            log.info("[   ] -> create sensor");
+            String sensor = insertIntoZabbix(client, authToken, wizard.getSensor());
+            log.info("[   ] <- create sensor");
+            map.setSensorId(sensor);
+            map.setSensorName(wizard.getSensor().getHostName());
+            map.setSensorIp(wizard.getSensor().getHostName());
+        }
+        map.setDeviceId(device);
+        map.setDeviceName(wizard.getDevice().getHostName());
 
         // xx. Спросить тригеры которые получились для оборудования и для сенсора
         log.info("[   ] -> get triggers for device");
         WebClient.RequestHeadersSpec<?> triggersDevice = client
                 .post()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("trigger.get", new ExtZabbixDtoGetTrgiggerParams(map.getIdDevice()), 42, authToken)));
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("trigger.get", new ExtZabbixDtoGetTrgiggerParams(map.getDeviceId()), 42, authToken)));
         String triggersResponce = triggersDevice.retrieve().bodyToMono(String.class).block();
         ExtZabbixDtoResponseTriggers listOfTriggersDevice = mapper.readValue(triggersResponce, ExtZabbixDtoResponseTriggers.class);
         log.info("[   ] <- get triggers for device");
@@ -146,7 +143,7 @@ public class ServiceOrganization {
         WebClient.RequestHeadersSpec<?> triggersSensor = client
                 .post()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("trigger.get", new ExtZabbixDtoGetTrgiggerParams(map.getIdSensor()), 42, authToken)));
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("trigger.get", new ExtZabbixDtoGetTrgiggerParams(map.getSensorId()), 42, authToken)));
         String triggersSensorResponce = triggersSensor.retrieve().bodyToMono(String.class).block();
         ExtZabbixDtoResponseTriggers listOfTriggersSensor = mapper.readValue(triggersSensorResponce, ExtZabbixDtoResponseTriggers.class);
         log.info("[   ] <- get triggers for sensor");
@@ -164,8 +161,8 @@ public class ServiceOrganization {
                         42,
                         authToken
                 )));
-        String serviceResponce = xxx.retrieve().bodyToMono(String.class).block();
-        ExtZabbixDtoResponseService service = mapper.readValue(serviceResponce, ExtZabbixDtoResponseService.class);
+        String serviceResponse = xxx.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseService service = mapper.readValue(serviceResponse, ExtZabbixDtoResponseService.class);
         log.info("[   ] <- go for create services:: {}", service);
         // xx.xx. Услуга передача данных
         log.info("[   ] -> go for create services data");
@@ -182,11 +179,13 @@ public class ServiceOrganization {
         log.info("[   ] <- go for create services data:: {}", serviceData);
         // xx.xx.xx. Услуга High ICMP ping loss
         log.info("[   ] -> go for create services data :High ICMP ping loss:");
+        Long trgRLost = Long.valueOf(listOfTriggersDevice.getResult().stream().filter(i -> i.getDescription().equals("High ICMP ping loss")).findFirst().get().getTriggerid());
+        map.setDeviceTriggerResponseLost(trgRLost.toString());
         WebClient.RequestHeadersSpec<?> xxxYL = client
                 .post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("service.create",
-                        new ExtZabbixDtoCreateNewService(wizard.getDevice().getHostName() + ": High ICMP ping loss", Long.valueOf(serviceData.getResult().get(0)), Long.valueOf(listOfTriggersDevice.getResult().stream().filter(i -> i.getDescription().equals("High ICMP ping loss")).findFirst().get().getTriggerid())),
+                        new ExtZabbixDtoCreateNewService(wizard.getDevice().getHostName() + ": High ICMP ping loss", Long.valueOf(serviceData.getResult().get(0)), trgRLost),
                         42,
                         authToken
                 )));
@@ -196,11 +195,13 @@ public class ServiceOrganization {
 
         // xx.xx.xx. Услуга High ICMP ping response time
         log.info("[   ] -> go for create services data :High ICMP ping response time:");
+        Long trgRLow = Long.valueOf(listOfTriggersDevice.getResult().stream().filter(i -> i.getDescription().equals("High ICMP ping response time")).findFirst().get().getTriggerid());
+        map.setDeviceTriggerResponseLow(trgRLow.toString());
         WebClient.RequestHeadersSpec<?> xxxYRT = client
                 .post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("service.create",
-                        new ExtZabbixDtoCreateNewService(wizard.getDevice().getHostName() + ": High ICMP ping response time", Long.valueOf(serviceData.getResult().get(0)), Long.valueOf(listOfTriggersDevice.getResult().stream().filter(i -> i.getDescription().equals("High ICMP ping response time")).findFirst().get().getTriggerid())),
+                        new ExtZabbixDtoCreateNewService(wizard.getDevice().getHostName() + ": High ICMP ping response time", Long.valueOf(serviceData.getResult().get(0)), trgRLow),
                         42,
                         authToken
                 )));
@@ -210,11 +211,13 @@ public class ServiceOrganization {
 
         // xx.xx.xx. Услуга Unavailable by ICMP ping
         log.info("[   ] -> go for create services data :Unavailable by ICMP ping:");
+        Long trgUn = Long.valueOf(listOfTriggersDevice.getResult().stream().filter(i -> i.getDescription().equals("Unavailable by ICMP ping")).findFirst().get().getTriggerid());
+        map.setDeviceTriggerUnavailable(trgUn.toString());
         WebClient.RequestHeadersSpec<?> xxxYP = client
                 .post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("service.create",
-                        new ExtZabbixDtoCreateNewService(wizard.getDevice().getHostName() + ": Unavailable by ICMP ping", Long.valueOf(serviceData.getResult().get(0)), Long.valueOf(listOfTriggersDevice.getResult().stream().filter(i -> i.getDescription().equals("Unavailable by ICMP ping")).findFirst().get().getTriggerid())),
+                        new ExtZabbixDtoCreateNewService(wizard.getDevice().getHostName() + ": Unavailable by ICMP ping", Long.valueOf(serviceData.getResult().get(0)), trgUn),
                         42,
                         authToken
                 )));
@@ -238,11 +241,13 @@ public class ServiceOrganization {
 
         // xx.xx.xx. Услуга Unavailable by ICMP ping Energy
         log.info("[   ] -> go for create services data :Unavailable by ICMP ping Energy:");
+        Long trgSE = Long.valueOf(listOfTriggersSensor.getResult().stream().filter(i -> i.getDescription().equals("Unavailable by ICMP ping")).findFirst().get().getTriggerid());
+        map.setSeonsorTriggerEnergy(trgSE.toString());
         WebClient.RequestHeadersSpec<?> xxxZE = client
                 .post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("service.create",
-                        new ExtZabbixDtoCreateNewService(wizard.getSensor().getHostName() + ": Unavailable by ICMP ping Energy", Long.valueOf(serviceElectricity.getResult().get(0)), Long.valueOf(listOfTriggersSensor.getResult().stream().filter(i -> i.getDescription().equals("Unavailable by ICMP ping")).findFirst().get().getTriggerid())),
+                        new ExtZabbixDtoCreateNewService(wizard.getSensor().getHostName() + ": Unavailable by ICMP ping Energy", Long.valueOf(serviceElectricity.getResult().get(0)), trgSE),
                         42,
                         authToken
                 )));

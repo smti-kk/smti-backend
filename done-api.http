@@ -533,13 +533,14 @@ Content-Type: application/json
 
 ### goo org and ap
 #POST http://localhost:8080/api/organization/3379/ap/3787/init-monitoring
-POST http://localhost:8080/api/organization/1471/ap/31/init-monitoring
+#POST http://localhost:8080/api/organization/1471/ap/31/init-monitoring
+POST http://localhost:8080/api/organization/3411/ap/3799/init-monitoring
 Authorization: Token {{auth_token}}
 Content-Type: application/json
 
 {
     "device": {
-     "hostName": "m002U.02.CityName",
+     "hostName": "m005U.05.CityName",
      "ip": "127.0.0.1",
      "groupid": "34",
      "tag": "project",
@@ -549,7 +550,7 @@ Content-Type: application/json
      "macroValue": "ESPD_monitor"
      },
      "sensor": {
-     "hostName": "m002U.s.02.CityName",
+     "hostName": "m005U.s.05.CityName",
      "ip": "127.0.0.2",
      "groupid": "34",
      "tag": "project",

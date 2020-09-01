@@ -143,7 +143,7 @@ public class ApiOrganization {
     }
 
     @PostMapping("/{id}/ap/{apid}/init-monitoring")
-//    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     public ResponseEntity<String> initMonitoring(@PathVariable Integer id, @PathVariable Integer apid,
                                                  @RequestBody final MonitoringAccessPointWizardDTO wizard) {
         log.info("->GET /{}/ap/{}/init-monitoring", id, apid);

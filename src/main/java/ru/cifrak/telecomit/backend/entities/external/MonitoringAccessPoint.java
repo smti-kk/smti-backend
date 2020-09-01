@@ -43,42 +43,40 @@ public class MonitoringAccessPoint implements Serializable {
     // ZABBIX ------------ DEVICE
 
     @Column
-    private String idDevice;
+    private String deviceId;
     @Column
-    private String nameDevice;
+    private String deviceName;
     @Column
-    private String ipDevice;
+    private String deviceIp;
 
     /**
      * High ICMP ping loss
      */
     @Column
-    private String idT1;
+    private String deviceTriggerResponseLost;
     /**
      * High ICMP ping response time
      */
     @Column
-    private String idT2;
+    private String deviceTriggerResponseLow;
     /**
      * Unavailable by ICMP ping
      */
     @Column
-    private String idT3;
+    private String deviceTriggerUnavailable;
     // ZABBIX ------------ SENSOR
     @Column
-    private String idSensor;
+    private String sensorId;
 
     @Column
-    private String nameSensor;
+    private String sensorName;
 
     @Column
-    private String ipSensor;
+    private String sensorIp;
 
     /**
      * Unavailable by ICMP ping Energy
      */
     @Column
-    private String idT4;
-
-
+    private String seonsorTriggerEnergy;
 }
