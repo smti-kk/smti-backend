@@ -8,12 +8,13 @@ import ru.cifrak.telecomit.backend.serializer.SignalConverter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "v_technical_capability_active")
 @Data
-public class TechnicalCapabilityForLocationTable {
+public class TechnicalCapabilityForLocationTable implements Serializable {
     @Id
     private Long id;
 

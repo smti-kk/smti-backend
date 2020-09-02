@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.api;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ public class ApiTypeTrunkChannel {
     }
 
     @GetMapping("/")
+    @Cacheable("trunk_channels")
     public List<TypeTrunkChannel> list() {
         return repository.findAll();
     }

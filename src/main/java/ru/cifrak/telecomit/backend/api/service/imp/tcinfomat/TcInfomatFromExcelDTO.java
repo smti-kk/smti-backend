@@ -14,14 +14,15 @@ public class TcInfomatFromExcelDTO {
 
     private final String operator;
 
-    private final String infomats;
+    private final String quantity;
 
     public TcInfomatFromExcelDTO(Row row) {
         this(
                 row.getCell(0).getStringCellValue().trim(),
                 row.getCell(5).getStringCellValue().trim(),
                 row.getCell(6).getStringCellValue().trim(),
-                row.getCell(7).getStringCellValue().trim()
+                row.getCell(7).getStringCellValue().trim().isEmpty() ?
+                        "0" : row.getCell(7).getStringCellValue().trim()
         );
     }
 }

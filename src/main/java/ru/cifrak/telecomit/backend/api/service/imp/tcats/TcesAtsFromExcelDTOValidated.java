@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.api.service.imp.tcpayphone;
+package ru.cifrak.telecomit.backend.api.service.imp.tcats;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,18 +11,18 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
-public class TcesPayphoneFromExcelDTOValidated implements TcesPayphoneDTOFromExcel {
+public class TcesAtsFromExcelDTOValidated implements TcesAtsDTOFromExcel {
 
     private final RepositoryOperator repositoryOperator;
 
     private final RepositoryLocation repositoryLocation;
 
-    private final TcesPayphoneDTOFromExcel origin;
+    private final TcesAtsDTOFromExcel origin;
 
-    public TcesPayphoneFromExcelDTOValidated(
+    public TcesAtsFromExcelDTOValidated(
             RepositoryOperator repositoryOperator,
             RepositoryLocation repositoryLocation,
-            TcesPayphoneDTOFromExcel origin) {
+            TcesAtsDTOFromExcel origin) {
         this.repositoryOperator = repositoryOperator;
         this.repositoryLocation = repositoryLocation;
         this.origin = origin;
@@ -34,13 +34,13 @@ public class TcesPayphoneFromExcelDTOValidated implements TcesPayphoneDTOFromExc
     }
 
     @Override
-    public List<TcPayphoneFromExcelDTO> getTcesDTO() throws FromExcelDTOFormatException {
+    public List<TcAtsFromExcelDTO> getTcesDTO() throws FromExcelDTOFormatException {
         this.checkFormatFile(this.getFile());
 
         return this.checkTces(origin.getTcesDTO());
     }
 
-    private List<TcPayphoneFromExcelDTO> checkTces(List<TcPayphoneFromExcelDTO> tcesDTO)
+    private List<TcAtsFromExcelDTO> checkTces(List<TcAtsFromExcelDTO> tcesDTO)
             throws FromExcelDTOFormatException {
         String badDTO;
 
@@ -71,29 +71,12 @@ public class TcesPayphoneFromExcelDTOValidated implements TcesPayphoneDTOFromExc
                     + " позиции ошибка в операторе, не найден в БД.");
         }
 
-        badDTO = this.checkQuantity(tcesDTO);
-        if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
-                    + " позиции ошибка в количестве, должно быть в числовом формате.");
-        }
-
         return tcesDTO;
     }
 
-    private String checkQuantity(List<TcPayphoneFromExcelDTO> tcesDTO) {
+    private String checkFiases(List<TcAtsFromExcelDTO> tcesDTO) {
         String result = null;
-        for (TcPayphoneFromExcelDTO TcDTO : tcesDTO) {
-            if (!TcDTO.getQuantity().matches("[0-9]+")) {
-                result = TcDTO.getNpp();
-                break;
-            }
-        }
-        return result;
-    }
-
-    private String checkFiases(List<TcPayphoneFromExcelDTO> tcesDTO) {
-        String result = null;
-        for (TcPayphoneFromExcelDTO TcDTO : tcesDTO) {
+        for (TcAtsFromExcelDTO TcDTO : tcesDTO) {
             if (repositoryLocation.findByFias(UUID.fromString(TcDTO.getFias())) == null) {
                 result = TcDTO.getNpp();
                 break;
@@ -102,9 +85,9 @@ public class TcesPayphoneFromExcelDTOValidated implements TcesPayphoneDTOFromExc
         return result;
     }
 
-    private String checkOperators(List<TcPayphoneFromExcelDTO> tcesDTO) {
+    private String checkOperators(List<TcAtsFromExcelDTO> tcesDTO) {
         String result = null;
-        for (TcPayphoneFromExcelDTO TcDTO : tcesDTO) {
+        for (TcAtsFromExcelDTO TcDTO : tcesDTO) {
             if (repositoryOperator.findByName(TcDTO.getOperator()) == null) {
                 result = TcDTO.getNpp();
                 break;
@@ -150,9 +133,9 @@ public class TcesPayphoneFromExcelDTOValidated implements TcesPayphoneDTOFromExc
         return result;
     }
 
-    private boolean checkFullnessNpp(List<TcPayphoneFromExcelDTO> tcesDTO) {
+    private boolean checkFullnessNpp(List<TcAtsFromExcelDTO> tcesDTO) {
         boolean result = true;
-        for (TcPayphoneFromExcelDTO TcDTO : tcesDTO) {
+        for (TcAtsFromExcelDTO TcDTO : tcesDTO) {
             if (TcDTO.getNpp().isEmpty()) {
                 result = false;
                 break;
@@ -161,9 +144,9 @@ public class TcesPayphoneFromExcelDTOValidated implements TcesPayphoneDTOFromExc
         return result;
     }
 
-    private String checkFullnessCells(List<TcPayphoneFromExcelDTO> tcesDTO) {
+    private String checkFullnessCells(List<TcAtsFromExcelDTO> tcesDTO) {
         String result = null;
-        for (TcPayphoneFromExcelDTO TcDTO : tcesDTO) {
+        for (TcAtsFromExcelDTO TcDTO : tcesDTO) {
             if (TcDTO.getFias().isEmpty()
                     || TcDTO.getOperator().isEmpty()
             ) {
@@ -174,9 +157,9 @@ public class TcesPayphoneFromExcelDTOValidated implements TcesPayphoneDTOFromExc
         return result;
     }
 
-    private String checkFiasesGUID(List<TcPayphoneFromExcelDTO> tcesDTO) {
+    private String checkFiasesGUID(List<TcAtsFromExcelDTO> tcesDTO) {
         String result = null;
-        for (TcPayphoneFromExcelDTO TcDTO : tcesDTO) {
+        for (TcAtsFromExcelDTO TcDTO : tcesDTO) {
             if (!TcDTO.getFias()
                     .matches("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
                 result = TcDTO.getNpp();

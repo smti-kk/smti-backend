@@ -1,7 +1,9 @@
-package ru.cifrak.telecomit.backend.api;
+package ru.cifrak.telecomit.backend.api.util.Reports;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.ptg.LessEqualPtg;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -38,6 +40,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static ru.cifrak.telecomit.backend.api.util.Reports.HelperReport.generateExelFormat;
+
 @Slf4j
 
 @RestController
@@ -47,6 +51,7 @@ public class ApiReports {
     private final RepositoryAccessPointsFull rAccessPoints;
     private final RepositoryApContract rApContract;
     private final ServiceExternalReports serviceExternalReports;
+
 
 
     @Autowired
@@ -81,7 +86,7 @@ public class ApiReports {
         Set<String> sortingFileds = new LinkedHashSet<>(
                 Arrays.asList(StringUtils.split(StringUtils.defaultIfEmpty(sort, ""), ",")));
 
-        List<Sort.Order> sortingOrders = sortingFileds.stream().map(this::getOrder)
+        List<Sort.Order> sortingOrders = sortingFileds.stream().map(HelperReport::getOrder)
                 .collect(Collectors.toList());
 
         Sort sortData = sortingOrders.isEmpty() ? null : Sort.by(sortingOrders);
@@ -155,9 +160,10 @@ public class ApiReports {
                 page, size, location == null ? "" : location.getId(), type, smo, gdp, inettype, organization, contractor);
         //HINT: https://github.com/vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting
         Set<String> sortingFileds = new LinkedHashSet<>(
-                Arrays.asList(StringUtils.split(StringUtils.defaultIfEmpty(sort, ""), ",")));
+                Arrays.asList(StringUtils.split(StringUtils
+                        .defaultIfEmpty(sort, ""), ",")));
 
-        List<Sort.Order> sortingOrders = sortingFileds.stream().map(this::getOrder)
+        List<Sort.Order> sortingOrders = sortingFileds.stream().map(HelperReport::getOrder)
                 .collect(Collectors.toList());
 
         Sort sortData = sortingOrders.isEmpty() ? null : Sort.by(sortingOrders);
@@ -213,19 +219,6 @@ public class ApiReports {
         return pList;
     }
 
-    private Sort.Order getOrder(String value) {
-
-        if (StringUtils.startsWith(value, "-")) {
-            return new Sort.Order(Sort.Direction.DESC, StringUtils.substringAfter(value, "-"));
-        } else if (StringUtils.startsWith(value, "+")) {
-            return new Sort.Order(Sort.Direction.ASC, StringUtils.substringAfter(value, "+"));
-        } else {
-            // Sometimes '+' from query param can be replaced as ' '
-            return new Sort.Order(Sort.Direction.ASC, StringUtils.trim(value));
-        }
-
-    }
-
     @GetMapping(
             value = "/export/map/"/*,
             produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"*/
@@ -268,4 +261,168 @@ public class ApiReports {
                 .contentLength(resource.contentLength())
                 .body(resource);
     }
+
+    @GetMapping(value = "/ap-all/export/")
+//    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    @ResponseBody
+    public ResponseEntity<ByteArrayResource> exportReportAll(
+            @RequestParam(name = "location", required = false) Location location,
+           @RequestParam(name = "type", required = false) TypeOrganization type,
+           @RequestParam(name = "smo", required = false) TypeSmo smo,
+           @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp,
+           @RequestParam(name = "inet", required = false) TypeInternetAccess inettype,
+           @RequestParam(name = "parents", required = false) List<Location> parents,
+           @RequestParam(name = "organization", required = false) String organization,
+           @RequestParam(name = "contractor", required = false) String contractor,
+           @RequestParam(name = "ap", required = false) List<TypeAccessPoint> ap,
+            @RequestParam(name = "sort", required = false) String sort
+            ) throws IOException {
+
+        Sort sortData = HelperReport.getSortRule(sort);
+        Specification<AccessPointFull> spec = Specification.where(null);
+
+/*
+        Specification<AccessPointFull> spec = this.createSpecificationForSort(sort);
+*/
+
+        if (location != null) {
+            spec = spec != null ? spec.and(SpecificationAccessPointFull.inLocation(location)) : null;
+        }
+        if (type != null) {
+            spec = spec.and(SpecificationAccessPointFull.withType(type));
+        }
+        if (smo != null) {
+            spec = spec.and(SpecificationAccessPointFull.withSmo(smo));
+        }
+        if (gdp != null) {
+            spec = spec.and(SpecificationAccessPointFull.withGovProgram(gdp));
+        }
+        if (inettype != null) {
+            spec = spec.and(SpecificationAccessPointFull.withInetType(inettype));
+        }
+        if (parents != null) {
+            spec = spec.and(SpecificationAccessPointFull.inParent(parents));
+        }
+        if (organization != null) {
+            spec = spec.and(SpecificationAccessPointFull.withOrgname(organization));
+        }
+        if (contractor != null) {
+            spec = spec.and(SpecificationAccessPointFull.withOperator(contractor));
+        }
+        if (ap != null) {
+            spec = spec.and(SpecificationAccessPointFull.type(ap));
+        }
+        log.info("->GET /api/report/organization/ap-all/export");
+
+        // xx. Forming excel file
+        List<AccessPointFull> temp;
+        if (sortData == null)   temp = rAccessPoints.findAll(spec);
+        else temp = rAccessPoints.findAll(spec, sortData);
+
+        List<ExelReportAccessPointFullDTO> rezult = temp
+                .stream()
+                .map(ExelReportAccessPointFullDTO::new)
+                .collect(Collectors.toList());
+
+        IntStream.range(0, rezult.size()).forEach(i -> rezult.get(i).setPp(i + 1));
+        ByteArrayResource resource = new ByteArrayResource(generateExelFormat().exportToByteArray(rezult));
+
+        log.info("<-GET /api/report/organization/ap-all/export");
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + ".xlsx\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
+
+    @GetMapping(value = "/ap-contract/export/")
+//    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    @ResponseBody
+    public ResponseEntity<ByteArrayResource> exportReportContract(
+            @RequestParam(name = "location", required = false) Location location,
+            @RequestParam(name = "type", required = false) TypeOrganization type,
+            @RequestParam(name = "smo", required = false) TypeSmo smo,
+            @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp,
+            @RequestParam(name = "inet", required = false) TypeInternetAccess inettype,
+            @RequestParam(name = "parents", required = false) List<Location> parents,
+            @RequestParam(name = "organization", required = false) String organization,
+            @RequestParam(name = "contractor", required = false) String contractor,
+            @RequestParam(name = "population-start", required = false) Integer pStart,
+            @RequestParam(name = "population-end", required = false) Integer pEnd,
+            @RequestParam(name = "contract", required = false) String contract,
+            @RequestParam(name = "contract-start", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cStart,
+            @RequestParam(name = "contract-end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cEnd,
+            @RequestParam(name = "sort", required = false) String sort
+    ) throws IOException {
+
+        log.info("->GET /api/report/organization/ap-all/export [location={}, type={}, smo={}, gdp={}, inet={}, parents=xx, orgname={}, operator={} ]",
+                location == null ? "" : location.getId(), type, smo, gdp, inettype, organization, contractor);
+        //HINT: https://github.com/vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting
+
+        Sort sortData = HelperReport.getSortRule(sort);
+        Specification<AccessPointFull> spec = Specification.where(SpecificationAccessPointFull.apcontract());
+
+        if (location != null) {
+            spec = spec.and(SpecificationAccessPointFull.inLocation(location));
+        }
+        if (type != null) {
+            spec = spec.and(SpecificationAccessPointFull.withType(type));
+        }
+        if (smo != null) {
+            spec = spec.and(SpecificationAccessPointFull.withSmo(smo));
+        }
+        if (gdp != null) {
+            spec = spec.and(SpecificationAccessPointFull.withGovProgram(gdp));
+        }
+        if (inettype != null) {
+            spec = spec.and(SpecificationAccessPointFull.withInetType(inettype));
+        }
+        if (parents != null) {
+            spec = spec.and(SpecificationAccessPointFull.inParent(parents));
+        }
+        if (organization != null) {
+            spec = spec.and(SpecificationAccessPointFull.withOrgname(organization));
+        }
+        if (contractor != null) {
+            spec = spec.and(SpecificationAccessPointFull.withOperator(contractor));
+        }
+        if (pStart != null) {
+            spec = spec.and(SpecificationAccessPointFull.pStart(pStart));
+        }
+        if (pEnd != null) {
+            spec = spec.and(SpecificationAccessPointFull.pEnd(pEnd));
+        }
+        if (contract != null) {
+            spec = spec.and(SpecificationAccessPointFull.contract(contract));
+        }
+        if (cStart != null) {
+            spec = spec.and(SpecificationAccessPointFull.cStart(cStart));
+        }
+        if (cEnd != null) {
+            spec = spec.and(SpecificationAccessPointFull.cEnd(cEnd));
+        }
+
+        List<AccessPointFull> dbData;
+        if (sortData == null)   dbData = rAccessPoints.findAll(spec);
+        else dbData = rAccessPoints.findAll(spec, sortData);
+
+        List<ExelReportAccessPointFullDTO> rezult = dbData
+                .stream()
+                .map(ExelReportAccessPointFullDTO::new)
+                .collect(Collectors.toList());
+
+        IntStream.range(0, rezult.size()).forEach(i -> rezult.get(i).setPp(i + 1));
+        ByteArrayResource resource = new ByteArrayResource(generateExelFormat().exportToByteArray(rezult));
+
+        log.info("<-GET /api/report/organization/ap-all/export");
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + ".xlsx\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
+
+
 }

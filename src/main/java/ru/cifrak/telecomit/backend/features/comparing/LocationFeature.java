@@ -52,7 +52,7 @@ public class LocationFeature {
 
     @NotNull
     @PositiveOrZero
-    @Column
+    @Column(name = "quantity")
     private Integer payphones;
 
     @Enumerated(EnumType.STRING)

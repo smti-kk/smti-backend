@@ -11,6 +11,7 @@ import ru.cifrak.telecomit.backend.entities.locationsummary.LocationFeaturesEdit
 import ru.cifrak.telecomit.backend.repository.RepositoryFeatureEdits;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocationFeaturesRequests;
 import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
+import ru.cifrak.telecomit.backend.service.LocationService;
 import ru.cifrak.telecomit.backend.service.ServiceWritableTc;
 
 @RestController
@@ -20,15 +21,18 @@ public class ApiLocationFeaturesImpl implements ApiLocationFeatures {
     private final RepositoryWritableTc rWritableTc;
     private final RepositoryLocationFeaturesRequests featuresRequests;
     private final RepositoryFeatureEdits repositoryFeatureEdits;
+    private final LocationService locationService;
 
     public ApiLocationFeaturesImpl(ServiceWritableTc serviceWritableTc,
                                    RepositoryWritableTc rWritableTc,
                                    RepositoryLocationFeaturesRequests featuresRequests,
-                                   RepositoryFeatureEdits repositoryFeatureEdits) {
+                                   RepositoryFeatureEdits repositoryFeatureEdits,
+                                   LocationService locationService) {
         this.serviceWritableTc = serviceWritableTc;
         this.rWritableTc = rWritableTc;
         this.featuresRequests = featuresRequests;
         this.repositoryFeatureEdits = repositoryFeatureEdits;
+        this.locationService = locationService;
     }
 
 
@@ -54,11 +58,10 @@ public class ApiLocationFeaturesImpl implements ApiLocationFeatures {
         });
         repositoryFeatureEdits.saveAll(eReq.getFeatureEdits());
         LocationFeaturesEditingRequest savedRequest = featuresRequests.save(eReq);
-        if (!user.getRoles().contains(UserRole.MUNICIPALITY) &&
-                (user.getRoles().contains(UserRole.OPERATOR) || user.getRoles().contains(UserRole.ADMIN))
-        ) {
+        if ((user.getRoles().contains(UserRole.OPERATOR) || user.getRoles().contains(UserRole.ADMIN))) {
             savedRequest.accept(serviceWritableTc);
             featuresRequests.save(savedRequest);
+            locationService.refreshCache();
         }
     }
 }

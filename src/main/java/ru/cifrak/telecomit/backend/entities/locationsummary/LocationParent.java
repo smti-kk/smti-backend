@@ -7,12 +7,13 @@ import ru.cifrak.telecomit.backend.entities.Location;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "location")
 @Immutable
 @Getter
-public class LocationParent {
+public class LocationParent implements Serializable {
     @Id
     private Integer id;
     private String type;

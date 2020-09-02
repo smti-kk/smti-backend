@@ -1,74 +1,101 @@
 package ru.cifrak.telecomit.backend.api.service.imp.ap;
 
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.*;
 import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
-import ru.cifrak.telecomit.backend.entities.ServiceQuality;
-import ru.cifrak.telecomit.backend.entities.TcPost;
-import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTcForImport;
-import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
-import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
-import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
-import ru.cifrak.telecomit.backend.repository.RepositoryWritableTcForImport;
+import ru.cifrak.telecomit.backend.entities.Location;
+import ru.cifrak.telecomit.backend.entities.Organization;
+import ru.cifrak.telecomit.backend.repository.*;
 
-import javax.persistence.DiscriminatorValue;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class ApesSaveService {
 
-    private final RepositoryWritableTcForImport repositoryWritableTcForImport;
-
     private final RepositoryLocation repositoryLocation;
-
-    private final RepositoryOperator repositoryOperator;
 
     private final RepositoryAccessPoints repositoryAccessPoints;
 
+    private final RepositoryOrganization repositoryOrganization;
+
+    private final RepositoryInternetAccessType repositoryInternetAccessType;
+
+    private final RepositorySmoType repositorySmoType;
+
+    private final RepositoryOrganizationType repositoryOrganizationType;
+
     public ApesSaveService(
-            RepositoryWritableTcForImport repositoryWritableTcForImport,
             RepositoryLocation repositoryLocation,
-            RepositoryOperator repositoryOperator,
-            RepositoryAccessPoints repositoryAccessPoints) {
-        this.repositoryWritableTcForImport = repositoryWritableTcForImport;
+            RepositoryAccessPoints repositoryAccessPoints,
+            RepositoryOrganization repositoryOrganization,
+            RepositoryInternetAccessType repositoryInternetAccessType,
+            RepositorySmoType repositorySmoType,
+            RepositoryOrganizationType repositoryOrganizationType) {
         this.repositoryLocation = repositoryLocation;
-        this.repositoryOperator = repositoryOperator;
         this.repositoryAccessPoints = repositoryAccessPoints;
+        this.repositoryOrganization = repositoryOrganization;
+        this.repositoryInternetAccessType = repositoryInternetAccessType;
+        this.repositorySmoType = repositorySmoType;
+        this.repositoryOrganizationType = repositoryOrganizationType;
     }
 
     public void save(List<ApFromExcelDTO> TcesDTO) {
-        // TODO: To realization.
-        Integer organizationId = 0;
         for (ApFromExcelDTO tcDTO : TcesDTO){
-            List<AccessPoint> apesByOrgId = repositoryAccessPoints.getAllByOrganizationId(organizationId);
-            if (apesByOrgId.size() > 0) {
-                // TODO: To realization.
-//                apesByOrgId.get(0).setTypePost(tcDTO.getTypePost());
+            List<AccessPoint> apes = repositoryAccessPoints.findByPointAndOrganization(
+                    createPoint(tcDTO.getLatitude(), tcDTO.getLongitude()),
+                    getOrganization(tcDTO));
+            if (apes.size() > 0) {
                 // TODO: Transaction.
-                repositoryAccessPoints.save(apesByOrgId.get(0));
+                apes.get(0).setContractor(tcDTO.getContractor());
+                apes.get(0).setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
+                apes.get(0).setDeclaredSpeed(tcDTO.getDeclaredSpeed());
+                repositoryAccessPoints.save(apes.get(0));
             } else {
-/*
-                Entity:
-                private Boolean visible;
-                private Point point;
-
-                DTO:
-                private final String npp;
-                private final String latitude;
-                private final String longitude;
-                private final String organization;
-                private final String contractor;
-                private final String typeInternetAccess;
-                private final String declaredSpeed;
-*/
-                AccessPoint apByOrgId = new AccessPoint();
-                apByOrgId.setPoint(null);
-                apByOrgId.setVisible(true);
+                AccessPoint ap = new AccessPoint();
+                ap.setPoint(createPoint(tcDTO.getLatitude(), tcDTO.getLongitude()));
+                ap.setOrganization(getOrganization(tcDTO));
+                ap.setContractor(tcDTO.getContractor());
+                ap.setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
+                ap.setDeclaredSpeed(tcDTO.getDeclaredSpeed());
+                ap.setVisible(true);
+                ap.setCreatedDate(LocalDateTime.now());
+                ap.setMaxAmount(0);
+                ap.setDeleted(false);
+                ap.setModifiedDate(LocalDateTime.now());
+                ap.setCreatedBy("s");
+                ap.setModifiedBy("s");
                 // TODO: Transaction.
-                repositoryAccessPoints.save(apByOrgId);
+                repositoryAccessPoints.save(ap);
             }
         }
+    }
+
+    private Organization getOrganization(ApFromExcelDTO ap) {
+        Organization organization = repositoryOrganization.findByFias(UUID.fromString(ap.getFias()));
+        if (organization == null) {
+            organization = new Organization();
+            organization.setFias(UUID.fromString(ap.getFias()));
+            Location location = repositoryLocation.findByFias(UUID.fromString(ap.getFiasLocation()));
+            if (location != null) {
+                organization.setLocation(location);
+            }
+            organization.setName(ap.getName());
+            organization.setAddress(ap.getAddress());
+            organization.setSmo(repositorySmoType.findByName(ap.getSmo()));
+            organization.setType(repositoryOrganizationType.findByName(ap.getType()));
+            organization.setAcronym("");
+            organization.setInn("");
+            organization.setKpp("");
+            repositoryOrganization.save(organization);
+        }
+        return organization;
+    }
+
+    private Point createPoint(String x, String y) {
+        Point p = new GeometryFactory().createPoint(new Coordinate(Double.parseDouble(x), Double.parseDouble(y)));
+        p.setSRID(4326);
+        return p;
     }
 }
