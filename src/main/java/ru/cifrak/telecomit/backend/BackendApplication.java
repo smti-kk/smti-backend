@@ -58,6 +58,7 @@ public class BackendApplication {
 
         final User newUser = new User();
         newUser.setUsername("admin");
+        newUser.setEmail("a@a.aa");
         newUser.setFirstName("admin");
         newUser.setPassword(passwordEncoder.encode("pwd"));
         newUser.getRoles().add(UserRole.ADMIN);
