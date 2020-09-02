@@ -1,6 +1,7 @@
 package ru.cifrak.telecomit.backend.repository.map;
 
 import org.locationtech.jts.geom.Polygon;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +20,7 @@ public interface MapLocationsPositionRepository extends Repository<MapLocation, 
     @Query("SELECT l" +
             " FROM MapLocation l" +
             " where l.type not in ('р-н', 'край', 'с/с', 'тер') and l.geoData is not null")
+    @EntityGraph("map-location-full")
     List<MapLocation> findAll();
 
     @Query("SELECT l" +
