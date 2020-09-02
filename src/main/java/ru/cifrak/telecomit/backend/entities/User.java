@@ -82,7 +82,7 @@ public class User implements Serializable, UserDetails {
     protected String passport = "";
 
     @NonNull
-    @Column(nullable = false, columnDefinition = "text")
+    @Column(nullable = false, columnDefinition = "text", unique = true)
     protected String email = "";
 
     @NonNull
