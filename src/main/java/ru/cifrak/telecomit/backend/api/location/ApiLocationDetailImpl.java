@@ -1,9 +1,10 @@
 package ru.cifrak.telecomit.backend.api.location;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.LocationProvidingInfo;
 import ru.cifrak.telecomit.backend.entities.User;
@@ -58,9 +59,8 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
         return locationService.parents();
     }
 
-    public LocationForTable getOne(Integer id) {
-        return repository.findById(id)
-                .orElseThrow(NotFoundException::new);
+    public LocationForTable getOne(Integer id) throws NotFoundException {
+        return locationService.getOne(id);
     }
 
     public LocationProvidingInfo locationProvidingInfo(Integer locationId) {
