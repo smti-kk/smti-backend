@@ -39,6 +39,11 @@ public class MonitoringAccessPoint implements Serializable {
     //TODO:[generate TICKET]: перенести список сетей, которые подвергаются билингу, сейчас они в точках сидят.
 
     // ZABBIX properties
+    /**
+     * main service
+     */
+    @Column
+    private Long serviceId;
 
     // ZABBIX ------------ DEVICE
 
@@ -53,17 +58,18 @@ public class MonitoringAccessPoint implements Serializable {
      * High ICMP ping loss
      */
     @Column
-    private String deviceTriggerResponseLost;
+    private Long deviceTriggerResponseLost;
     /**
      * High ICMP ping response time
      */
     @Column
-    private String deviceTriggerResponseLow;
+    private Long deviceTriggerResponseLow;
     /**
      * Unavailable by ICMP ping
      */
     @Column
-    private String deviceTriggerUnavailable;
+    private Long deviceTriggerUnavailable;
+
     // ZABBIX ------------ SENSOR
     @Column
     private String sensorId;
@@ -78,5 +84,5 @@ public class MonitoringAccessPoint implements Serializable {
      * Unavailable by ICMP ping Energy
      */
     @Column
-    private String seonsorTriggerEnergy;
+    private Long sensorTriggerEnergy;
 }

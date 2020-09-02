@@ -38,4 +38,6 @@
     <include file="0037-add-entitiy-history-to-requests.xml" relativeToChangelogFile="true" />
     <include file="0038-added-decline_comment_to_edit_request.xml" relativeToChangelogFile="true" />
     <include file="0039-remove-add-columns.xml" relativeToChangelogFile="true" />
+    <include file="0040-ref-monitoring-to-ap.xml" relativeToChangelogFile="true" />
+    <include file="0041-ref-ap-addresses.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
