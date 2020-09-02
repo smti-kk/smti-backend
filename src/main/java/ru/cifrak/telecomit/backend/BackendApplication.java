@@ -7,6 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,7 @@ import java.util.Optional;
 //@EnableTransactionManagement
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @EntityScan
+@EnableCaching
 public class BackendApplication {
 
     public static void main(String[] args) {
@@ -58,6 +60,7 @@ public class BackendApplication {
 
         final User newUser = new User();
         newUser.setUsername("admin");
+        newUser.setEmail("a@a.aa");
         newUser.setFirstName("admin");
         newUser.setPassword(passwordEncoder.encode("pwd"));
         newUser.getRoles().add(UserRole.ADMIN);

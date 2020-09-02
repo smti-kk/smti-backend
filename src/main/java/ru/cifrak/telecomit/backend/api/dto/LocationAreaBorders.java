@@ -9,9 +9,11 @@ import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
-public class LocationAreaBorders {
+public class LocationAreaBorders implements Serializable {
     private Integer id;
     private String name;
     private String fullName;

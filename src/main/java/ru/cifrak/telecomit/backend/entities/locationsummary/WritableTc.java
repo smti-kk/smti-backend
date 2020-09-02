@@ -67,14 +67,14 @@ public class WritableTc {
      * Количество ТАКСОФОНОВ
      */
     @PositiveOrZero
-    @Column
+    @Column(name = "quantity")
     private Integer payphones;
 
     /**
      * Количество инфоматов
      */
     @PositiveOrZero
-    @Column
+    @Transient
     private Integer infomats;
 
     public WritableTc() {

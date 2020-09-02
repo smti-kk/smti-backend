@@ -14,14 +14,14 @@ import ru.cifrak.telecomit.backend.api.dto.AuthFrontDTO;
 import ru.cifrak.telecomit.backend.api.dto.TokenDTO;
 import ru.cifrak.telecomit.backend.auth.repository.RepositoryUser;
 import ru.cifrak.telecomit.backend.cache.entity.AuthTokenCache;
-import ru.cifrak.telecomit.backend.cache.entity.TempTokenCache;
-import ru.cifrak.telecomit.backend.cache.repository.TempTokenCacheRepository;
 import ru.cifrak.telecomit.backend.cache.service.AuthTokenCacheService;
 import ru.cifrak.telecomit.backend.entities.User;
 
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -33,19 +33,16 @@ public class AuthAPI {
 
     private final AuthTokenCacheService authTokenCacheService;
 
-    private final TempTokenCacheRepository tempTokenCacheRepository;
-
-    public AuthAPI(PasswordEncoder passwordEncoder, RepositoryUser userRepository, AuthTokenCacheService authTokenCacheService, TempTokenCacheRepository tempTokenCacheRepository) {
+    public AuthAPI(PasswordEncoder passwordEncoder, RepositoryUser userRepository, AuthTokenCacheService authTokenCacheService) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.authTokenCacheService = authTokenCacheService;
-        this.tempTokenCacheRepository = tempTokenCacheRepository;
     }
 
     @PostMapping("/login/")
     public ResponseEntity<TokenDTO> register(@Validated @RequestBody AuthFrontDTO data) throws NoSuchAlgorithmException {
         log.info("-> [api] auth/login/");
-        final Optional<User> userOptional = userRepository.findByUsername(data.getEmail());
+        final Optional<User> userOptional = userRepository.findByEmail(data.getEmail());
 
         if (!userOptional.isPresent()) {
             log.info("<- [api] auth/login/");
@@ -71,20 +68,6 @@ public class AuthAPI {
         final AuthTokenCache newAuthTokenCache = authTokenCacheService.createForUser(user, zoneId);
         log.info("<- [api] auth/login/");
         return ResponseEntity.ok(new TokenDTO(newAuthTokenCache.getId()));
-    }
-
-    @PostMapping("/exchange_temp_token")
-    public ResponseEntity<TokenDTO> exchangeTempToken(@Validated @RequestBody TokenDTO data) {
-        log.info("-> [api] auth/exchange_temp_token");
-        final Optional<TempTokenCache> optionalTempTokenCache = tempTokenCacheRepository.findById(data.getToken());
-
-        return optionalTempTokenCache
-                .map(tempTokenCache -> {
-                    final String token = tempTokenCache.getToken();
-                    tempTokenCacheRepository.delete(tempTokenCache);
-                    return ResponseEntity.ok(new TokenDTO(token));
-                })
-                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @GetMapping("/account_info")

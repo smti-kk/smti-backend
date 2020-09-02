@@ -7,12 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.cifrak.telecomit.backend.api.dto.ExelReportAccessPointFullDTO;
 import ru.cifrak.telecomit.backend.api.dto.ExelReportLocation;
 import ru.cifrak.telecomit.backend.api.dto.LocationProvidingInfo;
-import ru.cifrak.telecomit.backend.api.util.Reports.HelperReport;
 import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
@@ -29,7 +26,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static ru.cifrak.telecomit.backend.api.util.Reports.HelperReport.generateExelFormat;
 import static ru.cifrak.telecomit.backend.api.util.Reports.HelperReport.generateExelFormatLocationType;
 
 @Slf4j
@@ -76,9 +72,8 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
         return locationService.parents();
     }
 
-    public LocationForTable getOne(Integer id) {
-        return repository.findById(id)
-                .orElseThrow(NotFoundException::new);
+    public LocationForTable getOne(Integer id) throws NotFoundException {
+        return locationService.getOne(id);
     }
 
     public LocationProvidingInfo locationProvidingInfo(Integer locationId) {

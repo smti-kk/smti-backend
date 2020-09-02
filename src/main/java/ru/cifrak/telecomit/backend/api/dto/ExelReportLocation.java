@@ -2,7 +2,6 @@ package ru.cifrak.telecomit.backend.api.dto;
 
 import lombok.Data;
 import ru.cifrak.telecomit.backend.entities.*;
-import sun.rmi.transport.tcp.TCPEndpoint;
 
 import javax.validation.constraints.NotNull;
 import java.util.stream.Collectors;
