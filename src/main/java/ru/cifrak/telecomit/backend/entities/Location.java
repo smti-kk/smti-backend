@@ -121,6 +121,7 @@ public class Location implements Serializable {
     private List<Organization> organizations;
 
     @OneToMany
+    @JoinColumn(name = "key_location")
     private List<TechnicalCapability> technicalCapabilities;
 /*
     @OneToMany(mappedBy = "locationStart")

@@ -3,22 +3,24 @@ package ru.cifrak.telecomit.backend.api.util.Reports;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.cifrak.telecomit.backend.api.dto.ExelReportAccessPointFullDTO;
-import ru.cifrak.telecomit.backend.entities.AccessPointFull;
-import ru.cifrak.telecomit.backend.entities.Location;
-import ru.cifrak.telecomit.backend.entities.Organization;
+import ru.cifrak.telecomit.backend.api.dto.ExelReportLocation;
 import ru.cifrak.telecomit.backend.utils.export.ExcelExporter;
 import ru.cifrak.telecomit.backend.utils.export.ExportToExcelConfiguration;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class HelperReport {
 
     public static ExcelExporter<ExelReportAccessPointFullDTO> generateExelFormat () {
+
         ExportToExcelConfiguration<ExelReportAccessPointFullDTO> exportToExcelConfiguration = new ExportToExcelConfiguration<>();
+
         exportToExcelConfiguration.addColumn(0, Integer.class, ExelReportAccessPointFullDTO::getPp, "№ п/п");
         exportToExcelConfiguration.addColumn(1, Integer.class, ExelReportAccessPointFullDTO::getIdOrg, "ID учреждения");
         exportToExcelConfiguration.addColumn(2, ExelReportAccessPointFullDTO::getMunicipalLocationType, "Вид муниципального образования");
@@ -50,6 +52,33 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(27, ExelReportAccessPointFullDTO::getGovernmentProgramName, "Государственная программа");
         exportToExcelConfiguration.addColumn(28, ExelReportAccessPointFullDTO::getParticipationStatus, "Статус участия");
         exportToExcelConfiguration.addColumn(29, Integer.class, ExelReportAccessPointFullDTO::getYearOverGovProgram, "Год реализации");
+
+        return new ExcelExporter<>(exportToExcelConfiguration);
+    }
+
+    public static ExcelExporter<ExelReportLocation> generateExelFormatLocationType () {
+
+        ExportToExcelConfiguration<ExelReportLocation> exportToExcelConfiguration = new ExportToExcelConfiguration<>();
+
+        exportToExcelConfiguration.addColumn(0, Integer.class, ExelReportLocation::getPp, "№ п/п");
+        exportToExcelConfiguration.addColumn(1, ExelReportLocation::getDistrictName, "Район");
+        exportToExcelConfiguration.addColumn(2, ExelReportLocation::getDistrict, "Тип МО");
+        exportToExcelConfiguration.addColumn(3, ExelReportLocation::getLocationName, "Населенный пункт");
+        exportToExcelConfiguration.addColumn(4, Integer.class,ExelReportLocation::getPopulation, "Население");
+        exportToExcelConfiguration.addColumn(5, ExelReportLocation::getESPD, "ЕСПД");
+        exportToExcelConfiguration.addColumn(6, ExelReportLocation::getSMO, "СЗО");
+        exportToExcelConfiguration.addColumn(7, ExelReportLocation::getRSMO, "РСЗО");
+        exportToExcelConfiguration.addColumn(8, ExelReportLocation::getZSPD, "ЗСПД");
+        exportToExcelConfiguration.addColumn(9, ExelReportLocation::getCellular, "Сотовая связь");
+        exportToExcelConfiguration.addColumn(10, ExelReportLocation::getInternet, "Интернет");
+        exportToExcelConfiguration.addColumn(11, ExelReportLocation::getTelephone, "Телефон");
+        exportToExcelConfiguration.addColumn(12, ExelReportLocation::getPayphone, "Таксофон (кол-во)");
+        exportToExcelConfiguration.addColumn(13,Boolean.class, ExelReportLocation::getInfomat, "Инфомат");
+        exportToExcelConfiguration.addColumn(14, ExelReportLocation::getRadio, "Радио");
+        exportToExcelConfiguration.addColumn(15, ExelReportLocation::getTV, "Телевидение");
+        exportToExcelConfiguration.addColumn(16, ExelReportLocation::getPost, "Почта");
+        exportToExcelConfiguration.addColumn(17, ExelReportLocation::getOKATO, "ОКАТО");
+
         return new ExcelExporter<>(exportToExcelConfiguration);
     }
 

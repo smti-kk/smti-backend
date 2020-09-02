@@ -14,7 +14,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 
 @Entity
-@Table
+@Table(name = "technical_capability")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "split", discriminatorType = DiscriminatorType.STRING)
 @JsonIgnoreProperties(ignoreUnknown=true)

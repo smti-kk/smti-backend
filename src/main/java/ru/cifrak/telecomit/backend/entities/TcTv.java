@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.cifrak.telecomit.backend.serializer.SignalConverter;
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Data
@@ -36,4 +38,12 @@ public class TcTv extends TechnicalCapability {
     @PositiveOrZero
     @Column
     private Integer aChannels;
+
+    @JsonIgnore
+    public String signalAsString() {
+        return type.stream()
+                .map(Signal::getName)
+                .collect(Collectors.joining(", "));
+    }
+
 }
