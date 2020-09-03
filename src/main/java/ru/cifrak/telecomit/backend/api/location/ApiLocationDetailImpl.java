@@ -85,6 +85,7 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
     }
 
     public ResponseEntity<ByteArrayResource> exportExcel(List<Integer> locationIds) throws IOException {
+        log.info("->GET /api/detail-locations/export-excel");
         List<Location> allById = repositoryLocation.findAllById(locationIds);
 
         List<ExelReportLocation> collect = allById
@@ -95,10 +96,10 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
         IntStream.range(0, collect.size()).forEach(i -> collect.get(i).setPp(i + 1));
         ByteArrayResource resource = new ByteArrayResource(generateExelFormatLocationType().exportToByteArray(collect));
 
-        log.info("<-GET /api/report/organization/ap-all/export");
+        log.info("<-GET /api/detail-locations/export-excel");
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + ".xlsx\"")
+                        "attachment; filename=\"%D0%9E%D1%82%D1%87%D0%B5%D1%82_%D0%BF%D0%BE_%D0%BD%D0%B0%D1%81%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%BC_%D0%BF%D1%83%D0%BD%D0%BA%D1%82%D0%B0%D0%BC" + ".xlsx\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(resource.contentLength())
                 .body(resource);

@@ -69,9 +69,9 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(6, ExelReportLocation::getSMO, "СЗО");
         exportToExcelConfiguration.addColumn(7, ExelReportLocation::getRSMO, "РСЗО");
         exportToExcelConfiguration.addColumn(8, ExelReportLocation::getZSPD, "ЗСПД");
-        exportToExcelConfiguration.addColumn(9, ExelReportLocation::getCellular, "Сотовая связь");
+        exportToExcelConfiguration.addColumn(9, ExelReportLocation::getTelephone, "Сотовая связь");
         exportToExcelConfiguration.addColumn(10, ExelReportLocation::getInternet, "Интернет");
-        exportToExcelConfiguration.addColumn(11, ExelReportLocation::getTelephone, "Телефон");
+        exportToExcelConfiguration.addColumn(11, ExelReportLocation::getCellular, "Телефон");
         exportToExcelConfiguration.addColumn(12, ExelReportLocation::getPayphone, "Таксофон (кол-во)");
         exportToExcelConfiguration.addColumn(13,Boolean.class, ExelReportLocation::getInfomat, "Инфомат");
         exportToExcelConfiguration.addColumn(14, ExelReportLocation::getRadio, "Радио");
