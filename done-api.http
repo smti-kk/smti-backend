@@ -540,27 +540,27 @@ Authorization: Token {{auth_token}}
 Content-Type: application/json
 
 {
-    "device": {
-     "hostName": "m008U.08.CityName",
-     "ip": "127.0.0.1",
-     "groupid": "34",
-     "tag": "project",
-     "tagValue": "telecom-it",
-     "templateid": "10233",
-     "macro": "{$SNMP_COMMUNITY}",
-     "macroValue": "ESPD_monitor"
-     },
-     "sensor": {
-     "hostName": "m008U.s.08.CityName",
-     "ip": "127.0.0.2",
-     "groupid": "34",
-     "tag": "project",
-     "tagValue": "telecom-it",
-     "templateid": "10233",
-     "macro": "{$SNMP_COMMUNITY}",
-     "macroValue": "ESPD_monitor"
-     }
-
+  "networks": null,
+  "device": {
+    "hostName": "m008U.08.CityName",
+    "ip": "127.0.0.1",
+    "groupid": "34",
+    "tag": "project",
+    "tagValue": "telecom-it",
+    "templateid": "10233",
+    "macro": "{$SNMP_COMMUNITY}",
+    "macroValue": "ESPD_monitor"
+  },
+  "sensor": {
+    "hostName": "m008U.s.08.CityName",
+    "ip": "127.0.0.2",
+    "groupid": "34",
+    "tag": "project",
+    "tagValue": "telecom-it",
+    "templateid": "10233",
+    "macro": "{$SNMP_COMMUNITY}",
+    "macroValue": "ESPD_monitor"
+  }
 }
 
 

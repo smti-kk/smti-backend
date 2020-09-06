@@ -202,7 +202,7 @@ public class ServiceExternalBlenders {
     }
 
     private void createDeviceAndSencor(MonitoringAccessPoint map, MonitoringAccessPointWizardDTO wizard, WebClient client, String authToken) throws Exception {
-        log.info("[   ] authenticated: {}", authToken);
+        log.info("[   ] -> monitoring::wizard::data:: {}", wizard);
         log.info("[   ] -> create device");
         String device = insertIntoZabbix(client, authToken, wizard.getDevice());
         log.info("[   ] <- create device");

@@ -53,7 +53,14 @@ public class ServiceOrganization {
         jmap.setActive(Boolean.TRUE);
         if (ap.getOrganization().getId().equals(id)) {
             try {
-//                blenders.insertIntoUTM5(ap, map);
+                if (wizard.getNetworks() != null && !wizard.getNetworks().isEmpty()){
+                    ap.setNetworks(wizard.getNetworks());
+                    rAccessPoints.save(ap);
+                } else {
+                    throw new Exception("Networks for AP is empty");
+                }
+                ap.setNetworks(wizard.getNetworks());
+                blenders.insertIntoUTM5(ap, map);
             } catch (Exception e) {
                 throw new Exception("UTM5:error: " + e.getMessage());
             }
