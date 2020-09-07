@@ -14,19 +14,19 @@ import java.util.List;
  * <br/> из базы данных для схемы-карты
  */
 public interface MapAccessPointRepository extends Repository<MapAccessPoint, Integer> {
-    @Query("SELECT new ru.cifrak.telecomit.backend.entities.map.MapAccessPoint(ap.id, ap.point)" +
+    @Query("SELECT new ru.cifrak.telecomit.backend.entities.map.MapAccessPoint(ap.id, ap.point, ap.connectionState)" +
             " FROM MapAccessPoint ap " +
             " WHERE ap.type = :type")
     List<MapAccessPoint> findAll(@Param("type") String type);
 
-    @Query("SELECT new ru.cifrak.telecomit.backend.entities.map.MapAccessPoint(ap.id, ap.point)" +
+    @Query("SELECT new ru.cifrak.telecomit.backend.entities.map.MapAccessPoint(ap.id, ap.point, ap.connectionState)" +
             " FROM MapAccessPoint ap " +
             " WHERE ap.type = :type" +
             "   and within(ap.point, :bbox) = true")
     List<MapAccessPoint> findAllByBbox(@Param("bbox") Polygon bbox,
                                        @Param("type") String type);
 
-    @Query("SELECT new ru.cifrak.telecomit.backend.entities.map.MapAccessPoint(ap.id, ap.point)" +
+    @Query("SELECT new ru.cifrak.telecomit.backend.entities.map.MapAccessPoint(ap.id, ap.point, ap.connectionState)" +
             " FROM MapAccessPoint ap " +
             " WHERE ap.type = :type and ap.modified > :modified")
     List<MapAccessPoint> findByModifiedAndType(@Param("type") String type,
