@@ -21,6 +21,17 @@ public class IpReversed {
         return String.join(".", chunks);
     }
 
+    public String ipStrait() {
+        String[] chunks;
+        if (ip.matches(".*\\/.*")) {
+            chunks = ip.substring(0, ip.indexOf("/")).split("\\.");
+        } else {
+            chunks = ip.split("\\.");
+        }
+//        Collections.reverse(Arrays.asList(chunks));
+        return String.join(".", chunks);
+    }
+
     ;
 
     public String mask() {

@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.api.dto;
+package ru.cifrak.telecomit.backend.api.dto.external;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 
-public class ZabbixDTO {
+public class ExtZabbixDto {
     private String hostName;
     private String ip;
     private String groupid;

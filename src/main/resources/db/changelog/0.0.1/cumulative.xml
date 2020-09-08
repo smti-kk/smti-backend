@@ -40,4 +40,6 @@
     <include file="0039-remove-add-columns.xml" relativeToChangelogFile="true" />
     <include file="0040-ap-add-connection-state-column.xml" relativeToChangelogFile="true" />
     <include file="0041-ap-add-connection-state-constraint.xml" relativeToChangelogFile="true" />
+    <include file="0042-ref-monitoring-to-ap.xml" relativeToChangelogFile="true" />
+    <include file="0043-ref-ap-addresses.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

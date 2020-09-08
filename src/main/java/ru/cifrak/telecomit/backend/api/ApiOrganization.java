@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping("/api/organization")
+
 public class ApiOrganization {
     private final RepositoryOrganization rOrganization;
     private final RepositoryAccessPoints rAccessPoints;
