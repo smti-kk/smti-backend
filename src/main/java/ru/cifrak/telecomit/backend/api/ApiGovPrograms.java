@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.api;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,8 @@ public class ApiGovPrograms {
         this.repository = repository;
     }
 
-    @GetMapping("/")
+    @GetMapping
+    @Cacheable("gov_programs")
     public List<GovernmentDevelopmentProgram> list() {
         return repository.findAll();
     }

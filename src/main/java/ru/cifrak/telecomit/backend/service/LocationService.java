@@ -2,12 +2,15 @@ package ru.cifrak.telecomit.backend.service;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 import ru.cifrak.telecomit.backend.entities.locationsummary.QLocationParent;
+import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
 import ru.cifrak.telecomit.backend.repository.DSLDetailLocation;
 
 import javax.annotation.Nullable;
@@ -26,6 +29,7 @@ public class LocationService {
         this.repository = repository;
     }
 
+    @Cacheable("location_parents")
     public List<LocationParent> parents() {
         QLocationParent parent = QLocationParent.locationParent;
         return new JPAQuery<LocationParent>(entityManager)
@@ -34,6 +38,7 @@ public class LocationService {
                 .fetch();
     }
 
+    @Cacheable(value = "locations")
     public Page<LocationForTable> listFiltered(Pageable pageable,
                                                @Nullable List<Integer> mobileTypes,
                                                @Nullable List<Integer> internetTypes,
@@ -54,4 +59,13 @@ public class LocationService {
                 .build();
         return repository.findAll(expression, pageable);
     }
+
+    @Cacheable("locations")
+    public LocationForTable getOne(Integer id) throws NotFoundException {
+        return repository.findById(id)
+                .orElseThrow(NotFoundException::new);
+    }
+
+    @CacheEvict(value = {"locations", "locations_fc"}, allEntries = true)
+    public void refreshCache() {}
 }

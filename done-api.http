@@ -598,3 +598,9 @@ GET http://localhost:8080/api/report/organization/ap-all/export/
 ###
 GET http://localhost:8080/api/report/organization/ap-all/export/?smo=5&inet=10
 #Authorization: Token {{auth_token}}
+
+### LOGIN USER with taking TOKEN
+POST http://localhost:8080/api/detail-locations/export-excel
+Content-Type: application/json
+
+[1516]

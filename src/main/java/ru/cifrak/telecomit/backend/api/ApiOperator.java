@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.api;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +39,7 @@ public class ApiOperator {
     }
 
     @GetMapping("/grouped")
+    @Cacheable("grouped_operators")
     public Map<String, List<Operator>> grouped() {
         Map<String, List<Operator>> map = new HashMap<>();
         map.put("internet", repository.internet());
