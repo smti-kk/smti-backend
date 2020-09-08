@@ -7,14 +7,16 @@ public class MapLocationSearchResult {
     private final Integer id;
     private final String name;
     private final String type;
+    private final Integer parentId;
     private final String parentName;
     private final String parentType;
 
-    public MapLocationSearchResult(Integer id, String name, String type, String parentName, String parentType) {
+    public MapLocationSearchResult(Integer id, String name, String type, Integer parentId, String parentName, String parentType) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.parentName = parentName;
         this.parentType = parentType;
+        this.parentId = parentId;
     }
 }

@@ -66,6 +66,6 @@ public class LocationService {
                 .orElseThrow(NotFoundException::new);
     }
 
-    @CacheEvict(value = "locations", allEntries = true)
+    @CacheEvict(value = {"locations", "locations_fc"}, allEntries = true)
     public void refreshCache() {}
 }

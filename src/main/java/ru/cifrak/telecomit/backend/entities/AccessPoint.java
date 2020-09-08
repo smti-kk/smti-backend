@@ -169,4 +169,7 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @JsonIgnore
     private Organization organization;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private APConnectionState connectionState = APConnectionState.NOT_MONITORED;
 }

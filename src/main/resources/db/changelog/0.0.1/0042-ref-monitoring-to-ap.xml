@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="panovav" id="1">
+        <renameColumn tableName="monitoring_access_point" oldColumnName="id_device" newColumnName="device_id" schemaName="external_systems" remarks="zabbix id for device" />
+    </changeSet>
+
+    <changeSet author="panovav" id="2">
+        <renameColumn tableName="monitoring_access_point" oldColumnName="id_sensor" newColumnName="sensor_id" schemaName="external_systems" remarks="zabbix id for sensor" />
+    </changeSet>
+
+    <changeSet author="panovav" id="3">
+        <addColumn tableName="monitoring_access_point" schemaName="external_systems">
+            <column name="service_id" type="bigint" remarks="zabbix main service from which we can get report data about availability of access point" />
+            <column name="device_name" type="varchar(255)" remarks="zabbix host name for device" />
+            <column name="device_ip" type="varchar(255)" remarks="zabbix ip for device"/>
+            <column name="device_trigger_response_lost" type="bigint" />
+            <column name="device_trigger_response_low" type="bigint" />
+            <column name="device_trigger_unavailable" type="bigint" />
+            <column name="sensor_name" type="varchar(255)" remarks="zabbix host name for sensor" />
+            <column name="sensor_ip" type="varchar(255)" remarks="zabbix ip for sensor"/>
+            <column name="sensor_trigger_energy" type="bigint" />
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

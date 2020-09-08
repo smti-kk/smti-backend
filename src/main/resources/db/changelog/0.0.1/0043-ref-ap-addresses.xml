@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="panovav" id="1">
+        <sql dbms="postgresql" endDelimiter=";">
+            create table bck_access_point as (select * from access_point ap);
+        </sql>
+    </changeSet>
+
+    <changeSet author="panovav" id="2">
+        <sql dbms="postgresql" endDelimiter=";">
+            -- 1st remove at last position comma
+            update access_point
+            set address = subq.adr_sb
+            from
+            (select ap.id,
+            REGEXP_REPLACE(ap.address, '(,)$', '') as adr_sb
+            from
+            access_point ap) subq
+            where access_point.id = subq.id;
+
+            -- 2nd update addresses
+            update access_point
+            set address = subq.adr_sb
+            from
+            ( select ap.id,
+            REGEXP_REPLACE(ap.address, '.*, (.*),(.*)$', '\1, \2') as adr_sb
+            from
+            access_point ap ) subq
+            where access_point.id = subq.id;
+        </sql>
+    </changeSet>
+
+
+</databaseChangeLog>

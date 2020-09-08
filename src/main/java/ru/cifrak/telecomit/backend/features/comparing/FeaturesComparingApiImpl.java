@@ -1,11 +1,11 @@
 package ru.cifrak.telecomit.backend.features.comparing;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.entities.TcState;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
 import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
-
-import java.util.List;
 
 @RestController
 public class FeaturesComparingApiImpl implements FeaturesComparingApi {
@@ -20,8 +20,8 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
     }
 
     @Override
-    public List<LocationFC> locations() {
-        return locationRepository.findAll();
+    public Page<LocationFC> locations(Pageable pageable) {
+        return locationRepository.findAll(pageable);
     }
 
     @Override

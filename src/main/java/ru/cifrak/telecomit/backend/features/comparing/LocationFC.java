@@ -6,13 +6,14 @@ import org.hibernate.annotations.FetchMode;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Data
 @Table(name = "location")
-public class LocationFC {
+public class LocationFC implements Serializable {
     @Id
     private Integer id;
     private String type;

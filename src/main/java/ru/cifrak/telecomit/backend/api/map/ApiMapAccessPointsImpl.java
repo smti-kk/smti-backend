@@ -1,11 +1,14 @@
 package ru.cifrak.telecomit.backend.api.map;
 
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.repository.map.MapAccessPointRepository;
 import ru.cifrak.telecomit.backend.entities.map.MapAccessPoint;
 import ru.cifrak.telecomit.backend.service.BboxFactory;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,5 +47,11 @@ public class ApiMapAccessPointsImpl implements ApiMapAccessPoints {
     @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_ORGANIZATION"})
     public Integer locationId(Integer accessPointId) {
         return mapAccessPointRepository.locationId(accessPointId);
+    }
+
+    @SendTo("/access-points/messages")
+    @MessageMapping("/access-points/messages")
+    public List<MapAccessPoint> send() {
+        return new ArrayList<>();
     }
 }
