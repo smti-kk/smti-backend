@@ -238,13 +238,11 @@ public class ServiceExternalBlenders {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(jsonRequestAuthorization));
         String jsonResponseAuthentication = apiAuthenticate.retrieve().bodyToMono(String.class).block();
-        log.debug("[   ] authenticated: {}", jsonResponseAuthentication);
-        log.info("[   ] go for create user");
-
-        // STEP-2: CREATE NEW USER IN UTM5
         ObjectMapper jsonMapper = new ObjectMapper();
         Map<String, String> mapAuthorization = jsonMapper.readValue(jsonResponseAuthentication, Map.class);
         String sessionId = mapAuthorization.get("session_id");
+
+        // STEP-2: CREATE NEW USER IN UTM5
         ObjectNode jsonParams = jsonMapper.createObjectNode();
         jsonParams.put("login", "telecomit-" + ap.getId());
         jsonParams.put("password", utm5Config.getUserpwd());
@@ -313,7 +311,7 @@ public class ServiceExternalBlenders {
         jsonNewTariffLink.put("first_tariff_id", 2);
         jsonNewTariffLink.put("second_tariff_id", 0);
         //TODO:[generate TICKET]: this value should choose from system
-        jsonNewTariffLink.put("accounting_period_id", 14);
+        jsonNewTariffLink.put("accounting_period_id", 16);
         jsonNewTariffLink.put("tariff_link_id", 0);
         jsonNewTariffLink.put("change_now", false);
         log.debug("{}", jsonNewTariffLink);
@@ -375,7 +373,7 @@ public class ServiceExternalBlenders {
             String[] networks = ap.getNetworks().split("; ");
             for (String network : networks) {
                 ObjectNode networkItem = jsonMapper.createObjectNode();
-                networkItem.put("ip", new IpReversed(network).ip());
+                networkItem.put("ip", new IpReversed(network).ipStrait());
                 networkItem.put("mask", Integer.valueOf(new IpReversed(network).mask()));
                 networkItem.put("mac", "");
                 networkItem.put("login", "");

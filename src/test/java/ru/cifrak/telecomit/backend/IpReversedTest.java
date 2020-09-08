@@ -25,6 +25,11 @@ public class IpReversedTest {
     }
 
     @Test
+    public void IpWithMaskGetIpStraitTest() {
+        assertThat(new IpReversed(ipWithMask).ipStrait()).isEqualTo("192.168.0.1");
+    }
+
+    @Test
     public void IpWithMaskGetMaskTest() {
         assertThat(new IpReversed(ipWithMask).mask()).isEqualTo("30");
     }
