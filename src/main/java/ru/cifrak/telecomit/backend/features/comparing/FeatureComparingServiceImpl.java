@@ -71,7 +71,7 @@ public class FeatureComparingServiceImpl implements FeatureComparingService {
             predicate = predicate.and(locationFC.technicalCapabilities.any().trunkChannel.id.in(connectionTypes));
         }
         if (mobileTypes != null) {
-            predicate = predicate.and(locationFC.technicalCapabilities.any().trunkChannel.id.in(mobileTypes));
+            predicate = predicate.and(locationFC.technicalCapabilities.any().typeMobile.id.in(mobileTypes));
         }
         if (govProgram != null) {
             predicate = predicate.and(locationFC.technicalCapabilities.any().governmentDevelopmentProgram.id.eq(govProgram));
