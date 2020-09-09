@@ -10,9 +10,11 @@ import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
-public class LocationSimple {
+public class LocationSimple implements Serializable {
     private Integer id;
 
     private String parent;
