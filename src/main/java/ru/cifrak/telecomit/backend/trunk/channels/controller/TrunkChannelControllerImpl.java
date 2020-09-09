@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.trunk.channels.controller;
 
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
 import ru.cifrak.telecomit.backend.trunk.channels.entity.TrunkChannel;
@@ -16,10 +17,12 @@ public class TrunkChannelControllerImpl implements TrunkChannelController {
         this.trunkChannelRepository = trunkChannelRepository;
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
     public List<TrunkChannel> list() {
         return trunkChannelRepository.findAll();
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
     public TrunkChannel one(TrunkChannel trunkChannel) throws NotFoundException {
         if (trunkChannel == null) {
             throw new NotFoundException();
@@ -27,15 +30,18 @@ public class TrunkChannelControllerImpl implements TrunkChannelController {
         return trunkChannel;
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
     public void remove(Integer trunkChannelId) {
         trunkChannelRepository.deleteById(trunkChannelId);
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
     public TrunkChannel save(TrunkChannel trunkChannel) {
         return trunkChannelRepository.save(trunkChannel);
     }
 
     @Override
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
     public TrunkChannel update(TrunkChannel trunkChannel) {
         return trunkChannelRepository.save(trunkChannel);
     }
