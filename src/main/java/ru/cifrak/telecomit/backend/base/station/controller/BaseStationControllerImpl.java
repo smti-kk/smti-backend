@@ -20,11 +20,10 @@ public class BaseStationControllerImpl implements BaseStationController {
         return baseStationsRepository.findAll();
     }
 
-    public BaseStation baseStation(BaseStation baseStation) throws NotFoundException {
-        if (baseStation == null) {
-            throw new NotFoundException();
-        }
-        return baseStation;
+    public BaseStation baseStation(Integer baseStationId) throws NotFoundException {
+        return baseStationsRepository
+                .findById(baseStationId)
+                .orElseThrow(NotFoundException::new);
     }
 
     public void remove(Integer baseStationId) {

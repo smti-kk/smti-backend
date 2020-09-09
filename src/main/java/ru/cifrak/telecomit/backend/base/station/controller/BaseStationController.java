@@ -11,8 +11,8 @@ public interface BaseStationController {
     @GetMapping
     List<BaseStation> baseStations();
 
-    @GetMapping("/{baseStation}")
-    BaseStation baseStation(@PathVariable BaseStation baseStation) throws NotFoundException;
+    @GetMapping("/{baseStationId}")
+    BaseStation baseStation(@PathVariable Integer baseStationId) throws NotFoundException;
 
     @DeleteMapping("/{baseStationId}")
     void remove(@PathVariable Integer baseStationId);
