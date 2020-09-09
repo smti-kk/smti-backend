@@ -68,10 +68,10 @@ public class LocationProvidingInfo {
             childs.add(location);
         }
         location.getChildren().forEach(c -> {
-            if (c.getChildren().isEmpty()) {
+            if (c.getChildren().isEmpty() && !"с/с".equals(c.getType())) {
                 childs.add(c);
             } else {
-                if (c.getPopulation() != null) {
+                if (c.getPopulation() != 0 && c.getPopulation() != null) {
                     childs.add(c);
                 }
                 childs.addAll(geChilds(c));
