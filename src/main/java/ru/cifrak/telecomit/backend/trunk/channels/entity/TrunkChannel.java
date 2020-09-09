@@ -13,11 +13,19 @@ import java.time.LocalDate;
         @NamedEntityGraph(
                 name = "trunk_channel_full",
                 attributeNodes = {
-                        @NamedAttributeNode("locationStart"),
-                        @NamedAttributeNode("locationEnd"),
+                        @NamedAttributeNode(value = "locationStart", subgraph = "trunk_channel_location_parent"),
+                        @NamedAttributeNode(value = "locationEnd", subgraph = "trunk_channel_location_parent"),
                         @NamedAttributeNode("operator"),
                         @NamedAttributeNode("typeTrunkChannel"),
-                        @NamedAttributeNode("program"),
+                        @NamedAttributeNode("program")
+                },
+                subgraphs = {
+                        @NamedSubgraph(
+                                name = "trunk_channel_location_parent",
+                                attributeNodes = {
+                                        @NamedAttributeNode("parent")
+                                }
+                        )
                 }
         )
 )

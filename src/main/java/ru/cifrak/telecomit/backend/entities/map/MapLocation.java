@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Data
@@ -18,7 +19,7 @@ import java.util.UUID;
                 }
         )
 })
-public class MapLocation {
+public class MapLocation implements Serializable {
     @Id
     private Integer id;
 

@@ -1,6 +1,7 @@
 package ru.cifrak.telecomit.backend.repository.map;
 
 import org.locationtech.jts.geom.Polygon;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -21,6 +22,7 @@ public interface MapLocationsPositionRepository extends Repository<MapLocation, 
             " FROM MapLocation l" +
             " where l.type not in ('р-н', 'край', 'с/с', 'тер') and l.geoData is not null")
     @EntityGraph("map-location-full")
+    @Cacheable("map-locations")
     List<MapLocation> findAll();
 
     @Query("SELECT l" +
@@ -28,6 +30,7 @@ public interface MapLocationsPositionRepository extends Repository<MapLocation, 
             " where l.type not in ('р-н', 'край', 'с/с', 'тер') " +
             "   and l.geoData is not null" +
             "   and within(l.geoData.administrativeCenter, :bbox) = true")
+    @Cacheable("map-locations")
     List<MapLocation> findAllByBbox(@Param("bbox") Polygon bbox);
 
     MapLocation findByFias(UUID uuid);

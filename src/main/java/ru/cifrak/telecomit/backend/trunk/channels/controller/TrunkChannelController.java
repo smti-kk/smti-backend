@@ -11,8 +11,8 @@ public interface TrunkChannelController {
     @GetMapping
     List<TrunkChannel> list();
 
-    @GetMapping("/{trunkChannel}")
-    TrunkChannel one(@PathVariable TrunkChannel trunkChannel) throws NotFoundException;
+    @GetMapping("/{trunkChannelId}")
+    TrunkChannel one(@PathVariable Integer trunkChannelId) throws NotFoundException;
 
     @DeleteMapping("/{trunkChannelId}")
     void remove(@PathVariable Integer trunkChannelId);

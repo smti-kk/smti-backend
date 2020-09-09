@@ -17,19 +17,21 @@ public class TrunkChannelControllerImpl implements TrunkChannelController {
         this.trunkChannelRepository = trunkChannelRepository;
     }
 
+    @Override
     @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
     public List<TrunkChannel> list() {
         return trunkChannelRepository.findAll();
     }
 
+    @Override
     @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
-    public TrunkChannel one(TrunkChannel trunkChannel) throws NotFoundException {
-        if (trunkChannel == null) {
-            throw new NotFoundException();
-        }
-        return trunkChannel;
+    public TrunkChannel one(Integer trunkChannelId) throws NotFoundException {
+        return trunkChannelRepository
+                .findById(trunkChannelId)
+                .orElseThrow(NotFoundException::new);
     }
 
+    @Override
     @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
     public void remove(Integer trunkChannelId) {
         trunkChannelRepository.deleteById(trunkChannelId);
