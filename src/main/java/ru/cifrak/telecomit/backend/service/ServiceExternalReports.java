@@ -118,7 +118,7 @@ public class ServiceExternalReports {
                             item.setLocation(jmap.getAp().getOrganization().getLocation().getName());
                             item.setUcn(jmap.getAp().getUcn());
                             item.setOrganization(jmap.getAp().getOrganization().getName());
-                            item.setOkTime(zabbixData.get(jmap.getMap().getServiceId()).getOkTime());
+                            item.setSla(zabbixData.get(jmap.getMap().getServiceId()).getSla());
                             item.setProblemTime(zabbixData.get(jmap.getMap().getServiceId()).getProblemTime());
                             return item;
                         }
@@ -161,8 +161,8 @@ public class ServiceExternalReports {
         for (Map.Entry<String, ExtZabbixDtoResponseSlaData> entry : listSlaData.getResult().entrySet()){
             ZabbixReportDTO item = new ZabbixReportDTO();
             item.setServiceId(Long.valueOf(entry.getKey()));
-            item.setOkTime(entry.getValue().getSla().get(0).getOkTime().toString());
-            item.setProblemTime(entry.getValue().getSla().get(0).getProblemTime().toString());
+            item.setSla(entry.getValue().getSla().get(0).getSla().toString());
+            item.setProblemTime(String.valueOf(entry.getValue().getSla().get(0).getProblemTime()/60));
             bar.add(item);
         }
         log.info("[   ] -> get sla for devices");

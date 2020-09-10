@@ -14,7 +14,7 @@ public class ReportMapDTO {
     private String organization;
     private String consumption;
     // ---                    Zabbix
-    private String okTime;
+    private String sla;
     /**
      * Необходимо выдавать кол-во в минутах, а прилетает в секундах
      */

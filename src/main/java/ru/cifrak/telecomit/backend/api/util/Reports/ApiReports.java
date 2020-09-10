@@ -248,8 +248,8 @@ public class ApiReports {
         exportToExcelConfiguration.addColumn(4, ReportMapDTO::getAddress, "Адрес");
         exportToExcelConfiguration.addColumn(5, ReportMapDTO::getContractor, "Источник");
         exportToExcelConfiguration.addColumn(6, ReportMapDTO::getOrganization, "Учреждение");
-        exportToExcelConfiguration.addColumn(7, ReportMapDTO::getConsumption, "Количество потребленного трафика сети Интернет, МБ");
-        exportToExcelConfiguration.addColumn(8, ReportMapDTO::getOkTime, "Время доступности сервиса ПД, мин.");
+        exportToExcelConfiguration.addColumn(7, ReportMapDTO::getSla, "Доступность УС, %");
+        exportToExcelConfiguration.addColumn(8, ReportMapDTO::getConsumption, "Количество потребленного трафика сети Интернет, МБ");
         exportToExcelConfiguration.addColumn(9, ReportMapDTO::getProblemTime, "Время недоступности сервиса ПД, мин.");
         ExcelExporter<ReportMapDTO> excelExporter = new ExcelExporter<>(exportToExcelConfiguration);
 

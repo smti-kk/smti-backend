@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ZabbixReportDTO {
     private Long serviceId;
-    private String okTime;
+    private String sla;
     /**
      * Необходимо выдавать кол-во в минутах, а прилетает в секундах
      */
