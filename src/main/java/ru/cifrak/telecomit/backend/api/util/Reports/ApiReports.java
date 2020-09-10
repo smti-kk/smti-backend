@@ -234,8 +234,8 @@ public class ApiReports {
         log.info("->GET /api/report/organization/export/map/:: start:{} end:{}", Converter.simpleDate(instantStart), Converter.simpleDate(instantEnd));
         // xx. go for report data from utm5
         List<UTM5ReportTrafficDTO> dataUtm5 = serviceExternalReports.getReportFromUTM5(start, end);
-//        List<ZabbixReportTrafficDTO> dataZabbix = serviceExternalReports.getReportFromZabbix(start, end);
-        List<ReportMapDTO> report = serviceExternalReports.blendData(dataUtm5);
+        List<ZabbixReportDTO> dataZabbix = serviceExternalReports.getReportFromZabbix(start, end);
+        List<ReportMapDTO> report = serviceExternalReports.blendData(dataUtm5, dataZabbix);
         IntStream.range(0, report.size()).forEach(i -> report.get(i).setPp(i + 1));
 //        List<AccessPoint> report = serviceExternalReports.blendData(dataUtm5, dataZabbix);
 
@@ -249,6 +249,8 @@ public class ApiReports {
         exportToExcelConfiguration.addColumn(5, ReportMapDTO::getContractor, "Источник");
         exportToExcelConfiguration.addColumn(6, ReportMapDTO::getOrganization, "Учреждение");
         exportToExcelConfiguration.addColumn(7, ReportMapDTO::getConsumption, "Количество потребленного трафика сети Интернет, МБ");
+        exportToExcelConfiguration.addColumn(8, ReportMapDTO::getOkTime, "Время доступности сервиса ПД, мин.");
+        exportToExcelConfiguration.addColumn(9, ReportMapDTO::getProblemTime, "Время недоступности сервиса ПД, мин.");
         ExcelExporter<ReportMapDTO> excelExporter = new ExcelExporter<>(exportToExcelConfiguration);
 
         // xx. response back an a file
