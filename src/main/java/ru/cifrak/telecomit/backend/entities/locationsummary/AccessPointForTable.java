@@ -1,6 +1,8 @@
 package ru.cifrak.telecomit.backend.entities.locationsummary;
 
 import lombok.Getter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import ru.cifrak.telecomit.backend.entities.GovernmentDevelopmentProgram;
 
 import javax.persistence.*;
@@ -14,7 +16,7 @@ public class AccessPointForTable implements Serializable {
     private Integer id;
     private String type;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "key_government_program")
     private GovernmentDevelopmentProgram governmentDevelopmentProgram;
 }

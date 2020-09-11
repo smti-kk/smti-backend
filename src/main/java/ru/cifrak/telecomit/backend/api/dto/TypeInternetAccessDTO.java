@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.cifrak.telecomit.backend.entities.TypeInternetAccess;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
-public class TypeInternetAccessDTO {
+public class TypeInternetAccessDTO implements Serializable {
     private Integer id;
     private String  name;
 

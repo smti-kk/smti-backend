@@ -1,6 +1,8 @@
 package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +48,7 @@ public class ApiOrganization {
 
     @GetMapping(params = "location")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    @Cacheable("organizations")
     public List<OrganizationWithAccessPointsDTO> listByLocationId(@RequestParam("location") Integer locationId) {
         return rOrganization.findAllByLocationId(locationId).stream()
                 .map(OrganizationWithAccessPointsDTO::new)
@@ -67,6 +70,7 @@ public class ApiOrganization {
 
     @PostMapping(value = "/", consumes = "application/json", produces = "application/json")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    @CacheEvict(value = "organizations", allEntries = true)
     public ResponseEntity<OrganizationShortDTO> createItem(@RequestBody OrganizationShortDTO value) {
         log.info("->POST /api/organization/ ");
         Organization item = new Organization();
@@ -95,6 +99,7 @@ public class ApiOrganization {
     @Transactional
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+    @CacheEvict(value = "organizations", allEntries = true)
     public ResponseEntity<OrganizationDTO> updateOrganization(@PathVariable(name = "id") Organization item, @RequestBody OrganizationShortDTO value) {
         log.info("->PUT /api/organization/{}", item.getId());
         item.setAddress(value.getAddress());
@@ -123,6 +128,7 @@ public class ApiOrganization {
 
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     @PostMapping(value = "/{id}/ap/", consumes = "application/json", produces = "application/json")
+    @CacheEvict(value = "organizations", allEntries = true)
     public ResponseEntity<?> createAP(
             @PathVariable(name = "id") final Organization organization,
             @RequestBody final AccessPointNewDTO dto
@@ -135,6 +141,28 @@ public class ApiOrganization {
             return ResponseEntity.ok(bNew);
         } catch (Exception e) {
             log.error("<-POST /api/organization/{}/ap/ :: {}", organization.getId(), e.getMessage());
+            return ResponseEntity
+                    .badRequest()
+                    .header("Content-Type", "application/json")
+                    .body("{\"error\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    @PutMapping(value = "/{id}/ap/", consumes = "application/json", produces = "application/json")
+    @CacheEvict(value = "organizations", allEntries = true)
+    public ResponseEntity<?> updateAP(
+            @PathVariable(name = "id") final Organization organization,
+            @RequestBody final AccessPointNewDTO dto
+    ) {
+        log.info("->PUT /api/organization/{}/ap", organization.getId());
+        AccessPointDetailInOrganizationDTO bNew;
+        try {
+            bNew = accesspoints.giveNewCreatedAccessPoint(organization, dto);
+            log.info("<-PUT /api/organization/{}/ap/{}", organization.getId(), bNew.getId());
+            return ResponseEntity.ok(bNew);
+        } catch (Exception e) {
+            log.error("<-PUT /api/organization/{}/ap/ :: {}", organization.getId(), e.getMessage());
             return ResponseEntity
                     .badRequest()
                     .header("Content-Type", "application/json")

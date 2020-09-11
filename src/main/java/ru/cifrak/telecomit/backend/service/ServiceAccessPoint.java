@@ -71,6 +71,7 @@ public class ServiceAccessPoint {
     }
 
     private AccessPoint initializeWithCommonFields(final AccessPoint item, @NotNull final Organization organization, AccessPointNewDTO dto) {
+        item.setId(dto.getId());
         item.setAddress(dto.getAddress());
         item.setBillingId(dto.getBilling_id());
         item.setContractor(dto.getContractor());

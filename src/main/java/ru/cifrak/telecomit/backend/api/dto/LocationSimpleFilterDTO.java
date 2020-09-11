@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.cifrak.telecomit.backend.entities.Location;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
-public class LocationSimpleFilterDTO {
+public class LocationSimpleFilterDTO implements Serializable {
     private Integer id;
 
     private String parent;
