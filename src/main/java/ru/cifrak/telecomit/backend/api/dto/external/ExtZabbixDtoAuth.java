@@ -2,6 +2,7 @@ package ru.cifrak.telecomit.backend.api.dto.external;
 
 import lombok.Value;
 
+//TODO:[GENERATE TICKET]: value сделать
 @Value
 public class ExtZabbixDtoAuth {
     String jsonrpc = "2.0";
