@@ -2,7 +2,6 @@ package ru.cifrak.telecomit.backend.repository.specs;
 
 import org.springframework.data.jpa.domain.Specification;
 import ru.cifrak.telecomit.backend.entities.*;
-import ru.cifrak.telecomit.backend.entities.Organization_;
 
 import java.util.List;
 
