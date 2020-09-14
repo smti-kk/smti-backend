@@ -123,6 +123,13 @@ public class ApiOrganization {
         return pList;
     }
 
+    @DeleteMapping("/{locationId}")
+    @Secured({"ROLE_ADMIN"})
+    public void remove(@PathVariable Integer locationId) {
+        log.info("zzzz"+String.valueOf(locationId));
+        rOrganization.deleteById(locationId);
+    }
+
     @GetMapping
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     public List<Organization> list() {
