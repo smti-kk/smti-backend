@@ -1,19 +1,32 @@
 package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.api.dto.*;
-import ru.cifrak.telecomit.backend.entities.Organization;
+import ru.cifrak.telecomit.backend.api.util.Reports.HelperReport;
+import ru.cifrak.telecomit.backend.entities.*;
+import ru.cifrak.telecomit.backend.entities.AccessPointFull;
 import ru.cifrak.telecomit.backend.repository.*;
+import ru.cifrak.telecomit.backend.repository.specs.OrganizationSpec;
+import ru.cifrak.telecomit.backend.repository.specs.SpecificationAccessPointFull;
 import ru.cifrak.telecomit.backend.service.ServiceAccessPoint;
 import ru.cifrak.telecomit.backend.service.ServiceOrganization;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,6 +51,83 @@ public class ApiOrganization {
         this.rTypeOrganization = rTypeOrganization;
         this.accesspoints = accesspoints;
         this.sOrganization = sOrganization;
+    }
+
+    @GetMapping("/report/")
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    public PaginatedList<ReportOrganizationDTO> reportAll(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam(name = "location", required = false) Location location,
+            @RequestParam(name = "parents", required = false) List<Location> parents,
+            @RequestParam(name = "type", required = false) TypeOrganization type,
+            @RequestParam(name = "smo", required = false) TypeSmo smo,
+            @RequestParam(name = "sort", required = false) String sort,
+            @RequestParam(name = "population-start", required = false) Integer pStart,
+            @RequestParam(name = "population-end", required = false) Integer pEnd,
+            @RequestParam(name = "organization", required = false) String organization
+    ) {
+        log.info("->GET /api/organization/report/[page={}, size={}, location={}, orgname={}, type={}, smo={}, sort={}]",
+                page, size, location == null ? "" : location.getId(), organization, type, smo, sort);
+        //HINT: https://github.com/vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting
+        Set<String> sortingFileds = new LinkedHashSet<>(
+                Arrays.asList(StringUtils.split(StringUtils.defaultIfEmpty(sort, ""), ",")));
+
+        List<Sort.Order> sortingOrders = sortingFileds.stream().map(HelperReport::getOrder)
+                .collect(Collectors.toList());
+
+        Sort sortData = sortingOrders.isEmpty() ? null : Sort.by(sortingOrders);
+        Pageable pageConfig;
+        if (sortData != null) {
+            pageConfig = PageRequest.of(page - 1, size, sortData);
+        } else {
+            pageConfig = PageRequest.of(page - 1, size);
+        }
+        Specification<ru.cifrak.telecomit.backend.entities.Organization> spec = Specification.where(null);
+        if (location != null) {
+            spec = spec != null ? spec.and(OrganizationSpec.inLocation(location)) : null;
+        }
+        if (type != null) {
+            spec = spec.and(OrganizationSpec.withType(type));
+        }
+        if (smo != null) {
+            spec = spec.and(OrganizationSpec.withSmo(smo));
+        }
+//        if (gdp != null) {
+//            spec = spec.and(SpecificationAccessPointFull.withGovProgram(gdp));
+//        }
+//        if (inettype != null) {
+//            spec = spec.and(SpecificationAccessPointFull.withInetType(inettype));
+//        }
+        if (parents != null) {
+            spec = spec.and(OrganizationSpec.inParent(parents));
+        }
+        if (organization != null) {
+            spec = spec.and(OrganizationSpec.withOrgname(organization));
+        }
+//        if (contractor != null) {
+//            spec = spec.and(SpecificationAccessPointFull.withOperator(contractor));
+//        }
+        if (pStart != null) {
+            spec = spec.and(OrganizationSpec.pStart(pStart));
+        }
+        if (pEnd != null) {
+            spec = spec.and(OrganizationSpec.pEnd(pEnd));
+        }
+//        if (ap != null) {
+//            spec = spec.and(SpecificationAccessPointFull.type(ap));
+//        }
+        Page<Organization> pageDatas = rOrganization.findAll(spec, pageConfig);
+        PaginatedList<ReportOrganizationDTO> pList = new PaginatedList<>(pageDatas.getTotalElements(), pageDatas.stream().map(ReportOrganizationDTO::new).collect(Collectors.toList()));
+        log.info("<-GET /api/organization/report/");
+        return pList;
+    }
+
+    @DeleteMapping("/{locationId}")
+    @Secured({"ROLE_ADMIN"})
+    public void remove(@PathVariable Integer locationId) {
+        log.info("zzzz"+String.valueOf(locationId));
+        rOrganization.deleteById(locationId);
     }
 
     @GetMapping

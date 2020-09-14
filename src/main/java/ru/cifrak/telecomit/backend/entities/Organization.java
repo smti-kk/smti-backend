@@ -125,7 +125,7 @@ public class Organization implements Serializable {
     private TypeSmo smo;
 
     @JsonIgnoreProperties("organization")
-    @OneToMany(mappedBy = "organization")
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
     private List<AccessPoint> accessPoints;
 
 }

@@ -12,8 +12,11 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.cifrak.telecomit.backend.api.dto.ReportMapDTO;
 import ru.cifrak.telecomit.backend.api.dto.UTM5ReportTrafficDTO;
+import ru.cifrak.telecomit.backend.api.dto.ZabbixReportDTO;
+import ru.cifrak.telecomit.backend.api.dto.external.*;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
+import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
 import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryJournalMAP;
 import ru.cifrak.telecomit.backend.repository.RepositoryMonitoringAccessPoints;
@@ -22,10 +25,7 @@ import ru.cifrak.telecomit.backend.security.UTM5Config;
 import ru.cifrak.telecomit.backend.security.ZabbixConfig;
 import ru.cifrak.telecomit.backend.utils.Converter;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -100,8 +100,9 @@ public class ServiceExternalReports {
         return mapReportResponce;
     }
 
-    public List<ReportMapDTO> blendData(List<UTM5ReportTrafficDTO> dataUtm5) {
+    public List<ReportMapDTO> blendData(List<UTM5ReportTrafficDTO> dataUtm5, List<ZabbixReportDTO> dataZabbix) {
         Map<Integer, UTM5ReportTrafficDTO> utm5Data = dataUtm5.stream().filter(i->i.getTclass().equals(10)).collect(Collectors.toMap(UTM5ReportTrafficDTO::getAccount_id, item -> item));
+        Map<Long, ZabbixReportDTO> zabbixData = dataZabbix.stream().collect(Collectors.toMap(ZabbixReportDTO::getServiceId, item -> item));
 
         List<Integer> accounts = dataUtm5.stream().map(UTM5ReportTrafficDTO::getAccount_id).distinct().collect(Collectors.toList());
 
@@ -117,9 +118,56 @@ public class ServiceExternalReports {
                             item.setLocation(jmap.getAp().getOrganization().getLocation().getName());
                             item.setUcn(jmap.getAp().getUcn());
                             item.setOrganization(jmap.getAp().getOrganization().getName());
+                            item.setSla(zabbixData.get(jmap.getMap().getServiceId()).getSla());
+                            item.setProblemTime(zabbixData.get(jmap.getMap().getServiceId()).getProblemTime());
                             return item;
                         }
 
                 ).collect(Collectors.toList());
+    }
+
+    public List<ZabbixReportDTO> getReportFromZabbix(Long start, Long end) throws JsonProcessingException {
+        log.info("[ ->] getReportFromZabbix");
+        WebClient client = WebClient
+                .builder()
+                .baseUrl(zabbixConfig.getHost())
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultUriVariables(Collections.singletonMap("url", zabbixConfig.getHost()))
+                .build();
+        // STEP-1: AUTHORIZATION
+        ObjectMapper mapper = new ObjectMapper();
+
+        WebClient.RequestHeadersSpec<?> authenticate = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoAuth()));
+
+        String resp = authenticate.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponse respAuthentication = mapper.readValue(resp, ExtZabbixDtoResponse.class);
+
+        String authToken = (String) respAuthentication.getResult();
+        // STEP-2: REQUEST FOR REPORT
+        log.info("[   ] -> get sla for devices");
+        // Сходить в базу и найти все те точки которые мы можем собрать в отчет
+        List<MonitoringAccessPoint> list = rMonitoringAccessPoints.findAll();
+        List<MonitoringAccessPoint> maps = list.stream().filter(i -> i.getServiceId()!=null).collect(Collectors.toList());
+        WebClient.RequestHeadersSpec<?> serviceSlaRequest = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("service.getsla", new ExtZabbixDtoGetServiceSlaParams(maps, start, end), 42, authToken)));
+        String slaResponce = serviceSlaRequest.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseSla listSlaData = mapper.readValue(slaResponce, ExtZabbixDtoResponseSla.class);
+        List<ZabbixReportDTO> bar = new ArrayList<>();
+        for (Map.Entry<String, ExtZabbixDtoResponseSlaData> entry : listSlaData.getResult().entrySet()){
+            ZabbixReportDTO item = new ZabbixReportDTO();
+            item.setServiceId(Long.valueOf(entry.getKey()));
+            item.setSla(entry.getValue().getSla().get(0).getSla().toString());
+            item.setProblemTime(String.valueOf(entry.getValue().getSla().get(0).getProblemTime()/60));
+            bar.add(item);
+        }
+        log.info("[   ] -> get sla for devices");
+
+        log.info("[ <-] getReportFromZabbix");
+        return bar;
     }
 }

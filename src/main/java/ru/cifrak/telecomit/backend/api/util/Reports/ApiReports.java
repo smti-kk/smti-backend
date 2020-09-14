@@ -238,8 +238,8 @@ public class ApiReports {
         log.info("->GET /api/report/organization/export/map/:: start:{} end:{}", Converter.simpleDate(instantStart), Converter.simpleDate(instantEnd));
         // xx. go for report data from utm5
         List<UTM5ReportTrafficDTO> dataUtm5 = serviceExternalReports.getReportFromUTM5(start, end);
-//        List<ZabbixReportTrafficDTO> dataZabbix = serviceExternalReports.getReportFromZabbix(start, end);
-        List<ReportMapDTO> report = serviceExternalReports.blendData(dataUtm5);
+        List<ZabbixReportDTO> dataZabbix = serviceExternalReports.getReportFromZabbix(start, end);
+        List<ReportMapDTO> report = serviceExternalReports.blendData(dataUtm5, dataZabbix);
         IntStream.range(0, report.size()).forEach(i -> report.get(i).setPp(i + 1));
 //        List<AccessPoint> report = serviceExternalReports.blendData(dataUtm5, dataZabbix);
 
@@ -252,7 +252,9 @@ public class ApiReports {
         exportToExcelConfiguration.addColumn(4, ReportMapDTO::getAddress, "Адрес");
         exportToExcelConfiguration.addColumn(5, ReportMapDTO::getContractor, "Источник");
         exportToExcelConfiguration.addColumn(6, ReportMapDTO::getOrganization, "Учреждение");
-        exportToExcelConfiguration.addColumn(7, ReportMapDTO::getConsumption, "Количество потребленного трафика сети Интернет, МБ");
+        exportToExcelConfiguration.addColumn(7, ReportMapDTO::getSla, "Доступность УС, %");
+        exportToExcelConfiguration.addColumn(8, ReportMapDTO::getConsumption, "Количество потребленного трафика сети Интернет, МБ");
+        exportToExcelConfiguration.addColumn(9, ReportMapDTO::getProblemTime, "Время недоступности сервиса ПД, мин.");
         ExcelExporter<ReportMapDTO> excelExporter = new ExcelExporter<>(exportToExcelConfiguration);
 
         // xx. response back an a file
@@ -261,6 +263,7 @@ public class ApiReports {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + Converter.simpleDate(instantStart) + "-" + Converter.simpleDate(instantEnd) + ".xlsx\"")
+                .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(resource.contentLength())
                 .body(resource);
