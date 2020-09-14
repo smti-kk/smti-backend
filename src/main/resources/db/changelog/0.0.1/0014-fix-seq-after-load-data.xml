@@ -10,7 +10,7 @@
         <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE location_id_seq restart with 3113;</sql>
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588933669859-7">
-        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE operator_id_seq restart with 11;</sql>
+        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE operator_id_seq restart with 12;</sql>
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588933669859-8">
         <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE organization_id_seq restart with 3425;</sql>

@@ -6,6 +6,9 @@
         <sql dbms="postgresql" endDelimiter=";">
             create table bck_access_point as (select * from access_point ap);
         </sql>
+        <rollback>
+            drop table bck_access_point;
+        </rollback>
     </changeSet>
 
     <changeSet author="panovav" id="2">
@@ -30,6 +33,12 @@
             access_point ap ) subq
             where access_point.id = subq.id;
         </sql>
+        <rollback>
+            update access_point
+            set address = bck.address
+            from bck_access_point as bck
+            where access_point.id = bck.id;
+        </rollback>
     </changeSet>
 
 
