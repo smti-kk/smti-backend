@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import ru.cifrak.telecomit.backend.entities.TypeAccessPoint;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class AccessPointNewDTO {
+    private Integer id;
     private String address;
     private Integer billing_id;
     private Integer internetAccess;
@@ -41,6 +43,7 @@ public class AccessPointNewDTO {
     private Point point;
     private Integer completed;
     // ZSPD
+    //
     private String hardware;
     private String software;
     // CONTRACT

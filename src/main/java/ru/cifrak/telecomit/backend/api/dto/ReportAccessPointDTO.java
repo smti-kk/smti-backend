@@ -6,10 +6,12 @@ import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.ApESPD;
 import ru.cifrak.telecomit.backend.entities.ApSMO;
 
+import java.io.Serializable;
+
 
 @Data
 @AllArgsConstructor
-public class ReportAccessPointDTO {
+public class ReportAccessPointDTO implements Serializable {
     private Integer id;
     private String address;
     private String contractor;

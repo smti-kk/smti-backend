@@ -2,6 +2,8 @@ package ru.cifrak.telecomit.backend.entities.map;
 
 
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.serializer.SignalConverter;
 

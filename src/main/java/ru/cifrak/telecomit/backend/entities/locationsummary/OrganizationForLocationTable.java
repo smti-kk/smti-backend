@@ -2,6 +2,8 @@ package ru.cifrak.telecomit.backend.entities.locationsummary;
 
 import lombok.Getter;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,7 +20,8 @@ public class OrganizationForLocationTable implements Serializable {
     @Column(name = "key_location")
     private Integer locationId;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     @JoinColumn(name = "key_organization")
     private Set<AccessPointForTable> accessPoints;
 }

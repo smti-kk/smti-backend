@@ -2,8 +2,6 @@ package ru.cifrak.telecomit.backend.api.util.Reports;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.ptg.LessEqualPtg;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -18,8 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.api.dto.*;
-import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.AccessPointFull;
+import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.repository.RepositoryAccessPointsFull;
 import ru.cifrak.telecomit.backend.repository.RepositoryApContract;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
@@ -32,11 +30,10 @@ import ru.cifrak.telecomit.backend.utils.export.ExportToExcelConfiguration;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -51,7 +48,6 @@ public class ApiReports {
     private final RepositoryAccessPointsFull rAccessPoints;
     private final RepositoryApContract rApContract;
     private final ServiceExternalReports serviceExternalReports;
-
 
 
     @Autowired
@@ -84,11 +80,14 @@ public class ApiReports {
                 page, size, location == null ? "" : location.getId(), type, smo, gdp, inettype, organization, contractor);
         //HINT: https://github.com/vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting
         Set<String> sortingFileds = new LinkedHashSet<>(
-                Arrays.asList(StringUtils.split(StringUtils.defaultIfEmpty(sort, ""), ",")));
-
-        List<Sort.Order> sortingOrders = sortingFileds.stream().map(HelperReport::getOrder)
+                Arrays.asList(
+                        StringUtils.split(StringUtils.defaultIfEmpty(sort, ""), ",")
+                )
+        );
+        List<Sort.Order> sortingOrders = sortingFileds
+                .stream()
+                .map(HelperReport::getOrder)
                 .collect(Collectors.toList());
-
         Sort sortData = sortingOrders.isEmpty() ? null : Sort.by(sortingOrders);
         Pageable pageConfig;
         if (sortData != null) {
@@ -131,7 +130,12 @@ public class ApiReports {
             spec = spec.and(SpecificationAccessPointFull.type(ap));
         }
         Page<AccessPointFull> pageDatas = rAccessPoints.findAll(spec, pageConfig);
-        PaginatedList<ReportAccessPointFullDTO> pList = new PaginatedList<>(pageDatas.getTotalElements(), pageDatas.stream().map(ReportAccessPointFullDTO::new).collect(Collectors.toList()));
+        PaginatedList<ReportAccessPointFullDTO> pList = new PaginatedList<>(
+                pageDatas.getTotalElements(),
+                pageDatas.stream()
+                        .map(ReportAccessPointFullDTO::new)
+                        .collect(Collectors.toList())
+        );
         log.info("<-GET /api/report/organization/");
         return pList;
     }
@@ -234,8 +238,8 @@ public class ApiReports {
         log.info("->GET /api/report/organization/export/map/:: start:{} end:{}", Converter.simpleDate(instantStart), Converter.simpleDate(instantEnd));
         // xx. go for report data from utm5
         List<UTM5ReportTrafficDTO> dataUtm5 = serviceExternalReports.getReportFromUTM5(start, end);
-//        List<ZabbixReportTrafficDTO> dataZabbix = serviceExternalReports.getReportFromZabbix(start, end);
-        List<ReportMapDTO> report = serviceExternalReports.blendData(dataUtm5);
+        List<ZabbixReportDTO> dataZabbix = serviceExternalReports.getReportFromZabbix(start, end);
+        List<ReportMapDTO> report = serviceExternalReports.blendData(dataUtm5, dataZabbix);
         IntStream.range(0, report.size()).forEach(i -> report.get(i).setPp(i + 1));
 //        List<AccessPoint> report = serviceExternalReports.blendData(dataUtm5, dataZabbix);
 
@@ -248,7 +252,9 @@ public class ApiReports {
         exportToExcelConfiguration.addColumn(4, ReportMapDTO::getAddress, "Адрес");
         exportToExcelConfiguration.addColumn(5, ReportMapDTO::getContractor, "Источник");
         exportToExcelConfiguration.addColumn(6, ReportMapDTO::getOrganization, "Учреждение");
-        exportToExcelConfiguration.addColumn(7, ReportMapDTO::getConsumption, "Количество потребленного трафика сети Интернет, МБ");
+        exportToExcelConfiguration.addColumn(7, ReportMapDTO::getSla, "Доступность УС, %");
+        exportToExcelConfiguration.addColumn(8, ReportMapDTO::getConsumption, "Количество потребленного трафика сети Интернет, МБ");
+        exportToExcelConfiguration.addColumn(9, ReportMapDTO::getProblemTime, "Время недоступности сервиса ПД, мин.");
         ExcelExporter<ReportMapDTO> excelExporter = new ExcelExporter<>(exportToExcelConfiguration);
 
         // xx. response back an a file
@@ -257,6 +263,7 @@ public class ApiReports {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + Converter.simpleDate(instantStart) + "-" + Converter.simpleDate(instantEnd) + ".xlsx\"")
+                .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(resource.contentLength())
                 .body(resource);
@@ -267,16 +274,16 @@ public class ApiReports {
     @ResponseBody
     public ResponseEntity<ByteArrayResource> exportReportAll(
             @RequestParam(name = "location", required = false) Location location,
-           @RequestParam(name = "type", required = false) TypeOrganization type,
-           @RequestParam(name = "smo", required = false) TypeSmo smo,
-           @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp,
-           @RequestParam(name = "inet", required = false) TypeInternetAccess inettype,
-           @RequestParam(name = "parents", required = false) List<Location> parents,
-           @RequestParam(name = "organization", required = false) String organization,
-           @RequestParam(name = "contractor", required = false) String contractor,
-           @RequestParam(name = "ap", required = false) List<TypeAccessPoint> ap,
+            @RequestParam(name = "type", required = false) TypeOrganization type,
+            @RequestParam(name = "smo", required = false) TypeSmo smo,
+            @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp,
+            @RequestParam(name = "inet", required = false) TypeInternetAccess inettype,
+            @RequestParam(name = "parents", required = false) List<Location> parents,
+            @RequestParam(name = "organization", required = false) String organization,
+            @RequestParam(name = "contractor", required = false) String contractor,
+            @RequestParam(name = "ap", required = false) List<TypeAccessPoint> ap,
             @RequestParam(name = "sort", required = false) String sort
-            ) throws IOException {
+    ) throws IOException {
 
         Sort sortData = HelperReport.getSortRule(sort);
         Specification<AccessPointFull> spec = Specification.where(null);
@@ -316,7 +323,7 @@ public class ApiReports {
 
         // xx. Forming excel file
         List<AccessPointFull> temp;
-        if (sortData == null)   temp = rAccessPoints.findAll(spec);
+        if (sortData == null) temp = rAccessPoints.findAll(spec);
         else temp = rAccessPoints.findAll(spec, sortData);
 
         List<ExelReportAccessPointFullDTO> rezult = temp
@@ -404,7 +411,7 @@ public class ApiReports {
         }
 
         List<AccessPointFull> dbData;
-        if (sortData == null)   dbData = rAccessPoints.findAll(spec);
+        if (sortData == null) dbData = rAccessPoints.findAll(spec);
         else dbData = rAccessPoints.findAll(spec, sortData);
 
         List<ExelReportAccessPointFullDTO> rezult = dbData

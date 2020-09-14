@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class AccessPointDetailInOrganizationDTO {
     @JsonDeserialize(using = GeometryDeserializer.class)
     private Point point;
 
+    @JsonProperty("government_program")
     private GovernmentDevelopmentProgram governmentProgram;
     private Integer completed;
     private String state;

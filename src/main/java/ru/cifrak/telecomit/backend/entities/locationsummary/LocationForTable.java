@@ -2,6 +2,8 @@ package ru.cifrak.telecomit.backend.entities.locationsummary;
 
 import lombok.Data;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.Immutable;
 import ru.cifrak.telecomit.backend.entities.map.TechnicalCapabilityForLocationTable;
 
@@ -56,23 +58,22 @@ public class LocationForTable implements Serializable {
     private String name;
     private Integer population;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "parent_id")
-    @org.hibernate.annotations.Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
     private LocationParent locationParent;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SUBSELECT)
     @JoinColumn(name = "key_location")
-    @org.hibernate.annotations.Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
     private Set<TechnicalCapabilityForLocationTable> technicalCapabilities;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "key_location", updatable = false)
-    @org.hibernate.annotations.Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+    @OneToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    @JoinColumn(name = "key_location")
     private Set<OrganizationForLocationTable> organizations;
 
-    @OneToMany(mappedBy = "locationParent", fetch = FetchType.LAZY)
-    @org.hibernate.annotations.Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+    @OneToMany(mappedBy = "locationParent", fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     private List<LocationForTable> children;
 
     public LocationForTable() {

@@ -6,6 +6,7 @@ import lombok.Getter;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.Organization;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 @Data
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrganizationWithAccessPointsDTO {
+public class OrganizationWithAccessPointsDTO implements Serializable {
     private Integer id;
     private String acronym;
     private String name;

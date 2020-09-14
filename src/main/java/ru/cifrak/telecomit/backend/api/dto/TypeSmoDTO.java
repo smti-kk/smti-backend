@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.cifrak.telecomit.backend.entities.TypeSmo;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
-public class TypeSmoDTO {
+public class TypeSmoDTO implements Serializable {
     private Integer id;
     private String name;
 

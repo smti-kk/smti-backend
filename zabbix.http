@@ -231,3 +231,25 @@ Content-Type: application/json
 }
 
 
+
+###      Get Статистику по сервисам за период!!!!! ура, просто докидываем, список точек, и времянной период! в секундах
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "service.getsla",
+    "params": {
+        "serviceids": [ "22","192", "199", "206", "213"],
+        "intervals": [
+            {
+                "from": 1596240000,
+                "to": 1598918400
+            }
+        ]
+    },
+    "id": 1,
+    "auth": "{{auth}}"
+}
+
+
