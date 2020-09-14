@@ -1,5 +1,7 @@
 package ru.cifrak.telecomit.backend.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.cifrak.telecomit.backend.entities.User;
@@ -10,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface RepositoryFeaturesRequests extends JpaRepository<LocationFeaturesEditingRequestFull, Integer> {
-    List<LocationFeaturesEditingRequestFull> findAllByOrderByCreatedDesc();
+    Page<LocationFeaturesEditingRequestFull> findAllByOrderByCreatedDesc(Pageable pageable);
     List<LocationFeaturesEditingRequestFull> findAllByLocationIdOrderByCreatedDesc(Integer locationId);
-    List<LocationFeaturesEditingRequestFull> findAllByUserOrderByCreatedDesc(User user);
+    Page<LocationFeaturesEditingRequestFull> findAllByUserOrderByCreatedDesc(User user, Pageable pageable);
 }

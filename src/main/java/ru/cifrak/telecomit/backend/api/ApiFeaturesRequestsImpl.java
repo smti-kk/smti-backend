@@ -1,5 +1,7 @@
 package ru.cifrak.telecomit.backend.api;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.entities.User;
@@ -26,18 +28,21 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     }
 
     @Override
-    public List<LocationFeaturesEditingRequestFull> requests() {
-        return repositoryFeaturesRequests.findAllByOrderByCreatedDesc();
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
+    public Page<LocationFeaturesEditingRequestFull> requests(Pageable pageable) {
+        return repositoryFeaturesRequests.findAllByOrderByCreatedDesc(pageable);
     }
 
     @Override
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     public List<LocationFeaturesEditingRequestFull> requestsByLocation(Integer locationId) {
         return repositoryFeaturesRequests.findAllByLocationIdOrderByCreatedDesc(locationId);
     }
 
     @Override
-    public List<LocationFeaturesEditingRequestFull> requestsByUser(User user) {
-        return repositoryFeaturesRequests.findAllByUserOrderByCreatedDesc(user);
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
+    public Page<LocationFeaturesEditingRequestFull> requestsByUser(Pageable pageable, User user) {
+        return repositoryFeaturesRequests.findAllByUserOrderByCreatedDesc(user, pageable);
     }
 
     @Override
