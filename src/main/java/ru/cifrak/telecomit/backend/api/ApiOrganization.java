@@ -67,8 +67,8 @@ public class ApiOrganization {
             @RequestParam(name = "population-end", required = false) Integer pEnd,
             @RequestParam(name = "organization", required = false) String organization
     ) {
-        log.info("->GET /api/organization/report/[page={}, size={}, location={}, orgname={}, type={}, smo={}, ]",
-                page, size, location == null ? "" : location.getId(), organization, type, smo);
+        log.info("->GET /api/organization/report/[page={}, size={}, location={}, orgname={}, type={}, smo={}, sort={}]",
+                page, size, location == null ? "" : location.getId(), organization, type, smo, sort);
         //HINT: https://github.com/vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting
         Set<String> sortingFileds = new LinkedHashSet<>(
                 Arrays.asList(StringUtils.split(StringUtils.defaultIfEmpty(sort, ""), ",")));
