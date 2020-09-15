@@ -23,6 +23,8 @@ public class ApiUser {
 
     @GetMapping
     public List<Account> list() {
+        log.info("->GET /api/user/");
+        log.info("<-GET /api/user/");
         return rAccount.findAll();
     }
 
@@ -36,6 +38,7 @@ public class ApiUser {
         item.setLastName(value.getLastName());
         item.setPatronymicName(value.getPatronymicName());
         item.setLocations(value.getLocations());
+        item.setOrganizations(value.getOrganizations());
         item.setIsActive(value.getIsActive());
         item.setRoles(value.getRoles());
         item = rAccount.save(item);
