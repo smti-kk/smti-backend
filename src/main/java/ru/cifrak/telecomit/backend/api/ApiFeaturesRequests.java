@@ -1,5 +1,8 @@
 package ru.cifrak.telecomit.backend.api;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,13 +18,16 @@ import java.util.List;
 public interface ApiFeaturesRequests {
 
     @GetMapping
-    List<LocationFeaturesEditingRequestFull> requests();
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
+    Page<LocationFeaturesEditingRequestFull> requests(Pageable pageable);
 
     @GetMapping("/{locationId}")
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     List<LocationFeaturesEditingRequestFull> requestsByLocation(@PathVariable Integer locationId);
 
     @GetMapping("/by-user")
-    List<LocationFeaturesEditingRequestFull> requestsByUser(@AuthenticationPrincipal User user);
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
+    Page<LocationFeaturesEditingRequestFull> requestsByUser(Pageable pageable, @AuthenticationPrincipal User user);
 
     @GetMapping("/{request}/accept")
     void acceptRequest(@PathVariable LocationFeaturesEditingRequest request);
