@@ -33,13 +33,13 @@
     <include file="0031-add-column-type_post-to-tc.xml" relativeToChangelogFile="true" />
     <include file="0032-recreate-view-technical-capabililties.xml" relativeToChangelogFile="true" />
     <include file="0034-clean-gov-programs-2.xml" relativeToChangelogFile="true" />
-    <include file="0035-add-payphones-and-infomat.xml" relativeToChangelogFile="true" />
-    <include file="0036-add-rostelecom-postal.xml" relativeToChangelogFile="true" />
-    <include file="0037-add-entitiy-history-to-requests.xml" relativeToChangelogFile="true" />
-    <include file="0038-added-decline_comment_to_edit_request.xml" relativeToChangelogFile="true" />
-    <include file="0039-remove-add-columns.xml" relativeToChangelogFile="true" />
-    <include file="0040-ap-add-connection-state-column.xml" relativeToChangelogFile="true" />
-    <include file="0041-ap-add-connection-state-constraint.xml" relativeToChangelogFile="true" />
-    <include file="0042-ref-monitoring-to-ap.xml" relativeToChangelogFile="true" />
-    <include file="0043-ref-ap-addresses.xml" relativeToChangelogFile="true" />
+    <include file="0035-add-entitiy-history-to-requests.xml" relativeToChangelogFile="true" />
+    <include file="0036-added-decline_comment_to_edit_request.xml" relativeToChangelogFile="true" />
+    <include file="0037-remove-add-columns.xml" relativeToChangelogFile="true" />
+    <include file="0038-ap-add-connection-state-column.xml" relativeToChangelogFile="true" />
+    <include file="0039-ap-add-connection-state-constraint.xml" relativeToChangelogFile="true" />
+    <include file="0040-ref-monitoring-to-ap.xml" relativeToChangelogFile="true" />
+    <include file="0041-ref-ap-addresses.xml" relativeToChangelogFile="true" />
+    <include file="0042-load-data-tech-caps.xml" relativeToChangelogFile="true" />
+    <include file="0043-fix-location-geo-data.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

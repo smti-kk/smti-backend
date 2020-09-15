@@ -12,9 +12,9 @@
         <dropColumn tableName="technical_capability" columnName="throughput"></dropColumn>
     </changeSet>
     <changeSet author="gleb (generated)" id="3">
-    <addColumn tableName="technical_capability">
-        <column name="quantity" type="int4"/>
-    </addColumn>
+        <addColumn tableName="technical_capability">
+            <column name="quantity" type="int4"/>
+        </addColumn>
     </changeSet>
     <changeSet author="gleb (generated)" id="4">
         <createView viewName="v_technical_capability_active"

@@ -59,6 +59,9 @@ public class TechnicalCapabilityForLocationTable implements Serializable {
     @Column(nullable = false)
     private ServiceQuality quality;
 
+    @Column(name = "quantity")
+    private Integer payphones;
+
     public TechnicalCapabilityForLocationTable() {
     }
 }
