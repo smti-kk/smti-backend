@@ -15,6 +15,7 @@ import java.util.Set;
         name = Account.WITH_ALL,
         attributeNodes = {
                 @NamedAttributeNode("roles"),
+                @NamedAttributeNode("organizations"),
                 @NamedAttributeNode(value = "locations", subgraph = Account.WITH_SG)
         },
         subgraphs = {
@@ -55,5 +56,11 @@ public class Account {
     @OneToMany
     @JoinTable(name = "user_locations", joinColumns = {@JoinColumn(name = "key_user")}, inverseJoinColumns = {@JoinColumn(name = "key_location")})
     private Set<DLocationBase> locations;
+
+    @OneToMany
+    @JoinTable(name = "user_organizations",
+            joinColumns = {@JoinColumn(name = "key_user")},
+            inverseJoinColumns = {@JoinColumn(name = "key_organization")})
+    private Set<Organization> organizations;
 
 }

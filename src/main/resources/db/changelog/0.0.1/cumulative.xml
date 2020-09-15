@@ -42,4 +42,5 @@
     <include file="0041-ref-ap-addresses.xml" relativeToChangelogFile="true" />
     <include file="0042-load-data-tech-caps.xml" relativeToChangelogFile="true" />
     <include file="0043-fix-location-geo-data.xml" relativeToChangelogFile="true" />
+    <include file="0044-add-organizations-to-account-table.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

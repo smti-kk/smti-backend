@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.repository;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,8 @@ public interface RepositoryOrganization extends JpaRepository<Organization, Inte
     @EntityGraph(Organization.FULL)
     @Query(value = "SELECT co from Organization co where co.location.id = :locationId")
     List<Organization> findAllByLocationId(Integer locationId);
+
+    List<Organization> findAll();
 
     Integer countAllByLocationId(Integer locationId);
 

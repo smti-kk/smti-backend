@@ -280,4 +280,9 @@ public class ApiOrganization {
                     .body("{\"error\": \"access point NOT enabled in monitoring system due: " + e.getMessage() + "\"}");
         }
     }
+
+    @GetMapping("/base/")
+    public List<Organization> base() {
+        return rOrganization.findAll();
+    }
 }
