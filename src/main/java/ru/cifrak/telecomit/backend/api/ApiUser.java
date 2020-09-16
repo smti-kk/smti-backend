@@ -2,6 +2,7 @@ package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.auth.repository.RepositoryAccount;
 import ru.cifrak.telecomit.backend.auth.repository.RepositoryUser;
@@ -22,6 +23,7 @@ public class ApiUser {
     }
 
     @GetMapping
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     public List<Account> list() {
         log.info("->GET /api/user/");
         log.info("<-GET /api/user/");
@@ -29,6 +31,7 @@ public class ApiUser {
     }
 
     @PutMapping(consumes = "application/json", produces = "application/json")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<Account> update(@RequestBody Account value) {
         log.info("->PUT /api/user/::{}", value.getId());
         //TODO:[generate TICKET]: null check
