@@ -7,7 +7,7 @@
     <include file="0005-add-organization.xml" relativeToChangelogFile="true" />
     <include file="0006-add-operator.xml" relativeToChangelogFile="true" />
     <include file="0007-add-access-point.xml" relativeToChangelogFile="true" />
-    <include file="0008-add-infomat-trunkchannel.xml" relativeToChangelogFile="true" />
+    <include file="0008-add-trunkchannel.xml" relativeToChangelogFile="true" />
     <include file="0009-load-data-operators.xml" relativeToChangelogFile="true" />
     <include file="0010-load-data-types.xml" relativeToChangelogFile="true" />
     <include file="0011-load-data-location.xml" relativeToChangelogFile="true" />
@@ -32,7 +32,6 @@
     <include file="0030-add-column-new-value-to-location-edition.xml" relativeToChangelogFile="true" />
     <include file="0031-add-column-type_post-to-tc.xml" relativeToChangelogFile="true" />
     <include file="0032-recreate-view-technical-capabililties.xml" relativeToChangelogFile="true" />
-    <include file="0034-clean-gov-programs-2.xml" relativeToChangelogFile="true" />
     <include file="0035-add-entitiy-history-to-requests.xml" relativeToChangelogFile="true" />
     <include file="0036-added-decline_comment_to_edit_request.xml" relativeToChangelogFile="true" />
     <include file="0037-remove-add-columns.xml" relativeToChangelogFile="true" />
@@ -43,4 +42,5 @@
     <include file="0042-load-data-tech-caps.xml" relativeToChangelogFile="true" />
     <include file="0043-fix-location-geo-data.xml" relativeToChangelogFile="true" />
     <include file="0044-add-organizations-to-account-table.xml" relativeToChangelogFile="true" />
+    <include file="0045-ref-internet-types.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
