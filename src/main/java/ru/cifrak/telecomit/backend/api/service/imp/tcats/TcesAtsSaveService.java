@@ -1,14 +1,12 @@
 package ru.cifrak.telecomit.backend.api.service.imp.tcats;
 
 import org.springframework.stereotype.Service;
-import ru.cifrak.telecomit.backend.entities.ServiceQuality;
-import ru.cifrak.telecomit.backend.entities.TcAts;
-import ru.cifrak.telecomit.backend.entities.TcInfomat;
-import ru.cifrak.telecomit.backend.entities.TcState;
+import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTcForImport;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
 import ru.cifrak.telecomit.backend.repository.RepositoryWritableTcForImport;
+import ru.cifrak.telecomit.backend.service.LocationService;
 
 import javax.persistence.DiscriminatorValue;
 import java.util.List;
@@ -23,13 +21,17 @@ public class TcesAtsSaveService {
 
     private final RepositoryOperator repositoryOperator;
 
+    private final LocationService locationService;
+
     public TcesAtsSaveService(
             RepositoryWritableTcForImport repositoryWritableTcForImport,
             RepositoryLocation repositoryLocation,
-            RepositoryOperator repositoryOperator) {
+            RepositoryOperator repositoryOperator,
+            LocationService locationService) {
         this.repositoryWritableTcForImport = repositoryWritableTcForImport;
         this.repositoryLocation = repositoryLocation;
         this.repositoryOperator = repositoryOperator;
+        this.locationService = locationService;
     }
 
     public void saveTces(List<TcAtsFromExcelDTO> TcesDTO) {
@@ -53,6 +55,7 @@ public class TcesAtsSaveService {
                 // TODO: Transaction.
                 repositoryWritableTcForImport.save(tcByLocOpT);
             }
+            locationService.refreshCache();
         }
     }
 }

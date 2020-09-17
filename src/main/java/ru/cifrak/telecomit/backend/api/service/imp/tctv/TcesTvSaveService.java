@@ -9,6 +9,7 @@ import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTcForImport;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
 import ru.cifrak.telecomit.backend.repository.RepositoryWritableTcForImport;
+import ru.cifrak.telecomit.backend.service.LocationService;
 
 import javax.persistence.DiscriminatorValue;
 import java.util.*;
@@ -27,13 +28,17 @@ public class TcesTvSaveService {
 
     private final RepositoryOperator repositoryOperator;
 
+    private final LocationService locationService;
+
     public TcesTvSaveService(
             RepositoryWritableTcForImport repositoryWritableTcForImport,
             RepositoryLocation repositoryLocation,
-            RepositoryOperator repositoryOperator) {
+            RepositoryOperator repositoryOperator,
+            LocationService locationService) {
         this.repositoryWritableTcForImport = repositoryWritableTcForImport;
         this.repositoryLocation = repositoryLocation;
         this.repositoryOperator = repositoryOperator;
+        this.locationService = locationService;
     }
 
     public void saveTces(List<TcTvFromExcelDTO> TcesDTO) {
@@ -60,6 +65,7 @@ public class TcesTvSaveService {
                 // TODO: Transaction.
                 repositoryWritableTcForImport.save(tcByLocOpT);
             }
+            locationService.refreshCache();
         }
     }
 

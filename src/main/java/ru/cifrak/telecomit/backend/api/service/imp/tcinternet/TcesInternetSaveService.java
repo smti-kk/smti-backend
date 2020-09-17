@@ -3,14 +3,13 @@ package ru.cifrak.telecomit.backend.api.service.imp.tcinternet;
 import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.entities.ServiceQuality;
 import ru.cifrak.telecomit.backend.entities.TcInternet;
-import ru.cifrak.telecomit.backend.entities.TcPost;
 import ru.cifrak.telecomit.backend.entities.TcState;
-import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTcForImport;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
 import ru.cifrak.telecomit.backend.repository.RepositoryTypeTruncChannel;
 import ru.cifrak.telecomit.backend.repository.RepositoryWritableTcForImport;
+import ru.cifrak.telecomit.backend.service.LocationService;
 
 import javax.persistence.DiscriminatorValue;
 import java.util.List;
@@ -27,15 +26,19 @@ public class TcesInternetSaveService {
 
     private final RepositoryTypeTruncChannel repositoryTypeTruncChannel;
 
+    private final LocationService locationService;
+
     public TcesInternetSaveService(
             RepositoryWritableTcForImport RepositoryWritableTcForImport,
             RepositoryLocation repositoryLocation,
             RepositoryOperator repositoryOperator,
-            RepositoryTypeTruncChannel repositoryTypeTruncChannel) {
+            RepositoryTypeTruncChannel repositoryTypeTruncChannel,
+            LocationService locationService) {
         this.RepositoryWritableTcForImport = RepositoryWritableTcForImport;
         this.repositoryLocation = repositoryLocation;
         this.repositoryOperator = repositoryOperator;
         this.repositoryTypeTruncChannel = repositoryTypeTruncChannel;
+        this.locationService = locationService;
     }
 
     public void saveTcesInternet(List<TcInternetFromExcelDTO> TcesInternetDTO) {
@@ -61,6 +64,7 @@ public class TcesInternetSaveService {
                 // TODO: Transaction.
                 RepositoryWritableTcForImport.save(tcByLocOpT);
             }
+            locationService.refreshCache();
         }
     }
 }

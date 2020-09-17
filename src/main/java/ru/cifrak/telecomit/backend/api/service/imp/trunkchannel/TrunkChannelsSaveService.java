@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
 import ru.cifrak.telecomit.backend.repository.RepositoryTypeTruncChannel;
 import ru.cifrak.telecomit.backend.repository.map.MapLocationsPositionRepository;
+import ru.cifrak.telecomit.backend.service.LocationService;
 import ru.cifrak.telecomit.backend.trunk.channels.entity.TrunkChannel;
 import ru.cifrak.telecomit.backend.trunk.channels.repository.TrunkChannelRepository;
 
@@ -21,15 +22,19 @@ public class TrunkChannelsSaveService {
 
     private final TrunkChannelRepository trunkChannelRepository;
 
+    private final LocationService locationService;
+
     public TrunkChannelsSaveService(
             RepositoryOperator repositoryOperator,
             RepositoryTypeTruncChannel repositoryTypeTruncChannel,
             MapLocationsPositionRepository mapLocationsPositionRepository,
-            TrunkChannelRepository trunkChannelRepository) {
+            TrunkChannelRepository trunkChannelRepository,
+            LocationService locationService) {
         this.repositoryOperator = repositoryOperator;
         this.repositoryTypeTruncChannel = repositoryTypeTruncChannel;
         this.mapLocationsPositionRepository = mapLocationsPositionRepository;
         this.trunkChannelRepository = trunkChannelRepository;
+        this.locationService = locationService;
     }
 
     public void save(List<TrunkChannelFromExcelDTO> TcesDTO) {
@@ -54,6 +59,7 @@ public class TrunkChannelsSaveService {
                 // TODO: Transaction.
                 trunkChannelRepository.save(tc);
             }
+            locationService.refreshCache();
         }
     }
 }
