@@ -2,11 +2,11 @@ package ru.cifrak.telecomit.backend.api.service.imp.tcmobile;
 
 import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.entities.ServiceQuality;
-import ru.cifrak.telecomit.backend.entities.TcInternet;
 import ru.cifrak.telecomit.backend.entities.TcMobile;
 import ru.cifrak.telecomit.backend.entities.TcState;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTcForImport;
 import ru.cifrak.telecomit.backend.repository.*;
+import ru.cifrak.telecomit.backend.service.LocationService;
 
 import javax.persistence.DiscriminatorValue;
 import java.util.List;
@@ -23,15 +23,19 @@ public class TcesMobileSaveService {
 
     private final RepositoryMobileType repositoryMobileType;
 
+    private final LocationService locationService;
+
     public TcesMobileSaveService(
             RepositoryWritableTcForImport repositoryWritableTcForImport,
             RepositoryLocation repositoryLocation,
             RepositoryOperator repositoryOperator,
-            RepositoryMobileType repositoryMobileType) {
+            RepositoryMobileType repositoryMobileType,
+            LocationService locationService) {
         this.repositoryWritableTcForImport = repositoryWritableTcForImport;
         this.repositoryLocation = repositoryLocation;
         this.repositoryOperator = repositoryOperator;
         this.repositoryMobileType = repositoryMobileType;
+        this.locationService = locationService;
     }
 
     public void saveTcesMobile(List<TcMobileFromExcelDTO> TcesMobileDTO) {
@@ -57,6 +61,7 @@ public class TcesMobileSaveService {
                 // TODO: Transaction.
                 repositoryWritableTcForImport.save(tcByLocOpT);
             }
+            locationService.refreshCache();
         }
     }
 }
