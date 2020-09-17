@@ -8,6 +8,7 @@ import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.repository.*;
+import ru.cifrak.telecomit.backend.service.LocationService;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,19 +28,23 @@ public class ApesSaveService {
 
     private final RepositoryOrganizationType repositoryOrganizationType;
 
+    private final LocationService locationService;
+
     public ApesSaveService(
             RepositoryLocation repositoryLocation,
             RepositoryAccessPoints repositoryAccessPoints,
             RepositoryOrganization repositoryOrganization,
             RepositoryInternetAccessType repositoryInternetAccessType,
             RepositorySmoType repositorySmoType,
-            RepositoryOrganizationType repositoryOrganizationType) {
+            RepositoryOrganizationType repositoryOrganizationType,
+            LocationService locationService) {
         this.repositoryLocation = repositoryLocation;
         this.repositoryAccessPoints = repositoryAccessPoints;
         this.repositoryOrganization = repositoryOrganization;
         this.repositoryInternetAccessType = repositoryInternetAccessType;
         this.repositorySmoType = repositorySmoType;
         this.repositoryOrganizationType = repositoryOrganizationType;
+        this.locationService = locationService;
     }
 
     public void save(List<ApFromExcelDTO> TcesDTO) {
@@ -66,6 +71,7 @@ public class ApesSaveService {
                 // TODO: Transaction.
                 repositoryAccessPoints.save(ap);
             }
+            locationService.refreshCache();
         }
     }
 
