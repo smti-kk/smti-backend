@@ -57,9 +57,9 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
             Integer govProgram,
             Integer govProgramYear,
             Integer hasAnyInternet,
-            String type
+            TcType type
     ) {
-        if (type.equals("INET")) {
+        if (type.equals(TcType.INET)) {
             return featureComparingService.locations(
                     pageable,
                     parentIds,
@@ -73,7 +73,7 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
                     hasAnyInternet,
                     null
             );
-        } else if (type.equals("MOBILE")) {
+        } else if (type.equals(TcType.MOBILE)) {
             return featureComparingService.locations(
                     pageable,
                     parentIds,
@@ -101,10 +101,10 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
             Integer govProgram,
             Integer govProgramYear,
             Integer hasAnyInternet,
-            String type
+            TcType type
     ) throws IOException {
         List<LocationFC> locationFCS;
-        if (type.equals("INET")) {
+        if (type.equals(TcType.INET)) {
             locationFCS = featureComparingService.locations(
                     parentIds,
                     locationName,
@@ -117,7 +117,7 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
                     hasAnyInternet,
                     null
             );
-        } else if (type.equals("MOBILE")) {
+        } else if (type.equals(TcType.MOBILE)) {
             locationFCS = featureComparingService.locations(
                     parentIds,
                     locationName,
@@ -135,7 +135,7 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
         }
         List<FeatureExportDTO> collect = locationFCS
                 .stream()
-                .map(str -> new FeatureExportDTO(str, TcType.valueOf(type)))
+                .map(str -> new FeatureExportDTO(str, type))
                 .collect(Collectors.toList());
         IntStream.range(0, collect.size()).forEach(i -> collect.get(i).setPp(i + 1));
         ByteArrayResource resource = new ByteArrayResource(generateExelFeatureReport().exportToByteArray(collect));

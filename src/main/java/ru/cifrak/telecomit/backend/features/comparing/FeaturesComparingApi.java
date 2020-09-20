@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.cifrak.telecomit.backend.entities.TcType;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,7 +26,7 @@ public interface FeaturesComparingApi {
             @RequestParam(value = "govProgram", required = false) Integer govProgram,
             @RequestParam(value = "govProgramYear", required = false) Integer govProgramYear,
             @RequestParam(value = "govProgramYear", required = false) Integer hasAnyInternet,
-            @PathVariable(value = "type") String type
+            @PathVariable(value = "type") TcType type
     );
 
     @GetMapping("/{type}/export-excel")
@@ -37,7 +38,7 @@ public interface FeaturesComparingApi {
             @RequestParam(value = "govProgram", required = false) Integer govProgram,
             @RequestParam(value = "govProgramYear", required = false) Integer govProgramYear,
             @RequestParam(value = "govProgramYear", required = false) Integer hasAnyInternet,
-            @PathVariable(value = "type") String type
+            @PathVariable(value = "type") TcType type
     ) throws IOException;
 
     @PostMapping("/{locationId}/{featureId}/activation")

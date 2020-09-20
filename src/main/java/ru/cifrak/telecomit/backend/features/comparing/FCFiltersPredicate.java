@@ -2,6 +2,7 @@ package ru.cifrak.telecomit.backend.features.comparing;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
+import ru.cifrak.telecomit.backend.entities.TcType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +60,7 @@ public class FCFiltersPredicate {
                             .selectOne()
                             .from(locationFeature)
                             .where(
-                                    locationFeature.type.eq("INET")
+                                    locationFeature.type.eq(TcType.INET)
                                             .and(locationFeature.operator.id.in(internetOperators))
                                             .and(locationFC.id.eq(locationFeature.locationId))
                             )
@@ -72,7 +73,7 @@ public class FCFiltersPredicate {
                             .selectOne()
                             .from(locationFeature)
                             .where(
-                                    locationFeature.type.eq("MOBILE")
+                                    locationFeature.type.eq(TcType.MOBILE)
                                             .and(locationFeature.operator.id.in(mobileOperators))
                                             .and(locationFC.id.eq(locationFeature.locationId))
                             )
@@ -92,10 +93,10 @@ public class FCFiltersPredicate {
             predicate = predicate.and(locationFC.technicalCapabilities.any().govYearComplete.eq(govProgramYear));
         }
         if (hasAnyInternet != null) {
-            predicate = predicate.and(locationFC.technicalCapabilities.any().type.eq("INET"));
+            predicate = predicate.and(locationFC.technicalCapabilities.any().type.eq(TcType.INET));
         }
         if (hasAnyMobile != null) {
-            predicate = predicate.and(locationFC.technicalCapabilities.any().type.eq("MOBILE"));
+            predicate = predicate.and(locationFC.technicalCapabilities.any().type.eq(TcType.MOBILE));
         }
         return predicate;
     }

@@ -1,12 +1,15 @@
 package ru.cifrak.telecomit.backend.api.dto;
 
 import lombok.Data;
-import ru.cifrak.telecomit.backend.entities.*;
+import ru.cifrak.telecomit.backend.entities.TcState;
+import ru.cifrak.telecomit.backend.entities.TcType;
 import ru.cifrak.telecomit.backend.features.comparing.LocationFC;
 
 import javax.validation.constraints.NotNull;
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
 @Data
 public class FeatureExportDTO {
     private static final int currentYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -28,24 +31,37 @@ public class FeatureExportDTO {
         this.population = locationFC.getPopulation();
         this.district = locationFC.getLocationParent().getType();
         this.districtName = locationFC.getLocationParent().getName();
-        this.actual = translateDataToString(locationFC, tcType, TcState.ACTIVE, currentYear);
+        this.actual = translateDataToString(locationFC, tcType, TcState.ACTIVE);
         this.archive = translateDataToString(locationFC, tcType, TcState.ARCHIVE, currentYear - 1);
         this.planForOneYear = translateDataToString(locationFC, tcType, TcState.PLAN, currentYear + 1);
         this.planForTwoYear = translateDataToString(locationFC, tcType, TcState.PLAN, currentYear + 2);
-
         this.OKATO = locationFC.getOkato();
     }
 
     private String translateDataToString(LocationFC locationFC, TcType type, TcState state, int year) {
         return locationFC.getTechnicalCapabilities().stream()
                 .filter(
-                        tc -> tc.getType().equals(type) &&
-                                tc.getState().equals(state) &&
-                                tc.getGovYearComplete() == year
+                        tc -> Objects.equals(tc.getType(), type) &&
+                                Objects.equals(tc.getState(), state) &&
+                                Objects.equals(tc.getGovYearComplete(), year)
                 )
                 .map(tc -> tc.getOperator().getName() + (
                         type.equals(TcType.INET) ? tc.getTrunkChannel().getName() : tc.getTypeMobile().getName())
                 )
+                .collect(Collectors.joining(","));
+    }
+
+    private String translateDataToString(LocationFC locationFC, TcType type, TcState state) {
+        return locationFC.getTechnicalCapabilities().stream()
+                .filter(
+                        tc -> Objects.equals(tc.getType(), type) &&
+                                Objects.equals(tc.getState(), state)
+                )
+                .map(tc -> tc.getOperator().getName() + (
+                        type.equals(TcType.INET)
+                                ? (tc.getTrunkChannel() != null ? tc.getTrunkChannel().getName() : "")
+                                : (tc.getTypeMobile() != null ? tc.getTypeMobile().getName() : "")
+                ))
                 .collect(Collectors.joining(","));
     }
 }
