@@ -2,11 +2,13 @@ package ru.cifrak.telecomit.backend.features.comparing;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.entities.TcState;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
 import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
+import ru.cifrak.telecomit.backend.service.LocationService;
 
 import java.util.List;
 
@@ -14,23 +16,28 @@ import java.util.List;
 public class FeaturesComparingApiImpl implements FeaturesComparingApi {
 
     private final LocationRepository locationRepository;
+    private final LocationService locationService;
     private final FeatureComparingService featureComparingService;
     private final RepositoryWritableTc repositoryWritableTc;
 
     public FeaturesComparingApiImpl(LocationRepository locationRepository,
+                                    LocationService locationService,
                                     FeatureComparingService featureComparingService,
                                     RepositoryWritableTc repositoryWritableTc) {
         this.locationRepository = locationRepository;
+        this.locationService = locationService;
         this.featureComparingService = featureComparingService;
         this.repositoryWritableTc = repositoryWritableTc;
     }
 
     @Override
+    @Secured({"ROLE_OPERATOR", "ROLE_ADMIN"})
     public Page<LocationFC> locations(Pageable pageable) {
         return locationRepository.findAll(pageable);
     }
 
     @Override
+    @Secured({"ROLE_OPERATOR", "ROLE_ADMIN"})
     public Page<LocationFC> locationsInet(
             Pageable pageable,
             List<Integer> parentIds,
@@ -76,6 +83,7 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
     }
 
     @Override
+    @Secured({"ROLE_OPERATOR", "ROLE_ADMIN"})
     public void makeItActive(Integer locationId, Integer featureId) {
         WritableTc feature = repositoryWritableTc.getOne(featureId);
         WritableTc activeFeature = repositoryWritableTc.findByLocationIdAndStateAndOperatorId(
@@ -89,6 +97,7 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
             repositoryWritableTc.save(activeFeature);
         }
         repositoryWritableTc.save(feature);
+        locationService.refreshCache();
     }
 
 }
