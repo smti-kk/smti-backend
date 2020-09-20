@@ -22,7 +22,28 @@ public interface RepositoryOrganization extends JpaRepository<Organization, Inte
 
     @EntityGraph(Organization.FULL)
     @Query(value = "SELECT co from Organization co where co.location.id = :locationId")
-    List<Organization> findAllByLocationId(Integer locationId);
+    Page<Organization> findAllByLocationId(Integer locationId, Pageable pageable);
+
+    @EntityGraph(Organization.FULL)
+    @Query(value = "SELECT co FROM Organization co" +
+            " LEFT JOIN AccessPoint ap ON ap.organization.id = co.id" +
+            " WHERE co.location.id = :locationId" +
+            " AND ap.id <> :accessPointId")
+    Page<Organization> findAllByLocationIdAndWithoutAccessPoint(
+            Integer locationId,
+            Integer accessPointId,
+            Pageable pageable
+    );
+
+    @EntityGraph(Organization.FULL)
+    @Query(value = "SELECT co FROM Organization co" +
+            " LEFT JOIN AccessPoint ap ON ap.organization.id = co.id" +
+            " WHERE co.location.id = :locationId" +
+            " AND ap.id = :accessPointId")
+    Organization findByLocationIdAndWithAccessPoint(
+            Integer locationId,
+            Integer accessPointId
+    );
 
     List<Organization> findAll();
 

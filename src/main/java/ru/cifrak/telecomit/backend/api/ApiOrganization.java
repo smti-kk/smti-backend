@@ -4,10 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -23,10 +20,7 @@ import ru.cifrak.telecomit.backend.service.ServiceAccessPoint;
 import ru.cifrak.telecomit.backend.service.ServiceOrganization;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -138,11 +132,60 @@ public class ApiOrganization {
 
     @GetMapping(params = "location")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    @Cacheable("organizations")
-    public List<OrganizationWithAccessPointsDTO> listByLocationId(@RequestParam("location") Integer locationId) {
-        return rOrganization.findAllByLocationId(locationId).stream()
+    public Page<OrganizationWithAccessPointsDTO> listByLocationId(
+            @RequestParam("location") Integer locationId,
+            Pageable pageable
+    ) {
+        Page<Organization> result = rOrganization.findAllByLocationId(locationId, pageable);
+        List<OrganizationWithAccessPointsDTO> responseDTOs = result.getContent().stream()
                 .map(OrganizationWithAccessPointsDTO::new)
                 .collect(Collectors.toList());
+        return new PageImpl<>(responseDTOs, pageable, result.getTotalElements());
+    }
+
+    @GetMapping(params = {"location", "accessPoint"})
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    public Page<OrganizationWithAccessPointsDTO> listByLocationIdWithAccessPoint(
+            @RequestParam("location") Integer locationId,
+            @RequestParam("accessPoint") Integer accessPointId,
+            Pageable pageable
+    ) {
+        Page<Organization> result = rOrganization.findAllByLocationIdAndWithoutAccessPoint(
+                locationId,
+                accessPointId,
+                pageable
+        );
+        OrganizationWithAccessPointsDTO organization = new OrganizationWithAccessPointsDTO(
+                rOrganization.findByLocationIdAndWithAccessPoint(
+                        locationId,
+                        accessPointId
+                )
+        );
+        List<OrganizationWithAccessPointsDTO> responseDTOs = result.getContent().stream()
+                .map(OrganizationWithAccessPointsDTO::new)
+                .collect(Collectors.toList());
+        Collections.reverse(responseDTOs);
+        responseDTOs.add(organization);
+        Collections.reverse(responseDTOs);
+        return new PageImpl<>(responseDTOs, pageable, result.getTotalElements());
+    }
+
+    @GetMapping(value = "/without-ap", params = {"location", "accessPoint"})
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    public Page<OrganizationWithAccessPointsDTO> listByLocationIdWithoutAccessPoint(
+            @RequestParam("location") Integer locationId,
+            @RequestParam("accessPoint") Integer accessPointId,
+            Pageable pageable
+    ) {
+        Page<Organization> result = rOrganization.findAllByLocationIdAndWithoutAccessPoint(
+                locationId,
+                accessPointId,
+                pageable
+        );
+        List<OrganizationWithAccessPointsDTO> responseDTOs = result.getContent().stream()
+                .map(OrganizationWithAccessPointsDTO::new)
+                .collect(Collectors.toList());
+        return new PageImpl<>(responseDTOs, pageable, result.getTotalElements());
     }
 
     @GetMapping("/{locationId}/count")
@@ -160,7 +203,6 @@ public class ApiOrganization {
 
     @PostMapping(value = "/", consumes = "application/json", produces = "application/json")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    @CacheEvict(value = "organizations", allEntries = true)
     public ResponseEntity<OrganizationShortDTO> createItem(@RequestBody OrganizationShortDTO value) {
         log.info("->POST /api/organization/ ");
         Organization item = new Organization();
@@ -189,7 +231,6 @@ public class ApiOrganization {
     @Transactional
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
-    @CacheEvict(value = "organizations", allEntries = true)
     public ResponseEntity<OrganizationDTO> updateOrganization(@PathVariable(name = "id") Organization item, @RequestBody OrganizationShortDTO value) {
         log.info("->PUT /api/organization/{}", item.getId());
         item.setAddress(value.getAddress());
@@ -218,7 +259,6 @@ public class ApiOrganization {
 
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     @PostMapping(value = "/{id}/ap/", consumes = "application/json", produces = "application/json")
-    @CacheEvict(value = "organizations", allEntries = true)
     public ResponseEntity<?> createAP(
             @PathVariable(name = "id") final Organization organization,
             @RequestBody final AccessPointNewDTO dto
@@ -240,7 +280,6 @@ public class ApiOrganization {
 
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     @PutMapping(value = "/{id}/ap/", consumes = "application/json", produces = "application/json")
-    @CacheEvict(value = "organizations", allEntries = true)
     public ResponseEntity<?> updateAP(
             @PathVariable(name = "id") final Organization organization,
             @RequestBody final AccessPointNewDTO dto
