@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.api.service.imp.location;
 import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
+import ru.cifrak.telecomit.backend.service.LocationService;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,8 +12,12 @@ import java.util.UUID;
 public class LocationsSaveService {
     private final RepositoryLocation repository;
 
-    public LocationsSaveService(RepositoryLocation repository) {
+    private final LocationService locationService;
+
+    public LocationsSaveService(RepositoryLocation repository,
+                                LocationService locationService) {
         this.repository = repository;
+        this.locationService = locationService;
     }
 
     public void saveLocations(List<LocationFromExcelDTO> locationsDTO) {
@@ -47,6 +52,7 @@ public class LocationsSaveService {
             }
             // TODO: Transaction.
             repository.save(locationByFias);
+            locationService.refreshCache();
         }
     }
 

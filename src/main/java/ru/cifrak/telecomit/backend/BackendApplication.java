@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -19,6 +20,7 @@ import ru.cifrak.telecomit.backend.auth.service.UserService;
 import ru.cifrak.telecomit.backend.cache.repository.AuthTokenCacheRepository;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.UserRole;
+import ru.cifrak.telecomit.backend.service.LocationService;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -33,6 +35,14 @@ import java.util.Optional;
 @EnableCaching
 public class BackendApplication {
 
+    // todo: разобраться с кэшем, как его правильно использовать, потом это удалить
+    // требуется чтобы при перезапуске приложения сбросить кэш связанный с локациями
+    private final LocationService locationService;
+
+    public BackendApplication(LocationService locationService) {
+        this.locationService = locationService;
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
     }
@@ -42,6 +52,7 @@ public class BackendApplication {
         final ConfigurableApplicationContext context = event.getApplicationContext();
         BackendApplication.addAdminUser(context);
         BackendApplication.addMunicipalityUser(context);
+        locationService.refreshCache();
         /*BackendApplication.addOperUser(context);*/
 //        BackendApplication.resetAuthTokenCache(context);
     }
