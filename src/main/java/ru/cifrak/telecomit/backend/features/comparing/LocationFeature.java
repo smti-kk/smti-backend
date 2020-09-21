@@ -22,7 +22,8 @@ public class LocationFeature implements Serializable {
     private Operator operator;
 
     @Column(name = "split")
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private TcType type;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "key_government_program")

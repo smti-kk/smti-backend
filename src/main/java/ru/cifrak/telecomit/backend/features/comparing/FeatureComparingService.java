@@ -19,4 +19,17 @@ public interface FeatureComparingService {
             Integer hasAnyInternet,
             Integer hasAnyMobile
     );
+
+    List<LocationFC> locations(
+            List<Integer> parentIds,
+            String locationName,
+            List<Integer> internetOperators,
+            List<Integer> mobileOperators,
+            List<Integer> connectionTypes,
+            List<Integer> mobileTypes,
+            Integer govProgram,
+            Integer govProgramYear,
+            Integer hasAnyInternet,
+            Integer hasAnyMobile
+    );
 }

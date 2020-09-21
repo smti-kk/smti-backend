@@ -34,4 +34,8 @@ public interface LocationRepository extends JpaRepository<LocationFC, Integer>,
     @NotNull
     @Cacheable("locations_fc")
     Page<LocationFC> findAll(@NotNull Predicate predicate, @NotNull Pageable pageable);
+
+    @Cacheable("locations_fc")
+    @NotNull
+    Iterable<LocationFC> findAll(@NotNull Predicate predicate);
 }

@@ -19,6 +19,7 @@ public class LocationFC implements Serializable {
     private String type;
     private String name;
     private Integer population;
+    private String okato;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_id")

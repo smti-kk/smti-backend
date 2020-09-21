@@ -6,16 +6,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.cifrak.telecomit.backend.api.dto.ExelReportAccessPointFullDTO;
 import ru.cifrak.telecomit.backend.api.dto.ExelReportLocation;
+import ru.cifrak.telecomit.backend.api.dto.FeatureExportDTO;
+import ru.cifrak.telecomit.backend.entities.TcType;
 import ru.cifrak.telecomit.backend.utils.export.ExcelExporter;
 import ru.cifrak.telecomit.backend.utils.export.ExportToExcelConfiguration;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class HelperReport {
+
+    private static final int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
     public static ExcelExporter<ExelReportAccessPointFullDTO> generateExelFormat () {
 
@@ -81,6 +82,28 @@ public class HelperReport {
 
         return new ExcelExporter<>(exportToExcelConfiguration);
     }
+
+    //ToDo: такая же, но только с интернетом
+    // Может быть, получится как либо общить.
+    public static ExcelExporter<FeatureExportDTO> generateExelFeatureReport (TcType tcType) {
+        ExportToExcelConfiguration<FeatureExportDTO> exportToExcelConfiguration = new ExportToExcelConfiguration<>();
+
+        exportToExcelConfiguration.addColumn(0, Integer.class, FeatureExportDTO::getPp, "№ п/п");
+        exportToExcelConfiguration.addColumn(1, FeatureExportDTO::getDistrictName, "Район");
+        exportToExcelConfiguration.addColumn(2, FeatureExportDTO::getDistrict, "Тип МО");
+        exportToExcelConfiguration.addColumn(3, FeatureExportDTO::getLocationName, "Населенный пункт");
+        exportToExcelConfiguration.addColumn(4, Integer.class,FeatureExportDTO::getPopulation, "Население");
+
+        exportToExcelConfiguration.addColumn(5, FeatureExportDTO::getActual, tcType.toString() + "(сейчас" + currentYear + ")");
+        exportToExcelConfiguration.addColumn(6, FeatureExportDTO::getPlanForOneYear, tcType.toString() + "(план" + currentYear + 1 + ")");
+        exportToExcelConfiguration.addColumn(7, FeatureExportDTO::getPlanForTwoYear, tcType.toString() + "(план" + currentYear + 2 + ")");
+        exportToExcelConfiguration.addColumn(8, FeatureExportDTO::getArchive, tcType.toString() + "(архив)");
+
+        exportToExcelConfiguration.addColumn(9, FeatureExportDTO::getOKATO, "ОКАТО");
+
+        return new ExcelExporter<>(exportToExcelConfiguration);
+    }
+
 
     public static Sort.Order getOrder(String value) {
 
