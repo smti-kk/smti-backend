@@ -1,13 +1,14 @@
 package ru.cifrak.telecomit.backend.api.dto;
 
 import lombok.Data;
-import ru.cifrak.telecomit.backend.entities.TcState;
-import ru.cifrak.telecomit.backend.entities.TcType;
+import ru.cifrak.telecomit.backend.entities.*;
+import ru.cifrak.telecomit.backend.entities.AccessPointFull;
 import ru.cifrak.telecomit.backend.features.comparing.LocationFC;
 
 import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
@@ -46,7 +47,9 @@ public class FeatureExportDTO {
                                 Objects.equals(tc.getGovYearComplete(), year)
                 )
                 .map(tc -> tc.getOperator().getName() + (
-                        type.equals(TcType.INET) ? tc.getTrunkChannel().getName() : tc.getTypeMobile().getName())
+                        type.equals(TcType.INET) ? tc.getOperator().getName() + " (" + Optional.ofNullable(tc.getTrunkChannel()).map(TypeTrunkChannel::getName)
+                                .orElse("Не выбрано") + ")"
+                                : tc.getOperator().getName() + "(" + tc.getTypeMobile().getName()  + ")")
                 )
                 .collect(Collectors.joining(","));
     }
@@ -59,8 +62,9 @@ public class FeatureExportDTO {
                 )
                 .map(tc -> tc.getOperator().getName() + (
                         type.equals(TcType.INET)
-                                ? (tc.getTrunkChannel() != null ? tc.getTrunkChannel().getName() : "")
-                                : (tc.getTypeMobile() != null ? tc.getTypeMobile().getName() : "")
+                                ? (" (" + Optional.ofNullable(tc.getTrunkChannel()).map(TypeTrunkChannel::getName)
+                                .orElse("Не выбрано") + ")")
+                                : ("(" + tc.getTypeMobile().getName() + ")")
                 ))
                 .collect(Collectors.joining(","));
     }

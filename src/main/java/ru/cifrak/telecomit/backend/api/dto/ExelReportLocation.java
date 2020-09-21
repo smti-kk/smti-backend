@@ -4,6 +4,7 @@ import lombok.Data;
 import ru.cifrak.telecomit.backend.entities.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
@@ -62,9 +63,9 @@ public class ExelReportLocation {
 
         this.internet = location.getTechnicalCapabilities().stream()
                 .filter(tc -> tc instanceof TcInternet)
-                .map(tc -> tc.getOperator().getName() + " (" + ((TcInternet) tc).getTrunkChannel().getName() + ")")
+                .map(tc -> tc.getOperator().getName() + " (" + Optional.ofNullable(((TcInternet) tc).getTrunkChannel()).map(TypeTrunkChannel::getName)
+                        .orElse("Не выбрано") + ")")
                 .collect(Collectors.joining(","));
-
         this.telephone = location.getTechnicalCapabilities().stream()
                 .filter(tc -> tc instanceof TcMobile)
                 .map(tc -> tc.getOperator().getName() + " (" + ((TcMobile) tc).getType().getName() + ")")
