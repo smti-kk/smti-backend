@@ -3,17 +3,19 @@ package ru.cifrak.telecomit.backend.features.comparing;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.FeatureExportDTO;
+import ru.cifrak.telecomit.backend.entities.ExcelExportTypes;
 import ru.cifrak.telecomit.backend.entities.TcState;
 import ru.cifrak.telecomit.backend.entities.TcType;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
 import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
 import ru.cifrak.telecomit.backend.service.LocationService;
+import ru.cifrak.telecomit.backend.service.ReportName;
 
 import java.io.IOException;
 import java.util.List;
@@ -138,10 +140,9 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
                 .map(str -> new FeatureExportDTO(str, type))
                 .collect(Collectors.toList());
         IntStream.range(0, collect.size()).forEach(i -> collect.get(i).setPp(i + 1));
-        ByteArrayResource resource = new ByteArrayResource(generateExelFeatureReport(type).exportToByteArray(collect));;
+        ByteArrayResource resource = new ByteArrayResource(generateExelFeatureReport(type).exportToByteArray(collect));
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + ".xlsx\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, new ReportName(ExcelExportTypes.fromTcType(type)).toString())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(resource.contentLength())
                 .body(resource);
