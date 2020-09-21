@@ -22,6 +22,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryAccessPointsFull;
 import ru.cifrak.telecomit.backend.repository.RepositoryApContract;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.specs.SpecificationAccessPointFull;
+import ru.cifrak.telecomit.backend.service.ReportName;
 import ru.cifrak.telecomit.backend.service.ServiceExternalReports;
 import ru.cifrak.telecomit.backend.utils.Converter;
 import ru.cifrak.telecomit.backend.utils.export.ExcelExporter;
@@ -336,8 +337,7 @@ public class ApiReports {
 
         log.info("<-GET /api/report/organization/ap-all/export");
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + ".xlsx\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, new ReportName(ExcelExportTypes.ORGANIZATION).toString())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(resource.contentLength())
                 .body(resource);
@@ -424,8 +424,7 @@ public class ApiReports {
 
         log.info("<-GET /api/report/organization/ap-all/export");
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"%D0%9E%D1%82%D1%87%D1%91%D1%82%20%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0%20%D0%B7%D0%B0%20" + ".xlsx\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, new ReportName(ExcelExportTypes.CONTRACT).toString())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(resource.contentLength())
                 .body(resource);
