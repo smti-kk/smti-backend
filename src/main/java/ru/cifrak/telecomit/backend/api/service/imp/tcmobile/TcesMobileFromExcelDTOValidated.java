@@ -3,12 +3,14 @@ package ru.cifrak.telecomit.backend.api.service.imp.tcmobile;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
+import ru.cifrak.telecomit.backend.entities.Operator;
 import ru.cifrak.telecomit.backend.repository.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class TcesMobileFromExcelDTOValidated implements TcesMobileDTOFromExcel {
 
@@ -74,6 +76,15 @@ public class TcesMobileFromExcelDTOValidated implements TcesMobileDTOFromExcel {
                     + " позиции ошибка в операторе, не найден в БД.");
         }
 
+        badTcMobileDTO = this.checkOperatorsRights(tcesMobileDTO);
+        if (badTcMobileDTO != null) {
+            throw new FromExcelDTOFormatException("В " + badTcMobileDTO
+                    + " позиции ошибка в операторе, данную Т/В могут предоставлять только {"
+                    + repositoryOperator.mobile()
+                    .stream().map(Operator::getName).collect(Collectors.joining(", "))
+                    + "}.");
+        }
+
         badTcMobileDTO = this.checkType(tcesMobileDTO);
         if (badTcMobileDTO != null) {
             throw new FromExcelDTOFormatException("В " + badTcMobileDTO
@@ -99,6 +110,17 @@ public class TcesMobileFromExcelDTOValidated implements TcesMobileDTOFromExcel {
         for (TcMobileFromExcelDTO TcMobileDTO : tcesMobileDTO) {
             if (repositoryLocation.findByFias(UUID.fromString(TcMobileDTO.getFias())) == null) {
                 result = TcMobileDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkOperatorsRights(List<TcMobileFromExcelDTO> tcesDTO) {
+        String result = null;
+        for (TcMobileFromExcelDTO TcDTO : tcesDTO) {
+            if (!repositoryOperator.mobile().contains(repositoryOperator.findByName(TcDTO.getOperator()))) {
+                result = TcDTO.getNpp();
                 break;
             }
         }

@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.api.service.imp.tcinfomat;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
+import ru.cifrak.telecomit.backend.entities.Operator;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
 
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class TcesInfomatFromExcelDTOValidated implements TcesInfomatDTOFromExcel {
 
@@ -71,6 +73,15 @@ public class TcesInfomatFromExcelDTOValidated implements TcesInfomatDTOFromExcel
                     + " позиции ошибка в операторе, не найден в БД.");
         }
 
+        badDTO = this.checkOperatorsRights(tcesDTO);
+        if (badDTO != null) {
+            throw new FromExcelDTOFormatException("В " + badDTO
+                    + " позиции ошибка в операторе, данную Т/В могут предоставлять только {"
+                    + repositoryOperator.infomat()
+                    .stream().map(Operator::getName).collect(Collectors.joining(", "))
+                    + "}.");
+        }
+
         badDTO = this.checkQuantity(tcesDTO);
         if (badDTO != null) {
             throw new FromExcelDTOFormatException("В " + badDTO
@@ -106,6 +117,17 @@ public class TcesInfomatFromExcelDTOValidated implements TcesInfomatDTOFromExcel
         String result = null;
         for (TcInfomatFromExcelDTO TcDTO : tcesDTO) {
             if (repositoryOperator.findByName(TcDTO.getOperator()) == null) {
+                result = TcDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkOperatorsRights(List<TcInfomatFromExcelDTO> tcesDTO) {
+        String result = null;
+        for (TcInfomatFromExcelDTO TcDTO : tcesDTO) {
+            if (!repositoryOperator.infomat().contains(repositoryOperator.findByName(TcDTO.getOperator()))) {
                 result = TcDTO.getNpp();
                 break;
             }

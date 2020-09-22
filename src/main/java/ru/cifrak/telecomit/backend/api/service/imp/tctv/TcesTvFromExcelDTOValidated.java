@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.api.service.imp.tctv;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
+import ru.cifrak.telecomit.backend.entities.Operator;
 import ru.cifrak.telecomit.backend.entities.Signal;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
@@ -78,6 +79,15 @@ public class TcesTvFromExcelDTOValidated implements TcesTvDTOFromExcel {
                     + " позиции ошибка в операторе, не найден в БД.");
         }
 
+        badDTO = this.checkOperatorsRights(tcesTvDTO);
+        if (badDTO != null) {
+            throw new FromExcelDTOFormatException("В " + badDTO
+                    + " позиции ошибка в операторе, данную Т/В могут предоставлять только {"
+                    + repositoryOperator.television()
+                    .stream().map(Operator::getName).collect(Collectors.joining(", "))
+                    + "}.");
+        }
+
         badDTO = this.checkType(tcesTvDTO);
         if (badDTO != null) {
             throw new FromExcelDTOFormatException("В " + badDTO
@@ -128,6 +138,17 @@ public class TcesTvFromExcelDTOValidated implements TcesTvDTOFromExcel {
         String result = null;
         for (TcTvFromExcelDTO TcDTO : tcesDTO) {
             if (repositoryOperator.findByName(TcDTO.getOperator()) == null) {
+                result = TcDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkOperatorsRights(List<TcTvFromExcelDTO> tcesDTO) {
+        String result = null;
+        for (TcTvFromExcelDTO TcDTO : tcesDTO) {
+            if (!repositoryOperator.television().contains(repositoryOperator.findByName(TcDTO.getOperator()))) {
                 result = TcDTO.getNpp();
                 break;
             }
