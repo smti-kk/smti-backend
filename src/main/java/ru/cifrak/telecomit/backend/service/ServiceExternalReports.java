@@ -140,7 +140,7 @@ public class ServiceExternalReports {
         WebClient.RequestHeadersSpec<?> authenticate = client
                 .post()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(new ExtZabbixDtoAuth()));
+                .body(BodyInserters.fromValue(new ExtZabbixDtoAuth(zabbixConfig.getLogin(), zabbixConfig.getPassword())));
 
         String resp = authenticate.retrieve().bodyToMono(String.class).block();
         ExtZabbixDtoResponse respAuthentication = mapper.readValue(resp, ExtZabbixDtoResponse.class);
