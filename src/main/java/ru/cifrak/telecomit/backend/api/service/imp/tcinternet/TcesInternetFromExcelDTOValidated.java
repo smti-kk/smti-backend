@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.api.service.imp.tcinternet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
+import ru.cifrak.telecomit.backend.entities.Operator;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
 import ru.cifrak.telecomit.backend.repository.RepositoryTypeTruncChannel;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class TcesInternetFromExcelDTOValidated implements TcesInternetDTOFromExcel {
 
@@ -76,6 +78,15 @@ public class TcesInternetFromExcelDTOValidated implements TcesInternetDTOFromExc
                     + " позиции ошибка в операторе, не найден в БД.");
         }
 
+        badTcInternetDTO = this.checkOperatorsRights(tcesInternetDTO);
+        if (badTcInternetDTO != null) {
+            throw new FromExcelDTOFormatException("В " + badTcInternetDTO
+                    + " позиции ошибка в операторе, данную Т/В могут предоставлять только {"
+                    + repositoryOperator.internet()
+                    .stream().map(Operator::getName).collect(Collectors.joining(", "))
+                    + "}.");
+        }
+
         badTcInternetDTO = this.checkChannel(tcesInternetDTO);
         if (badTcInternetDTO != null) {
             throw new FromExcelDTOFormatException("В " + badTcInternetDTO
@@ -112,6 +123,17 @@ public class TcesInternetFromExcelDTOValidated implements TcesInternetDTOFromExc
         for (TcInternetFromExcelDTO TcInternetDTO : tcesInternetDTO) {
             if (repositoryOperator.findByName(TcInternetDTO.getOperator()) == null) {
                 result = TcInternetDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkOperatorsRights(List<TcInternetFromExcelDTO> tcesDTO) {
+        String result = null;
+        for (TcInternetFromExcelDTO TcDTO : tcesDTO) {
+            if (!repositoryOperator.internet().contains(repositoryOperator.findByName(TcDTO.getOperator()))) {
+                result = TcDTO.getNpp();
                 break;
             }
         }
