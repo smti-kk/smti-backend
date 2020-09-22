@@ -2,8 +2,8 @@ package ru.cifrak.telecomit.backend.auth;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.cifrak.telecomit.backend.auth.entity.User;
-import ru.cifrak.telecomit.backend.auth.entity.UserRole;
+import ru.cifrak.telecomit.backend.entities.User;
+import ru.cifrak.telecomit.backend.entities.UserRole;
 
 import java.util.Collection;
 import java.util.stream.Collectors;

@@ -1,7 +1,8 @@
 package ru.cifrak.telecomit.backend.repository;
 
 import org.jetbrains.annotations.NotNull;
-import org.locationtech.jts.geom.Polygon;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -9,45 +10,68 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ru.cifrak.telecomit.backend.domain.CatalogsLocation;
+import ru.cifrak.telecomit.backend.entities.Location;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface RepositoryLocation extends JpaRepository<CatalogsLocation, Integer> {
+public interface RepositoryLocation extends JpaRepository<Location, Integer> {
 
-    @EntityGraph(value = CatalogsLocation.WITH_FEATURES)
-    @Query("SELECT l FROM CatalogsLocation l where l.id = :id")
-    CatalogsLocation get(@NotNull Integer id);
+    @EntityGraph(value = Location.WITH_FEATURES)
+    @Query("SELECT l FROM Location l where l.id = :id")
+    Location get(@NotNull Integer id);
 
-    @Query("SELECT l from CatalogsLocation l where" +
-            " l.typeLocation not like 'р-н' " +
-            "and l.typeLocation not like 'край' " +
-            "and l.typeLocation not like 'с/с' " +
-            "and l.typeLocation not like 'тер' "
+    @EntityGraph(value = Location.SIMPLE)
+    @Query("SELECT l from Location l where" +
+            " l.type not like 'с/с' " +
+            "and l.type not like 'тер' " +
+            "and LOWER(l.name) like CONCAT('%',LOWER(:name),'%')"
     )
-    List<CatalogsLocation> locations();
+    List<Location> locations(@Param("name")String name);
 
-    @Query("SELECT l from CatalogsLocation l left join CatalogsGeolocation g on l.catalogsGeolocation.id = g.id where l.level = 1")
-    List<CatalogsLocation> areaBorders();
+    @Query("SELECT l from Location l where" +
+            " l.type not like 'р-н' " +
+            "and l.type not like 'край' " +
+            "and l.type not like 'с/с' " +
+            "and l.type not like 'тер' "
+    )
+    List<Location> locationFilter();
 
-    @Query("SELECT l from CatalogsLocation l where l.level = 1 ")
-    List<CatalogsLocation> parents();
+    @Query("SELECT l from Location l left join GeoData g on l.geoData.id = g.id where l.level = 1")
+    List<Location> areaBorders();
 
-    @Query(value = "SELECT l from CatalogsLocation l where" +
-            " l.typeLocation not in ('р-н', 'край', 'с/с', 'тер')" +
-            "and within(l.catalogsGeolocation.administrativeCenter, :bbox) = true")
-    List<CatalogsLocation> locationsByBbox(@Param("bbox") Polygon bbox);
+    @Query("SELECT l from Location l where l.level = 1 ")
+    List<Location> parents();
 
-    @Query(value = "SELECT l from CatalogsLocation l where" +
-            " l.typeLocation not in ('р-н', 'край', 'с/с', 'тер')" +
-            "and l.catalogsGeolocation.administrativeCenter is not NULL " +
+    @EntityGraph(value = Location.WITH_FEATURES)
+    @Query(value = "SELECT l from Location l where" +
+            " l.type not in ('р-н', 'край', 'с/с', 'тер')" +
+            "and l.geoData.administrativeCenter is not NULL " +
             "and (l.parent.id = ?1 or l.id = ?1)")
-    List<CatalogsLocation> findAllByParentId(Integer parentId);
+    List<Location> findAllByParentId(Integer parentId);
 
-    @EntityGraph(value = CatalogsLocation.WITH_FEATURES)
-    @Query(value = "SELECT l from CatalogsLocation l" +
-            " where l.typeLocation not in ('р-н', 'край', 'с/с', 'тер')"
+    @EntityGraph(value = Location.WITH_FEATURES)
+    @Query(value = "SELECT l from Location l" +
+            " where l.type not in ('р-н', 'край', 'с/с', 'тер') and l.name like '%Орловк%'"
     )
-    Page<CatalogsLocation> findAll(Pageable pageable);
+    Page<Location> findAll(Pageable pageable);
+
+    //TODO: REMOVE!!!!!!! sql - and l.name like '%Орловк%'
+    @EntityGraph(value = Location.WITH_ORGANIZATIONS_ACCESSPOINTS)
+    @Query(value = "SELECT l from Location l" +
+            " where l.type not in ('р-н', 'край', 'с/с', 'тер') and l.name like '%Орловк%'"
+    )
+    Page<Location> findAllReportOrganization(Pageable pageable);
+
+    @Nullable
+    Location findByFias(UUID fias);
+
+    @Query("SELECT distinct l.type from Location l")
+    List<String> findAllTypes();
+
+    Location findByNameAndType(String name, String type);
+
+    @Query("SELECT max(l.level) from Location l")
+    int findMaxLevel();
 }

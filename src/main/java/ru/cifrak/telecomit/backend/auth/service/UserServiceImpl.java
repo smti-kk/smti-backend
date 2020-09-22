@@ -1,8 +1,8 @@
 package ru.cifrak.telecomit.backend.auth.service;
 
 import org.springframework.stereotype.Service;
-import ru.cifrak.telecomit.backend.auth.entity.User;
-import ru.cifrak.telecomit.backend.auth.repository.UserRepository;
+import ru.cifrak.telecomit.backend.entities.User;
+import ru.cifrak.telecomit.backend.auth.repository.RepositoryUser;
 import ru.cifrak.telecomit.backend.cache.entity.AuthTokenCache;
 import ru.cifrak.telecomit.backend.cache.repository.AuthTokenCacheRepository;
 
@@ -11,9 +11,9 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     private final AuthTokenCacheRepository authTokenCacheRepository;
-    private final UserRepository userRepository;
+    private final RepositoryUser userRepository;
 
-    public UserServiceImpl(AuthTokenCacheRepository authTokenCacheRepository, UserRepository userRepository) {
+    public UserServiceImpl(AuthTokenCacheRepository authTokenCacheRepository, RepositoryUser userRepository) {
         this.authTokenCacheRepository = authTokenCacheRepository;
         this.userRepository = userRepository;
     }
@@ -36,9 +36,9 @@ public class UserServiceImpl implements UserService {
         final Optional<User> optionalUser = userRepository.findById(authToken.getUserId());
 
         // Update authToken expire time // TODO move out to another service
-        if (optionalUser.isPresent()) {
-            authTokenCacheRepository.save(authToken);
-        }
+//        if (optionalUser.isPresent()) {
+//            authTokenCacheRepository.save(authToken);
+//        }
 
         return optionalUser;
 

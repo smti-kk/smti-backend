@@ -1,3 +1,4 @@
+/*
 package ru.cifrak.telecomit.backend.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -19,3 +20,4 @@ public class ConnectionMetricSerializer extends JsonSerializer<MonitoringConnect
         jsonGenerator.writeEndObject();
     }
 }
+*/

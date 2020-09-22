@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import ru.cifrak.telecomit.backend.auth.ProjectUserDetails;
-import ru.cifrak.telecomit.backend.auth.entity.User;
+import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.auth.service.UserService;
 
 import java.util.Optional;
@@ -33,7 +33,7 @@ public class TokenUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException(String.format("User '%s' is inactive. Access denied", user.getUsername()));
         }
 
-        return new ProjectUserDetails(optionalUser.get());
+        return optionalUser.get();
     }
 
     private static String removeStart(String str, String remove) {

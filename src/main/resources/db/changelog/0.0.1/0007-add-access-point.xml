@@ -1,0 +1,91 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="a-panov (generated)" id="1588604416933-11">
+        <createSequence incrementBy="1" sequenceName="accesspoint_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-13">
+        <createTable tableName="access_point">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="accesspoint_id_seq">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="access_pointPK"/>
+            </column>
+            <column name="address" type="VARCHAR(1000)"/>
+            <column name="billing_id" type="INTEGER"/>
+            <column name="completed" type="INTEGER"/>
+            <column name="contractor" type="VARCHAR(500)"/>
+            <column name="customer" type="VARCHAR(500)"/>
+            <column name="declared_speed" type="VARCHAR(500)"/>
+            <column name="description" type="TEXT"/>
+            <column name="ip_config" type="TEXT"/>
+            <column name="max_amount" type="INTEGER"/>
+            <column name="net_traffic_last_month" type="BIGINT"/>
+            <column name="net_traffic_last_week" type="BIGINT"/>
+            <column name="node" type="VARCHAR(500)"/>
+            <column name="point" type="GEOMETRY">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quality" type="VARCHAR(6)"/>
+            <column name="state" type="VARCHAR(4)"/>
+            <column name="ucn" type="INTEGER"/>
+            <column name="visible" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_government_program" type="INTEGER"/>
+            <column name="key_type_internet_access" type="INTEGER"/>
+            <column name="key_operator" type="INTEGER"/>
+            <column name="key_organization" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-14">
+        <addUniqueConstraint columnNames="id" constraintName="UC_ACCESS_POINTID_COL" tableName="access_point"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-15">
+        <addForeignKeyConstraint baseColumnNames="key_operator" baseTableName="access_point" constraintName="FK1ojl3i6t9fdmpuph1bbla7fyf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="operator" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-16">
+        <addForeignKeyConstraint baseColumnNames="key_organization" baseTableName="access_point" constraintName="FKajbsassl7oc09jmfwpggtj528" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="organization" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-17">
+        <addForeignKeyConstraint baseColumnNames="key_government_program" baseTableName="access_point" constraintName="FKsnw5068l92yhta8e7f83skf7w" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="government_development_program" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-18">
+        <addForeignKeyConstraint baseColumnNames="key_type_internet_access" baseTableName="access_point" constraintName="FKt8a34ucn9co7osyw768624vmj" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="type_internet_access" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-19">
+        <addColumn tableName="access_point">
+            <column name="type" type="varchar(31)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-20">
+        <addColumn tableName="access_point">
+            <column name="created_by" type="varchar(255)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-21">
+        <addColumn tableName="access_point">
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-22">
+        <addColumn tableName="access_point">
+            <column name="modified_by" type="varchar(255)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-23">
+        <addColumn tableName="access_point">
+            <column name="modified" type="timestamp">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588604416933-24">
+        <addColumn tableName="access_point">
+            <column name="deleted" type="boolean">
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

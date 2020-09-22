@@ -1,0 +1,606 @@
+### LOGIN USER with taking TOKEN
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+//{"username": "admin", "password": "pwd"}
+
+{"email": "admin", "password": "pwd"}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
+### LOGIN USER *** FOO *** with taking TOKEN
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+
+{"email": "foo", "password": "pwd"}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
+###
+GET http://localhost:8080/auth/account_info/
+Authorization: Token {{auth_token}}
+
+### ********************************************************************************************************************
+### Operators
+### ********************************************************************************************************************
+
+###
+GET http://localhost:8080/api/operator/3/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/operator/ats/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/operator/grouped/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/operator/internet/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/operator/mobile/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/operator/postal/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/operator/radio/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/operator/tv/
+Authorization: Token {{auth_token}}
+
+### ********************************************************************************************************************
+### Types
+### ********************************************************************************************************************
+
+###       Mobile
+### ********************************************************************************************************************
+###
+GET http://localhost:8080/api/type/mobile/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/type/mobile/1/
+Authorization: Token {{auth_token}}
+
+###       Internet types
+### ********************************************************************************************************************
+###
+GET http://localhost:8080/api/type/internet-access/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/type/internet-access/9/
+Authorization: Token {{auth_token}}
+
+###       SMO types
+### ********************************************************************************************************************
+###
+GET http://localhost:8080/api/type/smo/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/type/smo/1/
+Authorization: Token {{auth_token}}
+
+###       Trunc Channel types
+### ********************************************************************************************************************
+###
+GET http://localhost:8080/api/type/trunk-channel/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/type/trunk-channel/4/
+Authorization: Token {{auth_token}}
+
+###       POST and TV and Access-Point types
+### ********************************************************************************************************************
+###
+GET http://localhost:8080/api/type/post/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/type/tv/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/type/access-point/
+Authorization: Token {{auth_token}}
+
+### ********************************************************************************************************************
+### Locations
+### ********************************************************************************************************************
+
+###
+GET http://localhost:8080/api/location?location=орл
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/location/locations/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/location/parents/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/location?bbox=92.53749847412111,55.95342878289969,93.19667816162111,56.08314815685834
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/location?parent=4
+Authorization: Token {{auth_token}}
+
+### ********************************************************************************************************************
+### Government Development Program
+### ********************************************************************************************************************
+
+###
+GET http://localhost:8080/api/gov-program/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/gov-program/1/
+Authorization: Token {{auth_token}}
+
+### ********************************************************************************************************************
+### Organization
+### ********************************************************************************************************************
+
+###
+GET http://localhost:8080/api/organization/3/
+Authorization: Token {{auth_token}}
+
+###
+GET http://localhost:8080/api/organization/34283
+Authorization: Token {{auth_token}}
+
+###
+POST http://localhost:8080/api/organization/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "Test addres",
+  "fias": "10000000-0000-0000-0000-000000000001",
+  "name": "Тест организация",
+  "inn": "123456789012",
+  "kpp": "123456789",
+  "acronym": "tst",
+  "location": {
+    "id": 2125
+  },
+  "parent": null,
+  "children": [],
+  "type": {
+    "id": 7
+  },
+  "smo": {
+    "id": 5
+  }
+}
+
+###
+PUT http://localhost:8080/api/organization/3428/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "addres",
+  "fias": "23400000-0000-0000-0000-000000000001",
+  "name": "Тест организация Тест организация Тест организация ",
+  "inn": "223456789012",
+  "kpp": "223456789",
+  "acronym": "7-tst",
+  "location": {
+    "id": 2125
+  },
+  "parent": null,
+  "children": [],
+  "type": {
+    "id": 1
+  },
+  "smo": {
+    "id": 4
+  }
+
+}
+
+
+###
+PUT http://localhost:8080/api/organization/342/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "addres",
+  "fias": "23400000-0000-0000-0000-000000000001",
+  "name": "Тест организация Тест организация Тест организация ",
+  "inn": "223456789012",
+  "kpp": "223456789",
+  "acronym": "7-tst",
+  "location": 2125,
+  "parent": null,
+  "children": [],
+  "type": 3,
+  "smo": 2
+
+}
+
+###
+GET http://localhost:8080/api/organization/3/ap/
+Authorization: Token {{auth_token}}
+
+###            SMO
+POST http://localhost:8080/api/organization/3/ap/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "bar test 1",
+  "billing_id": null,
+  "internetAccess": 3,
+  "contractor": "hmhm",
+  "customer": null,
+  "description": null,
+  "government_program": null,
+  "ip_config": null,
+  "max_amount": null,
+  "name": " КГБУЗ \"Красноярский краевой психоневрологический диспансер №1\" Филиал 7(г.Ачинск) ККПНД №1",
+  "node": "fghmhmhm",
+  "operator": null,
+  "quality": "good",
+  "state": null,
+  "ucn": null,
+  "visible": true,
+  "point": {
+    "type": "Point",
+    "coordinates": [
+      96.0456,
+      56.6763888
+    ]
+  },
+  "type": "SMO",
+  "id": null
+}
+
+###            ESPD
+POST http://localhost:8080/api/organization/3/ap/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "bar test 2",
+  "billing_id": null,
+  "internetAccess": 3,
+  "contractor": "hmhm",
+  "customer": null,
+  "description": null,
+  "government_program": 2,
+  "ip_config": null,
+  "max_amount": null,
+  "name": " КГБУЗ \"Красноярский краевой психоневрологический диспансер №1\" Филиал 7(г.Ачинск) ККПНД №1",
+  "node": "fghmhmhm",
+  "operator": null,
+  "quality": "good",
+  "state": null,
+  "ucn": null,
+  "visible": true,
+  "point": {
+    "type": "Point",
+    "coordinates": [
+      96.0456,
+      56.6763888
+    ]
+  },
+  "type": "ESPD",
+  "id": null
+}
+
+###            RSMO
+POST http://localhost:8080/api/organization/3/ap/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "bar test 2",
+  "billing_id": null,
+  "internetAccess": 3,
+  "contractor": "hmhm",
+  "customer": null,
+  "description": null,
+  "government_program": 2,
+  "ip_config": null,
+  "max_amount": null,
+  "name": " КГБУЗ \"Красноярский краевой психоневрологический диспансер №1\" Филиал 7(г.Ачинск) ККПНД №1",
+  "node": "fghmhmhm",
+  "operator": null,
+  "quality": "good",
+  "state": null,
+  "ucn": null,
+  "visible": true,
+  "point": {
+    "type": "Point",
+    "coordinates": [
+      96.0456,
+      56.6763888
+    ]
+  },
+  "type": "RSMO",
+  "id": null
+}
+
+###            ZSPD
+POST http://localhost:8080/api/organization/3/ap/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "bar test ZSPD",
+  "billing_id": null,
+  "internetAccess": 3,
+  "contractor": "hmhm",
+  "customer": null,
+  "description": null,
+  "government_program": 2,
+  "ip_config": null,
+  "max_amount": null,
+  "name": " КГБУЗ \"Красноярский краевой психоневрологический диспансер №1\" Филиал 7(г.Ачинск) ККПНД №1",
+  "node": "fghmhmhm",
+  "operator": null,
+  "quality": "good",
+  "state": null,
+  "ucn": null,
+  "visible": true,
+  "point": {
+    "type": "Point",
+    "coordinates": [
+      96.0456,
+      56.6763888
+    ]
+  },
+  "type": "ZSPD",
+  "id": null
+}
+
+###            CONTRACT
+POST http://localhost:8080/api/organization/3/ap/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "address": "bar test CONTRACT",
+  "billing_id": null,
+  "internetAccess": 3,
+  "contractor": "hmhm",
+  "customer": null,
+  "description": null,
+  "government_program": 2,
+  "ip_config": null,
+  "max_amount": null,
+  "name": " КГБУЗ \"Красноярский краевой психоневрологический диспансер №1\" Филиал 7(г.Ачинск) ККПНД №1",
+  "node": "fghmhmhm",
+  "operator": null,
+  "quality": "good",
+  "state": null,
+  "ucn": null,
+  "visible": true,
+  "point": {
+    "type": "Point",
+    "coordinates": [
+      96.0456,
+      56.6763888
+    ]
+  },
+  "type": "CONTRACT",
+  "id": null,
+  "number": "12-3/12",
+  "amount": 10012,
+  "started": "2020-01-01",
+  "ended": "2020-12-01"
+}
+
+
+
+### ********************************************************************************************************************
+### REPORT --- AccessPoints -- ORGANIZATION
+### ********************************************************************************************************************
+
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=2
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&type=7
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=2&smo=5
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=2&smo=5&ap=SMO
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&location=1251&gdp=1
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&gdp=1
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&parents=142
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&inet=10
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&organization=Министер
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&contractor=Сибирские
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&inet=10&parents=142,61&gdp=1&location=1251&smo=5&type=7
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=&sort=organization
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&sort=-organization,+organization.location&location=1251
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=100&location=1251&sort=+organization.location,+organization.location.parent,+organization.location.population
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&location=1251&sort=+organization.location.name
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&organization=Пожарно-спасательная часть №95
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&population-start=5000&population-end=6000&sort=+organization.location.name
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/report/organization/ap-all/?page=1&size=10&ap=CONTRACT
+Authorization: Token {{auth_token}}
+
+###       EXPORT REPORT IN EXCEL ABOUT MONITORING ACCESS POINTS BY PERIOD OF DATES
+### ********************************************************************************************************************
+###
+GET  http://localhost:8080/api/report/organization/export/map/?start=2020-05-26&end=2020-05-26
+#Authorization: Token {{auth_token}}
+
+
+### ********************************************************************************************************************
+### REPORT --- AccessPoints -- Contract
+### ********************************************************************************************************************
+
+###
+#GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=10&location=1251&sort=+organization.location.name
+GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=100
+Authorization: Token {{auth_token}}
+
+###
+GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=100&contract=contr
+Authorization: Token {{auth_token}}
+
+###
+GET http://localhost:8080/api/report/organization/ap-contract/?page=1&size=100&contract-start=2020-05-26&location=4&contract=numb
+Authorization: Token {{auth_token}}
+
+##########################################################################################
+###
+GET http://localhost:8080/api/tc/ats/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/tc/internet/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/tc/mobile/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/tc/post/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/tc/radio/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/tc/tv/
+Authorization: Token {{auth_token}}
+###
+GET http://localhost:8080/api/tc/w/post/
+Authorization: Token {{auth_token}}
+
+### error org and ap
+GET http://localhost:8080/api/organization/11/ap/24/init-monitoring
+Authorization: Token {{auth_token}}
+
+### goo org and ap
+POST http://localhost:8080/api/organization/3410/ap/3424/init-monitoring
+#POST http://localhost:8080/api/organization/3410/ap/3802/init-monitoring
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+    "device": {
+     "hostName": "test-device-12",
+     "ip": "127.0.0.1",
+     "groupid": "34",
+     "tag": "project",
+     "tagValue": "telecom-it",
+     "templateid": "10233",
+     "macro": "{$SNMP_COMMUNITY}",
+     "macroValue": "ESPD_monitor"
+     },
+     "sensor": {
+     "hostName": "test-sensor-12",
+     "ip": "127.0.0.2",
+     "groupid": "34",
+     "tag": "project",
+     "tagValue": "telecom-it",
+     "templateid": "10233",
+     "macro": "{$SNMP_COMMUNITY}",
+     "macroValue": "ESPD_monitor"
+     }
+
+}
+
+
+### goo org and ap
+#POST http://localhost:8080/api/organization/3379/ap/3787/init-monitoring
+#POST http://localhost:8080/api/organization/1471/ap/31/init-monitoring
+#POST http://localhost:8080/api/organization/3411/ap/3799/init-monitoring
+POST http://localhost:8080/api/organization/3412/ap/3795/init-monitoring
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "networks": null,
+  "device": {
+    "hostName": "m008U.08.CityName",
+    "ip": "127.0.0.1",
+    "groupid": "34",
+    "tag": "project",
+    "tagValue": "telecom-it",
+    "templateid": "10233",
+    "macro": "{$SNMP_COMMUNITY}",
+    "macroValue": "ESPD_monitor"
+  },
+  "sensor": {
+    "hostName": "m008U.s.08.CityName",
+    "ip": "127.0.0.2",
+    "groupid": "34",
+    "tag": "project",
+    "tagValue": "telecom-it",
+    "templateid": "10233",
+    "macro": "{$SNMP_COMMUNITY}",
+    "macroValue": "ESPD_monitor"
+  }
+}
+
+
+### goo org and ap
+GET http://localhost:8080/api/user/
+#POST http://localhost:8080/api/organization/3410/ap/3802/init-monitoring
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+
+###
+GET http://localhost:8080/api/location/base/
+Authorization: Token {{auth_token}}
+
+### LOGIN USER with taking TOKEN
+POST http://localhost:8080/auth/login/
+Content-Type: application/json
+//{"username": "admin", "password": "pwd"}
+
+{"email": "a@a.aa", "password": "pwd"}
+
+> {% client.global.set("auth_token", response.body.token); %}
+
+### goo org and ap
+#GET http://localhost:8080/api/report/organization/export/map/?start=1593561600&end=1596240000
+#GET http://localhost:8080/api/report/organization/export/map/?start=1596240000&end=1598918400
+GET http://localhost:8080/api/report/organization/export/map/?start=1590969600&end=1596240000
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+###
+GET http://localhost:8080/api/report/organization/ap-all/export/
+#Authorization: Token {{auth_token}}
+
+###
+GET http://localhost:8080/api/report/organization/ap-all/export/?smo=5&inet=10
+#Authorization: Token {{auth_token}}
+
+### LOGIN USER with taking TOKEN
+POST http://localhost:8080/api/detail-locations/export-excel
+Content-Type: application/json
+
+[1516]

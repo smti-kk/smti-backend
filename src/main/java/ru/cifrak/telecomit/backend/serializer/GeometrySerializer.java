@@ -76,7 +76,7 @@ public class GeometrySerializer extends JsonSerializer<Geometry> {
         jgen.writeArrayFieldStart("coordinates");
 
         for (int i = 0; i != value.getNumGeometries(); ++i) {
-            writePointCoords(jgen, (Point) value.getGeometryN(i));
+            writePointCoordsAsNumberArray(jgen, (Point) value.getGeometryN(i));
         }
 
         jgen.writeEndArray();
@@ -165,7 +165,7 @@ public class GeometrySerializer extends JsonSerializer<Geometry> {
         jgen.writeStartArray();
         for (int i = 0; i != ring.getNumPoints(); ++i) {
             Point p = ring.getPointN(i);
-            writePointCoords(jgen, p);
+            writePointCoordsAsNumberArray(jgen, p);
         }
         jgen.writeEndArray();
     }
@@ -181,19 +181,22 @@ public class GeometrySerializer extends JsonSerializer<Geometry> {
 
     private void writePoint(JsonGenerator jgen, Point p)
             throws JsonGenerationException, IOException {
-        jgen.writeStartObject();
-        jgen.writeStringField("type", "Point");
-        jgen.writeFieldName("coordinates");
         writePointCoords(jgen, p);
-        jgen.writeEndObject();
     }
 
     private void writePointCoords(JsonGenerator jgen, Point p)
+            throws IOException, JsonGenerationException {
+        jgen.writeStartObject();
+        jgen.writeNumberField("lng", p.getX());
+        jgen.writeNumberField("lat", p.getY());
+        jgen.writeEndObject();
+    }
+
+    private void writePointCoordsAsNumberArray(JsonGenerator jgen, Point p)
             throws IOException, JsonGenerationException {
         jgen.writeStartArray();
         jgen.writeNumber(p.getX());
         jgen.writeNumber(p.getY());
         jgen.writeEndArray();
     }
-
 }

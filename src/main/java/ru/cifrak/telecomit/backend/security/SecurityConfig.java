@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -51,12 +52,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/auth", "/api/exchange_temp_token").permitAll()
                 .antMatchers("/api/esia-auth/**").permitAll()
+                .antMatchers("/api/**").permitAll()
 //                .antMatchers("/api/**").hasAuthority()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().disable()
             ;
         }
+
+        /**
+         * TODO: Владимир порекомендовал использовать по условию:
+         *  - https://mattermost.cifra-k.ru/test/pl/1dt86r8t67datcyh5jcwhrcm4y;
+         *  - https://mattermost.cifra-k.ru/test/pl/qaj1uyrhyfbd8nufdweo863ifh.
+         */
+/*        @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring().mvcMatchers("/api/import/**");
+        }*/
 
         public RequestHeaderAuthenticationFilter requestHeaderAuthenticationFilter() throws Exception {
             RequestHeaderAuthenticationFilter requestHeaderAuthenticationFilter = new RequestHeaderAuthenticationFilter();

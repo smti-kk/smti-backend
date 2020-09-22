@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 import org.springframework.lang.NonNull;
-import ru.cifrak.telecomit.backend.auth.entity.User;
+import ru.cifrak.telecomit.backend.entities.User;
 
 import javax.persistence.Id;
 import java.io.Serializable;
@@ -38,8 +38,11 @@ public class AuthTokenCache implements Serializable {
         this.userId = user.getId();
     }
 
-    @TimeToLive
-    public long getTimeToLive() {
-        return 1 * 60 * 60;
-    }
+    //TODO: this comments is a fix for very quickly api interaction from frontend
+    // and this TTL shoud be more workable desision
+    // for now we just commented out
+//    @TimeToLive
+//    public long getTimeToLive() {
+//        return 1 * 60 * 60;
+//    }
 }

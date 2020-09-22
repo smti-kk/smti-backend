@@ -1,7 +1,7 @@
 package ru.cifrak.telecomit.backend.cache.service;
 
 import org.springframework.stereotype.Service;
-import ru.cifrak.telecomit.backend.auth.entity.User;
+import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.cache.entity.AuthTokenCache;
 import ru.cifrak.telecomit.backend.cache.repository.AuthTokenCacheRepository;
 import ru.cifrak.telecomit.backend.utils.Utils;
@@ -10,6 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthTokenCacheServiceImpl implements AuthTokenCacheService {
@@ -32,7 +33,7 @@ public class AuthTokenCacheServiceImpl implements AuthTokenCacheService {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        final byte[] encodedHash = digest.digest(Long.toString(System.currentTimeMillis()).getBytes());
+        final byte[] encodedHash = digest.digest(UUID.randomUUID().toString().getBytes());
 
         final String token = Utils.bytesToHex(encodedHash);
 

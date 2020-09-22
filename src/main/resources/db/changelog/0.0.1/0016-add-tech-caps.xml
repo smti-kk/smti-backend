@@ -1,0 +1,102 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="a-panov (generated)" id="1591170220933-18">
+        <createSequence incrementBy="1" sequenceName="request_for_change_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591170220933-19">
+        <createSequence incrementBy="1" sequenceName="technical_capability_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591170220933-20">
+        <createTable tableName="request_for_change">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="request_for_change_id_seq">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="request_for_changePK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)"/>
+            <column name="modified" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="comment" type="TEXT"/>
+            <column name="started" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="key_location" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_user" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591170220933-21">
+        <createTable tableName="technical_capability">
+            <column name="split" type="VARCHAR(31)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id" type="BIGINT" defaultValueSequenceNext="technical_capability_id_seq">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="technical_capabilityPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueDate="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)"/>
+            <column name="modified" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="gov_status" type="VARCHAR(255)"/>
+            <column name="gov_year_complete" type="INTEGER"/>
+            <column name="quality" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subscribers" type="INTEGER"/>
+            <column name="type" type="VARCHAR(255)"/>
+            <column name="a_channels" type="INTEGER"/>
+            <column name="d_channels" type="INTEGER"/>
+            <column name="capacity" type="INTEGER"/>
+            <column name="payphones" type="INTEGER"/>
+            <column name="throughput" type="VARCHAR(255)"/>
+            <column name="key_government_program" type="INTEGER"/>
+            <column name="key_location" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_operator" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_request_for_change" type="INTEGER"/>
+            <column name="key_type_mobile" type="INTEGER"/>
+            <column name="key_type_trunkchannel" type="INTEGER"/>
+            <column name="state" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591170220933-22">
+        <addUniqueConstraint columnNames="id" constraintName="UC_REQUEST_FOR_CHANGEID_COL" tableName="request_for_change"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591170220933-23">
+        <addUniqueConstraint columnNames="id" constraintName="UC_TECHNICAL_CAPABILITYID_COL" tableName="technical_capability"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591170220933-24">
+        <addForeignKeyConstraint baseColumnNames="key_user" baseTableName="request_for_change" constraintName="FK5dr5y9lsuvc33yy698rxqqhi7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="app_user" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591170220933-25">
+        <addForeignKeyConstraint baseColumnNames="key_type_mobile" baseTableName="technical_capability" constraintName="FK9gnfccfve2pr72njl50ldqxtv" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="type_mobile" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591170220933-26">
+        <addForeignKeyConstraint baseColumnNames="key_request_for_change" baseTableName="technical_capability" constraintName="FKf2annfs9rulv486ejj8o5ntn3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="request_for_change" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591170220933-27">
+        <addForeignKeyConstraint baseColumnNames="key_government_program" baseTableName="technical_capability" constraintName="FKhpwk6ku1vk15rmmi1kuseg0ka" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="government_development_program" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591170220933-28">
+        <addForeignKeyConstraint baseColumnNames="key_type_trunkchannel" baseTableName="technical_capability" constraintName="FKk0kse2pacriuykbh91ucbhn2j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="type_trunk_channel" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591170220933-29">
+        <addForeignKeyConstraint baseColumnNames="key_operator" baseTableName="technical_capability" constraintName="FKkag0h0dxucanhma28xub9t6lp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="operator" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591170220933-30">
+        <addForeignKeyConstraint baseColumnNames="key_location" baseTableName="technical_capability" constraintName="FKqyrt3px7cdy213iiemh2g09wv" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591170220933-31">
+        <addForeignKeyConstraint baseColumnNames="key_location" baseTableName="request_for_change" constraintName="FKs3dsi2eu3mev4uh3l8vyh0cgy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="location" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

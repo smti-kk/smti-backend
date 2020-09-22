@@ -1,0 +1,52 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="a-panov (generated)" id="1588581282026-9">
+        <createSequence incrementBy="1" sequenceName="organization_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588581282026-11">
+        <createTable tableName="organization">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="organization_id_seq">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="organizationPK"/>
+            </column>
+            <column name="acronym" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fias" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inn" type="VARCHAR(12)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="kpp" type="VARCHAR(9)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_location" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_parent" type="INTEGER"/>
+            <column name="key_type_smo" type="INTEGER"/>
+            <column name="key_type" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588581282026-12">
+        <addUniqueConstraint columnNames="id" constraintName="UC_ORGANIZATIONID_COL" tableName="organization"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588581282026-13">
+        <addForeignKeyConstraint baseColumnNames="key_type_smo" baseTableName="organization" constraintName="FK9fha3wx4390fe8btcp7wmroj3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="type_smo" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588581282026-14">
+        <addForeignKeyConstraint baseColumnNames="key_location" baseTableName="organization" constraintName="FKb3sdp3c4cbh1lyh2mkjw50jcd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="location" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588581282026-15">
+        <addForeignKeyConstraint baseColumnNames="key_type" baseTableName="organization" constraintName="FKigrr88jlkhaho3xe5kuoyoig9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="type_organization" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588581282026-16">
+        <addForeignKeyConstraint baseColumnNames="key_parent" baseTableName="organization" constraintName="FKm3y85d28oill73f19wi04o3ua" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="organization" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

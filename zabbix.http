@@ -1,0 +1,255 @@
+###      Authorization
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "method": "user.login",
+  "params": {
+    "user": "api",
+    "password": "Gjktnftv110"
+  },
+  "id": 1,
+  "auth": null
+}
+
+> {% client.global.set("auth", response.body.result); %}
+
+###      get all hosts
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "host.get",
+    "params": {
+        "output": [
+            "hostid",
+            "host"
+        ],
+        "selectInterfaces": [
+            "interfaceid",
+            "ip"
+        ]
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
+###      get all group of hosts
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "hostgroup.get",
+    "params": {
+        "output": ["groupid","name"]
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
+
+
+###      get Templates
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "template.get",
+    "params": {
+        "output": ["templateid","name"]
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
+###      create HOST
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "host.create",
+    "params": {
+        "host": "1.002.foo-bar.ru",
+        "interfaces": [
+            {
+                "type": 2,
+                "main": 1,
+                "useip": 1,
+                "ip": "192.168.3.1",
+                "dns": "",
+                "port": "161"
+            }
+        ],
+        "groups": [
+            {
+                "groupid": "34"
+            }
+        ],
+        "tags": [
+            {
+                "tag": "project",
+                "value": "telecom-it"
+            }
+        ],
+        "templates": [
+            {
+                "templateid": "10233"
+            }
+        ],
+        "macros": [
+            {
+                "macro": "{$SNMP_COMMUNITY}",
+                "value": "ESPD_monitor"
+            }
+        ]
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
+###      get STATUS OF HOST
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "trigger.get",
+    "params": {
+        "output": [
+            "extend"
+        ],
+        "selectTags": "extend",
+        "selectHosts": ["hostid","name"],
+        "filter": {
+             "value": "1"
+        }
+
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
+
+
+
+###################################################
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{  "jsonrpc" : "2.0",
+  "method" : "host.create",
+  "params" : {
+    "host" : "hostName",
+    "interfaces" : [ {
+      "type" : 2,
+      "main" : 1,
+      "useip" : 1,
+      "ip" : "macro",
+      "port" : "161"
+    } ],
+    "groups" : [ {
+      "groupid" : "34"
+    } ],
+    "tags" : [ {
+      "tag" : "project",
+      "value" : "telecom-it"
+    } ],
+    "templates" : [ {
+      "templateid" : "10233"
+    } ],
+    "macros" : [ {
+      "macro" : "{$SNMP_COMMUNITY}",
+      "value" : "ESPD_monitor"
+    } ]
+  },
+  "id" : 101,
+  "auth" : "d7b5befea060a3cea989d73dcdb51f7a"
+}
+
+
+###      CREATE new main SERVICE
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "service.create",
+    "params": {
+        "name": "telecom-test-01",
+        "algorithm": 1,
+        "showsla": 1,
+        "goodsla": 99.99,
+        "sortorder": 1
+    },
+    "auth": "038e1d7b1735c6a5436ee9eae095879e",
+    "id": 1,
+    "auth": "{{auth}}"
+}
+
+### ###  serviceids": [ "100" ]
+
+###      CREATE new SIBLING SERVICE
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "service.create",
+    "params": {
+        "name": "telecom-test-02-01",
+        "algorithm": 1,
+        "showsla": 1,
+        "goodsla": 99.99,
+        "sortorder": 1,
+        "parentid": null
+    },
+    "auth": "038e1d7b1735c6a5436ee9eae095879e",
+    "id": 1,
+    "auth": "{{auth}}"
+}
+
+
+###      Get all triggers for Access Point
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "trigger.get",
+    "params": {
+        "hostids": "10434",
+        "output": ["triggerid","description"]
+    },
+    "auth": "038e1d7b1735c6a5436ee9eae095879e",
+    "id": 1,
+    "auth": "{{auth}}"
+}
+
+
+
+###      Get Статистику по сервисам за период!!!!! ура, просто докидываем, список точек, и времянной период! в секундах
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "service.getsla",
+    "params": {
+        "serviceids": [ "22","192", "199", "206", "213"],
+        "intervals": [
+            {
+                "from": 1596240000,
+                "to": 1598918400
+            }
+        ]
+    },
+    "id": 1,
+    "auth": "{{auth}}"
+}
+
+

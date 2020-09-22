@@ -6,26 +6,25 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.locationtech.jts.geom.Point;
-import ru.cifrak.telecomit.backend.domain.CatalogsLocation;
+import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
-public class LocationSimple {
+public class LocationSimple implements Serializable {
     private Integer id;
 
     private String parent;
     private Integer infomat;
 
-    @JsonProperty("full_name")
     private String fullName;
 
-    @JsonProperty("type_location")
     private String type;
 
-    @JsonProperty("people_count")
-    private Integer peopleCount;
+    private Integer population;
 
     @JsonProperty("geo_data")
     @JsonSerialize(using = GeometrySerializer.class)
@@ -35,16 +34,16 @@ public class LocationSimple {
     private String name;
 
 
-    public LocationSimple(CatalogsLocation entity) {
+    public LocationSimple(Location entity) {
         this.id = entity.getId();
-        this.fullName = entity.getTypeLocation() + " " + entity.getName();
+        this.fullName = entity.getType() + " " + entity.getName();
         this.name = entity.getName();
-        this.type = entity.getTypeLocation();
-        this.geoData = entity.getCatalogsGeolocation() != null
-                ? entity.getCatalogsGeolocation().getAdministrativeCenter()
+        this.type = entity.getType();
+        this.geoData = entity.getGeoData() != null
+                ? entity.getGeoData().getAdministrativeCenter()
                 : null;
-        this.parent = entity.getParent() != null ? entity.getParent().getTypeLocation() + " " + entity.getParent().getName() : null;
-        this.peopleCount = entity.getPeopleCount();
-        this.infomat = entity.getCatalogsInfomats().size();
+        this.parent = entity.getParent() != null ? entity.getParent().getType() + " " + entity.getParent().getName() : null;
+        this.population = entity.getPopulation();
+//        this.infomat = entity.getInfomats().size();
     }
 }

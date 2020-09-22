@@ -3,7 +3,6 @@ package ru.cifrak.telecomit.backend.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import ru.cifrak.telecomit.backend.domain.MonitoringConnectionMetric;
 
 import java.io.IOException;
 

@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="vitaliy (generated)" id="1595909720675-34">
+        <createTable tableName="location_features_editing_request">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="location_features_editing_requestPK"/>
+            </column>
+            <column name="comment" type="VARCHAR(255)"/>
+            <column name="location_id" type="INTEGER"/>
+            <column name="user_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vitaliy (generated)" id="1595909720675-37">
+        <addColumn tableName="technical_capability">
+            <column name="key_request_for_edition" type="int4"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

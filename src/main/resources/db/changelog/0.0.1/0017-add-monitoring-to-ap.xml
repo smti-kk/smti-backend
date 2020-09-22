@@ -1,0 +1,66 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="a-panov" id="1">
+        <sql dbms="postgresql" endDelimiter=";">
+            CREATE SCHEMA external_systems
+        </sql>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591669644857-21">
+        <createSequence incrementBy="1" sequenceName="jmpa_id_seq" startValue="1" schemaName="external_systems"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591669644857-22">
+        <createSequence incrementBy="1" sequenceName="mpa_id_seq" startValue="1" schemaName="external_systems"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591669644857-23">
+        <createTable tableName="journalmap" schemaName="external_systems">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="journalmapPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)"/>
+            <column name="modified" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="active" type="BOOLEAN"/>
+            <column name="key_ap" type="INTEGER"/>
+            <column name="key_map" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591669644857-24">
+        <createTable tableName="monitoring_access_point" schemaName="external_systems">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="monitoring_access_pointPK"/>
+            </column>
+            <column name="id_user" type="INTEGER"/>
+            <column name="id_account" type="INTEGER"/>
+            <column name="id_traffic" type="INTEGER"/>
+            <column name="id_service" type="INTEGER"/>
+            <column name="id_device" type="VARCHAR(255)"/>
+            <column name="id_sensor" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591669644857-25">
+        <addUniqueConstraint columnNames="id" constraintName="UC_JOURNALMAPID_COL" tableName="journalmap"
+                             schemaName="external_systems"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591669644857-26">
+        <addUniqueConstraint columnNames="id" constraintName="UC_MONITORING_ACCESS_POINTID_COL"
+                             tableName="monitoring_access_point" schemaName="external_systems"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591669644857-27">
+        <addForeignKeyConstraint baseColumnNames="key_map" baseTableName="journalmap" baseTableSchemaName="external_systems"
+                                 constraintName="FK286srpc9fxnufleiy1o5ggj7r" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="monitoring_access_point" validate="true"
+                                 referencedTableSchemaName="external_systems"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1591669644857-28">
+        <addForeignKeyConstraint baseColumnNames="key_ap" baseTableName="journalmap" baseTableSchemaName="external_systems"
+                                 constraintName="FK2ugbj2u9bx6y2ixrxrsnxgh4n" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="access_point"
+                                 validate="true"/>
+    </changeSet>
+</databaseChangeLog>

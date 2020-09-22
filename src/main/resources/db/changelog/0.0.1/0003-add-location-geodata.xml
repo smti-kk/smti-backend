@@ -1,0 +1,58 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="a-panov (generated)" id="1588322609705-2">
+        <createSequence incrementBy="1" sequenceName="geodata_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588322609705-3">
+        <createSequence incrementBy="1" sequenceName="location_id_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588322609705-4">
+        <createTable tableName="geo_data">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="geodata_id_seq">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="geo_dataPK"/>
+            </column>
+            <column name="administrative_center" type="GEOMETRY"/>
+            <column name="border" type="GEOMETRY"/>
+            <column name="fias" type="uuid"/>
+            <column name="okato" type="VARCHAR(16)"/>
+            <column name="oktmo" type="VARCHAR(16)"/>
+            <column name="osm_id" type="VARCHAR(16)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588322609705-5">
+        <createTable tableName="location">
+            <column name="id" type="INTEGER" defaultValueSequenceNext="location_id_seq">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="locationPK"/>
+            </column>
+            <column name="fias" type="uuid"/>
+            <column name="level" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="okato" type="VARCHAR(16)"/>
+            <column name="oktmo" type="VARCHAR(16)"/>
+            <column name="population" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="geo_data_id" type="INTEGER"/>
+            <column name="parent_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588322609705-6">
+        <addUniqueConstraint columnNames="id" constraintName="UC_GEO_DATAID_COL" tableName="geo_data"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588322609705-7">
+        <addUniqueConstraint columnNames="id" constraintName="UC_LOCATIONID_COL" tableName="location"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588322609705-8">
+        <addForeignKeyConstraint baseColumnNames="geo_data_id" baseTableName="location" constraintName="FKas0u2c0addlt7liyjf7mke3qs" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="geo_data" validate="true"/>
+    </changeSet>
+    <changeSet author="a-panov (generated)" id="1588322609705-9">
+        <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="location" constraintName="FKm5xl34yboc8re75qsac6svt6g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="location" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

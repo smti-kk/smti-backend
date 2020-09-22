@@ -1,32 +1,32 @@
 package ru.cifrak.telecomit.backend.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.locationtech.jts.geom.MultiPolygon;
-import ru.cifrak.telecomit.backend.domain.CatalogsLocation;
+import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
-public class LocationAreaBorders {
+public class LocationAreaBorders implements Serializable {
     private Integer id;
     private String name;
-    @JsonProperty("full_name")
     private String fullName;
+    private String type = "Feature";
 
-    @JsonProperty("border_geojson")
     @JsonSerialize(using = GeometrySerializer.class)
     @JsonDeserialize(using = GeometryDeserializer.class)
-    private MultiPolygon type;
+    private MultiPolygon geometry;
 
-    public LocationAreaBorders(CatalogsLocation entity) {
+    public LocationAreaBorders(Location entity) {
         this.id = entity.getId();
         this.name = entity.getName();
-        this.fullName = entity.getTypeLocation() + " " + entity.getName();
-        this.type = entity.getCatalogsGeolocation().getBorder();
+        this.fullName = entity.getType() + " " + entity.getName();
+        this.geometry = entity.getGeoData().getBorder();
     }
 }
