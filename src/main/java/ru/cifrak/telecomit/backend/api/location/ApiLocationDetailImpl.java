@@ -111,7 +111,7 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
     }
 
     @Override
-//    @Secured({"ROLE_ADMIN"})
+    @Secured({"ROLE_ADMIN"})
     public void deleteById(Integer id) {
         repository.forceDeleteById(id);
     }
