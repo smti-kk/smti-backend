@@ -18,13 +18,19 @@ public class TrunkChannelFromExcelDTO {
 
     private final String type;
 
-    public TrunkChannelFromExcelDTO(Row row) {
+    private final String comissioning;
+
+    private final String program;
+
+    public TrunkChannelFromExcelDTO(Row row, String commissioning) {
         this(
                 row.getCell(0).getStringCellValue().trim(),
                 row.getCell(5).getStringCellValue().trim(),
                 row.getCell(10).getStringCellValue().trim(),
                 row.getCell(11).getStringCellValue().trim(),
-                row.getCell(12).getStringCellValue().trim()
+                row.getCell(12).getStringCellValue().trim(),
+                commissioning.trim(),
+                row.getCell(14).getStringCellValue().trim()
         );
     }
 }

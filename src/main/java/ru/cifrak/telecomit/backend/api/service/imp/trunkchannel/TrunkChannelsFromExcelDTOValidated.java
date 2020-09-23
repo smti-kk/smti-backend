@@ -7,8 +7,7 @@ import ru.cifrak.telecomit.backend.repository.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class TrunkChannelsFromExcelDTOValidated implements TrunkChannelsDTOFromExcel {
 
@@ -20,15 +19,19 @@ public class TrunkChannelsFromExcelDTOValidated implements TrunkChannelsDTOFromE
 
     private final TrunkChannelsDTOFromExcel origin;
 
+    private final RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram;
+
     public TrunkChannelsFromExcelDTOValidated(
             RepositoryLocation repositoryLocation,
             RepositoryOperator repositoryOperator,
             RepositoryTypeTruncChannel repositoryTypeTruncChannel,
-            TrunkChannelsDTOFromExcel origin) {
+            TrunkChannelsDTOFromExcel origin,
+            RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram) {
         this.repositoryLocation = repositoryLocation;
         this.repositoryOperator = repositoryOperator;
         this.repositoryTypeTruncChannel = repositoryTypeTruncChannel;
         this.origin = origin;
+        this.repositoryGovernmentDevelopmentProgram = repositoryGovernmentDevelopmentProgram;
     }
 
     @Override
@@ -80,6 +83,18 @@ public class TrunkChannelsFromExcelDTOValidated implements TrunkChannelsDTOFromE
                     + " позиции ошибка в ФИАС конечного населённого пункта, не найден в БД.");
         }
 
+        badDTO = this.checkCommissioningFormat(tcesDTO);
+        if (badDTO != null) {
+            throw new FromExcelDTOFormatException("В " + badDTO
+                    + " позиции ошибка в дате ввода в эксплуатацию (" + badDTO + "), должна быть в формате ДД.ММ.ГГГГ.");
+        }
+
+        badDTO = this.checkCommissioningDate(tcesDTO);
+        if (badDTO != null) {
+            throw new FromExcelDTOFormatException("В " + badDTO
+                    + " позиции ошибка в дате ввода в эксплуатацию, она должна быть реальной.");
+        }
+
         badDTO = this.checkOperators(tcesDTO);
         if (badDTO != null) {
             throw new FromExcelDTOFormatException("В " + badDTO
@@ -90,6 +105,13 @@ public class TrunkChannelsFromExcelDTOValidated implements TrunkChannelsDTOFromE
         if (badDTO != null) {
             throw new FromExcelDTOFormatException("В " + badDTO
                     + " позиции ошибка в типе канала, не найден в БД.");
+        }
+
+        badDTO = this.checkProgram(tcesDTO);
+        if (badDTO != null) {
+            throw new FromExcelDTOFormatException("В " + badDTO
+                    + " позиции ошибка в программе, должна быть одной из {"
+                    + String.join(", ", repositoryGovernmentDevelopmentProgram.findAllAcronym()) + "}.");
         }
 
         return tcesDTO;
@@ -148,7 +170,7 @@ public class TrunkChannelsFromExcelDTOValidated implements TrunkChannelsDTOFromE
 //            try {
 //                new HSSFWorkbook(is);
 //            } catch (Exception eHSSF) {
-                result = false;
+            result = false;
 //            }
         }
         return result;
@@ -220,6 +242,53 @@ public class TrunkChannelsFromExcelDTOValidated implements TrunkChannelsDTOFromE
         for (TrunkChannelFromExcelDTO tcDTO : tcesDTO) {
             if (repositoryLocation.findByFias(UUID.fromString(tcDTO.getLocationEnd())) == null) {
                 result = tcDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkProgram(List<TrunkChannelFromExcelDTO> tcesDTO) {
+        String result = null;
+        // TODO: List<String> -> List<GovernmentDevelopmentProgram>.
+        List<String> programs = repositoryGovernmentDevelopmentProgram.findAllAcronym();
+        for (TrunkChannelFromExcelDTO tcDTO : tcesDTO) {
+            if (!programs.contains(tcDTO.getProgram())) {
+                result = tcDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkCommissioningFormat(List<TrunkChannelFromExcelDTO> tcesDTO) {
+        String result = null;
+        for (TrunkChannelFromExcelDTO TcDTO : tcesDTO) {
+            if (!TcDTO.getComissioning().matches("[0-9]{2}.[0-9]{2}.[0-9]{4}")) {
+                result = TcDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkCommissioningDate(List<TrunkChannelFromExcelDTO> tcesDTO) {
+        String result = null;
+        for (TrunkChannelFromExcelDTO TcDTO : tcesDTO) {
+            int yyyy = Integer.parseInt(TcDTO.getComissioning().substring(6, 10));
+            int mm = Integer.parseInt(TcDTO.getComissioning().substring(3, 5)) - 1;
+            int dd = Integer.parseInt(TcDTO.getComissioning().substring(0, 2));
+            GregorianCalendar dateBefore50Years = new GregorianCalendar();
+            dateBefore50Years.add(Calendar.YEAR, -50);
+            GregorianCalendar dateAfter50Years = new GregorianCalendar();
+            dateAfter50Years.add(Calendar.YEAR, +50);
+            GregorianCalendar checkedDate = new GregorianCalendar(yyyy, mm, dd);
+            if (yyyy != checkedDate.get(Calendar.YEAR)
+                    || mm != checkedDate.get(Calendar.MONTH)
+                    || dd != checkedDate.get(Calendar.DAY_OF_MONTH)
+                    || checkedDate.before(dateBefore50Years)
+                    || checkedDate.after(dateAfter50Years)) {
+                result = TcDTO.getNpp();
                 break;
             }
         }
