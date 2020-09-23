@@ -2,20 +2,19 @@ package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.api.dto.*;
+import ru.cifrak.telecomit.backend.api.dto.response.ExternalSystemCreateStatusDTO;
 import ru.cifrak.telecomit.backend.api.util.Reports.HelperReport;
 import ru.cifrak.telecomit.backend.entities.*;
-import ru.cifrak.telecomit.backend.entities.AccessPointFull;
+import ru.cifrak.telecomit.backend.exceptions.NotAllowedException;
 import ru.cifrak.telecomit.backend.repository.*;
 import ru.cifrak.telecomit.backend.repository.specs.OrganizationSpec;
-import ru.cifrak.telecomit.backend.repository.specs.SpecificationAccessPointFull;
 import ru.cifrak.telecomit.backend.service.ServiceAccessPoint;
 import ru.cifrak.telecomit.backend.service.ServiceOrganization;
 
@@ -301,22 +300,16 @@ public class ApiOrganization {
 
     @PostMapping("/{id}/ap/{apid}/init-monitoring")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    public ResponseEntity<String> initMonitoring(@PathVariable Integer id, @PathVariable Integer apid,
-                                                 @RequestBody final MonitoringAccessPointWizardDTO wizard) {
-        log.info("->GET /{}/ap/{}/init-monitoring", id, apid);
+    public ExternalSystemCreateStatusDTO initMonitoring(@PathVariable Integer id, @PathVariable Integer apid,
+                                                        @RequestBody final MonitoringAccessPointWizardDTO wizard, @AuthenticationPrincipal User user) throws NotAllowedException {
+        log.info("[{}]->GET /{}/ap/{}/init-monitoring", user.getUsername(), id, apid);
         try {
-            sOrganization.initializeMonitoringOnAp(id, apid, wizard);
-            log.info("<-GET /{}/ap/{}/init-monitoring", id, apid);
-            return ResponseEntity
-                    .ok()
-                    .header("Content-Type", "application/json")
-                    .body("{\"result\": \"access point enabled in monitoring system\"}");
+            ExternalSystemCreateStatusDTO result = sOrganization.linkAccessPointWithMonitoringSystems(id, apid, wizard);
+            log.info("[{}]<-GET /{}/ap/{}/init-monitoring", user.getUsername(), id, apid);
+            return result;
         } catch (Exception e) {
-            log.warn("<-GET /{}/ap/{}/init-monitoring :EXCEPTION {}", id, apid, e.getMessage());
-            return ResponseEntity
-                    .badRequest()
-                    .header("Content-Type", "application/json")
-                    .body("{\"error\": \"access point NOT enabled in monitoring system due: " + e.getMessage() + "\"}");
+            log.warn("[{}]<-GET /{}/ap/{}/init-monitoring :EXCEPTION {}", user.getUsername(), id, apid, e.getMessage());
+            throw e;
         }
     }
 

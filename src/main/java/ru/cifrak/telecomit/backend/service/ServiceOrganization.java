@@ -4,11 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cifrak.telecomit.backend.api.dto.MonitoringAccessPointWizardDTO;
-import ru.cifrak.telecomit.backend.api.dto.OrganizationDTO;
+import ru.cifrak.telecomit.backend.api.dto.response.ExternalSystemCreateStatusDTO;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
 import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
+import ru.cifrak.telecomit.backend.exceptions.NotAllowedException;
 import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryJournalMAP;
 import ru.cifrak.telecomit.backend.repository.RepositoryMonitoringAccessPoints;
@@ -16,6 +17,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
 import ru.cifrak.telecomit.backend.security.UTM5Config;
 import ru.cifrak.telecomit.backend.security.ZabbixConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -41,44 +43,57 @@ public class ServiceOrganization {
         return rOrganization.findAll();
     }
 
-/*    public OrganizationDTO getOrganizationById(Integer id) {
-        return rOrganization.findById(id).map(OrganizationDTO::new).orElse(null);
-    }*/
-
-    public String initializeMonitoringOnAp(Integer id, Integer apid, MonitoringAccessPointWizardDTO wizard) throws Exception {
+    public ExternalSystemCreateStatusDTO linkAccessPointWithMonitoringSystems(Integer id, Integer apid, MonitoringAccessPointWizardDTO wizard) throws NotAllowedException {
+        // xx.xx.xx. тут надо сходить по идее в БД и посмотреть а есть ли у нас данные наши.
         AccessPoint ap = rAccessPoints.getOne(apid);
         MonitoringAccessPoint map = new MonitoringAccessPoint();
         JournalMAP jmap = new JournalMAP();
         jmap.setAp(ap);
         jmap.setActive(Boolean.TRUE);
         if (ap.getOrganization().getId().equals(id)) {
-            try {
-                if (wizard.getNetworks() != null && !wizard.getNetworks().isEmpty()){
-                    ap.setNetworks(wizard.getNetworks());
-                    rAccessPoints.save(ap);
-                } else {
-                    throw new Exception("Networks for AP is empty");
-                }
+            List<String> errors = new ArrayList<>();
+            // это мы заводим в УТМ5
+            if (wizard.getNetworks() != null && !wizard.getNetworks().isEmpty()) {
                 ap.setNetworks(wizard.getNetworks());
-                blenders.insertIntoUTM5(ap, map);
-            } catch (Exception e) {
-                throw new Exception("UTM5:error: " + e.getMessage());
+                rAccessPoints.save(ap);
+                try {
+                    ap.setNetworks(wizard.getNetworks());
+                    blenders.linkWithUTM5(ap, map);
+                    log.info("(>) save monitoring access point");
+                    map = rMonitoringAccessPoints.save(map);
+                    log.info("(<) save monitoring access point");
+                } catch (Exception e) {
+                    errors.add("Система UTM вернула ошибку: " + e.getMessage());
+                }
+            } else {
+                errors.add("Список сетей ПУСТОЙ для точки подключения. Это необходимый параметр.");
+
             }
-            try {
-                blenders.insertIntoZabbix(ap, map, wizard);
+            // это мы заводим в заббикс
+            /*try {
+                blenders.linkWithZabbix(ap, map, wizard);
+                log.info("(>) save monitoring access point");
+                rMonitoringAccessPoints.save(map);
+                log.info("(<) save monitoring access point");
             } catch (Exception e) {
-                throw new Exception("ZABBIX:error: " + e.getMessage());
-            }
-            log.info("[  >] save monitoring access point");
-            rMonitoringAccessPoints.save(map);
-            log.info("[  <] save monitoring access point");
+                errors.equals("ZABBIX:error: " + e.getMessage());
+            }*/
+
+            // это сохранение в журнале точек бд
+            log.info("(>) save journal map");
             jmap.setMap(map);
-            log.info("[  >] save journal map");
             rJournalMAP.save(jmap);
-            log.info("[  <] save journal map");
-            return "Access Point has bean initialized in monitorings.";
+            log.info("(<) save journal map");
+            if (errors.isEmpty()) {
+                return new ExternalSystemCreateStatusDTO("Точка поставлена на мониторинг");
+            } else if (errors.size()>=2) {
+                return new ExternalSystemCreateStatusDTO("Точку НЕУДАЛОСЬ поставить на мониторинг", errors);
+            } else {
+                return new ExternalSystemCreateStatusDTO("Точка поставлена на мониторинг с ограничениями", errors);
+            }
+
         } else {
-            throw new Exception("You cannot init Access Point in non belonging Organization");
+            throw new NotAllowedException("You cannot init Access Point in non belonging Organization");
         }
     }
 }
