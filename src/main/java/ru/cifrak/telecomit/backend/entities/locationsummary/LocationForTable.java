@@ -14,7 +14,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "location")
-@Immutable
 @Data
 @org.hibernate.annotations.Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @NamedEntityGraphs({

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.ExelReportLocation;
 import ru.cifrak.telecomit.backend.api.dto.LocationProvidingInfo;
@@ -107,5 +108,11 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
 
     public List<LocationForTable> byUser(User user) {
         return repository.findByUserId(user.getId());
+    }
+
+    @Override
+//    @Secured({"ROLE_ADMIN"})
+    public void deleteById(Integer id) {
+        repository.forceDeleteById(id);
     }
 }
