@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="proskuringe" id="1">
+        <sql dbms="postgresql" endDelimiter=";">
+            ALTER TABLE public.trunk_channel DROP CONSTRAINT "FKt2b34f1n9b9keue1oupoo9gs3";
+            ALTER TABLE public.trunk_channel ADD CONSTRAINT "request_for_edit_deletecascade_start" FOREIGN KEY (key_location_start) REFERENCES location(id) on delete cascade;
+
+            ALTER TABLE public.trunk_channel DROP CONSTRAINT "FKrvxsyup399h45i0oqmxdd5nrx";
+            ALTER TABLE public.trunk_channel ADD CONSTRAINT "request_for_edit_deletecascade_end" FOREIGN KEY (key_location_end) REFERENCES location(id) on delete cascade;
+
+            ALTER TABLE public.request_for_change DROP CONSTRAINT "FKs3dsi2eu3mev4uh3l8vyh0cgy";
+            ALTER TABLE public.request_for_change ADD CONSTRAINT "reques_for_change_locationdelete" FOREIGN KEY (key_location) REFERENCES location(id) on delete cascade;
+
+            ALTER TABLE public.user_locations DROP CONSTRAINT "fk_user_locations_location";
+            ALTER TABLE public.user_locations ADD CONSTRAINT "user_location_delete_cascade" FOREIGN KEY (key_location) REFERENCES location(id) on delete cascade;
+
+            ALTER TABLE public.technical_capability DROP CONSTRAINT "FKqyrt3px7cdy213iiemh2g09wv";
+            ALTER TABLE public.technical_capability ADD CONSTRAINT "technical_capability_delete_cascade" FOREIGN KEY (key_location) REFERENCES location(id) on delete cascade;
+
+            ALTER TABLE public.organization DROP CONSTRAINT "FKb3sdp3c4cbh1lyh2mkjw50jcd";
+            ALTER TABLE public.organization ADD CONSTRAINT "organization_delete_cascade" FOREIGN KEY (key_location) REFERENCES location(id) on delete cascade;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

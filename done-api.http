@@ -604,3 +604,8 @@ POST http://localhost:8080/api/detail-locations/export-excel
 Content-Type: application/json
 
 [1516]
+
+###
+DELETE http://localhost:8080/api/detail-locations/1440
+Authorization: Token {{auth_token}}
+Content-Type: application/json

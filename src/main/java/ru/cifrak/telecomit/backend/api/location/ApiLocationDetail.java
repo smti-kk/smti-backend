@@ -45,4 +45,7 @@ public interface ApiLocationDetail {
 
     @GetMapping("/by-user")
     List<LocationForTable> byUser(@AuthenticationPrincipal User user);
+
+    @DeleteMapping("/{id}")
+    void deleteById(@PathVariable Integer id);
 }

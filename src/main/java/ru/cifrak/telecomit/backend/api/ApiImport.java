@@ -69,6 +69,7 @@ public class ApiImport {
     private final ApesSaveService apesSaveService;
     private final TcesAtsSaveService tcesAtsSaveService;
     private final TrunkChannelsSaveService trunkChannelsSaveService;
+    private final RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram;
 
     public ApiImport(
             RepositoryLocation repositoryLocation,
@@ -89,7 +90,8 @@ public class ApiImport {
             TcesInfomatSaveService tcesInfomatSaveService,
             ApesSaveService apesSaveService,
             TcesAtsSaveService tcesAtsSaveService,
-            TrunkChannelsSaveService trunkChannelsSaveService) {
+            TrunkChannelsSaveService trunkChannelsSaveService,
+            RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram) {
         this.repositoryLocation = repositoryLocation;
         this.repositoryOperator = repositoryOperator;
         this.repositoryTypeTruncChannel = repositoryTypeTruncChannel;
@@ -109,6 +111,7 @@ public class ApiImport {
         this.apesSaveService = apesSaveService;
         this.tcesAtsSaveService = tcesAtsSaveService;
         this.trunkChannelsSaveService = trunkChannelsSaveService;
+        this.repositoryGovernmentDevelopmentProgram = repositoryGovernmentDevelopmentProgram;
     }
 
     @Secured({"ROLE_ADMIN"})
@@ -322,8 +325,8 @@ public class ApiImport {
                             repositoryLocation,
                             repositoryOperator,
                             repositoryTypeTruncChannel,
-                            new TrunkChannelsFromExcelDTO(file)
-                    ).getTcesDTO()
+                            new TrunkChannelsFromExcelDTO(file),
+                            repositoryGovernmentDevelopmentProgram).getTcesDTO()
             );
         } catch (FromExcelDTOFormatException e) {
             // TODO: <-, -> ?
