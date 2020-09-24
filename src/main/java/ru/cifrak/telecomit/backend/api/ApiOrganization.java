@@ -304,7 +304,7 @@ public class ApiOrganization {
                                                         @RequestBody final MonitoringAccessPointWizardDTO wizard, @AuthenticationPrincipal User user) throws NotAllowedException {
         log.info("[{}]->GET /{}/ap/{}/init-monitoring", user.getUsername(), id, apid);
         try {
-            ExternalSystemCreateStatusDTO result = sOrganization.linkAccessPointWithMonitoringSystems(id, apid, wizard);
+             ExternalSystemCreateStatusDTO result = sOrganization.linkAccessPointWithMonitoringSystems(id, apid, wizard);
             log.info("[{}]<-GET /{}/ap/{}/init-monitoring", user.getUsername(), id, apid);
             return result;
         } catch (Exception e) {

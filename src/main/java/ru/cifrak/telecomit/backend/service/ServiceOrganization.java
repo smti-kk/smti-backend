@@ -46,7 +46,13 @@ public class ServiceOrganization {
     public ExternalSystemCreateStatusDTO linkAccessPointWithMonitoringSystems(Integer id, Integer apid, MonitoringAccessPointWizardDTO wizard) throws NotAllowedException {
         // xx.xx.xx. тут надо сходить по идее в БД и посмотреть а есть ли у нас данные наши.
         AccessPoint ap = rAccessPoints.getOne(apid);
-        MonitoringAccessPoint map = new MonitoringAccessPoint();
+        JournalMAP jjmap = rJournalMAP.findByAp_Id(ap.getId());
+        MonitoringAccessPoint map;
+        if (jjmap.getMap() == null) {
+             map = new MonitoringAccessPoint();
+        } else {
+            map = jjmap.getMap();
+        }
         JournalMAP jmap = new JournalMAP();
         jmap.setAp(ap);
         jmap.setActive(Boolean.TRUE);
@@ -80,10 +86,10 @@ public class ServiceOrganization {
             }*/
 
             // это сохранение в журнале точек бд
-            log.info("(>) save journal map");
-            jmap.setMap(map);
-            rJournalMAP.save(jmap);
-            log.info("(<) save journal map");
+//            log.info("(>) save journal map");
+//            jmap.setMap(map);
+//            rJournalMAP.save(jmap);
+//            log.info("(<) save journal map");
             if (errors.isEmpty()) {
                 return new ExternalSystemCreateStatusDTO("Точка поставлена на мониторинг");
             } else if (errors.size()>=2) {

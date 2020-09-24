@@ -1,6 +1,7 @@
 package ru.cifrak.telecomit.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -11,107 +12,56 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import ru.cifrak.telecomit.backend.api.dto.external.utm5.ExtUtmDtoAuth;
+import ru.cifrak.telecomit.backend.api.dto.external.utm5.ExtUtmDtoRequestCreateUser;
+import ru.cifrak.telecomit.backend.api.dto.external.utm5.ExtUtmDtoResponseAuth;
+import ru.cifrak.telecomit.backend.api.dto.external.utm5.ExtUtmDtoResponseUser;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
 import ru.cifrak.telecomit.backend.security.UTM5Config;
 import ru.cifrak.telecomit.backend.utils.IpReversed;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @Service
 public class ServiceExternalUTM5 {
     private final UTM5Config utm5Config;
+    private WebClient client;
+    private ObjectMapper jsonMapper = new ObjectMapper();
 
     public ServiceExternalUTM5(UTM5Config utm5Config) {
         this.utm5Config = utm5Config;
-    }
-
-    public void linking(AccessPoint ap, MonitoringAccessPoint map) throws JsonProcessingException {
-         log.info("[ ->] insert into UTM5");
-        WebClient client = WebClient
+        // Интересно правильно ли я сюда запихал? может надо было @PostConstruct ?
+        client = WebClient
                 .builder()
                 .baseUrl(utm5Config.getHost())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultUriVariables(Collections.singletonMap("url", utm5Config.getHost()))
                 .build();
-        // STEP-1: AUTHORIZATION
-        Map<String, String> jsonRequestAuthorization = new HashMap<>();
-        jsonRequestAuthorization.put("username", utm5Config.getLogin());
-        jsonRequestAuthorization.put("password", utm5Config.getPassword());
-        WebClient.RequestHeadersSpec<?> apiAuthenticate = client
-                .post()
-                .uri("/api/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(jsonRequestAuthorization));
-        String jsonResponseAuthentication = apiAuthenticate.retrieve().bodyToMono(String.class).block();
-        ObjectMapper jsonMapper = new ObjectMapper();
-        Map<String, String> mapAuthorization = jsonMapper.readValue(jsonResponseAuthentication, Map.class);
-        String sessionId = mapAuthorization.get("session_id");
 
-        // STEP-2: CREATE NEW USER IN UTM5
-        ObjectNode jsonParams = jsonMapper.createObjectNode();
-        jsonParams.put("login", "telecomit-" + ap.getId());
-        jsonParams.put("password", utm5Config.getUserpwd());
-        if (ap.getOrganization().getAcronym() != null && !ap.getOrganization().getAcronym().isEmpty()) {
-            jsonParams.put("full_name", ap.getOrganization().getAcronym() + " (" + ap.getAddress() + ")");
+    }
+
+    public void linking(AccessPoint ap, MonitoringAccessPoint map) throws JsonProcessingException {
+         log.info("[ ->] insert into UTM5");
+        // xx. AUTHORIZATION
+        ExtUtmDtoResponseAuth respAuthorization = authorize();
+        // xx. ACCESS POINT => USER
+        // xx.xx. CHECKOUT IF AP ALREADY EXISTS
+        List<ExtUtmDtoResponseUser> users = getUsers(respAuthorization);
+        ExtUtmDtoResponseUser user = users.stream().filter(i -> i.getLogin().equals("telecomit-"+ap.getId())).findFirst().orElse(null);
+        if (user != null) {
+            // xx.xx. UPDATE OUR
+            log.info("find one: {}", user);
+            updateMonitoringAccessPointWithUserData(map, user);
+            updateMonitoringAccessPointWithTariff(respAuthorization, map);
         } else {
-            jsonParams.put("full_name", ap.getOrganization().getId() + " (" + ap.getAddress() + ")");
+            // xx.xx. CREATE NEW ONE
+            createUser(respAuthorization,ap, map);
+            log.info("go for create");
         }
-        jsonParams.put("is_juridical", false);
-        jsonParams.put("juridical_address", "");
-        jsonParams.put("actual_address", "");
-        jsonParams.put("flat_number", "");
-        jsonParams.put("entrance", "");
-        jsonParams.put("floor", "");
-        jsonParams.put("district", "");
-        jsonParams.put("building", "");
-        jsonParams.put("passport", "");
-        jsonParams.put("house_id", 0);
-        jsonParams.put("work_telephone", "");
-        jsonParams.put("home_telephone", "");
-        jsonParams.put("mobile_telephone", "");
-        jsonParams.put("web_page", "");
-        jsonParams.put("icq_number", "");
-        jsonParams.put("tax_number", "");
-        jsonParams.put("kpp_number", "");
-        jsonParams.put("email", "");
-        jsonParams.put("bank_id", 0);
-        jsonParams.put("bank_account", "");
-        jsonParams.put("comments", "");
-        jsonParams.put("personal_manager", "");
-        jsonParams.put("connect_date", 0);
-        jsonParams.put("is_send_invoice", false);
-        jsonParams.put("advance_payment", 0);
-        jsonParams.put("router_id", 0);
-        jsonParams.put("port_number", 0);
-        jsonParams.put("binded_currency_id", 0);
-        ArrayNode jsonParamsAdditionalArray = jsonMapper.createArrayNode();
-        jsonParams.set("additional_params", jsonParamsAdditionalArray);
-        ArrayNode jsonParamsGroupsArray = jsonMapper.createArrayNode();
-        jsonParams.set("groups", jsonParamsGroupsArray);
-        jsonParams.put("is_blocked", false);
-        jsonParams.put("balance", 0);
-        jsonParams.put("credit", 0);
-        jsonParams.put("vat_rate", 0);
-        jsonParams.put("sale_tax_rate", 0);
-        jsonParams.put("int_status", 0);
-        log.debug("{}", jsonParams);
-        WebClient.RequestHeadersSpec<?> apiCreateClient = client
-                .post()
-                .uri("/api/users/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "session_id undefined")
-                .header("Cookie", "session_id=" + sessionId)
-                .body(BodyInserters.fromValue(jsonParams));
-        //TODO:[generate TICKET]: needed error handling
-        String jsonResponseCreateClient = apiCreateClient.retrieve().bodyToMono(String.class).block();
-        Map<String, Integer> mapNewUserCredential = jsonMapper.readValue(jsonResponseCreateClient, Map.class);
-        map.setIdUser(mapNewUserCredential.get("user_id"));
-        map.setIdAccount(mapNewUserCredential.get("account_id"));
-
         // STEP-3: CREATE TARIFF LINK TO USER
         ObjectNode jsonNewTariffLink = jsonMapper.createObjectNode();
         jsonNewTariffLink.put("user_id", map.getIdUser());
@@ -129,7 +79,7 @@ public class ServiceExternalUTM5 {
                 .uri("/api/users/tarifflinks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "session_id undefined")
-                .header("Cookie", "session_id=" + sessionId)
+                .header("Cookie", "session_id=" + respAuthorization.getSession_id())
                 .body(BodyInserters.fromValue(jsonNewTariffLink));
         //TODO:[generate TICKET]: needed error handling
         String jsonResponseCreateTraffic = apiCreateTraffic.retrieve().bodyToMono(String.class).block();
@@ -217,7 +167,7 @@ public class ServiceExternalUTM5 {
                 .uri("/api/users/servicelinks/iptraffic")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "session_id undefined")
-                .header("Cookie", "session_id=" + sessionId)
+                .header("Cookie", "session_id=" + respAuthorization.getSession_id())
                 .body(BodyInserters.fromValue(jsonNewServiceLink));
         //TODO:[generate TICKET]: needed error handling
         String jsonResponseCreateService = null;
@@ -231,5 +181,78 @@ public class ServiceExternalUTM5 {
 
         // STEP-LAST: END
         log.info("[ <-] insert into UTM5");
+    }
+
+    private void updateMonitoringAccessPointWithTariff(ExtUtmDtoResponseAuth respAuthorization, MonitoringAccessPoint map) throws JsonProcessingException {
+        log.info("_>_ get tariff");
+        WebClient.RequestHeadersSpec<?> apiAuthenticate = client
+                .get()
+                .uri(ub -> ub.path("/api/users/tarifflinks")
+                        .queryParam("user_id", map.getIdUser())
+                        .queryParam("account_id",map.getIdAccount())
+                        .build()
+                )
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "session_id undefined")
+                .header("Cookie", "session_id=" + respAuthorization.getSession_id());
+        String response = apiAuthenticate.retrieve().bodyToMono(String.class).block();
+        List<Map<String, Integer>> mapNewUserCredential = jsonMapper.readValue(response, new TypeReference<List<Map<String, Integer>>>() {});
+        map.setIdTraffic(mapNewUserCredential.get(0).get("id"));
+        log.info("_<_ get tariff");
+
+    }
+
+    private MonitoringAccessPoint updateMonitoringAccessPointWithUserData(MonitoringAccessPoint map, ExtUtmDtoResponseUser user) {
+        log.info("_>_ updateMonitoringAccessPointWithUserData");
+        map.setIdUser(Integer.valueOf(user.getUser_id()));
+        map.setIdAccount(Integer.valueOf(user.getAccounts().get(0)));
+        map.setIdService(user.getSlinks().get(0));
+        log.info("_<_ updateMonitoringAccessPointWithUserData");
+        return map;
+    }
+
+    private List<ExtUtmDtoResponseUser> getUsers(ExtUtmDtoResponseAuth respAuthorization) throws JsonProcessingException {
+        log.info("_>_ getUsers");
+        WebClient.RequestHeadersSpec<?> apiAuthenticate = client
+                .get()
+                .uri("/api/users/")
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "session_id undefined")
+                .header("Cookie", "session_id=" + respAuthorization.getSession_id());
+        String rawResponse = apiAuthenticate.retrieve().bodyToMono(String.class).block();
+
+        List<ExtUtmDtoResponseUser> response = jsonMapper.readValue(rawResponse, new TypeReference<List<ExtUtmDtoResponseUser>>(){});
+        log.info("_<_ getUsers");
+        return response;
+    }
+
+    private ExtUtmDtoResponseAuth authorize() throws JsonProcessingException {
+        log.info("_>_ authorize");
+        WebClient.RequestHeadersSpec<?> apiAuthenticate = client
+                .post()
+                .uri("/api/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtUtmDtoAuth(utm5Config.getLogin(),utm5Config.getPassword())));
+        String jsonResponseAuthentication = apiAuthenticate.retrieve().bodyToMono(String.class).block();
+
+        ExtUtmDtoResponseAuth respAuthorization = jsonMapper.readValue(jsonResponseAuthentication, ExtUtmDtoResponseAuth.class);
+        log.info("_<_ authorize");
+        return respAuthorization;
+    }
+    private void createUser(ExtUtmDtoResponseAuth respAuthorization, AccessPoint ap, MonitoringAccessPoint map) throws JsonProcessingException {
+        log.info("_>_ create user");
+        ExtUtmDtoRequestCreateUser newUser = new ExtUtmDtoRequestCreateUser(ap, utm5Config, respAuthorization.getSession_id());
+        WebClient.RequestHeadersSpec<?> apiCreateClient = client
+                .post()
+                .uri("/api/users/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "session_id undefined")
+                .header("Cookie", "session_id=" + respAuthorization.getSession_id())
+                .body(BodyInserters.fromValue(newUser));
+        String response = apiCreateClient.retrieve().bodyToMono(String.class).block();
+        Map<String, Integer> mapNewUserCredential = jsonMapper.readValue(response, Map.class);
+        map.setIdUser(mapNewUserCredential.get("user_id"));
+        map.setIdAccount(mapNewUserCredential.get("account_id"));
+        log.info("_<_ create user");
     }
 }

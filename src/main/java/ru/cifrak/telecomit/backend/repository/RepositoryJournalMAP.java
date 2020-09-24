@@ -12,4 +12,6 @@ public interface RepositoryJournalMAP extends JpaRepository<JournalMAP, Long>, J
 
     //TODO:[generate TICKET]: add entity graph
     List<JournalMAP> findAllByMap_IdAccountIn(List<Integer> accounts);
+
+    JournalMAP findByAp_Id(Integer id);
 }

@@ -535,12 +535,12 @@ Content-Type: application/json
 #POST http://localhost:8080/api/organization/3379/ap/3787/init-monitoring
 #POST http://localhost:8080/api/organization/1471/ap/31/init-monitoring
 #POST http://localhost:8080/api/organization/3411/ap/3799/init-monitoring
-POST http://localhost:8080/api/organization/3412/ap/3795/init-monitoring
+POST http://localhost:8080/api/organization/2552/ap/2340/init-monitoring
 Authorization: Token {{auth_token}}
 Content-Type: application/json
 
 {
-  "networks": null,
+  "networks": "127.0.0.1",
   "device": {
     "hostName": "m008U.08.CityName",
     "ip": "127.0.0.1",
