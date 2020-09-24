@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,7 +63,11 @@ public class TrunkChannelsFromExcelDTO implements TrunkChannelsDTOFromExcel {
             if (date != null) {
                 result = cell.getStringCellValue();
             } else {
-                result = "00.00.0000";
+                if (((XSSFCell) cell).getRawValue() == null) {
+                    result = "";
+                } else {
+                    result = "00.00.0000";
+                }
             }
         }
         return result;
@@ -73,8 +78,7 @@ public class TrunkChannelsFromExcelDTO implements TrunkChannelsDTOFromExcel {
                 || !row.getCell(5).getStringCellValue().trim().isEmpty()
                 || !row.getCell(10).getStringCellValue().trim().isEmpty()
                 || !row.getCell(11).getStringCellValue().trim().isEmpty()
-                || !row.getCell(12).getStringCellValue().trim().isEmpty()
-                || !row.getCell(14).getStringCellValue().trim().isEmpty();
+                || !row.getCell(12).getStringCellValue().trim().isEmpty();
     }
 
     @SneakyThrows
