@@ -253,7 +253,7 @@ public class TrunkChannelsFromExcelDTOValidated implements TrunkChannelsDTOFromE
         // TODO: List<String> -> List<GovernmentDevelopmentProgram>.
         List<String> programs = repositoryGovernmentDevelopmentProgram.findAllAcronym();
         for (TrunkChannelFromExcelDTO tcDTO : tcesDTO) {
-            if (!programs.contains(tcDTO.getProgram())) {
+            if (!tcDTO.getProgram().isEmpty() && !programs.contains(tcDTO.getProgram())) {
                 result = tcDTO.getNpp();
                 break;
             }
@@ -264,7 +264,8 @@ public class TrunkChannelsFromExcelDTOValidated implements TrunkChannelsDTOFromE
     private String checkCommissioningFormat(List<TrunkChannelFromExcelDTO> tcesDTO) {
         String result = null;
         for (TrunkChannelFromExcelDTO TcDTO : tcesDTO) {
-            if (!TcDTO.getComissioning().matches("[0-9]{2}.[0-9]{2}.[0-9]{4}")) {
+            if (!TcDTO.getComissioning().isEmpty()
+                    && !TcDTO.getComissioning().matches("[0-9]{2}.[0-9]{2}.[0-9]{4}")) {
                 result = TcDTO.getNpp();
                 break;
             }
@@ -275,6 +276,9 @@ public class TrunkChannelsFromExcelDTOValidated implements TrunkChannelsDTOFromE
     private String checkCommissioningDate(List<TrunkChannelFromExcelDTO> tcesDTO) {
         String result = null;
         for (TrunkChannelFromExcelDTO TcDTO : tcesDTO) {
+            if (TcDTO.getComissioning().isEmpty()) {
+                continue;
+            }
             int yyyy = Integer.parseInt(TcDTO.getComissioning().substring(6, 10));
             int mm = Integer.parseInt(TcDTO.getComissioning().substring(3, 5)) - 1;
             int dd = Integer.parseInt(TcDTO.getComissioning().substring(0, 2));
