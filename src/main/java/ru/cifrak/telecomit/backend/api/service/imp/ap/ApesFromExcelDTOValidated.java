@@ -3,12 +3,15 @@ package ru.cifrak.telecomit.backend.api.service.imp.ap;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
+import ru.cifrak.telecomit.backend.entities.TypeAccessPoint;
 import ru.cifrak.telecomit.backend.repository.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ApesFromExcelDTOValidated implements ApesDTOFromExcel {
 
@@ -106,7 +109,20 @@ public class ApesFromExcelDTOValidated implements ApesDTOFromExcel {
                     + "}.");
         }
 
+        badDTO = this.checkTypeAccessPoint(tcesDTO);
+        if (badDTO != null) {
+            throw new FromExcelDTOFormatException("В " + badDTO
+                    + " позиции ошибка в типе точки подключения, должна быть одной из {"
+                    + String.join(", ", getTypesAccessPoint())
+                    + "}.");
+        }
+
         return tcesDTO;
+    }
+
+    private List<String> getTypesAccessPoint() {
+        TypeAccessPoint[] types = TypeAccessPoint.values();
+        return Arrays.stream(types).map(TypeAccessPoint::getDesc).collect(Collectors.toList());
     }
 
     private String checkTypeOrganization(List<ApFromExcelDTO> tcesDTO) {
@@ -136,6 +152,17 @@ public class ApesFromExcelDTOValidated implements ApesDTOFromExcel {
         String result = null;
         for (ApFromExcelDTO TcDTO : tcesDTO) {
             if (repositoryInternetAccessType.findByName(TcDTO.getTypeInternetAccess()) == null) {
+                result = TcDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkTypeAccessPoint(List<ApFromExcelDTO> tcesDTO) {
+        String result = null;
+        for (ApFromExcelDTO TcDTO : tcesDTO) {
+            if (!getTypesAccessPoint().contains(TcDTO.getTypeAccessPoint())) {
                 result = TcDTO.getNpp();
                 break;
             }
@@ -204,6 +231,7 @@ public class ApesFromExcelDTOValidated implements ApesDTOFromExcel {
                     || TcDTO.getContractor().isEmpty()
                     || TcDTO.getTypeInternetAccess().isEmpty()
                     || TcDTO.getDeclaredSpeed().isEmpty()
+                    || TcDTO.getTypeAccessPoint().isEmpty()
             ) {
                 result = TcDTO.getNpp();
                 break;

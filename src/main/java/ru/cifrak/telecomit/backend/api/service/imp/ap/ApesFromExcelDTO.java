@@ -62,7 +62,8 @@ public class ApesFromExcelDTO implements ApesDTOFromExcel {
                 || !row.getCell(12).getStringCellValue().trim().isEmpty()
                 || !row.getCell(13).getStringCellValue().trim().isEmpty()
                 || !row.getCell(14).getStringCellValue().trim().isEmpty()
-                || !row.getCell(15).getStringCellValue().trim().isEmpty();
+                || !row.getCell(15).getStringCellValue().trim().isEmpty()
+                || !row.getCell(20).getStringCellValue().trim().isEmpty();
     }
 
     @SneakyThrows
