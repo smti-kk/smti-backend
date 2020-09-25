@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cifrak.telecomit.backend.api.dto.MonitoringAccessPointWizardDTO;
 import ru.cifrak.telecomit.backend.api.dto.response.ExternalSystemCreateStatusDTO;
+import ru.cifrak.telecomit.backend.entities.APConnectionState;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
@@ -48,14 +49,16 @@ public class ServiceOrganization {
         AccessPoint ap = rAccessPoints.getOne(apid);
         JournalMAP jjmap = rJournalMAP.findByAp_Id(ap.getId());
         MonitoringAccessPoint map;
-        if (jjmap.getMap() == null) {
+        if (jjmap ==null || jjmap.getMap() == null) {
+            if (jjmap==null){
+                jjmap = new JournalMAP();
+            }
              map = new MonitoringAccessPoint();
         } else {
             map = jjmap.getMap();
         }
-        JournalMAP jmap = new JournalMAP();
-        jmap.setAp(ap);
-        jmap.setActive(Boolean.TRUE);
+//        JournalMAP jmap = new JournalMAP();
+//        jmap.setAp(ap);
         if (ap.getOrganization().getId().equals(id)) {
             List<String> errors = new ArrayList<>();
             // это мы заводим в УТМ5
@@ -86,10 +89,15 @@ public class ServiceOrganization {
             }*/
 
             // это сохранение в журнале точек бд
-//            log.info("(>) save journal map");
-//            jmap.setMap(map);
-//            rJournalMAP.save(jmap);
-//            log.info("(<) save journal map");
+//            if (map.getId() == null) {
+                log.info("(>) save journal map");
+                jjmap.setAp(ap);
+                jjmap.setMap(map);
+                rJournalMAP.save(jjmap);
+                ap.setConnectionState(APConnectionState.ACTIVE);
+                rAccessPoints.save(ap);
+                log.info("(<) save journal map");
+//            }
             if (errors.isEmpty()) {
                 return new ExternalSystemCreateStatusDTO("Точка поставлена на мониторинг");
             } else if (errors.size()>=2) {

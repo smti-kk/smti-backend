@@ -253,7 +253,7 @@ public class ApiOrganization {
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     public List<AccessPointDetailInOrganizationDTO> apsByOrganization(@PathVariable Integer id) {
         log.info("->GET /api/organization/{}/ap", id);
-        return rAccessPoints.getAllByOrganizationId(id).stream().map(AccessPointDetailInOrganizationDTO::new).collect(Collectors.toList());
+        return rAccessPoints.getAllByOrganizationIdAndDeletedIsFalse(id).stream().map(AccessPointDetailInOrganizationDTO::new).collect(Collectors.toList());
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})

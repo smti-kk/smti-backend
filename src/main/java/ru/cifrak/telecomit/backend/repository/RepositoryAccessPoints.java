@@ -27,7 +27,8 @@ public interface RepositoryAccessPoints extends JpaRepository<AccessPoint, Integ
     @Override
     Page findAll(Specification spec, Pageable pageable);
 
-    List<AccessPoint> getAllByOrganizationId(Integer id);
+
+    List<AccessPoint> getAllByOrganizationIdAndDeletedIsFalse(Integer id);
 
     List<AccessPoint> findByPointAndOrganization(Point point, Organization organization);
 }
