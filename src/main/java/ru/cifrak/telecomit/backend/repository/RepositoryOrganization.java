@@ -26,9 +26,8 @@ public interface RepositoryOrganization extends JpaRepository<Organization, Inte
 
     @EntityGraph(Organization.FULL)
     @Query(value = "SELECT co FROM Organization co" +
-            " LEFT JOIN AccessPoint ap ON ap.organization.id = co.id" +
             " WHERE co.location.id = :locationId" +
-            " AND ap.id <> :accessPointId")
+            " AND not exists (select 1 from AccessPoint ap where ap.id = :accessPointId and ap.organization.id = co.id)")
     Page<Organization> findAllByLocationIdAndWithoutAccessPoint(
             Integer locationId,
             Integer accessPointId,
@@ -37,9 +36,8 @@ public interface RepositoryOrganization extends JpaRepository<Organization, Inte
 
     @EntityGraph(Organization.FULL)
     @Query(value = "SELECT co FROM Organization co" +
-            " LEFT JOIN AccessPoint ap ON ap.organization.id = co.id" +
             " WHERE co.location.id = :locationId" +
-            " AND ap.id = :accessPointId")
+            " AND exists (select 1 from AccessPoint ap where ap.id = :accessPointId and ap.organization.id = co.id)")
     Organization findByLocationIdAndWithAccessPoint(
             Integer locationId,
             Integer accessPointId
