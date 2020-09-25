@@ -3,15 +3,16 @@ package ru.cifrak.telecomit.backend.repository;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.EntityPathBase;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
+import org.springframework.transaction.annotation.Transactional;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
 import ru.cifrak.telecomit.backend.entities.locationsummary.QLocationForTable;
 
@@ -41,4 +42,9 @@ public interface DSLDetailLocation extends JpaRepository<LocationForTable, Integ
             " exists (SELECT 1 FROM User u where u.id = :userId " +
             "           and l.id in (select ul.id from u.locations ul))")
     List<LocationForTable> findByUserId(@NotNull Long userId);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM LocationForTable l WHERE l.id = ?1")
+    void forceDeleteById(Integer locationId);
 }

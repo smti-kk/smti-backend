@@ -6,12 +6,12 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TrunkChannelsFromExcelDTO implements TrunkChannelsDTOFromExcel {
 
@@ -39,11 +39,38 @@ public class TrunkChannelsFromExcelDTO implements TrunkChannelsDTOFromExcel {
             if (row != null) {
                 row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
                 if (this.notEmptyRow(row)) {
-                    tces.add(new TrunkChannelFromExcelDTO(row));
+                    tces.add(new TrunkChannelFromExcelDTO(row, formatCommissioning(row.getCell(13))));
                 }
             }
         }
         return tces;
+    }
+
+    private String formatCommissioning(Cell cell) {
+        String result = null;
+        Date date = null;
+        try {
+            date = cell.getDateCellValue();
+            GregorianCalendar calendar = new GregorianCalendar();
+            calendar.setTime(date);
+            int yyyy = calendar.get(Calendar.YEAR);
+            int mm = calendar.get(Calendar.MONTH) + 1;
+            int dd = calendar.get(Calendar.DAY_OF_MONTH);
+            result = String.format("%02d", dd)
+            + "." + String.format("%02d", mm)
+            + "." + yyyy;
+        } catch (Exception e) {
+            if (date != null) {
+                result = cell.getStringCellValue();
+            } else {
+                if (((XSSFCell) cell).getRawValue() == null) {
+                    result = "";
+                } else {
+                    result = "00.00.0000";
+                }
+            }
+        }
+        return result;
     }
 
     private boolean notEmptyRow(Row row) {
