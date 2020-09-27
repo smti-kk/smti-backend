@@ -12,6 +12,9 @@ import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
 import ru.cifrak.telecomit.backend.api.service.imp.ap.ApesFromExcelDTO;
 import ru.cifrak.telecomit.backend.api.service.imp.ap.ApesFromExcelDTOValidated;
 import ru.cifrak.telecomit.backend.api.service.imp.ap.ApesSaveService;
+import ru.cifrak.telecomit.backend.api.service.imp.basestation.BaseStationsFromExcelDTO;
+import ru.cifrak.telecomit.backend.api.service.imp.basestation.BaseStationsFromExcelDTOValidated;
+import ru.cifrak.telecomit.backend.api.service.imp.basestation.BaseStationsSaveService;
 import ru.cifrak.telecomit.backend.api.service.imp.location.LocationsFromExcelDTO;
 import ru.cifrak.telecomit.backend.api.service.imp.location.LocationsFromExcelDTOValidated;
 import ru.cifrak.telecomit.backend.api.service.imp.location.LocationsSaveService;
@@ -69,6 +72,7 @@ public class ApiImport {
     private final ApesSaveService apesSaveService;
     private final TcesAtsSaveService tcesAtsSaveService;
     private final TrunkChannelsSaveService trunkChannelsSaveService;
+    private final BaseStationsSaveService baseStationsSaveService;
     private final RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram;
 
     public ApiImport(
@@ -91,6 +95,7 @@ public class ApiImport {
             ApesSaveService apesSaveService,
             TcesAtsSaveService tcesAtsSaveService,
             TrunkChannelsSaveService trunkChannelsSaveService,
+            BaseStationsSaveService baseStationsSaveService,
             RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram) {
         this.repositoryLocation = repositoryLocation;
         this.repositoryOperator = repositoryOperator;
@@ -111,6 +116,7 @@ public class ApiImport {
         this.apesSaveService = apesSaveService;
         this.tcesAtsSaveService = tcesAtsSaveService;
         this.trunkChannelsSaveService = trunkChannelsSaveService;
+        this.baseStationsSaveService = baseStationsSaveService;
         this.repositoryGovernmentDevelopmentProgram = repositoryGovernmentDevelopmentProgram;
     }
 
@@ -334,6 +340,25 @@ public class ApiImport {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         log.info("POST /api/import/trunk-channel :: {}", file.getOriginalFilename());
+        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
+    }
+
+    @Secured({"ROLE_ADMIN"})
+    @PostMapping("/base-station")
+    public ResponseEntity<String> handleFileBaseStation(@RequestParam("file") MultipartFile file) {
+        try {
+            baseStationsSaveService.save(
+                    new BaseStationsFromExcelDTOValidated(
+                            new BaseStationsFromExcelDTO(file),
+                            repositoryOperator,
+                            repositoryMobileType).getTcesDTO()
+            );
+        } catch (FromExcelDTOFormatException e) {
+            // TODO: <-, -> ?
+            log.error("<-POST /api/import/base-station :: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        log.info("POST /api/import/base-station :: {}", file.getOriginalFilename());
         return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
     }
 }

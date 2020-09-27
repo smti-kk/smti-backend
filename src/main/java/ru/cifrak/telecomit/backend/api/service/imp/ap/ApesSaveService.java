@@ -48,7 +48,7 @@ public class ApesSaveService {
     public void save(List<ApFromExcelDTO> TcesDTO) {
         for (ApFromExcelDTO tcDTO : TcesDTO) {
             List<AccessPoint> apes = repositoryAccessPoints.findByPointAndOrganization(
-                    createPoint(tcDTO.getLatitude(), tcDTO.getLongitude()),
+                    createPoint(tcDTO.getLongitude(), tcDTO.getLatitude()),
                     getOrganization(tcDTO));
             if (apes.size() > 0) {
                 // TODO: Transaction.
@@ -75,7 +75,7 @@ public class ApesSaveService {
                         ap = new ApContract();
                         break;
                 }
-                ap.setPoint(createPoint(tcDTO.getLatitude(), tcDTO.getLongitude()));
+                ap.setPoint(createPoint(tcDTO.getLongitude(), tcDTO.getLatitude()));
                 ap.setOrganization(getOrganization(tcDTO));
                 ap.setContractor(tcDTO.getContractor());
                 ap.setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
