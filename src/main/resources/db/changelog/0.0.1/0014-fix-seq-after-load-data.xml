@@ -1,7 +1,7 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet author="a-panov (generated)" id="1588933669859-1">
-        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE accesspoint_id_seq restart with 3803;</sql>
+        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE accesspoint_id_seq restart with 3802;</sql>
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588933669859-3">
         <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE geodata_id_seq restart with 3106;</sql>
@@ -13,7 +13,7 @@
         <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE operator_id_seq restart with 12;</sql>
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588933669859-8">
-        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE organization_id_seq restart with 3425;</sql>
+        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE organization_id_seq restart with 3662;</sql>
     </changeSet>
     <changeSet author="a-panov (generated)" id="1588933669859-10">
         <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE typeinternetaccess_id_seq restart with 14;</sql>
