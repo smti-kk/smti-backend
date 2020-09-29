@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.api;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/")
 public class ApiGEO {
@@ -32,6 +33,8 @@ public class ApiGEO {
     @GetMapping("/location-area")
     @Cacheable("location_areas")
     public List<LocationAreaBorders> locations() {
+        log.info("->GET /api/location-area");
+        log.info("<- GET /api/location-area");
         return repository.areaBorders().stream()
                 .map(LocationAreaBorders::new)
                 .collect(Collectors.toList());
@@ -39,6 +42,8 @@ public class ApiGEO {
 
     @GetMapping("/location-foo/")
     public List<GeoData> area() {
+        log.info("->GET /api/location-foo/");
+        log.info("<- GET /api/location-foo/");
         List<GeoData> area = repositoryGEO.findAll();
         return area;
     }

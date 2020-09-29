@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.api;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,7 +12,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryGovernmentProgram;
 import ru.cifrak.telecomit.backend.repository.RepositorySmoType;
 
 import java.util.List;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/gov-program")
 public class ApiGovPrograms {
@@ -24,11 +25,15 @@ public class ApiGovPrograms {
     @GetMapping
     @Cacheable("gov_programs")
     public List<GovernmentDevelopmentProgram> list() {
+        log.info("->GET /api/gov-program");
+        log.info("<- GET /api/gov-program");
         return repository.findAll();
     }
 
     @GetMapping("/{id}/")
     public GovernmentDevelopmentProgram item(@PathVariable Integer id) {
+        log.info("->GET /api/gov-program/::{}",id);
+        log.info("<- GET /api/gov-program/::{}",id);
         return repository.findById(id).orElse(null);
     }
 

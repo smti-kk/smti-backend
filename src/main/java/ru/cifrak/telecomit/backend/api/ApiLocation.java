@@ -28,6 +28,8 @@ public class ApiLocation {
 
     @GetMapping
     public List<LocationSimple> location(@RequestParam(value = "location") String name) {
+        log.info("->GET /api/location/base/::{}",name);
+        log.info("<- GET /api/location/base/::{}",name);
         return repository.locations(name).stream()
                 .map(LocationSimple::new)
                 .collect(Collectors.toList());
@@ -35,6 +37,8 @@ public class ApiLocation {
 
     @GetMapping("/locations/")
     public List<LocationSimpleFilterDTO> locations() {
+        log.info("->GET /api/location/base/locations/");
+        log.info("<- GET /api/location/base/locations/");
         return repository.locationFilter().stream()
                 .map(LocationSimpleFilterDTO::new)
                 .collect(Collectors.toList());
@@ -43,7 +47,8 @@ public class ApiLocation {
     @GetMapping("/parents/")
     @Cacheable("location_location_parents")
     public List<LocationSimple> parents() {
-
+        log.info("->GET /api/location/base/parents/");
+        log.info("<- GET /api/location/base/parents/");
         return repository.parents().stream()
                 .map(LocationSimple::new)
                 .collect(Collectors.toList());
@@ -51,8 +56,8 @@ public class ApiLocation {
 
     @GetMapping(params = "parent")
     public List<LocationSimple> locationsByParent(@RequestParam("parent") Integer parentId) {
-        log.info("->GET /api/operator/base/");
-        log.info("<- GET /api/operator/base/");
+        log.info("->GET /api/location/base/::{}",parentId);
+        log.info("<- GET /api/location/base/::{}",parentId);
         return repository.findAllByParentId(parentId).stream()
                 .map(LocationSimple::new)
                 .collect(Collectors.toList());
@@ -60,8 +65,8 @@ public class ApiLocation {
 
     @GetMapping("/base/")
     public List<DLocationBase> base() {
-        log.info("->GET /api/operator/base/");
-        log.info("<- GET /api/operator/base/");
+        log.info("->GET /api/location/base/");
+        log.info("<- GET /api/location/base/");
         return rDLocationBase.findAll();
     }
 
