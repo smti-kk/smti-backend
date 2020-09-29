@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.api;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +14,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/location")
 public class ApiLocation {
@@ -42,6 +43,7 @@ public class ApiLocation {
     @GetMapping("/parents/")
     @Cacheable("location_location_parents")
     public List<LocationSimple> parents() {
+
         return repository.parents().stream()
                 .map(LocationSimple::new)
                 .collect(Collectors.toList());
@@ -49,6 +51,8 @@ public class ApiLocation {
 
     @GetMapping(params = "parent")
     public List<LocationSimple> locationsByParent(@RequestParam("parent") Integer parentId) {
+        log.info("->GET /api/operator/base/");
+        log.info("<- GET /api/operator/base/");
         return repository.findAllByParentId(parentId).stream()
                 .map(LocationSimple::new)
                 .collect(Collectors.toList());
@@ -56,6 +60,8 @@ public class ApiLocation {
 
     @GetMapping("/base/")
     public List<DLocationBase> base() {
+        log.info("->GET /api/operator/base/");
+        log.info("<- GET /api/operator/base/");
         return rDLocationBase.findAll();
     }
 

@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/user/")
 public class ApiUser {
+    private final static String LOG_STRING_API_USER = "GET /api/user/";
     private final RepositoryUser rUser;
     private final RepositoryAccount rAccount;
 
@@ -25,8 +26,8 @@ public class ApiUser {
     @GetMapping
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     public List<Account> list() {
-        log.info("->GET /api/user/");
-        log.info("<-GET /api/user/");
+        log.info("->GET " + LOG_STRING_API_USER);
+        log.info("<-GET " + LOG_STRING_API_USER);
         return rAccount.findAll();
     }
 
