@@ -47,10 +47,87 @@ public class ServiceExternalZabbix {
 
         String resp = authenticate.retrieve().bodyToMono(String.class).block();
         ExtZabbixDtoResponse respAuthentication = mapper.readValue(resp, ExtZabbixDtoResponse.class);
-
         String authToken = (String) respAuthentication.getResult();
-        // xx. Завести устройство и сенсор в заббикс...
-        createDeviceAndSencor(map, wizard, client, authToken);
+
+        // xx. где-то здесь по идее необходимо проверять что устройство уже заведенно в системе.
+        log.info("(>) go 4 work");
+        if (wizard.getDevice() != null) {
+//         check if Zabbix already have device
+            if (isExistsDevice(wizard.getDevice(), mapper, client, authToken)) {
+                // UPDATE
+                log.info("(>) work update device");
+                ExtZabbixDtoResponseHost remoteItem = getDeviceData(wizard.getDevice(), mapper, client, authToken);
+                log.warn("{}", remoteItem);
+                map.setDeviceId(remoteItem.getResult().get(0).getHostid());
+                map.setDeviceName(remoteItem.getResult().get(0).getHost());
+                map.setDeviceIp(remoteItem.getResult().get(0).getInterfaces().get(0).getIp());
+                map.setDeviceTriggerUnavailable(
+                        Long.valueOf(
+                                remoteItem.getResult().get(0).getTriggers()
+                                        .stream()
+                                        .filter(i -> i.getDescription().equals("Unavailable by ICMP ping"))
+                                        .findFirst()
+                                        .get()
+                                        .getTriggerid()
+                        )
+                );
+                map.setDeviceTriggerResponseLost(
+                        Long.valueOf(
+                                remoteItem.getResult().get(0).getTriggers()
+                                        .stream()
+                                        .filter(i -> i.getDescription().equals("High ICMP ping loss"))
+                                        .findFirst()
+                                        .get()
+                                        .getTriggerid()
+                        )
+                );
+                map.setDeviceTriggerResponseLow(
+                        Long.valueOf(
+                                remoteItem.getResult().get(0).getTriggers()
+                                        .stream()
+                                        .filter(i -> i.getDescription().equals("High ICMP ping response time"))
+                                        .findFirst()
+                                        .get()
+                                        .getTriggerid()
+                        )
+                );
+                log.info("(<) work update device");
+            } else {
+                // CREATE
+                log.info("(><) work create device");
+//                createDevice(map, wizard, client, authToken);
+
+                // завести триггеры на устройство :: это у нас по доступности
+            }
+        }
+        if (wizard.getSensor() != null) {
+//         check if Zabbix already have sensor
+//         createSensor(map, wizard, client, authToken);
+            if (isExistsDevice(wizard.getSensor(), mapper, client, authToken)) {
+                log.info("(>) work update sensor");
+                ExtZabbixDtoResponseHost remoteItem = getDeviceData(wizard.getSensor(), mapper, client, authToken);
+                log.warn("{}", remoteItem);
+                map.setSensorId(remoteItem.getResult().get(0).getHostid());
+                map.setSensorName(remoteItem.getResult().get(0).getHost());
+                map.setSensorIp(remoteItem.getResult().get(0).getInterfaces().get(0).getIp());
+                map.setSensorTriggerEnergy(
+                        Long.valueOf(
+                                remoteItem.getResult().get(0).getTriggers()
+                                        .stream()
+                                        .filter(i -> i.getDescription().equals("Unavailable by ICMP ping"))
+                                        .findFirst()
+                                        .get()
+                                        .getTriggerid()
+                        )
+                );
+                log.info("(<) work update sensor");
+            } else {
+                // завести триггеры на сенсор :: это у нас по электричеству
+                log.info("(><) work create sensor");
+            }
+        }
+
+/*
 
         // xx. Спросить тригеры которые получились для оборудования и для сенсора
         ExtZabbixDtoResponseTriggers listOfTriggersDevice = getExtZabbixDtoResponseTriggers(client, mapper, authToken, "[   ] -> get triggers for device", map.getDeviceId(), "[   ] <- get triggers for device");
@@ -80,7 +157,38 @@ public class ServiceExternalZabbix {
         ExtZabbixDtoResponseService serviceElectricity = getExtZabbixDtoResponseService(client, mapper, authToken, service, "[   ] -> go for create services electricity", "Доступность узла связи электроэнергия", "[   ] <- go for create services electricity:: {}");
 
         // xx.xx.xx. Услуга Unavailable by ICMP ping Energy
-        zzzElectricity(map, wizard, client, mapper, authToken, listOfTriggersSensor, serviceElectricity);
+        zzzElectricity(map, wizard, client, mapper, authToken, listOfTriggersSensor, serviceElectricity);*/
+    }
+
+    private boolean isExistsDevice(ExtZabbixDto device, ObjectMapper mapper, WebClient client, String authToken) throws JsonProcessingException {
+        WebClient.RequestHeadersSpec<?> request4Hosts = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(
+                        new ExtZabbixDtoRequest("host.get",
+                                new ExtZabbixDtoGetHostsParams(device.getHostName()),
+                                42,
+                                authToken
+                        )));
+        String responseHosts = request4Hosts.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseHosts responseHostsData = mapper.readValue(responseHosts, ExtZabbixDtoResponseHosts.class);
+        //TODO:[generate TICKET]: более описательную ошибку, ибо вдруг найдет больше. Так как поиск, по шаблону то происходит.
+        return responseHostsData.getResult() == null ? false : responseHostsData.getResult().size() == 1;
+    }
+
+    private ExtZabbixDtoResponseHost getDeviceData(ExtZabbixDto device, ObjectMapper mapper, WebClient client, String authToken) throws JsonProcessingException {
+        WebClient.RequestHeadersSpec<?> request4Hosts = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(
+                        new ExtZabbixDtoRequest("host.get",
+                                new ExtZabbixDtoGetHostParams(device.getHostName()),
+                                42,
+                                authToken
+                        )));
+        String responseHosts = request4Hosts.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseHost responseHostData = mapper.readValue(responseHosts, ExtZabbixDtoResponseHost.class);
+        return responseHostData;
     }
 
     private void zzzElectricity(MonitoringAccessPoint map, MonitoringAccessPointWizardDTO wizard, WebClient client, ObjectMapper mapper, String authToken, ExtZabbixDtoResponseTriggers listOfTriggersSensor, ExtZabbixDtoResponseService serviceElectricity) throws JsonProcessingException {
@@ -195,22 +303,24 @@ public class ServiceExternalZabbix {
         return listOfTriggersDevice;
     }
 
-    private void createDeviceAndSencor(MonitoringAccessPoint map, MonitoringAccessPointWizardDTO wizard, WebClient client, String authToken) throws Exception {
+    private void createDevice(MonitoringAccessPoint map, MonitoringAccessPointWizardDTO wizard, WebClient client, String authToken) throws Exception {
         log.info("[   ] -> monitoring::wizard::data:: {}", wizard);
         log.info("[   ] -> create device");
         String device = insertIntoZabbix(client, authToken, wizard.getDevice());
         log.info("[   ] <- create device");
-        if (wizard.getSensor() != null) {
-            log.info("[   ] -> create sensor");
-            String sensor = insertIntoZabbix(client, authToken, wizard.getSensor());
-            log.info("[   ] <- create sensor");
-            map.setSensorId(sensor);
-            map.setSensorName(wizard.getSensor().getHostName());
-            map.setSensorIp(wizard.getSensor().getIp());
-        }
         map.setDeviceId(device);
         map.setDeviceName(wizard.getDevice().getHostName());
         map.setDeviceIp(wizard.getDevice().getIp());
+    }
+
+    private void createSensor(MonitoringAccessPoint map, MonitoringAccessPointWizardDTO wizard, WebClient client, String authToken) throws Exception {
+        log.info("[   ] -> monitoring::wizard::data:: {}", wizard);
+        log.info("[   ] -> create sensor");
+        String sensor = insertIntoZabbix(client, authToken, wizard.getSensor());
+        log.info("[   ] <- create sensor");
+        map.setSensorId(sensor);
+        map.setSensorName(wizard.getSensor().getHostName());
+        map.setSensorIp(wizard.getSensor().getIp());
     }
 
     private String insertIntoZabbix(WebClient client, String authToken, @NotNull ExtZabbixDto zabbix) throws Exception {

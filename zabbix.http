@@ -36,6 +36,29 @@ Content-Type: application/json
     "auth": "{{auth}}"
 }
 
+###      get host by name
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "host.get",
+    "params": {
+        "output": [
+            "hostid",
+            "host"
+        ],
+        "search": {"host": "ggo-4-d"} ,
+        "selectInterfaces": [
+            "interfaceid",
+            "ip"
+        ],
+        "selectTriggers": ["triggerid","description"]
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
 ###      get all group of hosts
 POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
 Content-Type: application/json

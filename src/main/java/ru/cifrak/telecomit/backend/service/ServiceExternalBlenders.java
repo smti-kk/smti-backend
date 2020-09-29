@@ -24,7 +24,6 @@ public class ServiceExternalBlenders {
 
     public void linkWithZabbix(AccessPoint ap, MonitoringAccessPoint map, MonitoringAccessPointWizardDTO wizard) throws Exception {
         zabbix.linking(ap, map, wizard);
-
     }
 
 

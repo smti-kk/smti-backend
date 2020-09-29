@@ -49,27 +49,25 @@ public class ServiceOrganization {
         AccessPoint ap = rAccessPoints.getOne(apid);
         JournalMAP jjmap = rJournalMAP.findByAp_Id(ap.getId());
         MonitoringAccessPoint map;
-        if (jjmap ==null || jjmap.getMap() == null) {
-            if (jjmap==null){
+        if (jjmap == null || jjmap.getMap() == null) {
+            if (jjmap == null) {
                 jjmap = new JournalMAP();
             }
-             map = new MonitoringAccessPoint();
+            map = new MonitoringAccessPoint();
         } else {
             map = jjmap.getMap();
         }
-//        JournalMAP jmap = new JournalMAP();
-//        jmap.setAp(ap);
         if (ap.getOrganization().getId().equals(id)) {
             List<String> errors = new ArrayList<>();
             // это мы заводим в УТМ5
             if (wizard.getNetworks() != null && !wizard.getNetworks().isEmpty()) {
-                ap.setNetworks(wizard.getNetworks());
-                rAccessPoints.save(ap);
+//                ap.setNetworks(wizard.getNetworks());
+//                rAccessPoints.save(ap);
                 try {
-                    ap.setNetworks(wizard.getNetworks());
+                   /* ap.setNetworks(wizard.getNetworks());
                     blenders.linkWithUTM5(ap, map);
                     log.info("(>) save monitoring access point");
-                    map = rMonitoringAccessPoints.save(map);
+                    map = rMonitoringAccessPoints.save(map);*/
                     log.info("(<) save monitoring access point");
                 } catch (Exception e) {
                     errors.add("Система UTM вернула ошибку: " + e.getMessage());
@@ -79,28 +77,26 @@ public class ServiceOrganization {
 
             }
             // это мы заводим в заббикс
-            /*try {
+            try {
                 blenders.linkWithZabbix(ap, map, wizard);
                 log.info("(>) save monitoring access point");
                 rMonitoringAccessPoints.save(map);
                 log.info("(<) save monitoring access point");
             } catch (Exception e) {
                 errors.equals("ZABBIX:error: " + e.getMessage());
-            }*/
+            }
 
             // это сохранение в журнале точек бд
-//            if (map.getId() == null) {
-                log.info("(>) save journal map");
-                jjmap.setAp(ap);
-                jjmap.setMap(map);
-                rJournalMAP.save(jjmap);
-                ap.setConnectionState(APConnectionState.ACTIVE);
-                rAccessPoints.save(ap);
-                log.info("(<) save journal map");
-//            }
+            log.info("(>) save journal map");
+            jjmap.setAp(ap);
+            jjmap.setMap(map);
+            rJournalMAP.save(jjmap);
+            ap.setConnectionState(APConnectionState.ACTIVE);
+            rAccessPoints.save(ap);
+            log.info("(<) save journal map");
             if (errors.isEmpty()) {
                 return new ExternalSystemCreateStatusDTO("Точка поставлена на мониторинг");
-            } else if (errors.size()>=2) {
+            } else if (errors.size() >= 2) {
                 return new ExternalSystemCreateStatusDTO("Точку НЕУДАЛОСЬ поставить на мониторинг", errors);
             } else {
                 return new ExternalSystemCreateStatusDTO("Точка поставлена на мониторинг с ограничениями", errors);
