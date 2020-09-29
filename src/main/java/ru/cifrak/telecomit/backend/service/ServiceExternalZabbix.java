@@ -91,6 +91,15 @@ public class ServiceExternalZabbix {
                                         .getTriggerid()
                         )
                 );
+                // ЗДЕСЬ НЕОБХОДИМО НАЙТИ ТУ УСЛУГУ, КОТОРАЯ И СОЗДАЕТСЯ
+                ExtZabbixDtoResponseServices remoteItemService = getDeviceServices(wizard.getDevice(), mapper, client, authToken);
+                map.setServiceId(remoteItemService.getResult()
+                        .stream()
+                        .filter(i-> i.getName().matches("telecom:org:"+ap.getOrganization().getId()+":.+:ap:"+ap.getId()+":.+"))
+                        .findFirst()
+                        .map(i->Long.valueOf(i.getServiceid()))
+                        .orElse(null)
+                );
                 log.info("(<) work update device");
             } else {
                 // CREATE
@@ -158,6 +167,21 @@ public class ServiceExternalZabbix {
 
         // xx.xx.xx. Услуга Unavailable by ICMP ping Energy
         zzzElectricity(map, wizard, client, mapper, authToken, listOfTriggersSensor, serviceElectricity);*/
+    }
+
+    private ExtZabbixDtoResponseServices getDeviceServices(ExtZabbixDto device, ObjectMapper mapper, WebClient client, String authToken) throws JsonProcessingException {
+        WebClient.RequestHeadersSpec<?> request4Hosts = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(
+                        new ExtZabbixDtoRequest("service.get",
+                                new ExtZabbixDtoServicesParams(),
+                                42,
+                                authToken
+                        )));
+        String responseHosts = request4Hosts.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseServices responseHostData = mapper.readValue(responseHosts, ExtZabbixDtoResponseServices.class);
+        return responseHostData;
     }
 
     private boolean isExistsDevice(ExtZabbixDto device, ObjectMapper mapper, WebClient client, String authToken) throws JsonProcessingException {
