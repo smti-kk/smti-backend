@@ -3,12 +3,14 @@ package ru.cifrak.telecomit.backend.entities;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Data
 public class Appeal implements Serializable {
     @Id
@@ -28,18 +30,45 @@ public class Appeal implements Serializable {
     @Column(nullable = false)
     private AppealLevel level;
 
-    private Integer locationId;
+    @ManyToOne
+    private Location location;
 
     @Column(nullable = false)
     private LocalDate date;
 
-    private String file;
-    private String responseFile;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private DBFile file;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private DBFile responseFile;
 
     @CreatedDate
     private LocalDate creationDate;
 
     @CreatedBy
     private String creator;
+
+    public Appeal() {
+    }
+
+    public Appeal(Integer id,
+                  String title,
+                  AppealStatus status,
+                  AppealPriority priority,
+                  AppealLevel level,
+                  Location location,
+                  LocalDate date,
+                  DBFile appealFile,
+                  DBFile appealResponseFile) {
+        this.id = id;
+        this.title = title;
+        this.status = status;
+        this.priority = priority;
+        this.level = level;
+        this.location = location;
+        this.date = date;
+        this.file = appealFile;
+        this.responseFile = appealResponseFile;
+    }
 }
 

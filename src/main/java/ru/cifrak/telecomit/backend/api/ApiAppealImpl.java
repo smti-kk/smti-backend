@@ -1,12 +1,16 @@
 package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.cifrak.telecomit.backend.entities.Appeal;
-import ru.cifrak.telecomit.backend.entities.User;
+import org.springframework.web.multipart.MultipartFile;
+import ru.cifrak.telecomit.backend.api.dto.AppealCreateOrUpdateReq;
+import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
 import ru.cifrak.telecomit.backend.service.ServiceAppeal;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -47,9 +51,27 @@ public class ApiAppealImpl implements ApiAppeal {
     }
 
     @Override
-    public Appeal updateOrCreate(Appeal appeal, User user) {
-        log.info("User {} create appeal {} ->", user.getEmail(), appeal);
-        Appeal newAppeal = serviceAppeal.updateOrCreate(appeal);
+    public Appeal updateOrCreate(Integer id,
+                                 String title,
+                                 AppealStatus status,
+                                 AppealPriority priority,
+                                 AppealLevel level,
+                                 Integer locationId,
+                                 LocalDate date,
+                                 MultipartFile file,
+                                 MultipartFile responseFile,
+                                 User user) {
+        AppealCreateOrUpdateReq appeal = new AppealCreateOrUpdateReq(
+                id,
+                title,
+                status,
+                priority,
+                level,
+                locationId,
+                date
+        );
+        log.info("User {} create or update appeal {} ->", user.getEmail(), appeal);
+        Appeal newAppeal = serviceAppeal.updateOrCreate(appeal, file, responseFile);
         log.info("User {} create appeal with id {} <-", user.getEmail(), appeal.getId());
         return newAppeal;
     }

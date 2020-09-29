@@ -33,8 +33,8 @@ public class GeoData implements Serializable {
     private Integer id;
 
 
-    /*@JsonSerialize(using = GeometrySerializer.class)
-    @JsonDeserialize(using = GeometryDeserializer.class)*/
+    @JsonSerialize(using = GeometrySerializer.class)
+    @JsonDeserialize(using = GeometryDeserializer.class)
     @Column(name = "administrative_center")
     private Point administrativeCenter;
 
