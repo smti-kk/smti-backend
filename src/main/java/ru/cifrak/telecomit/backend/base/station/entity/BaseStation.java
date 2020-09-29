@@ -37,10 +37,10 @@ public class BaseStation {
     @CreationTimestamp
     private Date actionDate;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Operator operator;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private TypeMobile mobileType;
 
     @Column(nullable = false)

@@ -15,13 +15,11 @@ import java.util.Optional;
 
 public interface BaseStationsRepository extends JpaRepository<BaseStation, Integer> {
     @Override
-    @EntityGraph("base_station_full")
     @NotNull
     List<BaseStation> findAll();
 
     @Override
     @NotNull
-    @EntityGraph("base_station_full")
     Optional<BaseStation> findById(@NotNull Integer integer);
 
     List<BaseStation> findByPointAndOperatorAndMobileType(
