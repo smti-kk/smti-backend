@@ -4,10 +4,7 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -15,6 +12,8 @@ import java.time.LocalDate;
 @Data
 public class Appeal implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "APPEAL_ID_GENERATOR")
+    @SequenceGenerator(name = "APPEAL_ID_GENERATOR", sequenceName = "appeal_id_seq", allocationSize = 1)
     private Integer id;
 
     @Column(nullable = false)
@@ -29,8 +28,7 @@ public class Appeal implements Serializable {
     @Column(nullable = false)
     private AppealLevel level;
 
-    @ManyToOne
-    private Location location;
+    private Integer locationId;
 
     @Column(nullable = false)
     private LocalDate date;

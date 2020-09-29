@@ -1,6 +1,5 @@
 package ru.cifrak.telecomit.backend.api;
 
-import io.swagger.annotations.ApiParam;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
