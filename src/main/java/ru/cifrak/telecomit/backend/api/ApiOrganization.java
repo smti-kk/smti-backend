@@ -243,8 +243,16 @@ public class ApiOrganization {
         //TODO: make this work later, when we have some real data...
 //        item.setParent(value.getParent());
 //        item.setChildren(value.getChildren());
-        item.setType(rTypeOrganization.getOne(value.getType()));
-        item.setSmo(rTypeSmo.getOne(value.getSmo()));
+        if (value.getType() == null) {
+            item.setType(null);
+        } else {
+            item.setType(rTypeOrganization.getOne(value.getType()));
+        }
+        if (value.getSmo() == null) {
+            item.setSmo(null);
+        } else {
+            item.setSmo(rTypeSmo.getOne(value.getSmo()));
+        }
         Organization saved = rOrganization.save(item);
         log.info("<-PUT /api/organization/{}", item.getId());
         return ResponseEntity.ok(new OrganizationDTO(saved));
