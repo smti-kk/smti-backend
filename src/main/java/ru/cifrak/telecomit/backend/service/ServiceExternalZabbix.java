@@ -104,14 +104,28 @@ public class ServiceExternalZabbix {
             } else {
                 // CREATE
                 log.info("(><) work create device");
-//                createDevice(map, wizard, client, authToken);
+                createDevice(map, wizard, client, authToken);
+                // xx. Спросить тригеры которые получились для оборудования
+                ExtZabbixDtoResponseTriggers listOfTriggersDevice = getExtZabbixDtoResponseTriggers(client, mapper, authToken, "[   ] -> get triggers for device", map.getDeviceId(), "[   ] <- get triggers for device");
+                // xx. Создать сервисы для девайса и для сенсора
+                ExtZabbixDtoResponseService service = getExtZabbixDtoResponseService(ap, client, mapper, authToken);
+                map.setServiceId(Long.valueOf(service.getResult().get(0)));
+                // xx.xx. Услуга передача данных
+                ExtZabbixDtoResponseService serviceData = getExtZabbixDtoResponseService(client, mapper, authToken, map.getServiceId(), "[   ] -> go for create services data", "Уровень SLA по передаче данных", "[   ] <- go for create services data:: {}");
 
-                // завести триггеры на устройство :: это у нас по доступности
+                // xx.xx.xx. Услуга High ICMP ping loss
+                zzzPingLost(map, wizard, client, mapper, authToken, listOfTriggersDevice, serviceData);
+
+                // xx.xx.xx. Услуга High ICMP ping response time
+                zzzPingLow(map, wizard, client, mapper, authToken, listOfTriggersDevice, serviceData);
+
+                // xx.xx.xx. Услуга Unavailable by ICMP ping
+                zzzUnavailable(map, wizard, client, mapper, authToken, listOfTriggersDevice, serviceData);
             }
         }
         if (wizard.getSensor() != null) {
 //         check if Zabbix already have sensor
-//         createSensor(map, wizard, client, authToken);
+
             if (isExistsDevice(wizard.getSensor(), mapper, client, authToken)) {
                 log.info("(>) work update sensor");
                 ExtZabbixDtoResponseHost remoteItem = getDeviceData(wizard.getSensor(), mapper, client, authToken);
@@ -133,40 +147,30 @@ public class ServiceExternalZabbix {
             } else {
                 // завести триггеры на сенсор :: это у нас по электричеству
                 log.info("(><) work create sensor");
+                createSensor(map, wizard, client, authToken);
+                ExtZabbixDtoResponseTriggers listOfTriggersSensor = getExtZabbixDtoResponseTriggers(client, mapper, authToken, "[   ] -> get triggers for sensor", map.getSensorId(), "[   ] <- get triggers for sensor");
+                // xx.xx. Услуга электросвязь
+                ExtZabbixDtoResponseService serviceElectricity = getExtZabbixDtoResponseService(client, mapper, authToken, map.getServiceId(), "[   ] -> go for create services electricity", "Доступность узла связи электроэнергия", "[   ] <- go for create services electricity:: {}");
+                // xx.xx.xx. Услуга Unavailable by ICMP ping Energy
+                zzzElectricity(map, wizard, client, mapper, authToken, listOfTriggersSensor, serviceElectricity);
             }
         }
 
 /*
 
-        // xx. Спросить тригеры которые получились для оборудования и для сенсора
-        ExtZabbixDtoResponseTriggers listOfTriggersDevice = getExtZabbixDtoResponseTriggers(client, mapper, authToken, "[   ] -> get triggers for device", map.getDeviceId(), "[   ] <- get triggers for device");
-        ExtZabbixDtoResponseTriggers listOfTriggersSensor = getExtZabbixDtoResponseTriggers(client, mapper, authToken, "[   ] -> get triggers for sensor", map.getSensorId(), "[   ] <- get triggers for sensor");
+         и для сенсора
+
+
 
         // xx. Скорее всего сохранить эти тригеры в нашей БД (да. но если руками заббикс крутить, то эти данные могут протухнуть)
         // тут проинициализировать точки этими данными от тригерров
 
         // xx. Создать сервисы для девайса и для сенсора
-        ExtZabbixDtoResponseService service = getExtZabbixDtoResponseService(ap, client, mapper, authToken);
-        map.setServiceId(Long.valueOf(service.getResult().get(0)));
 
-        // xx.xx. Услуга передача данных
-        ExtZabbixDtoResponseService serviceData = getExtZabbixDtoResponseService(client, mapper, authToken, service, "[   ] -> go for create services data", "Уровень SLA по передаче данных", "[   ] <- go for create services data:: {}");
 
-        // xx.xx.xx. Услуга High ICMP ping loss
-        zzzPingLost(map, wizard, client, mapper, authToken, listOfTriggersDevice, serviceData);
-
-        // xx.xx.xx. Услуга High ICMP ping response time
-        zzzPingLow(map, wizard, client, mapper, authToken, listOfTriggersDevice, serviceData);
-
-        // xx.xx.xx. Услуга Unavailable by ICMP ping
-        zzzUnavailable(map, wizard, client, mapper, authToken, listOfTriggersDevice, serviceData);
 
         //----------- if sensor exists --------------
-        // xx.xx. Услуга электросвязь
-        ExtZabbixDtoResponseService serviceElectricity = getExtZabbixDtoResponseService(client, mapper, authToken, service, "[   ] -> go for create services electricity", "Доступность узла связи электроэнергия", "[   ] <- go for create services electricity:: {}");
-
-        // xx.xx.xx. Услуга Unavailable by ICMP ping Energy
-        zzzElectricity(map, wizard, client, mapper, authToken, listOfTriggersSensor, serviceElectricity);*/
+*/
     }
 
     private ExtZabbixDtoResponseServices getDeviceServices(ExtZabbixDto device, ObjectMapper mapper, WebClient client, String authToken) throws JsonProcessingException {
@@ -283,13 +287,13 @@ public class ServiceExternalZabbix {
         log.info("[   ] <- go for create services data :High ICMP ping loss: :: {}", serviceDataLoss);
     }
 
-    private ExtZabbixDtoResponseService getExtZabbixDtoResponseService(WebClient client, ObjectMapper mapper, String authToken, ExtZabbixDtoResponseService service, String s, String s2, String s3) throws JsonProcessingException {
+    private ExtZabbixDtoResponseService getExtZabbixDtoResponseService(WebClient client, ObjectMapper mapper, String authToken, Long service, String s, String s2, String s3) throws JsonProcessingException {
         log.info(s);
         WebClient.RequestHeadersSpec<?> xxxY = client
                 .post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("service.create",
-                        new ExtZabbixDtoCreateNewService(s2, Long.valueOf(service.getResult().get(0))),
+                        new ExtZabbixDtoCreateNewService(s2, service),
                         42,
                         authToken
                 )));

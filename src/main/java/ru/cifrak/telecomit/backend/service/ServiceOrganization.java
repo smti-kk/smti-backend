@@ -61,13 +61,13 @@ public class ServiceOrganization {
             List<String> errors = new ArrayList<>();
             // это мы заводим в УТМ5
             if (wizard.getNetworks() != null && !wizard.getNetworks().isEmpty()) {
-//                ap.setNetworks(wizard.getNetworks());
-//                rAccessPoints.save(ap);
+                ap.setNetworks(wizard.getNetworks());
+                rAccessPoints.save(ap);
                 try {
-                   /* ap.setNetworks(wizard.getNetworks());
+                    ap.setNetworks(wizard.getNetworks());
                     blenders.linkWithUTM5(ap, map);
                     log.info("(>) save monitoring access point");
-                    map = rMonitoringAccessPoints.save(map);*/
+                    map = rMonitoringAccessPoints.save(map);
                     log.info("(<) save monitoring access point");
                 } catch (Exception e) {
                     errors.add("Система UTM вернула ошибку: " + e.getMessage());
