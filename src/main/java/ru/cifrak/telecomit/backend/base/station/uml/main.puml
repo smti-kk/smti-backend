@@ -1,0 +1,48 @@
+@startuml
+
+package controller {
+    class BaseStationControllerImpl {
+        -final BaseStationsRepository trunkChannelRepository
+        +constructor(BaseStationsRepository trunkChannelRepository)
+    }
+
+    interface BaseStationController {
+        +List<BaseStation> baseStations()
+        +BaseStation trunkChannel(BaseStation trunkChannel)
+        +void remove(BaseStation trunkChannel)
+        +void save(BaseStation trunkChannel)
+    }
+}
+
+package entity {
+    class BaseStation {
+        -final Integer id;
+        -final String address;
+        -final Double propHeight;
+        -final Date actionDate;
+        -final Operator operator;
+        -final TypeMobile mobileType;
+        -final Double coverageRadius;
+        -final Point point;
+    }
+}
+
+
+package repository {
+    interface BaseStationsRepository<BaseStation, Integer> {
+    }
+}
+
+
+interface JpaRepository<T, ID> {
+
+}
+
+BaseStationController <|.. BaseStationControllerImpl
+BaseStationControllerImpl o-- BaseStationsRepository
+BaseStationsRepository --|> JpaRepository
+BaseStation -* BaseStationsRepository
+
+
+
+@enduml

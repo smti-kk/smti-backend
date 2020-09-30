@@ -43,10 +43,6 @@ public class TechnicalCapability extends Auditing implements Serializable {
     @Column(nullable = false)
     private ServiceQuality quality;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "key_request_for_change")
-    private RequestForChange request;
-
     /**
      * GOVERNMENT DEVELOPMENT PROGRAM FIELDS
      */

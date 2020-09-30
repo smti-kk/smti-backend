@@ -38,9 +38,13 @@ public interface DSLDetailLocation extends JpaRepository<LocationForTable, Integ
 
     @EntityGraph("detail-locations")
     @NotNull
-    @Query("SELECT l FROM LocationForTable l where " +
-            " exists (SELECT 1 FROM User u where u.id = :userId " +
-            "           and l.id in (select ul.id from u.locations ul))")
+    @Query("  SELECT distinct l FROM LocationForTable l where " +
+            " (exists (SELECT 1 FROM User u where u.id = :userId " +
+            "           and l.id in (select ul.id from u.locations ul)) " +
+            " or exists (SELECT 1 FROM User u where u.id = :userId " +
+            "           and l.locationParent in (select ul.id from u.locations ul))) " +
+            "           and l.type not like 'с/с' and l.type not like 'р-н' and l.type not like 'край' and l.type not like 'тер' " +
+            " order by l.locationParent.id, l.name")
     List<LocationForTable> findByUserId(@NotNull Long userId);
 
     @Transactional

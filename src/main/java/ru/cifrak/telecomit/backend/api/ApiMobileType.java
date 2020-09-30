@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.api;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,7 +10,7 @@ import ru.cifrak.telecomit.backend.entities.TypeMobile;
 import ru.cifrak.telecomit.backend.repository.RepositoryMobileType;
 
 import java.util.List;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/type/mobile")
 public class ApiMobileType {
@@ -22,11 +23,15 @@ public class ApiMobileType {
     @GetMapping("/")
     @Cacheable("type_mobiles")
     public List<TypeMobile> list() {
+        log.info("->GET /api/type/mobile/");
+        log.info("<- GET /api/type/mobile/");
         return repository.findAll();
     }
 
     @GetMapping("/{id}/")
     public TypeMobile one(@PathVariable Integer id) {
+        log.info("->GET /api/type/mobile/::{}",id);
+        log.info("<- GET /api/type/mobile/::{}",id);
         return repository.findById(id).orElse(null);
     }
 
