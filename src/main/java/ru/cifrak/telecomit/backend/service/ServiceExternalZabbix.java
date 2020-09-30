@@ -156,21 +156,6 @@ public class ServiceExternalZabbix {
             }
         }
 
-/*
-
-         и для сенсора
-
-
-
-        // xx. Скорее всего сохранить эти тригеры в нашей БД (да. но если руками заббикс крутить, то эти данные могут протухнуть)
-        // тут проинициализировать точки этими данными от тригерров
-
-        // xx. Создать сервисы для девайса и для сенсора
-
-
-
-        //----------- if sensor exists --------------
-*/
     }
 
     private ExtZabbixDtoResponseServices getDeviceServices(ExtZabbixDto device, ObjectMapper mapper, WebClient client, String authToken) throws JsonProcessingException {
