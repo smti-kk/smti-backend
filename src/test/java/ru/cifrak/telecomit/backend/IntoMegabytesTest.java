@@ -4,6 +4,10 @@ import org.junit.jupiter.api.Test;
 import ru.cifrak.telecomit.backend.utils.Converter;
 import ru.cifrak.telecomit.backend.utils.IpReversed;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntoMegabytesTest {
@@ -13,8 +17,14 @@ public class IntoMegabytesTest {
     }
     @Test
     public void stringTest(){
+        Instant begin = Instant.ofEpochSecond(1598893200L);
+        Instant end = Instant.ofEpochSecond(1601485200L);
+        ZoneId zoneId = ZoneId.of( "Asia/Krasnoyarsk" );
+        ZonedDateTime bdt = ZonedDateTime.ofInstant( begin , zoneId );
+        ZonedDateTime edt = ZonedDateTime.ofInstant( end , zoneId );
         System.out.println(
-                "telecom:org:2550:Сухобузимский район, Сухобузимское с., Селезнева ул., 46:ap:3491:Селезнева ул., 46".matches("telecom:org:"+2550+":.+:ap:"+3491+":.+")
+            "begin:\t" + bdt +
+            "\nend:\t" + edt
         );
     }
 }

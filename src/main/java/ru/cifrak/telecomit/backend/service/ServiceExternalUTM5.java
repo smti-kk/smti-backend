@@ -12,15 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import ru.cifrak.telecomit.backend.api.dto.external.utm5.ExtUtmDtoAuth;
-import ru.cifrak.telecomit.backend.api.dto.external.utm5.ExtUtmDtoRequestCreateUser;
-import ru.cifrak.telecomit.backend.api.dto.external.utm5.ExtUtmDtoResponseAuth;
-import ru.cifrak.telecomit.backend.api.dto.external.utm5.ExtUtmDtoResponseUser;
+import ru.cifrak.telecomit.backend.api.dto.external.utm5.*;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
 import ru.cifrak.telecomit.backend.security.UTM5Config;
 import ru.cifrak.telecomit.backend.utils.IpReversed;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +60,9 @@ public class ServiceExternalUTM5 {
             createUser(respAuthorization, ap, map);
             log.info("go for create");
 
+            // xx.xx. Сходить за тарифным периодом.
+            // это я так закрываю момент, чтоб каждый месяц не менять.
+            Integer accountingPeriodId = goForAccountingPeriodId(respAuthorization);
             // STEP-3: CREATE TARIFF LINK TO USER
             ObjectNode jsonNewTariffLink = jsonMapper.createObjectNode();
             jsonNewTariffLink.put("user_id", map.getIdUser());
@@ -69,8 +70,7 @@ public class ServiceExternalUTM5 {
             //TODO:[generate TICKET]: this value should choose from system
             jsonNewTariffLink.put("first_tariff_id", 2);
             jsonNewTariffLink.put("second_tariff_id", 0);
-            //TODO:[generate TICKET]: this value should choose from system
-            jsonNewTariffLink.put("accounting_period_id", 16);
+            jsonNewTariffLink.put("accounting_period_id", accountingPeriodId);
             jsonNewTariffLink.put("tariff_link_id", 0);
             jsonNewTariffLink.put("change_now", false);
             log.debug("{}", jsonNewTariffLink);
@@ -93,8 +93,7 @@ public class ServiceExternalUTM5 {
             //TODO:[generate TICKET]: this value should choose from system
             jsonNewServiceLink.put("service_id", 6);
             jsonNewServiceLink.put("tplink_id", map.getIdTraffic());
-            //TODO:[generate TICKET]: this value should choose from system
-            jsonNewServiceLink.put("accounting_period_id", 2);
+            jsonNewServiceLink.put("accounting_period_id", accountingPeriodId);
             jsonNewServiceLink.put("start_date", 0);
             jsonNewServiceLink.put("expire_date", 0);
             jsonNewServiceLink.put("policy_id", 1);
@@ -181,6 +180,24 @@ public class ServiceExternalUTM5 {
         }
         // STEP-LAST: END
         log.info("[ <-] insert into UTM5");
+    }
+
+    private Integer goForAccountingPeriodId(ExtUtmDtoResponseAuth respAuthorization) throws JsonProcessingException {
+        log.info("_>_ goForAccountingPeriodId");
+        WebClient.RequestHeadersSpec<?> apiAuthenticate = client
+                .get()
+                .uri("/api/tariffing/accounting_periods")
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "session_id undefined")
+                .header("Cookie", "session_id=" + respAuthorization.getSession_id());
+        String rawResponse = apiAuthenticate.retrieve().bodyToMono(String.class).block();
+
+        List<ExtUtmDtoResponseAccountPeriod> response = jsonMapper.readValue(rawResponse, new TypeReference<List<ExtUtmDtoResponseAccountPeriod>>() {});
+        Integer rezult = response.stream()
+                .filter(i-> LocalDate.now().getMonth().getValue() == i.getInvoice_month().intValue())
+                .findFirst().get().getId().intValue();
+        log.info("_<_ goForAccountingPeriodId");
+        return rezult;
     }
 
     private void updateMonitoringAccessPointWithTariff(ExtUtmDtoResponseAuth respAuthorization, MonitoringAccessPoint map) throws JsonProcessingException {
