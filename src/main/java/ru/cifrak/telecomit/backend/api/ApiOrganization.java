@@ -202,7 +202,8 @@ public class ApiOrganization {
 
     @PostMapping(value = "/", consumes = "application/json", produces = "application/json")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    public ResponseEntity<OrganizationShortDTO> createItem(@RequestBody OrganizationShortDTO value) {
+    public ResponseEntity<OrganizationShortDTO> createItem(@RequestBody OrganizationShortDTO value,
+                                                           @AuthenticationPrincipal User user) {
         log.info("->POST /api/organization/ ");
         Organization item = new Organization();
         item.setAddress(value.getAddress());
@@ -213,6 +214,10 @@ public class ApiOrganization {
         item.setAcronym(value.getAcronym());
         item.setLocation(rLocation.getOne(value.getLocation()));
         //TODO: make this work later, when we have some real data...
+        List<Organization> parents = rOrganization.findByUserOrganization(user.getId());
+        if (parents.size() > 0) {
+            item.setParent(parents.get(0));
+        }
 //        item.setParent(value.getParent());
 //        item.setChildren(value.getChildren());
         if (value.getType() != null) {
