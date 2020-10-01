@@ -25,9 +25,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/auth")
 public class AuthAPI {
-
-    private static final String LOG_STRING_AUTH = "[AuthAPI] auth/login/";
-    private static final String LOG_STRING_ACCOUNT = "[AuthAPI] auth/account_info";
+    private static final String API_PATH = "/auth";
 
     private final PasswordEncoder passwordEncoder;
 
@@ -43,39 +41,39 @@ public class AuthAPI {
 
     @PostMapping("/login/")
     public ResponseEntity<TokenDTO> register(@Validated @RequestBody AuthFrontDTO data) throws NoSuchAlgorithmException {
-        log.info("-> " + LOG_STRING_AUTH);
-        final Optional<User> userOptional = userRepository.findByEmail(data.getEmail());
+        log.info("-> POST {}{}", API_PATH, "/login/");
+        final Optional<User> userOptional = userRepository.findByEmailAndIsActiveTrue(data.getEmail());
 
         if (!userOptional.isPresent()) {
-            log.info("<- " + LOG_STRING_AUTH);
+            log.warn("<- POST {}{} user not found or disabled", API_PATH, "/login/");
             return ResponseEntity.badRequest().build();
         }
 
         final User user = userOptional.get();
 
         if (!passwordEncoder.matches(data.getPassword(), user.getPassword())) {
-            log.info("<- " + LOG_STRING_AUTH);
+            log.warn("<- POST {}{} wrong user or password", API_PATH, "/login/");
             return ResponseEntity.badRequest().build();
         }
 
         final Optional<AuthTokenCache> optionalAuthToken = authTokenCacheService.findByUser(user);
 
         if (optionalAuthToken.isPresent()) {
-            log.info("<- " + LOG_STRING_AUTH);
+            log.info("<- POST {}{}", API_PATH, "/login/");
             return ResponseEntity.ok(new TokenDTO(optionalAuthToken.get().getId()));
         }
 
         final ZoneId zoneId = ZoneId.systemDefault(); // TODO get from properties
 
         final AuthTokenCache newAuthTokenCache = authTokenCacheService.createForUser(user, zoneId);
-        log.info("<- " + LOG_STRING_AUTH);
+        log.info("<- POST {}{}", API_PATH, "/login/");
         return ResponseEntity.ok(new TokenDTO(newAuthTokenCache.getId()));
     }
 
     @GetMapping("/account_info")
     public ResponseEntity<User> account_info(@AuthenticationPrincipal User user) {
-        log.info("-> " + LOG_STRING_ACCOUNT);
-        log.info("<- " + LOG_STRING_ACCOUNT);
+        log.info("[{}]-> GET {}{}", user.getUsername(), API_PATH, "/account_info");
+        log.info("[{}]<- GET {}{}", user.getUsername(), API_PATH, "/account_info");
         return ResponseEntity.ok(user);
     }
 }

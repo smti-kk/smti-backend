@@ -12,8 +12,7 @@ import java.util.Optional;
 public interface RepositoryAccount extends JpaRepository<Account, Long> {
 
     @EntityGraph(Account.WITH_ALL)
-    @Override
-    List<Account> findAll();
+    List<Account> findAllByUsernameIsNot(String name);
 
     @EntityGraph(Account.WITH_ALL)
     @Override
