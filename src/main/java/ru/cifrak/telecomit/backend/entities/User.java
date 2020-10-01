@@ -102,6 +102,14 @@ public class User implements Serializable, UserDetails {
     )
     private List<Location> locations;
 
+    @OneToMany
+    @JoinTable(
+            name = "user_organizations",
+            inverseJoinColumns = @JoinColumn(name = "key_organization"),
+            joinColumns = @JoinColumn(name = "key_user")
+    )
+    private List<Organization> organizations;
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
