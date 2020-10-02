@@ -1,5 +1,7 @@
 package ru.cifrak.telecomit.backend.api;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -8,13 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.entities.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RequestMapping("/api/appeals")
 public interface ApiAppeal {
     @GetMapping
     @Secured("ROLE_ADMIN")
-    List<Appeal> findAll(@AuthenticationPrincipal User user);
+    Page<Appeal> findAll(@AuthenticationPrincipal User user,
+                         Pageable pageable);
 
     @GetMapping("/{id}")
     @Secured("ROLE_ADMIN")
