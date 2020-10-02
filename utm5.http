@@ -10,6 +10,14 @@ Content-Type: application/json
 > {% client.global.set("session_id", response.body.session_id); %}
 
 ###
+GET http://espd-utm5-app.cifra-k.ru:9080/api/users/
+Authorization: session_id {{session_id}}
+
+###
+GET http://espd-utm5-app.cifra-k.ru:9080/api/users/tarifflinks?user_id=94&account_id=95
+Authorization: session_id {{session_id}}
+
+###
 GET http://espd-utm5-app.cifra-k.ru:9080/api/users/accounts?account_id=1
 Authorization: session_id {{session_id}}
 
@@ -22,6 +30,49 @@ Authorization: session_id {{session_id}}
 POST http://espd-utm5-app.cifra-k.ru:9080/api/users/
 Content-Type: application/json
 
+{
+  "login" : "telecomit-2340",
+  "password" : "qaz12345678",
+  "full_name" : "2552 (24-й квартал,  2)",
+  "is_juridical" : false,
+  "juridical_address" : "",
+  "actual_addres" : "",
+  "flat_numbe" : "",
+  "entranc" : "",
+  "floo" : "",
+  "distric" : "",
+  "buildin" : "",
+  "passpor" : "",
+  "house_id" : 0,
+  "work_telephon" : "",
+  "home_telephon" : "",
+  "mobile_telephon" : "",
+  "web_pag" : "",
+  "icq_numbe" : "",
+  "tax_numbe" : "",
+  "kpp_numbe" : "",
+  "emai" : "",
+  "bank_id" : 0,
+  "bank_accoun" : "",
+  "comment" : "",
+  "personal_manage" : "",
+  "connect_date" : 0,
+  "is_send_invoice" : false,
+  "advance_payment" : 0,
+  "router_id" : 0,
+  "port_number" : 0,
+  "binded_currency_id" : 0,
+  "additional_params" : [ ],
+  "groups" : [ ],
+  "is_blocked" : false,
+  "balance" : 0,
+  "credit" : 0,
+  "vat_rate" : 0,
+  "sale_tax_rate" : 0,
+  "int_status" : 0
+}
+
+###
 
 {"login": "foo-test-1",
   "password": "foo",

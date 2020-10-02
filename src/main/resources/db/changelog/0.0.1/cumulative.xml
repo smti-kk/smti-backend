@@ -43,6 +43,4 @@
     <include file="0043-fix-location-geo-data.xml" relativeToChangelogFile="true" />
     <include file="0044-add-organizations-to-account-table.xml" relativeToChangelogFile="true" />
     <include file="0045-ref-internet-types.xml" relativeToChangelogFile="true" />
-    <include file="0046 - cascade_delete_constraint_for_location" relativeToChangelogFile="true" />
-    <include file="0046 - cascade_delete_constraint_for_location" relativeToChangelogFile="true" />
 </databaseChangeLog>

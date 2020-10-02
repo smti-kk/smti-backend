@@ -533,16 +533,18 @@ Content-Type: application/json
 
 ### goo org and ap
 #POST http://localhost:8080/api/organization/3379/ap/3787/init-monitoring
-#POST http://localhost:8080/api/organization/1471/ap/31/init-monitoring
-#POST http://localhost:8080/api/organization/3411/ap/3799/init-monitoring
-POST http://localhost:8080/api/organization/3412/ap/3795/init-monitoring
+#POST http://localhost:8080/api/organization/44/ap/31/init-monitoring
+#POST http://localhost:8080/api/organization/1603/ap/1294/init-monitoring
+#POST http://localhost:8080/api/organization/143/ap/51/init-monitoring
+POST http://localhost:8080/api/organization/5/ap/53/init-monitoring
+#POST http://localhost:8080/api/organization/2550/ap/3491/init-monitoring
 Authorization: Token {{auth_token}}
 Content-Type: application/json
 
 {
-  "networks": null,
+  "networks": "198.10.10.1",
   "device": {
-    "hostName": "m008U.08.CityName",
+    "hostName": "zorek-device-2",
     "ip": "127.0.0.1",
     "groupid": "34",
     "tag": "project",
@@ -552,7 +554,7 @@ Content-Type: application/json
     "macroValue": "ESPD_monitor"
   },
   "sensor": {
-    "hostName": "m008U.s.08.CityName",
+    "hostName": "zorek-service-2",
     "ip": "127.0.0.2",
     "groupid": "34",
     "tag": "project",
@@ -561,8 +563,8 @@ Content-Type: application/json
     "macro": "{$SNMP_COMMUNITY}",
     "macroValue": "ESPD_monitor"
   }
-}
 
+}
 
 ### goo org and ap
 GET http://localhost:8080/api/user/
@@ -580,7 +582,7 @@ POST http://localhost:8080/auth/login/
 Content-Type: application/json
 //{"username": "admin", "password": "pwd"}
 
-{"email": "a@a.aa", "password": "pwd"}
+{"email": "admin@admin.ru", "password": "RjymCjkywtNhfdf"}
 
 > {% client.global.set("auth_token", response.body.token); %}
 

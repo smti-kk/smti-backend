@@ -7,9 +7,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 
 @JsonTypeInfo(
@@ -172,4 +174,7 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private APConnectionState connectionState = APConnectionState.NOT_MONITORED;
+
+    @OneToOne(mappedBy = "ap")
+    private JournalMAP monitoringLink;
 }

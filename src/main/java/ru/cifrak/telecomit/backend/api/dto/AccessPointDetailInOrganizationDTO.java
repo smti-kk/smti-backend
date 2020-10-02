@@ -68,6 +68,10 @@ public class AccessPointDetailInOrganizationDTO {
     private LocalDate started;
     private LocalDate ended;
 
+    //MONITORING STATUSES
+    private Boolean utm5;
+    private Boolean zabbix;
+
     public AccessPointDetailInOrganizationDTO(AccessPoint entity) {
         // COMMON FIELDS
         this.id = entity.getId();
@@ -119,5 +123,7 @@ public class AccessPointDetailInOrganizationDTO {
             this.started = ((ApContract)entity).getStarted();
             this.ended = ((ApContract)entity).getEnded();
         }
+        this.utm5 = entity.getMonitoringLink() != null ? entity.getMonitoringLink().getMap().getIdUser() != null ? true : false : null;
+        this.zabbix = entity.getMonitoringLink() != null ? entity.getMonitoringLink().getMap().getDeviceId() != null ? true : false : null;
     }
 }
