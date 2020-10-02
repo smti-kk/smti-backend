@@ -1,6 +1,8 @@
 package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -324,8 +326,11 @@ public class ApiImport {
 
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/trunk-channel")
-    public ResponseEntity<String> handleFileTrunkChannel(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ByteArrayResource> handleFileTrunkChannel(@RequestParam("file") MultipartFile file) {
+        ByteArrayResource resource = null;
+        HttpHeaders headers = new HttpHeaders();
         try {
+            resource = new ByteArrayResource(file.getBytes());
             trunkChannelsSaveService.save(
                     new TrunkChannelsFromExcelDTOValidated(
                             repositoryLocation,
@@ -337,10 +342,17 @@ public class ApiImport {
         } catch (FromExcelDTOFormatException e) {
             // TODO: <-, -> ?
             log.error("<-POST /api/import/trunk-channel :: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
+            headers.set("import-success", String.valueOf(1));
+            headers.set("import-failure", String.valueOf(2));
+            headers.set("import-message", "error");
+            return ResponseEntity.badRequest().headers(headers).body(resource);
+        } catch (Exception e) {
+            log.error("<-POST /api/import/trunk-channel :: {}", e.getMessage());
+            headers.set("import-message", "unexpected");
+            return ResponseEntity.ok().headers(headers).body(null);
         }
         log.info("POST /api/import/trunk-channel :: {}", file.getOriginalFilename());
-        return ResponseEntity.ok(file.getOriginalFilename() + " был успешно импортирован.");
+        return ResponseEntity.ok(null);
     }
 
     @Secured({"ROLE_ADMIN"})
