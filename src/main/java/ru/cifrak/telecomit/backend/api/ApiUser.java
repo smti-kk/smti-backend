@@ -69,8 +69,8 @@ public class ApiUser {
         item.setPatronymicName(value.getPatronymicName());
         item.setIsActive(Boolean.TRUE);
         item.setCreateDateTime(LocalDateTime.now());
-        List<UserRole> roles = new ArrayList<>();
-        roles.add(UserRole.GUEST);
+        List<UserRole> roles = new ArrayList();
+        roles.addAll(value.getRoles());
         item.setRoles(roles);
         item = rUser.save(item);
         Account result = rAccount.findById(item.getId()).get();
