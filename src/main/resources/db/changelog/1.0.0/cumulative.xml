@@ -5,4 +5,5 @@
     <include file="0002-added_appeal_table.xml" relativeToChangelogFile="true" />
     <include file="0003-create_appeal_sequance.xml" relativeToChangelogFile="true" />
     <include file="0004-create_file_table.xml" relativeToChangelogFile="true" />
+    <include file="0005-ref-app-user-shrink.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

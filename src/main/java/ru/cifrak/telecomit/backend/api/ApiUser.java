@@ -9,7 +9,11 @@ import ru.cifrak.telecomit.backend.auth.repository.RepositoryAccount;
 import ru.cifrak.telecomit.backend.auth.repository.RepositoryUser;
 import ru.cifrak.telecomit.backend.entities.Account;
 import ru.cifrak.telecomit.backend.entities.User;
+import ru.cifrak.telecomit.backend.entities.UserRole;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -51,5 +55,26 @@ public class ApiUser {
         item = rAccount.save(item);
         log.info("[{}]<- PUT {}::{}", user.getUsername(), API_PATH, value.getId());
         return ResponseEntity.ok(item);
+    }
+
+    @PostMapping(consumes = "application/json", produces = "application/json")
+    @Secured({"ROLE_ADMIN"})
+    public ResponseEntity<Account> create(@RequestBody Account value, @AuthenticationPrincipal User user) {
+        log.info("[{}]-> POST {}", user.getUsername(), API_PATH);
+        User item = new User();
+        item.setUsername(value.getUsername());
+        item.setEmail(value.getEmail());
+        item.setFirstName(value.getFirstName());
+        item.setLastName(value.getLastName());
+        item.setPatronymicName(value.getPatronymicName());
+        item.setIsActive(Boolean.TRUE);
+        item.setCreateDateTime(LocalDateTime.now());
+        List<UserRole> roles = new ArrayList<>();
+        roles.add(UserRole.GUEST);
+        item.setRoles(roles);
+        item = rUser.save(item);
+        Account result = rAccount.findById(item.getId()).get();
+        log.info("[{}]<- POST {}::{}", user.getUsername(), API_PATH, result.getId());
+        return ResponseEntity.ok(result);
     }
 }

@@ -72,22 +72,9 @@ public class User implements Serializable, UserDetails {
     @Column(name = "patronymic_name", nullable = false, columnDefinition = "text")
     protected String patronymicName = "";
 
-    @Column(columnDefinition = "text")
-    @JsonIgnore
-    protected String phone;
-
-    @NonNull
-    @Column(nullable = false, columnDefinition = "text")
-    @JsonIgnore
-    protected String passport = "";
-
     @NonNull
     @Column(nullable = false, columnDefinition = "text", unique = true)
     protected String email = "";
-
-    @NonNull
-    @Column(nullable = false, columnDefinition = "text")
-    protected String location = "";
 
     @NonNull
     @Column(name = "create_date_time", nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
@@ -119,24 +106,24 @@ public class User implements Serializable, UserDetails {
     @Override
     @JsonIgnore
     public boolean isAccountNonExpired() {
-        return true;
+        return isActive;
     }
 
     @Override
     @JsonIgnore
     public boolean isAccountNonLocked() {
-        return true;
+        return isActive;
     }
 
     @Override
     @JsonIgnore
     public boolean isCredentialsNonExpired() {
-        return true;
+        return isActive;
     }
 
     @Override
     @JsonIgnore
     public boolean isEnabled() {
-        return true;
+        return isActive;
     }
 }
