@@ -1,15 +1,23 @@
 package ru.cifrak.telecomit.backend.api.service.imp.trunkchannel;
 
+import org.apache.poi.ss.formula.functions.Column;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOErrorException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
+import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTONppException;
 import ru.cifrak.telecomit.backend.repository.*;
 
+import java.awt.print.Book;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-public class TrunkChannelsFromExcelDTOValidated implements TrunkChannelsDTOFromExcel {
+public class TrunkChannelsFromExcelDTOValidated {
 
     private final RepositoryLocation repositoryLocation;
 
@@ -34,87 +42,136 @@ public class TrunkChannelsFromExcelDTOValidated implements TrunkChannelsDTOFromE
         this.repositoryGovernmentDevelopmentProgram = repositoryGovernmentDevelopmentProgram;
     }
 
-    @Override
     public MultipartFile getFile() {
         return this.origin.getFile();
     }
 
-    @Override
-    public List<TrunkChannelFromExcelDTO> getTcesDTO() throws FromExcelDTOFormatException {
-        this.checkFormatFile(this.getFile());
-
-        return this.checkTces(origin.getTcesDTO());
+    private Workbook createErrorBook() {
+        Workbook book = new XSSFWorkbook();
+        Sheet sheet = book.createSheet("Ошибки");
+        CellStyle style = book.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        Row row = sheet.createRow(0);
+        Cell cell = row.createCell(0);
+        cell.setCellStyle(style);
+        cell.setCellValue("Позиция");
+        cell = row.createCell(1);
+        cell.setCellStyle(style);
+        cell.setCellValue("Описание");
+        return book;
     }
 
-    private List<TrunkChannelFromExcelDTO> checkTces(List<TrunkChannelFromExcelDTO> tcesDTO)
-            throws FromExcelDTOFormatException {
-        String badDTO;
+    private void addError(Sheet sheet, int nRow, String npp, String error) {
+        Row row = sheet.createRow(nRow);
+        row.createCell(0).setCellValue(npp);
+        row.createCell(1).setCellValue(error);
+    }
 
+    private ByteArrayResource errorBookToByteStream (Workbook book) {
+        Sheet sheet = book.getSheetAt(0);
+        sheet.autoSizeColumn(1);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        book.write(baos);
+        book.close();
+        new ByteArrayResource(baos.toByteArray())
+
+    }
+
+    public ImportResultTrunkChannel getTcesDTO() throws FromExcelDTOFormatException, FromExcelDTONppException, IOException {
+        this.checkFormatFile(this.getFile());
+        List<TrunkChannelFromExcelDTO> tcesDTO = origin.getTcesDTO();
         if (!this.checkFullnessNpp(tcesDTO)) {
-            throw new FromExcelDTOFormatException("Не все \"№ п/п\" заполнены.");
+            throw new FromExcelDTONppException("Не все \"№ п/п\" заполнены.");
         }
+        int importFailure = 0;
+        int importSuccess = 0;
+        List<TrunkChannelFromExcelDTO> toImport = new ArrayList<>();
+        List<TrunkChannelFromExcelDTO> toCheck = new ArrayList<>();
+        Workbook book = createErrorBook();
+        Sheet sheet = book.getSheetAt(0);
+        for (TrunkChannelFromExcelDTO tcDTO : origin.getTcesDTO()) {
+            toCheck.clear();
+            toCheck.add(tcDTO);
+            try {
+                checkTces(toCheck);
+                toImport.add(tcDTO);
+                importSuccess++;
+            } catch (FromExcelDTOErrorException e) {
+                importFailure++;
+                addError(sheet, importFailure, tcDTO.getNpp(), e.getMessage());
+            }
+        }
+        return new ImportResultTrunkChannel(
+                importSuccess,
+                importFailure,
+                errorSheetToByteStream(sheet),
+                toImport
+        );
+    }
+
+    private void checkTces(List<TrunkChannelFromExcelDTO> tcesDTO)
+            throws FromExcelDTOErrorException {
+        String badDTO;
 
         badDTO = this.checkFullnessCells(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO + " позиции не все ячейки заполнены.");
+            throw new FromExcelDTOErrorException("В " + badDTO + " позиции не все ячейки заполнены.");
         }
 
         badDTO = this.checkLocationStartGUID(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
+            throw new FromExcelDTOErrorException("В " + badDTO
                     + " позиции ошибка в ФИАС начального населённого пункта, должен быть в GUID формате.");
         }
 
         badDTO = this.checkLocationStart(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
+            throw new FromExcelDTOErrorException("В " + badDTO
                     + " позиции ошибка в ФИАС начального населённого пункта, не найден в БД.");
         }
 
         badDTO = this.checkLocationEndGUID(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
+            throw new FromExcelDTOErrorException("В " + badDTO
                     + " позиции ошибка в ФИАС конечного населённого пункта, должен быть в GUID формате.");
         }
 
         badDTO = this.checkLocationEnd(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
+            throw new FromExcelDTOErrorException("В " + badDTO
                     + " позиции ошибка в ФИАС конечного населённого пункта, не найден в БД.");
         }
 
         badDTO = this.checkCommissioningFormat(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
+            throw new FromExcelDTOErrorException("В " + badDTO
                     + " позиции ошибка в дате ввода в эксплуатацию (" + badDTO + "), должна быть в формате ДД.ММ.ГГГГ.");
         }
 
         badDTO = this.checkCommissioningDate(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
+            throw new FromExcelDTOErrorException("В " + badDTO
                     + " позиции ошибка в дате ввода в эксплуатацию, она должна быть реальной.");
         }
 
         badDTO = this.checkOperators(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
+            throw new FromExcelDTOErrorException("В " + badDTO
                     + " позиции ошибка в операторе, не найден в БД.");
         }
 
         badDTO = this.checkChannel(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
+            throw new FromExcelDTOErrorException("В " + badDTO
                     + " позиции ошибка в типе канала, не найден в БД.");
         }
 
         badDTO = this.checkProgram(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
+            throw new FromExcelDTOErrorException("В " + badDTO
                     + " позиции ошибка в программе, должна быть одной из {"
                     + String.join(", ", repositoryGovernmentDevelopmentProgram.findAllAcronym()) + "}.");
         }
-
-        return tcesDTO;
     }
 
     private String checkChannel(List<TrunkChannelFromExcelDTO> tces) {
