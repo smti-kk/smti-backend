@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
-import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOErrorException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTONppException;
 import ru.cifrak.telecomit.backend.api.service.imp.ap.ApesFromExcelDTO;
@@ -48,7 +45,7 @@ import ru.cifrak.telecomit.backend.api.service.imp.tcradio.TcesRadioSaveService;
 import ru.cifrak.telecomit.backend.api.service.imp.tctv.TcesTvFromExcelDTO;
 import ru.cifrak.telecomit.backend.api.service.imp.tctv.TcesTvFromExcelDTOValidated;
 import ru.cifrak.telecomit.backend.api.service.imp.tctv.TcesTvSaveService;
-import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.ImportResultTrunkChannel;
+import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelImportResult;
 import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelsFromExcelDTO;
 import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelsFromExcelDTOValidated;
 import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelsSaveService;
@@ -334,7 +331,7 @@ public class ApiImport {
     public ResponseEntity<ByteArrayResource> handleFileTrunkChannel(@RequestParam("file") MultipartFile file) {
         HttpHeaders headers = new HttpHeaders();
         try {
-            ImportResultTrunkChannel importResult = new TrunkChannelsFromExcelDTOValidated(
+            TrunkChannelImportResult importResult = new TrunkChannelsFromExcelDTOValidated(
                     repositoryLocation,
                     repositoryOperator,
                     repositoryTypeTruncChannel,

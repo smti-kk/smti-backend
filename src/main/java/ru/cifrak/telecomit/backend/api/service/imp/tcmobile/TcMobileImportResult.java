@@ -1,17 +1,17 @@
-package ru.cifrak.telecomit.backend.api.service.imp.trunkchannel;
+package ru.cifrak.telecomit.backend.api.service.imp.tcmobile;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.web.multipart.MultipartFile;
+import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelFromExcelDTO;
 
 import java.util.List;
 
 @Setter
 @Getter
 @AllArgsConstructor
-public class ImportResultTrunkChannel {
+public class TcMobileImportResult {
 
     private int importSuccess;
 
@@ -19,5 +19,5 @@ public class ImportResultTrunkChannel {
 
     private ByteArrayResource fileWithError;
 
-    private List<TrunkChannelFromExcelDTO>  listToImport;
+    private List<TcMobileFromExcelDTO> listToImport;
 }

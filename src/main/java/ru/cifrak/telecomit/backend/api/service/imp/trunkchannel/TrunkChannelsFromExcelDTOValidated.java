@@ -1,17 +1,14 @@
 package ru.cifrak.telecomit.backend.api.service.imp.trunkchannel;
 
-import org.apache.poi.ss.formula.functions.Column;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOErrorException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTONppException;
 import ru.cifrak.telecomit.backend.repository.*;
 
-import java.awt.print.Book;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,21 +60,23 @@ public class TrunkChannelsFromExcelDTOValidated {
 
     private void addError(Sheet sheet, int nRow, String npp, String error) {
         Row row = sheet.createRow(nRow);
-        row.createCell(0).setCellValue(npp);
+        Cell cell = row.createCell(0);
+        cell.setCellValue(npp);
+        cell.setCellType(Cell.CELL_TYPE_NUMERIC);
         row.createCell(1).setCellValue(error);
     }
 
-    private ByteArrayResource errorBookToByteStream (Workbook book) {
+    private ByteArrayResource errorBookToByteStream (Workbook book) throws IOException {
         Sheet sheet = book.getSheetAt(0);
         sheet.autoSizeColumn(1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         book.write(baos);
         book.close();
-        new ByteArrayResource(baos.toByteArray())
-
+        return new ByteArrayResource(baos.toByteArray());
     }
 
-    public ImportResultTrunkChannel getTcesDTO() throws FromExcelDTOFormatException, FromExcelDTONppException, IOException {
+    public TrunkChannelImportResult getTcesDTO() throws FromExcelDTOFormatException,
+            FromExcelDTONppException, IOException {
         this.checkFormatFile(this.getFile());
         List<TrunkChannelFromExcelDTO> tcesDTO = origin.getTcesDTO();
         if (!this.checkFullnessNpp(tcesDTO)) {
@@ -101,10 +100,10 @@ public class TrunkChannelsFromExcelDTOValidated {
                 addError(sheet, importFailure, tcDTO.getNpp(), e.getMessage());
             }
         }
-        return new ImportResultTrunkChannel(
+        return new TrunkChannelImportResult(
                 importSuccess,
                 importFailure,
-                errorSheetToByteStream(sheet),
+                errorBookToByteStream(book),
                 toImport
         );
     }
@@ -115,61 +114,52 @@ public class TrunkChannelsFromExcelDTOValidated {
 
         badDTO = this.checkFullnessCells(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOErrorException("В " + badDTO + " позиции не все ячейки заполнены.");
+            throw new FromExcelDTOErrorException("Не все ячейки заполнены.");
         }
 
         badDTO = this.checkLocationStartGUID(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOErrorException("В " + badDTO
-                    + " позиции ошибка в ФИАС начального населённого пункта, должен быть в GUID формате.");
+            throw new FromExcelDTOErrorException("Ошибка в ФИАС начального населённого пункта, должен быть в GUID формате.");
         }
 
         badDTO = this.checkLocationStart(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOErrorException("В " + badDTO
-                    + " позиции ошибка в ФИАС начального населённого пункта, не найден в БД.");
+            throw new FromExcelDTOErrorException("Ошибка в ФИАС начального населённого пункта, не найден в БД.");
         }
 
         badDTO = this.checkLocationEndGUID(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOErrorException("В " + badDTO
-                    + " позиции ошибка в ФИАС конечного населённого пункта, должен быть в GUID формате.");
+            throw new FromExcelDTOErrorException("Ошибка в ФИАС конечного населённого пункта, должен быть в GUID формате.");
         }
 
         badDTO = this.checkLocationEnd(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOErrorException("В " + badDTO
-                    + " позиции ошибка в ФИАС конечного населённого пункта, не найден в БД.");
+            throw new FromExcelDTOErrorException("Ошибка в ФИАС конечного населённого пункта, не найден в БД.");
         }
 
         badDTO = this.checkCommissioningFormat(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOErrorException("В " + badDTO
-                    + " позиции ошибка в дате ввода в эксплуатацию (" + badDTO + "), должна быть в формате ДД.ММ.ГГГГ.");
+            throw new FromExcelDTOErrorException("Ошибка в дате ввода в эксплуатацию (" + badDTO + "), должна быть в формате ДД.ММ.ГГГГ.");
         }
 
         badDTO = this.checkCommissioningDate(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOErrorException("В " + badDTO
-                    + " позиции ошибка в дате ввода в эксплуатацию, она должна быть реальной.");
+            throw new FromExcelDTOErrorException("Ошибка в дате ввода в эксплуатацию, она должна быть реальной.");
         }
 
         badDTO = this.checkOperators(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOErrorException("В " + badDTO
-                    + " позиции ошибка в операторе, не найден в БД.");
+            throw new FromExcelDTOErrorException("Ошибка в операторе, не найден в БД.");
         }
 
         badDTO = this.checkChannel(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOErrorException("В " + badDTO
-                    + " позиции ошибка в типе канала, не найден в БД.");
+            throw new FromExcelDTOErrorException("Ошибка в типе канала, не найден в БД.");
         }
 
         badDTO = this.checkProgram(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOErrorException("В " + badDTO
-                    + " позиции ошибка в программе, должна быть одной из {"
+            throw new FromExcelDTOErrorException("Ошибка в программе, должна быть одной из {"
                     + String.join(", ", repositoryGovernmentDevelopmentProgram.findAllAcronym()) + "}.");
         }
     }
