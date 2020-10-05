@@ -51,4 +51,9 @@ public interface DSLDetailLocation extends JpaRepository<LocationForTable, Integ
     @Modifying
     @Query("DELETE FROM LocationForTable l WHERE l.id = ?1")
     void forceDeleteById(Integer locationId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE LocationForTable l SET l.population = :population WHERE l.id = :id")
+    void updatePopulation(Integer id, Integer population);
 }

@@ -1,0 +1,11 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="turkovvs" id="1234">
+        <sql dbms="postgresql" endDelimiter=";">
+            ALTER TABLE public.access_point DROP CONSTRAINT "FKajbsassl7oc09jmfwpggtj528";
+            ALTER TABLE public.access_point ADD CONSTRAINT "adwqdwqdqwqwexxx" FOREIGN KEY (key_organization) REFERENCES organization(id) on delete cascade;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

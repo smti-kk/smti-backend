@@ -8,6 +8,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.ExelReportLocation;
 import ru.cifrak.telecomit.backend.api.dto.LocationProvidingInfo;
@@ -114,5 +117,16 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
     @Secured({"ROLE_ADMIN"})
     public void deleteById(Integer id) {
         repository.forceDeleteById(id);
+        locationService.refreshCache();
+    }
+
+    @DeleteMapping(params = {"id", "population"})
+    @Secured({"ROLE_ADMIN"})
+    public void update(@RequestParam("id") Integer id,
+                       @RequestParam("population") Integer population,
+                       @AuthenticationPrincipal User user) {
+        log.info("user {} update location {} with id", user.getEmail(), id);
+        repository.updatePopulation(id, population);
+        locationService.refreshCache();
     }
 }
