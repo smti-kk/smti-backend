@@ -1,22 +1,17 @@
 package ru.cifrak.telecomit.backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
-
+@AllArgsConstructor
 @Entity
 @Table
 @NamedQuery(name="CatalogsOperator.findAll", query="SELECT c FROM Operator c")
@@ -39,7 +34,6 @@ public class Operator implements Serializable {
 	@Column(length=12)
 	private String inn;
 
-	@JsonProperty("juristic_name")
 	@Column(name="juristic_name", nullable=false, length=256)
 	private String juristicName;
 
@@ -49,9 +43,24 @@ public class Operator implements Serializable {
 	@Column(nullable=false, length=256)
 	private String name;
 
-	@Column(nullable=false, length=40)
-	private String services;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "operator_operator_service",
+			joinColumns = {@JoinColumn(name = "operator_id")},
+			inverseJoinColumns = {@JoinColumn(name = "services_id")})
+	private List<OperatorService> services;
 
 	@Column(length=5)
 	private String type;
+
+	public Operator(Integer id,
+					String name,
+					String contacts,
+					String juristicName,
+					List<OperatorService> services) {
+		this.id = id;
+		this.name = name;
+		this.contacts = contacts;
+		this.juristicName = juristicName;
+		this.services = services;
+	}
 }

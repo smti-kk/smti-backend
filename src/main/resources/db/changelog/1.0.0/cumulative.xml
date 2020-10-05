@@ -5,4 +5,8 @@
     <include file="0002-added_appeal_table.xml" relativeToChangelogFile="true" />
     <include file="0003-create_appeal_sequance.xml" relativeToChangelogFile="true" />
     <include file="0004-create_file_table.xml" relativeToChangelogFile="true" />
+    <include file="0005-operator_services_many_to_many.xml" relativeToChangelogFile="true" />
+    <include file="0006-operator_services_add_post.xml" relativeToChangelogFile="true" />
+    <include file="0007-operator_services_add_all.xml" relativeToChangelogFile="true" />
+    <include file="0008-drop_column_services.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

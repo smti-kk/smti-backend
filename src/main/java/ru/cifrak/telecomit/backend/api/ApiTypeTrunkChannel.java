@@ -23,15 +23,11 @@ public class ApiTypeTrunkChannel {
     @GetMapping("/")
     @Cacheable("trunk_channels")
     public List<TypeTrunkChannel> list() {
-        log.info("->GET " + "/api/type/trunk-channel/");
-        log.info("<- GET " + "/api/type/trunk-channel/");
         return repository.findAll();
     }
 
     @GetMapping("/{id}/")
     public TypeTrunkChannel item(@PathVariable Integer id) {
-        log.info("->GET " + "/api/type/trunk-channel/::{}",id);
-        log.info("<- GET " + "/api/type/trunk-channel/::{}",id);
         return repository.findById(id).orElse(null);
     }
 

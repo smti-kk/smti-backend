@@ -13,22 +13,16 @@ import ru.cifrak.telecomit.backend.entities.TypePost;
 public class ApiTypeSimple {
     @GetMapping("/post/")
     public TypePost[] post() {
-        log.info("->GET /api/type/post/");
-        log.info("<- GET /api/type/post/");
         return TypePost.values();
     }
 
     @GetMapping("/tv/")
     public Signal[] tv() {
-        log.info("->GET /api/type/tv/");
-        log.info("<- GET /api/type/tv/");
         return Signal.values();
     }
 
     @GetMapping("/access-point/")
     public TypeAccessPoint[] ap() {
-        log.info("->GET /api/type/access-point/");
-        log.info("<- GET /api/type/access-point/");
         return TypeAccessPoint.values();
     }
 

@@ -23,15 +23,11 @@ public class ApiMobileType {
     @GetMapping("/")
     @Cacheable("type_mobiles")
     public List<TypeMobile> list() {
-        log.info("->GET /api/type/mobile/");
-        log.info("<- GET /api/type/mobile/");
         return repository.findAll();
     }
 
     @GetMapping("/{id}/")
     public TypeMobile one(@PathVariable Integer id) {
-        log.info("->GET /api/type/mobile/::{}",id);
-        log.info("<- GET /api/type/mobile/::{}",id);
         return repository.findById(id).orElse(null);
     }
 

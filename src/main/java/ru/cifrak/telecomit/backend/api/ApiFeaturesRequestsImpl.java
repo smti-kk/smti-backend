@@ -29,7 +29,6 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     }
 
     @Override
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     public Page<LocationFeaturesEditingRequestFull> requests(Pageable pageable) {
         log.info("->GET /api/features-requests/");
         log.info("<- GET /api/features-requests/");
@@ -37,7 +36,6 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     }
 
     @Override
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     public List<LocationFeaturesEditingRequestFull> requestsByLocation(Integer locationId) {
         log.info("->GET /api/features-requests/::{}", locationId);
         log.info("<- GET /api/features-requests/::{}", locationId);
@@ -45,7 +43,6 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     }
 
     @Override
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     public Page<LocationFeaturesEditingRequestFull> requestsByUser(Pageable pageable, User user) {
         log.info("->GET /api/features-requests/by-user");
         log.info("<- GET /api/features-requests/by-user");
@@ -53,7 +50,6 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     }
 
     @Override
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
     public void acceptRequest(LocationFeaturesEditingRequest request) {
         log.info("->GET /api/features-requests/{request}/accept");
         log.info("<- GET /api/features-requests/{request}/accept");
@@ -62,7 +58,6 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     }
 
     @Override
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
     public void declineRequest(LocationFeaturesEditingRequest request, String comment) {
         log.info("->GET /api/features-requests/{request}/decline");
         log.info("<- GET /api/features-requests/{request}/decline");

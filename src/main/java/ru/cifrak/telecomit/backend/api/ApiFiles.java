@@ -18,7 +18,7 @@ import java.io.InputStream;
 
 
 @RestController
-@RequestMapping("/api/downloadFile")
+@RequestMapping("/media/db-files")
 public class ApiFiles {
     private final DBFileStorageService dbFileStorageService;
 
@@ -26,7 +26,7 @@ public class ApiFiles {
         this.dbFileStorageService = dbFileStorageService;
     }
 
-    @GetMapping("{fileId}")
+    @GetMapping("/{fileId}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileId) {
         DBFile dbFile;
         dbFile = dbFileStorageService.getFile(fileId);
