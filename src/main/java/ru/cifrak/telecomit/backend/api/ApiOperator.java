@@ -68,21 +68,18 @@ public class ApiOperator {
     @GetMapping("/ats")
     public List<Operator> ats() {
         log.info("->GET /api/operator/ats");
-        log.info("<- GET /api/operator/ats");
         return serviceOperators.ats();
     }
 
     @GetMapping("/radio")
     public List<Operator> radio() {
         log.info("->GET /api/operator/radio");
-        log.info("<- GET /api/operator/radio");
         return serviceOperators.radio();
     }
 
     @GetMapping("/tv")
     public List<Operator> television() {
         log.info("->GET /api/operator/tv");
-        log.info("<- GET /api/operator/tv");
         return serviceOperators.television();
     }
 
