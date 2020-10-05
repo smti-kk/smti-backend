@@ -53,6 +53,9 @@ public class Account {
     @Column
     private String email;
 
+    @Column
+    private Long oid;
+
     @OneToMany
     @JoinTable(name = "user_locations",
             joinColumns = {@JoinColumn(name = "key_user")},

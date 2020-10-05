@@ -40,7 +40,7 @@ public class TcesRadioSaveService {
         this.locationService = locationService;
     }
 
-    public void saveTces(List<TcRadioFromExcelDTO> TcesDTO) {
+    public void save(List<TcRadioFromExcelDTO> TcesDTO) {
         for (TcRadioFromExcelDTO tcTOO : TcesDTO){
             List<Signal> types = this.convertToEntityAttribute(tcTOO.getType().replaceAll(" ", ""));
             List<WritableTcForImport> tcesByLocOpT = repositoryWritableTcForImport.findByLocationIdAndOperatorIdAndType(

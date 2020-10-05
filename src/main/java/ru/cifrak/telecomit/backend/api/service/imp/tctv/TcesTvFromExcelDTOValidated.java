@@ -1,21 +1,27 @@
 package ru.cifrak.telecomit.backend.api.service.imp.tctv;
 
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
+import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOErrorException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
+import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTONppException;
 import ru.cifrak.telecomit.backend.entities.Operator;
 import ru.cifrak.telecomit.backend.entities.Signal;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class TcesTvFromExcelDTOValidated implements TcesTvDTOFromExcel {
+public class TcesTvFromExcelDTOValidated {
 
     private final static String ATV = "АТВ";
 
@@ -36,53 +42,102 @@ public class TcesTvFromExcelDTOValidated implements TcesTvDTOFromExcel {
         this.origin = origin;
     }
 
-    @Override
     public MultipartFile getFile() {
         return this.origin.getFile();
     }
 
-    @Override
-    public List<TcTvFromExcelDTO> getTcesTvDTO() throws FromExcelDTOFormatException {
-        this.checkFormatFile(this.getFile());
-
-        return this.checkTcesTv(origin.getTcesTvDTO());
+    private Workbook createErrorBook() {
+        Workbook book = new XSSFWorkbook();
+        Sheet sheet = book.createSheet("Ошибки");
+        CellStyle style = book.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        Row row = sheet.createRow(0);
+        Cell cell = row.createCell(0);
+        cell.setCellStyle(style);
+        cell.setCellValue("Позиция");
+        cell = row.createCell(1);
+        cell.setCellStyle(style);
+        cell.setCellValue("Описание");
+        return book;
     }
 
-    private List<TcTvFromExcelDTO> checkTcesTv(List<TcTvFromExcelDTO> tcesTvDTO)
-            throws FromExcelDTOFormatException {
-        String badDTO;
+    private void addError(Sheet sheet, int nRow, String npp, String error) {
+        Row row = sheet.createRow(nRow);
+        Cell cell = row.createCell(0);
+        cell.setCellValue(Integer.parseInt(npp));
+        cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+        row.createCell(1).setCellValue(error);
+    }
 
-        if (!this.checkFullnessNpp(tcesTvDTO)) {
-            throw new FromExcelDTOFormatException("Не все \"№ п/п\" заполнены.");
+    private ByteArrayResource errorBookToByteStream (Workbook book) throws IOException {
+        Sheet sheet = book.getSheetAt(0);
+        sheet.autoSizeColumn(1);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        book.write(baos);
+        book.close();
+        return new ByteArrayResource(baos.toByteArray());
+    }
+
+    public TcTvImportResult getTcesDTO() throws FromExcelDTOFormatException,
+            FromExcelDTONppException, IOException {
+        this.checkFormatFile(this.getFile());
+        List<TcTvFromExcelDTO> tcesDTO = origin.getTcesTvDTO();
+        if (!this.checkFullnessNpp(tcesDTO)) {
+            throw new FromExcelDTONppException("Не все \"№ п/п\" заполнены.");
         }
+        int importFailure = 0;
+        int importSuccess = 0;
+        List<TcTvFromExcelDTO> toImport = new ArrayList<>();
+        List<TcTvFromExcelDTO> toCheck = new ArrayList<>();
+        Workbook book = createErrorBook();
+        Sheet sheet = book.getSheetAt(0);
+        for (TcTvFromExcelDTO tcDTO : origin.getTcesTvDTO()) {
+            toCheck.clear();
+            toCheck.add(tcDTO);
+            try {
+                checkTces(toCheck);
+                toImport.add(tcDTO);
+                importSuccess++;
+            } catch (FromExcelDTOErrorException e) {
+                importFailure++;
+                addError(sheet, importFailure, tcDTO.getNpp(), e.getMessage());
+            }
+        }
+        return new TcTvImportResult(
+                importSuccess,
+                importFailure,
+                errorBookToByteStream(book),
+                toImport
+        );
+    }
+
+    private void checkTces(List<TcTvFromExcelDTO> tcesTvDTO)
+            throws FromExcelDTOErrorException {
+        String badDTO;
 
         badDTO = this.checkFullnessCells(tcesTvDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO + " позиции не все ячейки заполнены.");
+            throw new FromExcelDTOErrorException("Не все ячейки заполнены.");
         }
 
         badDTO = this.checkFiasesGUID(tcesTvDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
-                    + " позиции ошибка в ФИАС, должен быть в GUID формате.");
+            throw new FromExcelDTOErrorException("Ошибка в ФИАС, должен быть в GUID формате.");
         }
 
         badDTO = this.checkFiases(tcesTvDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
-                    + " позиции ошибка в ФИАС населённого пункта, не найден в БД.");
+            throw new FromExcelDTOErrorException("Ошибка в ФИАС населённого пункта, не найден в БД.");
         }
 
         badDTO = this.checkOperators(tcesTvDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
-                    + " позиции ошибка в операторе, не найден в БД.");
+            throw new FromExcelDTOErrorException("Ошибка в операторе, не найден в БД.");
         }
 
         badDTO = this.checkOperatorsRights(tcesTvDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
-                    + " позиции ошибка в операторе, данную Т/В могут предоставлять только {"
+            throw new FromExcelDTOErrorException("Ошибка в операторе, данную Т/В могут предоставлять только {"
                     + repositoryOperator.television()
                     .stream().map(Operator::getName).collect(Collectors.joining(", "))
                     + "}.");
@@ -90,11 +145,8 @@ public class TcesTvFromExcelDTOValidated implements TcesTvDTOFromExcel {
 
         badDTO = this.checkType(tcesTvDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
-                    + " позиции ошибка в типе, должен быть одним из {" + ATV + ", " + CTV +"}.");
+            throw new FromExcelDTOErrorException("Ошибка в типе, должен быть одним из {" + ATV + ", " + CTV +"}.");
         }
-
-        return tcesTvDTO;
     }
 
     private String checkType(List<TcTvFromExcelDTO> tcesDTO) {

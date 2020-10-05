@@ -1,15 +1,21 @@
 package ru.cifrak.telecomit.backend.api.service.imp.location;
 
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
+import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOErrorException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
+import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTONppException;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
-public class LocationsFromExcelDTOValidated implements LocationsDTOFromExcel {
+public class LocationsFromExcelDTOValidated {
 
     private final RepositoryLocation repository;
 
@@ -20,51 +26,99 @@ public class LocationsFromExcelDTOValidated implements LocationsDTOFromExcel {
         this.origin = origin;
     }
 
-    @Override
     public MultipartFile getFile() {
         return this.origin.getFile();
     }
 
-    @Override
-    public List<LocationFromExcelDTO> getLocationsDTO() throws FromExcelDTOFormatException {
-        this.checkFormatFile(this.getFile());
-
-        return this.checkLocations(origin.getLocationsDTO());
+    private Workbook createErrorBook() {
+        Workbook book = new XSSFWorkbook();
+        Sheet sheet = book.createSheet("Ошибки");
+        CellStyle style = book.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        Row row = sheet.createRow(0);
+        Cell cell = row.createCell(0);
+        cell.setCellStyle(style);
+        cell.setCellValue("Позиция");
+        cell = row.createCell(1);
+        cell.setCellStyle(style);
+        cell.setCellValue("Описание");
+        return book;
     }
 
-    private List<LocationFromExcelDTO> checkLocations(List<LocationFromExcelDTO> locationsDTO)
-            throws FromExcelDTOFormatException {
-        String badLocationDTO;
+    private void addError(Sheet sheet, int nRow, String npp, String error) {
+        Row row = sheet.createRow(nRow);
+        Cell cell = row.createCell(0);
+        cell.setCellValue(Integer.parseInt(npp));
+        cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+        row.createCell(1).setCellValue(error);
+    }
 
-        if (!this.checkFullnessNpp(locationsDTO)) {
-            throw new FromExcelDTOFormatException("Не все \"№ п/п\" заполнены.");
+    private ByteArrayResource errorBookToByteStream (Workbook book) throws IOException {
+        Sheet sheet = book.getSheetAt(0);
+        sheet.autoSizeColumn(1);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        book.write(baos);
+        book.close();
+        return new ByteArrayResource(baos.toByteArray());
+    }
+
+    public LocationImportResult getTcesDTO() throws FromExcelDTOFormatException,
+            FromExcelDTONppException, IOException {
+        this.checkFormatFile(this.getFile());
+        List<LocationFromExcelDTO> tcesDTO = origin.getLocationsDTO();
+        if (!this.checkFullnessNpp(tcesDTO)) {
+            throw new FromExcelDTONppException("Не все \"№ п/п\" заполнены.");
         }
+        int importFailure = 0;
+        int importSuccess = 0;
+        List<LocationFromExcelDTO> toImport = new ArrayList<>();
+        List<LocationFromExcelDTO> toCheck = new ArrayList<>();
+        Workbook book = createErrorBook();
+        Sheet sheet = book.getSheetAt(0);
+        for (LocationFromExcelDTO tcDTO : origin.getLocationsDTO()) {
+            toCheck.clear();
+            toCheck.add(tcDTO);
+            try {
+                checkTces(toCheck);
+                toImport.add(tcDTO);
+                importSuccess++;
+            } catch (FromExcelDTOErrorException e) {
+                importFailure++;
+                addError(sheet, importFailure, tcDTO.getNpp(), e.getMessage());
+            }
+        }
+        return new LocationImportResult(
+                importSuccess,
+                importFailure,
+                errorBookToByteStream(book),
+                toImport
+        );
+    }
+
+    private void checkTces(List<LocationFromExcelDTO> locationsDTO)
+            throws FromExcelDTOErrorException {
+        String badLocationDTO;
 
         badLocationDTO = this.checkFullnessCells(locationsDTO);
         if (badLocationDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badLocationDTO + " позиции не все ячейки заполнены.");
+            throw new FromExcelDTOErrorException("Не все ячейки заполнены.");
         }
 
         badLocationDTO = this.checkFiases(locationsDTO);
         if (badLocationDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badLocationDTO
-                    + " позиции ошибка в ФИАС, должен быть в GUID формате.");
+            throw new FromExcelDTOErrorException("Ошибка в ФИАС, должен быть в GUID формате.");
         }
 
         badLocationDTO = this.checkTypes(locationsDTO);
         if (badLocationDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badLocationDTO
-                    + " позиции ошибка в типе, должен быть одним из {"
+            throw new FromExcelDTOErrorException("Ошибка в типе, должен быть одним из {"
                     + String.join(", ", repository.findAllTypes()) + "}.");
         }
 
         badLocationDTO = this.checkPopulation(locationsDTO);
         if (badLocationDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badLocationDTO
-                    + " позиции ошибка в населении, должно быть в числовом формате.");
+            throw new FromExcelDTOErrorException("Ошибка в населении, должно быть в числовом формате.");
         }
-
-        return locationsDTO;
     }
 
     private String checkPopulation(List<LocationFromExcelDTO> locationsDTO) {

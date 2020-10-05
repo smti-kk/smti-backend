@@ -41,7 +41,7 @@ public class TcesInternetSaveService {
         this.locationService = locationService;
     }
 
-    public void saveTcesInternet(List<TcInternetFromExcelDTO> TcesInternetDTO) {
+    public void save(List<TcInternetFromExcelDTO> TcesInternetDTO) {
         for (TcInternetFromExcelDTO tcDTO : TcesInternetDTO){
             List<WritableTcForImport> tcesByLocOpT = RepositoryWritableTcForImport.findByLocationIdAndOperatorIdAndType(
                     repositoryLocation.findByFias(UUID.fromString(tcDTO.getFias())).getId(),

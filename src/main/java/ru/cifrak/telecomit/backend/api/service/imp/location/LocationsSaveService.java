@@ -20,7 +20,7 @@ public class LocationsSaveService {
         this.locationService = locationService;
     }
 
-    public void saveLocations(List<LocationFromExcelDTO> locationsDTO) {
+    public void save(List<LocationFromExcelDTO> locationsDTO) {
         for (LocationFromExcelDTO locationDTO : locationsDTO){
             Location locationByFias = repository.findByFias(UUID.fromString(locationDTO.getFias()));
             Location parent = this.getLocationDTOParent(locationDTO);
