@@ -72,6 +72,7 @@ public class LocationService {
             "map-locations",
             "location_parents",
             "location_location_parents",
+            "grouped_operators",
             "gov_programs",
             "gov_years",
             "location_areas",

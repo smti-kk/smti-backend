@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.entities.Operator;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
+import ru.cifrak.telecomit.backend.service.LocationService;
 import ru.cifrak.telecomit.backend.service.ServiceOperators;
 
 import javax.validation.constraints.NotNull;
@@ -24,9 +25,11 @@ import java.util.Map;
 @RequestMapping("/api/operator")
 public class ApiOperator {
     private final ServiceOperators serviceOperators;
+    private final LocationService locationService;
 
-    public ApiOperator(ServiceOperators serviceOperators) {
+    public ApiOperator(ServiceOperators serviceOperators, LocationService locationService) {
         this.serviceOperators = serviceOperators;
+        this.locationService = locationService;
     }
 
     @GetMapping("/{id}/")
@@ -107,5 +110,6 @@ public class ApiOperator {
                                @AuthenticationPrincipal User user) {
         log.info("delete operator with id {} {}", id, user.getEmail());
         serviceOperators.delete(id);
+        locationService.refreshCache();
     }
 }
