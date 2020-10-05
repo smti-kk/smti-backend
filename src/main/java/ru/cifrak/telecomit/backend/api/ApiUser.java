@@ -45,14 +45,21 @@ public class ApiUser {
         log.info("[{}]-> PUT {}::{}", user.getUsername(), API_PATH, value.getId());
         //TODO:[generate TICKET]: null check
         Account item = rAccount.findById(value.getId()).get();
-        item.setEmail(value.getEmail());
-        item.setFirstName(value.getFirstName());
-        item.setLastName(value.getLastName());
-        item.setPatronymicName(value.getPatronymicName());
-        item.setLocations(value.getLocations());
-        item.setOrganizations(value.getOrganizations());
-        item.setIsActive(value.getIsActive());
-        item.setRoles(value.getRoles());
+        if (item.getOid() == null) {
+            item.setEmail(value.getEmail());
+            item.setFirstName(value.getFirstName());
+            item.setLastName(value.getLastName());
+            item.setPatronymicName(value.getPatronymicName());
+            item.setLocations(value.getLocations());
+            item.setOrganizations(value.getOrganizations());
+            item.setIsActive(value.getIsActive());
+            item.setRoles(value.getRoles());
+        } else {
+            item.setLocations(value.getLocations());
+            item.setOrganizations(value.getOrganizations());
+            item.setIsActive(value.getIsActive());
+            item.setRoles(value.getRoles());
+        }
         try {
             item = rAccount.save(item);
         } catch (Exception e) {
