@@ -1,7 +1,9 @@
 package ru.cifrak.telecomit.backend.base.station.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.base.station.entity.BaseStation;
 import ru.cifrak.telecomit.backend.base.station.repository.BaseStationsRepository;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
@@ -19,6 +21,11 @@ public class BaseStationControllerImpl implements BaseStationController {
 
     @Override
     @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    public Page<BaseStation> baseStations(Pageable pageable) {
+        return baseStationsRepository.findAll(pageable);
+    }
+
+    @Override
     public List<BaseStation> baseStations() {
         return baseStationsRepository.findAll();
     }

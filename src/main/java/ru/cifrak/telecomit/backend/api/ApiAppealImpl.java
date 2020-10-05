@@ -1,6 +1,8 @@
 package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,8 +12,6 @@ import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
 import ru.cifrak.telecomit.backend.service.ServiceAppeal;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -23,10 +23,11 @@ public class ApiAppealImpl implements ApiAppeal {
     }
 
     @Override
-    public List<Appeal> findAll(User user) {
+    public Page<Appeal> findAll(User user,
+                                Pageable pageable) {
         log.info("User {} request all appeals ->", user.getEmail());
-        List<Appeal> result = serviceAppeal.findAll();
-        log.info("User {} request all appeals <-", user.getEmail());
+        Page<Appeal> result = serviceAppeal.findAll(pageable);
+        log.info("User {} request {} appeals with offset {} <-", user.getEmail(), pageable.getPageSize(), pageable.getOffset());
         return result;
     }
 
