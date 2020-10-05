@@ -10,6 +10,7 @@ import ru.cifrak.telecomit.backend.auth.repository.RepositoryUser;
 import ru.cifrak.telecomit.backend.entities.Account;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.UserRole;
+import ru.cifrak.telecomit.backend.exceptions.JPAException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class ApiUser {
 
     @PutMapping(consumes = "application/json", produces = "application/json")
     @Secured({"ROLE_ADMIN"})
-    public ResponseEntity<Account> update(@RequestBody Account value, @AuthenticationPrincipal User user) {
+    public Account update(@RequestBody Account value, @AuthenticationPrincipal User user) throws JPAException {
         log.info("[{}]-> PUT {}::{}", user.getUsername(), API_PATH, value.getId());
         //TODO:[generate TICKET]: null check
         Account item = rAccount.findById(value.getId()).get();
@@ -52,14 +53,19 @@ public class ApiUser {
         item.setOrganizations(value.getOrganizations());
         item.setIsActive(value.getIsActive());
         item.setRoles(value.getRoles());
-        item = rAccount.save(item);
+        try {
+            item = rAccount.save(item);
+        } catch (Exception e) {
+            log.warn("[{}]<- PUT {}::{}", user.getUsername(), API_PATH, value.getId());
+            throw new JPAException(e.getMessage());
+        }
         log.info("[{}]<- PUT {}::{}", user.getUsername(), API_PATH, value.getId());
-        return ResponseEntity.ok(item);
+        return item;
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     @Secured({"ROLE_ADMIN"})
-    public ResponseEntity<Account> create(@RequestBody Account value, @AuthenticationPrincipal User user) {
+    public Account create(@RequestBody Account value, @AuthenticationPrincipal User user) throws JPAException {
         log.info("[{}]-> POST {}", user.getUsername(), API_PATH);
         User item = new User();
         item.setUsername(value.getUsername());
@@ -72,9 +78,14 @@ public class ApiUser {
         List<UserRole> roles = new ArrayList();
         roles.addAll(value.getRoles());
         item.setRoles(roles);
-        item = rUser.save(item);
+        try {
+            item = rUser.save(item);
+        } catch (Exception e) {
+            log.warn("[{}]<- POST {}", user.getUsername(), API_PATH);
+            throw new JPAException(e.getMessage());
+        }
         Account result = rAccount.findById(item.getId()).get();
         log.info("[{}]<- POST {}::{}", user.getUsername(), API_PATH, result.getId());
-        return ResponseEntity.ok(result);
+        return result;
     }
 }
