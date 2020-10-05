@@ -87,8 +87,6 @@ public class ApiEsia {
             existingUser.setFirstName(firstName);
             existingUser.setLastName(lastName);
             existingUser.setPatronymicName(middleName);
-            existingUser.setPhone(phoneNumber);
-            existingUser.setPassport(passportData);
             existingUser.setEmail(email);
             return userRepository.save(existingUser);
         }).orElseGet(() -> {
@@ -101,8 +99,6 @@ public class ApiEsia {
             newUser.setFirstName(firstName);
             newUser.setLastName(lastName);
             newUser.setPatronymicName(middleName);
-            newUser.setPhone(phoneNumber);
-            newUser.setPassport(passportData);
             newUser.setEmail(email);
             return userRepository.save(newUser);
         });
