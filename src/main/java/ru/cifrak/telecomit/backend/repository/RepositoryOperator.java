@@ -1,8 +1,10 @@
 package ru.cifrak.telecomit.backend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.cifrak.telecomit.backend.entities.Operator;
 
 import java.util.List;
@@ -51,4 +53,9 @@ public interface RepositoryOperator extends JpaRepository<Operator, Integer> {
     List<Operator> postal();
 
     Operator findByName(String name);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Operator o where o.id = :id")
+    void deleteForce(Integer id);
 }

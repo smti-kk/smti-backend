@@ -38,4 +38,6 @@ public interface ServiceOperators {
     Operator save(Operator operator);
 
     String createIcon(MultipartFile icon);
+
+    void delete(Integer id);
 }

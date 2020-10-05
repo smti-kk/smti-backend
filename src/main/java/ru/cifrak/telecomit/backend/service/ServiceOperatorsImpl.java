@@ -94,4 +94,8 @@ public class ServiceOperatorsImpl implements ServiceOperators {
     public String createIcon(MultipartFile icon) {
         return "/db-files/" + dbFileStorageService.storeFile(icon).getId();
     }
+
+    public void delete(Integer id) {
+        this.repository.deleteForce(id);
+    }
 }

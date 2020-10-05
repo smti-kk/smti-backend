@@ -100,4 +100,12 @@ public class ApiOperator {
         objWithIconPath.put("iconPath", serviceOperators.createIcon(icon));
         return objWithIconPath;
     }
+
+    @DeleteMapping("/{operatorId}")
+    @Secured("ROLE_ADMIN")
+    public void deleteOperator(@PathVariable("operatorId") Integer id,
+                               @AuthenticationPrincipal User user) {
+        log.info("delete operator with id {} {}", id, user.getEmail());
+        serviceOperators.delete(id);
+    }
 }
