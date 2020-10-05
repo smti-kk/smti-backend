@@ -1,19 +1,26 @@
 package ru.cifrak.telecomit.backend.api.service.imp.tcpayphone;
 
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
+import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOErrorException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
+import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTONppException;
+import ru.cifrak.telecomit.backend.api.service.imp.tcpost.TcPostImportResult;
 import ru.cifrak.telecomit.backend.entities.Operator;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class TcesPayphoneFromExcelDTOValidated implements TcesPayphoneDTOFromExcel {
+public class TcesPayphoneFromExcelDTOValidated {
 
     private final RepositoryOperator repositoryOperator;
 
@@ -30,53 +37,102 @@ public class TcesPayphoneFromExcelDTOValidated implements TcesPayphoneDTOFromExc
         this.origin = origin;
     }
 
-    @Override
     public MultipartFile getFile() {
         return this.origin.getFile();
     }
 
-    @Override
-    public List<TcPayphoneFromExcelDTO> getTcesDTO() throws FromExcelDTOFormatException {
-        this.checkFormatFile(this.getFile());
-
-        return this.checkTces(origin.getTcesDTO());
+    private Workbook createErrorBook() {
+        Workbook book = new XSSFWorkbook();
+        Sheet sheet = book.createSheet("Ошибки");
+        CellStyle style = book.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        Row row = sheet.createRow(0);
+        Cell cell = row.createCell(0);
+        cell.setCellStyle(style);
+        cell.setCellValue("Позиция");
+        cell = row.createCell(1);
+        cell.setCellStyle(style);
+        cell.setCellValue("Описание");
+        return book;
     }
 
-    private List<TcPayphoneFromExcelDTO> checkTces(List<TcPayphoneFromExcelDTO> tcesDTO)
-            throws FromExcelDTOFormatException {
-        String badDTO;
+    private void addError(Sheet sheet, int nRow, String npp, String error) {
+        Row row = sheet.createRow(nRow);
+        Cell cell = row.createCell(0);
+        cell.setCellValue(Integer.parseInt(npp));
+        cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+        row.createCell(1).setCellValue(error);
+    }
 
+    private ByteArrayResource errorBookToByteStream (Workbook book) throws IOException {
+        Sheet sheet = book.getSheetAt(0);
+        sheet.autoSizeColumn(1);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        book.write(baos);
+        book.close();
+        return new ByteArrayResource(baos.toByteArray());
+    }
+
+    public TcPayphoneImportResult getTcesDTO() throws FromExcelDTOFormatException,
+            FromExcelDTONppException, IOException {
+        this.checkFormatFile(this.getFile());
+        List<TcPayphoneFromExcelDTO> tcesDTO = origin.getTcesDTO();
         if (!this.checkFullnessNpp(tcesDTO)) {
-            throw new FromExcelDTOFormatException("Не все \"№ п/п\" заполнены.");
+            throw new FromExcelDTONppException("Не все \"№ п/п\" заполнены.");
         }
+        int importFailure = 0;
+        int importSuccess = 0;
+        List<TcPayphoneFromExcelDTO> toImport = new ArrayList<>();
+        List<TcPayphoneFromExcelDTO> toCheck = new ArrayList<>();
+        Workbook book = createErrorBook();
+        Sheet sheet = book.getSheetAt(0);
+        for (TcPayphoneFromExcelDTO tcDTO : origin.getTcesDTO()) {
+            toCheck.clear();
+            toCheck.add(tcDTO);
+            try {
+                checkTces(toCheck);
+                toImport.add(tcDTO);
+                importSuccess++;
+            } catch (FromExcelDTOErrorException e) {
+                importFailure++;
+                addError(sheet, importFailure, tcDTO.getNpp(), e.getMessage());
+            }
+        }
+        return new TcPayphoneImportResult(
+                importSuccess,
+                importFailure,
+                errorBookToByteStream(book),
+                toImport
+        );
+    }
+
+    private void checkTces(List<TcPayphoneFromExcelDTO> tcesDTO)
+            throws FromExcelDTOErrorException {
+        String badDTO;
 
         badDTO = this.checkFullnessCells(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO + " позиции не все ячейки заполнены.");
+            throw new FromExcelDTOErrorException("Не все ячейки заполнены.");
         }
 
         badDTO = this.checkFiasesGUID(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
-                    + " позиции ошибка в ФИАС, должен быть в GUID формате.");
+            throw new FromExcelDTOErrorException("Ошибка в ФИАС, должен быть в GUID формате.");
         }
 
         badDTO = this.checkFiases(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
-                    + " позиции ошибка в ФИАС населённого пункта, не найден в БД.");
+            throw new FromExcelDTOErrorException("Ошибка в ФИАС населённого пункта, не найден в БД.");
         }
 
         badDTO = this.checkOperators(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
-                    + " позиции ошибка в операторе, не найден в БД.");
+            throw new FromExcelDTOErrorException("Ошибка в операторе, не найден в БД.");
         }
 
         badDTO = this.checkOperatorsRights(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
-                    + " позиции ошибка в операторе, данную Т/В могут предоставлять только {"
+            throw new FromExcelDTOErrorException("Ошибка в операторе, данную Т/В могут предоставлять только {"
                     + repositoryOperator.payphone()
                     .stream().map(Operator::getName).collect(Collectors.joining(", "))
                     + "}.");
@@ -84,11 +140,8 @@ public class TcesPayphoneFromExcelDTOValidated implements TcesPayphoneDTOFromExc
 
         badDTO = this.checkQuantity(tcesDTO);
         if (badDTO != null) {
-            throw new FromExcelDTOFormatException("В " + badDTO
-                    + " позиции ошибка в количестве, должно быть в числовом формате.");
+            throw new FromExcelDTOErrorException("Ошибка в количестве, должно быть в числовом формате.");
         }
-
-        return tcesDTO;
     }
 
     private String checkQuantity(List<TcPayphoneFromExcelDTO> tcesDTO) {

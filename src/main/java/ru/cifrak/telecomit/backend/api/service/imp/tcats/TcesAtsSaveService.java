@@ -34,7 +34,7 @@ public class TcesAtsSaveService {
         this.locationService = locationService;
     }
 
-    public void saveTces(List<TcAtsFromExcelDTO> TcesDTO) {
+    public void save(List<TcAtsFromExcelDTO> TcesDTO) {
         for (TcAtsFromExcelDTO tcDTO : TcesDTO){
             List<WritableTcForImport> tcesByLocOpT = repositoryWritableTcForImport.findByLocationIdAndOperatorIdAndType(
                     repositoryLocation.findByFias(UUID.fromString(tcDTO.getFias())).getId(),
