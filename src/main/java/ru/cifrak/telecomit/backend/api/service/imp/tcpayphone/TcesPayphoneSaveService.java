@@ -36,7 +36,7 @@ public class TcesPayphoneSaveService {
         this.locationService = locationService;
     }
 
-    public void saveTces(List<TcPayphoneFromExcelDTO> TcesDTO) {
+    public void save(List<TcPayphoneFromExcelDTO> TcesDTO) {
         for (TcPayphoneFromExcelDTO tcDTO : TcesDTO){
             List<WritableTcForImport> tcesByLocOpT = repositoryWritableTcForImport.findByLocationIdAndOperatorIdAndType(
                     repositoryLocation.findByFias(UUID.fromString(tcDTO.getFias())).getId(),

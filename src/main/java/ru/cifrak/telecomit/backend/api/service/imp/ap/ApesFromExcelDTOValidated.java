@@ -70,7 +70,7 @@ public class ApesFromExcelDTOValidated {
     private void addError(Sheet sheet, int nRow, String npp, String error) {
         Row row = sheet.createRow(nRow);
         Cell cell = row.createCell(0);
-        cell.setCellValue(npp);
+        cell.setCellValue(Integer.parseInt(npp));
         cell.setCellType(Cell.CELL_TYPE_NUMERIC);
         row.createCell(1).setCellValue(error);
     }
