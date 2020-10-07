@@ -4,19 +4,26 @@ import lombok.Data;
 
 @Data
 public class ReportMapDTO {
-    // ---                    UTM5
     private Integer pp;
-    private Integer ucn;
+    // ---                    AP
+    private String internetAccessType;
     private String parent;
     private String location;
     private String address;
     private String contractor;
     private String organization;
+    private String networks;
+    private String NA;
+    // ---                    UTM5
+    private Integer ucn;
     private String consumption;
     // ---                    Zabbix
     private String sla;
+    private String zabbixDeviceIp;
+    private String zabbixDeviceName;
     /**
      * Необходимо выдавать кол-во в минутах, а прилетает в секундах
      */
     private String problemTime;
+
 }
