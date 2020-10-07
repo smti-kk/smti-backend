@@ -15,7 +15,7 @@ public class Converter {
         DateTimeFormatter formatter =
                 DateTimeFormatter.ofLocalizedDate( FormatStyle.SHORT)
                         .withLocale( new Locale("ru") )
-                        .withZone( ZoneId.systemDefault() );
+                        .withZone( ZoneId.of("Asia/Krasnoyarsk") );
         return formatter.format(instant);
     }
 }
