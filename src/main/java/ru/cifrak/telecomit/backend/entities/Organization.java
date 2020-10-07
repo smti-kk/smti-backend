@@ -128,9 +128,6 @@ public class Organization implements Serializable {
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
     private List<AccessPoint> accessPoints;
 
-    /**
-     * `
-     */
     @Column
     private Boolean main;
 }
