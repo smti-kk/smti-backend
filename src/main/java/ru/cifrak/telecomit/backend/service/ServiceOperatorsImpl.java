@@ -92,7 +92,7 @@ public class ServiceOperatorsImpl implements ServiceOperators {
 
     @Override
     public String createIcon(MultipartFile icon) {
-        return "/db-files/" + dbFileStorageService.storeFile(icon).getId();
+        return "db-files/" + dbFileStorageService.storeFile(icon).getId();
     }
 
     public void delete(Integer id) {
