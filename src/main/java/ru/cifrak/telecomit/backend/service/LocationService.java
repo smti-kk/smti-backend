@@ -16,6 +16,7 @@ import ru.cifrak.telecomit.backend.repository.DSLDetailLocation;
 import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,6 +25,7 @@ public class LocationService {
 
     @PersistenceContext
     private EntityManager entityManager;
+    private Date lastRefreshDate = new Date();
 
     public LocationService(DSLDetailLocation repository) {
         this.repository = repository;
@@ -79,5 +81,11 @@ public class LocationService {
             "trunk_channels",
             "type_mobiles"
     }, allEntries = true)
-    public void refreshCache() {}
+    public void refreshCache() {
+        lastRefreshDate = new Date();
+    }
+
+    public Date getLastRefreshDate() {
+        return lastRefreshDate;
+    }
 }
