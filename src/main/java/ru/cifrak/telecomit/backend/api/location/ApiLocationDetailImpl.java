@@ -71,12 +71,11 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
                 location,
                 parent
         );
-        String currentHash = locationService.getLastRefreshDate() + "";
         CacheControl cacheControl = CacheControl.empty()
                 .noTransform()
                 .mustRevalidate();
         return ResponseEntity.ok()
-                .eTag(currentHash)
+                .lastModified(locationService.getLastRefreshDate().getTime())
                 .cacheControl(cacheControl)
                 .body(result);
     }
