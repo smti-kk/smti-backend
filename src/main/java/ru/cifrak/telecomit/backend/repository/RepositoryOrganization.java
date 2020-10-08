@@ -49,6 +49,9 @@ public interface RepositoryOrganization extends JpaRepository<Organization, Inte
             Integer accessPointId
     );
 
+    @Query(value = "SELECT co FROM Organization co WHERE co.main=true")
+    List<Organization> findAllMain();
+
     List<Organization> findAll();
 
     Integer countAllByLocationId(Integer locationId);

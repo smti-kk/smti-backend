@@ -12,4 +12,7 @@
     <include file="0010-operator_services_add_all.xml" relativeToChangelogFile="true" />
     <include file="0011-drop_column_services.xml" relativeToChangelogFile="true" />
     <include file="0012-cascade_delete_constraint_for_location2.xml" relativeToChangelogFile="true" />
+    <include file="0013-ref-add-column-organization.xml" relativeToChangelogFile="true" />
+    <include file="0014-mark-main-sign-in-organization.xml" relativeToChangelogFile="true" />
+    <include file="0015-cascade_delete_constraint_for_tc.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
