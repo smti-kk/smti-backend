@@ -1,5 +1,7 @@
 package ru.cifrak.telecomit.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -53,8 +55,18 @@ public class Account {
     @Column
     private String email;
 
-//    @Transient
+
     private String password;
+
+    @JsonIgnore
+    public String getPassword() {
+        return password;
+    }
+
+    @JsonProperty
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Column
     private Long oid;

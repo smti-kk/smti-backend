@@ -586,6 +586,16 @@ Content-Type: application/json
 
 > {% client.global.set("auth_token", response.body.token); %}
 
+
+###
+PUT http://localhost:8080/api/user/6/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+{
+  "val": "qq"
+}
+
 ### goo org and ap
 #GET http://localhost:8080/api/report/organization/export/map/?start=1593561600&end=1596240000
 #GET http://localhost:8080/api/report/organization/export/map/?start=1596240000&end=1598918400

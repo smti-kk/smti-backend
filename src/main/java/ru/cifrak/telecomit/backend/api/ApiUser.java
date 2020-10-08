@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.auth.repository.RepositoryAccount;
 import ru.cifrak.telecomit.backend.auth.repository.RepositoryUser;
 import ru.cifrak.telecomit.backend.entities.Account;
+import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.UserRole;
 import ru.cifrak.telecomit.backend.exceptions.JPAException;
@@ -70,6 +71,15 @@ public class ApiUser {
         }
         log.info("[{}]<- PUT {}::{}", user.getUsername(), API_PATH, value.getId());
         return item;
+    }
+
+    @PutMapping(value = "/{id}/", consumes = "application/json", produces = "application/json")
+    @Secured({"ROLE_ADMIN"})
+    public void updatePWD(@PathVariable(name = "id") final User account, @RequestBody String value, @AuthenticationPrincipal User user) throws JPAException {
+        log.info("[{}]-> PUT {}::{}", user.getUsername(), API_PATH, account.getId());
+        account.setPassword(passwordEncoder.encode(value));
+        rUser.save(account);
+        log.info("[{}]<- PUT {}::{}", user.getUsername(), API_PATH, account.getId());
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
