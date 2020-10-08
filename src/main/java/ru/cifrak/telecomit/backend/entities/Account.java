@@ -53,6 +53,9 @@ public class Account {
     @Column
     private String email;
 
+//    @Transient
+    private String password;
+
     @Column
     private Long oid;
 

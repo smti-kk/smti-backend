@@ -33,6 +33,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -234,6 +235,7 @@ public class ApiReports {
 
         Instant instantStart = Instant.ofEpochSecond(start);
         Instant instantEnd = Instant.ofEpochSecond(end);
+        instantEnd = instantEnd.minus(1, ChronoUnit.DAYS);
 
         log.info("->GET /api/report/organization/export/map/:: start:{} end:{}", Converter.simpleDate(instantStart), Converter.simpleDate(instantEnd));
         // xx. go for report data from utm5
@@ -288,6 +290,7 @@ public class ApiReports {
 
         Instant instantStart = Instant.ofEpochSecond(start);
         Instant instantEnd = Instant.ofEpochSecond(end);
+        instantEnd = instantEnd.minus(1, ChronoUnit.DAYS);
 
         log.info("->GET /api/report/organization/export/map/:: start:{} end:{}", Converter.simpleDate(instantStart), Converter.simpleDate(instantEnd));
         // xx. go for report data from utm5
@@ -341,6 +344,7 @@ public class ApiReports {
 
         Instant instantStart = Instant.ofEpochSecond(start);
         Instant instantEnd = Instant.ofEpochSecond(end);
+        instantEnd = instantEnd.minus(1, ChronoUnit.DAYS);
 
         log.info("->GET /api/report/organization/export/map/:: start:{} end:{}", Converter.simpleDate(instantStart), Converter.simpleDate(instantEnd));
         // xx. go for report data from utm5

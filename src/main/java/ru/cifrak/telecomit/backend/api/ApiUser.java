@@ -1,9 +1,9 @@
 package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.auth.repository.RepositoryAccount;
 import ru.cifrak.telecomit.backend.auth.repository.RepositoryUser;
@@ -14,7 +14,6 @@ import ru.cifrak.telecomit.backend.exceptions.JPAException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -24,10 +23,12 @@ public class ApiUser {
     private final static String API_PATH = "/api/user/";
     private final RepositoryUser rUser;
     private final RepositoryAccount rAccount;
+    private final PasswordEncoder passwordEncoder;
 
-    public ApiUser(RepositoryUser userRepository, RepositoryAccount rAccount) {
+    public ApiUser(RepositoryUser userRepository, RepositoryAccount rAccount, PasswordEncoder passwordEncoder) {
         this.rUser = userRepository;
         this.rAccount = rAccount;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -47,6 +48,7 @@ public class ApiUser {
         Account item = rAccount.findById(value.getId()).get();
         if (item.getOid() == null) {
             item.setEmail(value.getEmail());
+//            item.setPassword(value.getPassword());
             item.setFirstName(value.getFirstName());
             item.setLastName(value.getLastName());
             item.setPatronymicName(value.getPatronymicName());
@@ -73,10 +75,11 @@ public class ApiUser {
     @PostMapping(consumes = "application/json", produces = "application/json")
     @Secured({"ROLE_ADMIN"})
     public Account create(@RequestBody Account value, @AuthenticationPrincipal User user) throws JPAException {
-        log.info("[{}]-> POST {}", user.getUsername(), API_PATH);
+        log.info("[{}]-> POST {}::{}", user.getUsername(), API_PATH, value);
         User item = new User();
         item.setUsername(value.getUsername());
         item.setEmail(value.getEmail());
+        item.setPassword(passwordEncoder.encode(value.getPassword()));
         item.setFirstName(value.getFirstName());
         item.setLastName(value.getLastName());
         item.setPatronymicName(value.getPatronymicName());
