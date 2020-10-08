@@ -12,6 +12,7 @@ import ru.cifrak.telecomit.backend.entities.DLocationBase;
 import ru.cifrak.telecomit.backend.repository.RepositoryDLocationBase;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 @Slf4j
@@ -67,7 +68,7 @@ public class ApiLocation {
     public List<DLocationBase> base() {
         log.info("->GET /api/location/base/");
         log.info("<- GET /api/location/base/");
-        return rDLocationBase.findAll();
+        return rDLocationBase.findAllByTypeNotIn(Arrays.asList(new String[]{"с/с", "р-н", "край", "тер"}));
     }
 
 

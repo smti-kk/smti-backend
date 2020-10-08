@@ -17,6 +17,5 @@ import java.util.List;
 @Repository
 public interface RepositoryDLocationBase extends JpaRepository<DLocationBase, Integer> {
     @EntityGraph(value = DLocationBase.WITH_PARENT)
-    @Override
-    List<DLocationBase> findAll();
+    List<DLocationBase> findAllByTypeNotIn(List<String> types);
 }
