@@ -329,6 +329,6 @@ public class ApiOrganization {
     @GetMapping("/base/")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     public List<Organization> base() {
-        return rOrganization.findAll();
+        return rOrganization.findAllMain();
     }
 }

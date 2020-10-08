@@ -104,22 +104,28 @@ public class ServiceExternalReports {
         Map<Integer, UTM5ReportTrafficDTO> utm5Data = dataUtm5.stream().filter(i->i.getTclass().equals(10)).collect(Collectors.toMap(UTM5ReportTrafficDTO::getAccount_id, item -> item));
         Map<Long, ZabbixReportDTO> zabbixData = dataZabbix.stream().collect(Collectors.toMap(ZabbixReportDTO::getServiceId, item -> item));
 
-        List<Integer> accounts = dataUtm5.stream().map(UTM5ReportTrafficDTO::getAccount_id).distinct().collect(Collectors.toList());
-
-        List<JournalMAP> jmaps = rJournalMAP.findAllByMap_IdAccountIn(accounts);
+        List<JournalMAP> jmaps = rJournalMAP.findAll();
 
         return jmaps.stream()
                 .map(jmap -> {
                             ReportMapDTO item = new ReportMapDTO();
                             item.setAddress(jmap.getAp().getAddress());
                             item.setParent(jmap.getAp().getOrganization().getLocation().getParent().getName());
-                            item.setConsumption(Converter.megabytes(utm5Data.get(jmap.getMap().getIdAccount()).getBytes()));
+                            if (utm5Data.get(jmap.getMap().getIdAccount()) != null) {
+                                item.setConsumption(Converter.megabytes(utm5Data.get(jmap.getMap().getIdAccount()).getBytes()));
+                            }
                             item.setContractor(jmap.getAp().getContractor());
-                            item.setLocation(jmap.getAp().getOrganization().getLocation().getName());
+                            item.setLocation(jmap.getAp().getOrganization().getLocation().getType() + ". " + jmap.getAp().getOrganization().getLocation().getName());
                             item.setUcn(jmap.getAp().getUcn());
                             item.setOrganization(jmap.getAp().getOrganization().getName());
-                            item.setSla(zabbixData.get(jmap.getMap().getServiceId()).getSla());
-                            item.setProblemTime(zabbixData.get(jmap.getMap().getServiceId()).getProblemTime());
+                            if (zabbixData.get(jmap.getMap().getServiceId())!=null) {
+                                item.setSla(zabbixData.get(jmap.getMap().getServiceId()).getSla());
+                                item.setProblemTime(zabbixData.get(jmap.getMap().getServiceId()).getProblemTime());
+                            }
+                            item.setZabbixDeviceIp(jmap.getMap().getDeviceIp());
+                            item.setZabbixDeviceName(jmap.getMap().getDeviceName());
+                            item.setInternetAccessType(jmap.getAp().getInternetAccess().getName());
+                            item.setNetworks(jmap.getAp().getNetworks());
                             return item;
                         }
 

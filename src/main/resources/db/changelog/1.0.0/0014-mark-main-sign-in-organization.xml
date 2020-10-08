@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="tolstonogovav" id="1">
+        <sql endDelimiter=";">
+            UPDATE organization SET main=true WHERE id=869;
+            UPDATE organization SET main=true WHERE id=1356;
+            UPDATE organization SET main=true WHERE id=2699;
+            UPDATE organization SET main=true WHERE id=2320;
+            UPDATE organization SET main=true WHERE id=2890;
+            UPDATE organization SET main=true WHERE id=230;
+            UPDATE organization SET main=true WHERE id=279;
+            UPDATE organization SET main=true WHERE id=2003;
+            UPDATE organization SET main=true WHERE id=318;
+            UPDATE organization SET main=true WHERE id=2266;
+            UPDATE organization SET main=true WHERE id=3185;
+            UPDATE organization SET main=true WHERE id=3343;
+            UPDATE organization SET main=true WHERE id=1583;
+        </sql>
+   </changeSet>
+</databaseChangeLog>

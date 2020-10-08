@@ -10,6 +10,10 @@ Content-Type: application/json
 > {% client.global.set("session_id", response.body.session_id); %}
 
 ###
+GET http://espd-utm5-app.cifra-k.ru:9080/api/users/servicelinks/iptraffic?slink_id=3
+Authorization: session_id {{session_id}}
+
+###
 GET http://espd-utm5-app.cifra-k.ru:9080/api/users/
 Authorization: session_id {{session_id}}
 
