@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,15 +52,16 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
     }
 
     @Override
-    public Page<LocationForTable> getList(Pageable pageable,
-                                          @Nullable List<Integer> mobileTypes,
-                                          @Nullable List<Integer> internetTypes,
-                                          @Nullable List<Integer> internetOperators,
-                                          @Nullable List<Integer> cellularOperators,
-                                          Boolean isLogicalOr,
-                                          @Nullable String location,
-                                          @Nullable String parent) {
-        return locationService.listFiltered(
+    public ResponseEntity<Page<LocationForTable>> getList(Pageable pageable,
+                                                          @Nullable List<Integer> mobileTypes,
+                                                          @Nullable List<Integer> internetTypes,
+                                                          @Nullable List<Integer> internetOperators,
+                                                          @Nullable List<Integer> cellularOperators,
+                                                          Boolean isLogicalOr,
+                                                          @Nullable String location,
+                                                          @Nullable String parent
+    ) {
+        Page<LocationForTable> result = locationService.listFiltered(
                 pageable,
                 mobileTypes,
                 internetTypes,
@@ -69,6 +71,13 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
                 location,
                 parent
         );
+        CacheControl cacheControl = CacheControl.empty()
+                .noTransform()
+                .mustRevalidate();
+        return ResponseEntity.ok()
+                .lastModified(locationService.getLastRefreshDate().getTime())
+                .cacheControl(cacheControl)
+                .body(result);
     }
 
     @Override
