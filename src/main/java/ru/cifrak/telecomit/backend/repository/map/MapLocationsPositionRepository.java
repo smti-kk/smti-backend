@@ -29,7 +29,7 @@ public interface MapLocationsPositionRepository extends Repository<MapLocation, 
             " FROM MapLocation l" +
             " where l.type not in ('р-н', 'край', 'с/с', 'тер')" +
             " and l.geoData is not null" +
-            " and not exists (SELECT 1 FROM TechnicalCapability tc WHERE tc.location.id = l.id)")
+            " and not exists (SELECT 1 FROM TechnicalCapabilityForLocationTable tc WHERE tc.locationId = l.id AND tc.type = 'MOBILE')")
     @EntityGraph("map-location-full")
     List<MapLocation> findAllWithoutCellular();
 
@@ -37,7 +37,7 @@ public interface MapLocationsPositionRepository extends Repository<MapLocation, 
             " FROM MapLocation l" +
             " where l.type not in ('р-н', 'край', 'с/с', 'тер')" +
             " and l.geoData is not null" +
-            " and exists (SELECT 1 FROM TechnicalCapability tc WHERE tc.location.id = l.id)")
+            " and exists (SELECT 1 FROM TechnicalCapabilityForLocationTable tc WHERE tc.locationId = l.id AND tc.type = 'MOBILE')")
     @EntityGraph("map-location-full")
     List<MapLocation> findAllWithCellular();
 
