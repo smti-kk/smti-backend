@@ -68,7 +68,7 @@ public class ApiLocation {
     public List<DLocationBase> base() {
         log.info("->GET /api/location/base/");
         log.info("<- GET /api/location/base/");
-        return rDLocationBase.findAllByTypeNotIn(Arrays.asList(new String[]{"с/с", "р-н", "край", "тер"}));
+        return rDLocationBase.findAllByTypeNotIn(Arrays.asList(new String[]{"с/с", "край", "тер"}));
     }
 
 
