@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.UUID;
 
 
-
 @Data
 @NoArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
@@ -26,19 +25,24 @@ import java.util.UUID;
                         @NamedAttributeNode("location"),
                         @NamedAttributeNode("type"),
                         @NamedAttributeNode("smo"),
-                        @NamedAttributeNode("children"),
-                }/*,
+                        @NamedAttributeNode(value = "accessPoints", subgraph = "accesspoints"),
+                },
                 subgraphs = {
                         @NamedSubgraph(
                                 name = "accesspoints",
                                 attributeNodes = {
-                                    @NamedAttributeNode("GovernmentDevelopmentProgram"),
-                                    @NamedAttributeNode("Internetaccesstype"),
-                                    @NamedAttributeNode("Operator"),
-                                    @NamedAttributeNode("Contract"),
+                                        @NamedAttributeNode(value = "monitoringLink", subgraph = "jmap"),
+                                        @NamedAttributeNode("internetAccess"),
+                                        @NamedAttributeNode("governmentDevelopmentProgram"),
+                                }
+                        ),
+                        @NamedSubgraph(
+                                name = "jmap",
+                                attributeNodes = {
+                                        @NamedAttributeNode("map"),
                                 }
                         )
-                }*/
+                }
         ),
         @NamedEntityGraph(
                 name = Organization.REPORT_AP_ALL,
@@ -46,15 +50,15 @@ import java.util.UUID;
                         @NamedAttributeNode("location"),
                         @NamedAttributeNode("type"),
                         @NamedAttributeNode("smo"),
-                        @NamedAttributeNode(value = "accessPoints",subgraph = "aps"),
+                        @NamedAttributeNode(value = "accessPoints", subgraph = "aps"),
                 },
                 subgraphs = {
                         @NamedSubgraph(
                                 name = "aps",
                                 attributeNodes = {
-                                    @NamedAttributeNode("governmentDevelopmentProgram"),
-                                    @NamedAttributeNode("internetAccess"),
-                                    @NamedAttributeNode("operator"),
+                                        @NamedAttributeNode("governmentDevelopmentProgram"),
+                                        @NamedAttributeNode("internetAccess"),
+                                        @NamedAttributeNode("operator"),
                                 }
                         )
                 }
@@ -99,7 +103,7 @@ public class Organization implements Serializable {
     private String acronym;
 
     //bi-directional many-to-one association to Location
-    @JsonIgnoreProperties({"location","parent","geoData","children"})
+    @JsonIgnoreProperties({"location", "parent", "geoData", "children"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "key_location", nullable = false)
     private Location location;
