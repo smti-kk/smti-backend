@@ -1,6 +1,8 @@
 package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,9 +36,9 @@ public class ApiUser {
 
     @GetMapping
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
-    public List<Account> list(@AuthenticationPrincipal User user) {
+    public Page<Account> list(Pageable pageable, @AuthenticationPrincipal User user) {
         log.info("[{}]-> GET {}", user.getUsername(), API_PATH);
-        List<Account> results = rAccount.findAllByUsernameIsNot("admin");
+        Page<Account> results = rAccount.findAllByUsernameIsNot("admin", pageable);
         log.info("[{}]<- GET {}", user.getUsername(), API_PATH);
         return results;
     }
