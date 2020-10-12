@@ -2,20 +2,19 @@ package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.api.dto.*;
+import ru.cifrak.telecomit.backend.api.dto.response.ExternalSystemCreateStatusDTO;
 import ru.cifrak.telecomit.backend.api.util.Reports.HelperReport;
 import ru.cifrak.telecomit.backend.entities.*;
-import ru.cifrak.telecomit.backend.entities.AccessPointFull;
+import ru.cifrak.telecomit.backend.exceptions.NotAllowedException;
 import ru.cifrak.telecomit.backend.repository.*;
 import ru.cifrak.telecomit.backend.repository.specs.OrganizationSpec;
-import ru.cifrak.telecomit.backend.repository.specs.SpecificationAccessPointFull;
 import ru.cifrak.telecomit.backend.service.ServiceAccessPoint;
 import ru.cifrak.telecomit.backend.service.ServiceOrganization;
 
@@ -203,7 +202,8 @@ public class ApiOrganization {
 
     @PostMapping(value = "/", consumes = "application/json", produces = "application/json")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    public ResponseEntity<OrganizationShortDTO> createItem(@RequestBody OrganizationShortDTO value) {
+    public ResponseEntity<OrganizationShortDTO> createItem(@RequestBody OrganizationShortDTO value,
+                                                           @AuthenticationPrincipal User user) {
         log.info("->POST /api/organization/ ");
         Organization item = new Organization();
         item.setAddress(value.getAddress());
@@ -214,6 +214,10 @@ public class ApiOrganization {
         item.setAcronym(value.getAcronym());
         item.setLocation(rLocation.getOne(value.getLocation()));
         //TODO: make this work later, when we have some real data...
+        List<Organization> parents = rOrganization.findByUserOrganization(user.getId());
+        if (parents.size() > 0) {
+            item.setParent(parents.get(0));
+        }
 //        item.setParent(value.getParent());
 //        item.setChildren(value.getChildren());
         if (value.getType() != null) {
@@ -243,8 +247,16 @@ public class ApiOrganization {
         //TODO: make this work later, when we have some real data...
 //        item.setParent(value.getParent());
 //        item.setChildren(value.getChildren());
-        item.setType(rTypeOrganization.getOne(value.getType()));
-        item.setSmo(rTypeSmo.getOne(value.getSmo()));
+        if (value.getType() == null) {
+            item.setType(null);
+        } else {
+            item.setType(rTypeOrganization.getOne(value.getType()));
+        }
+        if (value.getSmo() == null) {
+            item.setSmo(null);
+        } else {
+            item.setSmo(rTypeSmo.getOne(value.getSmo()));
+        }
         Organization saved = rOrganization.save(item);
         log.info("<-PUT /api/organization/{}", item.getId());
         return ResponseEntity.ok(new OrganizationDTO(saved));
@@ -254,7 +266,7 @@ public class ApiOrganization {
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
     public List<AccessPointDetailInOrganizationDTO> apsByOrganization(@PathVariable Integer id) {
         log.info("->GET /api/organization/{}/ap", id);
-        return rAccessPoints.getAllByOrganizationId(id).stream().map(AccessPointDetailInOrganizationDTO::new).collect(Collectors.toList());
+        return rAccessPoints.getAllByOrganizationIdAndDeletedIsFalse(id).stream().map(AccessPointDetailInOrganizationDTO::new).collect(Collectors.toList());
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
@@ -301,28 +313,22 @@ public class ApiOrganization {
 
     @PostMapping("/{id}/ap/{apid}/init-monitoring")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
-    public ResponseEntity<String> initMonitoring(@PathVariable Integer id, @PathVariable Integer apid,
-                                                 @RequestBody final MonitoringAccessPointWizardDTO wizard) {
-        log.info("->GET /{}/ap/{}/init-monitoring", id, apid);
+    public ExternalSystemCreateStatusDTO initMonitoring(@PathVariable Integer id, @PathVariable Integer apid,
+                                                        @RequestBody final MonitoringAccessPointWizardDTO wizard, @AuthenticationPrincipal User user) throws NotAllowedException {
+        log.info("[{}]->GET /{}/ap/{}/init-monitoring", user.getUsername(), id, apid);
         try {
-            sOrganization.initializeMonitoringOnAp(id, apid, wizard);
-            log.info("<-GET /{}/ap/{}/init-monitoring", id, apid);
-            return ResponseEntity
-                    .ok()
-                    .header("Content-Type", "application/json")
-                    .body("{\"result\": \"access point enabled in monitoring system\"}");
+             ExternalSystemCreateStatusDTO result = sOrganization.linkAccessPointWithMonitoringSystems(id, apid, wizard);
+            log.info("[{}]<-GET /{}/ap/{}/init-monitoring", user.getUsername(), id, apid);
+            return result;
         } catch (Exception e) {
-            log.warn("<-GET /{}/ap/{}/init-monitoring :EXCEPTION {}", id, apid, e.getMessage());
-            return ResponseEntity
-                    .badRequest()
-                    .header("Content-Type", "application/json")
-                    .body("{\"error\": \"access point NOT enabled in monitoring system due: " + e.getMessage() + "\"}");
+            log.warn("[{}]<-GET /{}/ap/{}/init-monitoring :EXCEPTION {}", user.getUsername(), id, apid, e.getMessage());
+            throw e;
         }
     }
 
     @GetMapping("/base/")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     public List<Organization> base() {
-        return rOrganization.findAll();
+        return rOrganization.findAllMain();
     }
 }

@@ -26,7 +26,7 @@ public class JournalMAP extends Auditing implements Serializable {
     @Column(unique = true, nullable = false)
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "key_ap")
     private AccessPoint ap;
 
@@ -34,6 +34,4 @@ public class JournalMAP extends Auditing implements Serializable {
     @JoinColumn(name = "key_map")
     private MonitoringAccessPoint map;
 
-    @Column
-    private Boolean active;
 }

@@ -1,6 +1,7 @@
 
 package ru.cifrak.telecomit.backend.api;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.auth.repository.RepositoryUser;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/esia")
 public class ApiEsia {
@@ -29,6 +30,7 @@ public class ApiEsia {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, Object> esia_data) {
 
+        log.info("->GET /api/esia/login");
         final ZoneId zoneId = ZoneId.systemDefault(); // TODO get from properties
         final LocalDateTime nowTime = LocalDateTime.now(zoneId);
 
@@ -85,8 +87,6 @@ public class ApiEsia {
             existingUser.setFirstName(firstName);
             existingUser.setLastName(lastName);
             existingUser.setPatronymicName(middleName);
-            existingUser.setPhone(phoneNumber);
-            existingUser.setPassport(passportData);
             existingUser.setEmail(email);
             return userRepository.save(existingUser);
         }).orElseGet(() -> {
@@ -99,8 +99,6 @@ public class ApiEsia {
             newUser.setFirstName(firstName);
             newUser.setLastName(lastName);
             newUser.setPatronymicName(middleName);
-            newUser.setPhone(phoneNumber);
-            newUser.setPassport(passportData);
             newUser.setEmail(email);
             return userRepository.save(newUser);
         });
@@ -109,6 +107,7 @@ public class ApiEsia {
                 .findByUser(user)
                 .orElseGet(() -> authTokenCacheService.createForUser(user, zoneId));
 
+        log.info("<- GET /api/esia/login");
         return ResponseEntity.ok(new HashMap<String, String>() {{
             put("redirect_params", "");
             put("auth_token", authTokenCache.getId());

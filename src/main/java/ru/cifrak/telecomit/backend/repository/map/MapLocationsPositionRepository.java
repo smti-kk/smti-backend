@@ -27,6 +27,22 @@ public interface MapLocationsPositionRepository extends Repository<MapLocation, 
 
     @Query("SELECT l" +
             " FROM MapLocation l" +
+            " where l.type not in ('р-н', 'край', 'с/с', 'тер')" +
+            " and l.geoData is not null" +
+            " and not exists (SELECT 1 FROM TechnicalCapabilityForLocationTable tc WHERE tc.locationId = l.id AND tc.type = 'MOBILE')")
+    @EntityGraph("map-location-full")
+    List<MapLocation> findAllWithoutCellular();
+
+    @Query("SELECT l" +
+            " FROM MapLocation l" +
+            " where l.type not in ('р-н', 'край', 'с/с', 'тер')" +
+            " and l.geoData is not null" +
+            " and exists (SELECT 1 FROM TechnicalCapabilityForLocationTable tc WHERE tc.locationId = l.id AND tc.type = 'MOBILE')")
+    @EntityGraph("map-location-full")
+    List<MapLocation> findAllWithCellular();
+
+    @Query("SELECT l" +
+            " FROM MapLocation l" +
             " where l.type not in ('р-н', 'край', 'с/с', 'тер') " +
             "   and l.geoData is not null" +
             "   and within(l.geoData.administrativeCenter, :bbox) = true")

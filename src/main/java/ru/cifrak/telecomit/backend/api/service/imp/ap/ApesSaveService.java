@@ -4,9 +4,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
-import ru.cifrak.telecomit.backend.entities.AccessPoint;
-import ru.cifrak.telecomit.backend.entities.Location;
-import ru.cifrak.telecomit.backend.entities.Organization;
+import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.repository.*;
 import ru.cifrak.telecomit.backend.service.LocationService;
 
@@ -50,7 +48,7 @@ public class ApesSaveService {
     public void save(List<ApFromExcelDTO> TcesDTO) {
         for (ApFromExcelDTO tcDTO : TcesDTO) {
             List<AccessPoint> apes = repositoryAccessPoints.findByPointAndOrganization(
-                    createPoint(tcDTO.getLatitude(), tcDTO.getLongitude()),
+                    createPoint(tcDTO.getLongitude(), tcDTO.getLatitude()),
                     getOrganization(tcDTO));
             if (apes.size() > 0) {
                 // TODO: Transaction.
@@ -59,8 +57,25 @@ public class ApesSaveService {
                 apes.get(0).setDeclaredSpeed(tcDTO.getDeclaredSpeed());
                 repositoryAccessPoints.save(apes.get(0));
             } else {
-                AccessPoint ap = new AccessPoint();
-                ap.setPoint(createPoint(tcDTO.getLatitude(), tcDTO.getLongitude()));
+                AccessPoint ap;
+                switch (tcDTO.getTypeAccessPoint()) {
+                    case ("ЕСПД"):
+                        ap = new ApESPD();
+                        break;
+                    case ("РСЗО"):
+                        ap = new ApRSMO();
+                        break;
+                    case ("СЗО"):
+                        ap = new ApSMO();
+                        break;
+                    case ("ЗСПД"):
+                        ap = new ApZSPD();
+                        break;
+                    default:
+                        ap = new ApContract();
+                        break;
+                }
+                ap.setPoint(createPoint(tcDTO.getLongitude(), tcDTO.getLatitude()));
                 ap.setOrganization(getOrganization(tcDTO));
                 ap.setContractor(tcDTO.getContractor());
                 ap.setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));

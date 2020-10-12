@@ -1,5 +1,7 @@
 package ru.cifrak.telecomit.backend.auth.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,8 +14,7 @@ import java.util.Optional;
 public interface RepositoryAccount extends JpaRepository<Account, Long> {
 
     @EntityGraph(Account.WITH_ALL)
-    @Override
-    List<Account> findAll();
+    Page<Account> findAllByUsernameIsNot(String name, Pageable pageable);
 
     @EntityGraph(Account.WITH_ALL)
     @Override

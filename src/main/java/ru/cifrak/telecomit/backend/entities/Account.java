@@ -1,5 +1,8 @@
 package ru.cifrak.telecomit.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -53,14 +56,34 @@ public class Account {
     @Column
     private String email;
 
+
+    private String password;
+
+    @JsonIgnore
+    public String getPassword() {
+        return password;
+    }
+
+    @JsonProperty
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Column
+    private Long oid;
+
     @OneToMany
-    @JoinTable(name = "user_locations", joinColumns = {@JoinColumn(name = "key_user")}, inverseJoinColumns = {@JoinColumn(name = "key_location")})
+    @JoinTable(name = "user_locations",
+            joinColumns = {@JoinColumn(name = "key_user")},
+            inverseJoinColumns = {@JoinColumn(name = "key_location")})
+    @JsonIgnoreProperties({"parent"})
     private Set<DLocationBase> locations;
 
     @OneToMany
     @JoinTable(name = "user_organizations",
             joinColumns = {@JoinColumn(name = "key_user")},
             inverseJoinColumns = {@JoinColumn(name = "key_organization")})
+    @JsonIgnoreProperties({"location","parent","children","accessPoints","type","smo"})
     private Set<Organization> organizations;
 
 }

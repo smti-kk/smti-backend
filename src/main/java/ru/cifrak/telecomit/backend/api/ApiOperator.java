@@ -1,86 +1,115 @@
 package ru.cifrak.telecomit.backend.api;
 
-import org.springframework.cache.annotation.Cacheable;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.entities.Operator;
-import ru.cifrak.telecomit.backend.repository.RepositoryOperator;
+import ru.cifrak.telecomit.backend.entities.User;
+import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
+import ru.cifrak.telecomit.backend.service.LocationService;
+import ru.cifrak.telecomit.backend.service.ServiceOperators;
 
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/operator")
 public class ApiOperator {
-    private RepositoryOperator repository;
+    private final ServiceOperators serviceOperators;
+    private final LocationService locationService;
 
-    public ApiOperator(RepositoryOperator repository) {
-        this.repository = repository;
+    public ApiOperator(ServiceOperators serviceOperators, LocationService locationService) {
+        this.serviceOperators = serviceOperators;
+        this.locationService = locationService;
     }
 
     @GetMapping("/{id}/")
-    public ResponseEntity<Operator> item(@NotNull @PathVariable Integer id) {
-        Optional<Operator> item = repository.findById(id);
-        if (item.isPresent()){
-            return ResponseEntity.ok(item.get());
-        } else
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Operator> item(@NotNull @PathVariable Integer id) throws NotFoundException {
+        Operator item = serviceOperators.item(id);
+        return ResponseEntity.ok(item);
     }
 
     @GetMapping
-    List<Operator> findAll() {
-        return repository.findAll();
+    public List<Operator> findAll() {
+        return serviceOperators.findAll();
+    }
+
+    @GetMapping(params = {"page", "size"})
+    public Page<Operator> findAll(Pageable pageable) {
+        return serviceOperators.findAll(pageable);
     }
 
     @GetMapping("/grouped")
-    @Cacheable("grouped_operators")
     public Map<String, List<Operator>> grouped() {
-        Map<String, List<Operator>> map = new HashMap<>();
-        map.put("internet", repository.internet());
-        map.put("mobile", repository.mobile());
-        map.put("ats", repository.ats());
-        map.put("radio", repository.radio());
-        map.put("post", repository.postal());
-        map.put("television", repository.television());
-        map.put("payphone", repository.payphone());
-        map.put("infomat", repository.infomat());
-        return map;
+        return serviceOperators.grouped();
     }
 
     @GetMapping("/internet")
     public List<Operator> internet() {
-        return repository.internet();
+        return serviceOperators.internet();
     }
 
     @GetMapping("/mobile")
     public List<Operator> mobile() {
-        return repository.mobile();
+        return serviceOperators.mobile();
     }
 
     @GetMapping("/postal")
     public List<Operator> postal() {
-        return repository.postal();
+        return serviceOperators.postal();
     }
 
     @GetMapping("/ats")
     public List<Operator> ats() {
-        return repository.ats();
+        log.info("->GET /api/operator/ats");
+        return serviceOperators.ats();
     }
 
     @GetMapping("/radio")
     public List<Operator> radio() {
-        return repository.radio();
+        log.info("->GET /api/operator/radio");
+        return serviceOperators.radio();
     }
 
     @GetMapping("/tv")
     public List<Operator> television() {
-        return repository.television();
+        log.info("->GET /api/operator/tv");
+        return serviceOperators.television();
     }
 
+    @PostMapping
+    @Secured("ROLE_ADMIN")
+    @CacheEvict(value = "grouped_operators", allEntries = true)
+    public Operator createOrUpdateOperator(@RequestBody Operator operator,
+                                           @AuthenticationPrincipal User user) {
+        log.info("user {} create new operator {}", user.getId(), operator.getName());
+        return serviceOperators.save(operator);
+    }
+
+    @PostMapping("/add-icon")
+    @Secured("ROLE_ADMIN")
+    public Map<String, String> createOperatorIcon(@RequestParam(required = false) MultipartFile icon) {
+        log.info("add new operator icon to database");
+        HashMap<String, String> objWithIconPath = new HashMap<>();
+        objWithIconPath.put("iconPath", serviceOperators.createIcon(icon));
+        return objWithIconPath;
+    }
+
+    @DeleteMapping("/{operatorId}")
+    @Secured("ROLE_ADMIN")
+    public void deleteOperator(@PathVariable("operatorId") Integer id,
+                               @AuthenticationPrincipal User user) {
+        log.info("delete operator with id {} {}", id, user.getEmail());
+        serviceOperators.delete(id);
+        locationService.refreshCache();
+    }
 }

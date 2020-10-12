@@ -4,9 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.ExelReportLocation;
 import ru.cifrak.telecomit.backend.api.dto.LocationProvidingInfo;
@@ -47,15 +52,16 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
     }
 
     @Override
-    public Page<LocationForTable> getList(Pageable pageable,
-                                          @Nullable List<Integer> mobileTypes,
-                                          @Nullable List<Integer> internetTypes,
-                                          @Nullable List<Integer> internetOperators,
-                                          @Nullable List<Integer> cellularOperators,
-                                          Boolean isLogicalOr,
-                                          @Nullable String location,
-                                          @Nullable String parent) {
-        return locationService.listFiltered(
+    public ResponseEntity<Page<LocationForTable>> getList(Pageable pageable,
+                                                          @Nullable List<Integer> mobileTypes,
+                                                          @Nullable List<Integer> internetTypes,
+                                                          @Nullable List<Integer> internetOperators,
+                                                          @Nullable List<Integer> cellularOperators,
+                                                          Boolean isLogicalOr,
+                                                          @Nullable String location,
+                                                          @Nullable String parent
+    ) {
+        Page<LocationForTable> result = locationService.listFiltered(
                 pageable,
                 mobileTypes,
                 internetTypes,
@@ -65,6 +71,13 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
                 location,
                 parent
         );
+        CacheControl cacheControl = CacheControl.empty()
+                .noTransform()
+                .mustRevalidate();
+        return ResponseEntity.ok()
+                .lastModified(locationService.getLastRefreshDate().getTime())
+                .cacheControl(cacheControl)
+                .body(result);
     }
 
     @Override
@@ -107,5 +120,22 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
 
     public List<LocationForTable> byUser(User user) {
         return repository.findByUserId(user.getId());
+    }
+
+    @Override
+    @Secured({"ROLE_ADMIN"})
+    public void deleteById(Integer id) {
+        repository.forceDeleteById(id);
+        locationService.refreshCache();
+    }
+
+    @DeleteMapping(params = {"id", "population"})
+    @Secured({"ROLE_ADMIN"})
+    public void update(@RequestParam("id") Integer id,
+                       @RequestParam("population") Integer population,
+                       @AuthenticationPrincipal User user) {
+        log.info("user {} update location {} with id", user.getEmail(), id);
+        repository.updatePopulation(id, population);
+        locationService.refreshCache();
     }
 }

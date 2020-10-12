@@ -31,25 +31,25 @@ public class BaseStation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final Integer id;
-    private final String address;
-    private final Double propHeight;
+    private String address;
+    private Double propHeight;
 
     @CreationTimestamp
-    private final Date actionDate;
+    private Date actionDate;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private final Operator operator;
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    private Operator operator;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private final TypeMobile mobileType;
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    private TypeMobile mobileType;
 
     @Column(nullable = false)
-    private final Double coverageRadius;
+    private Double coverageRadius;
 
     @Column(nullable = false)
     @JsonSerialize(using = GeometrySerializer.class)
     @JsonDeserialize(using = GeometryDeserializer.class)
-    private final Point point;
+    private Point point;
 
     public BaseStation(Integer id,
                        String address,

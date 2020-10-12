@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <include file="0001-cascade_delete_constraint_for_location.xml" relativeToChangelogFile="true" />
+    <include file="0002-ref-journal-map.xml" relativeToChangelogFile="true" />
+    <include file="0003-added_appeal_table.xml" relativeToChangelogFile="true" />
+    <include file="0004-create_appeal_sequance.xml" relativeToChangelogFile="true" />
+    <include file="0005-create_file_table.xml" relativeToChangelogFile="true" />
+    <include file="0006-ref-app-user-shrink.xml" relativeToChangelogFile="true" />
+    <include file="0007-ref-app-user-add-unique-email-constraint.xml" relativeToChangelogFile="true" />
+    <include file="0008-operator_services_many_to_many.xml" relativeToChangelogFile="true" />
+    <include file="0009-operator_services_add_post.xml" relativeToChangelogFile="true" />
+    <include file="0010-operator_services_add_all.xml" relativeToChangelogFile="true" />
+    <include file="0011-drop_column_services.xml" relativeToChangelogFile="true" />
+    <include file="0012-cascade_delete_constraint_for_location2.xml" relativeToChangelogFile="true" />
+    <include file="0013-ref-add-column-organization.xml" relativeToChangelogFile="true" />
+    <include file="0014-mark-main-sign-in-organization.xml" relativeToChangelogFile="true" />
+    <include file="0015-cascade_delete_constraint_for_tc.xml" relativeToChangelogFile="true" />
+    <include file="0016-cascade_delete_constraint_for_type_organization.xml" relativeToChangelogFile="true" />
+</databaseChangeLog>

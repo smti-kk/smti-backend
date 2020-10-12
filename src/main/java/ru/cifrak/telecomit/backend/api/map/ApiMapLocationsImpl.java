@@ -1,11 +1,11 @@
 package ru.cifrak.telecomit.backend.api.map;
 
 import org.springframework.web.bind.annotation.RestController;
-import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
+import ru.cifrak.telecomit.backend.entities.map.MapLocation;
 import ru.cifrak.telecomit.backend.entities.map.ShortLocation;
+import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
 import ru.cifrak.telecomit.backend.repository.map.MapLocationSearchResult;
 import ru.cifrak.telecomit.backend.repository.map.MapLocationsPositionRepository;
-import ru.cifrak.telecomit.backend.entities.map.MapLocation;
 import ru.cifrak.telecomit.backend.repository.map.MapLocationsRepository;
 import ru.cifrak.telecomit.backend.service.BboxFactory;
 
@@ -28,6 +28,16 @@ public class ApiMapLocationsImpl implements ApiMapLocations {
     @Override
     public List<MapLocation> list() {
         return this.mapLocationsPositionRepository.findAll();
+    }
+
+    @Override
+    public List<MapLocation> listWithoutCellular() {
+        return this.mapLocationsPositionRepository.findAllWithoutCellular();
+    }
+
+    @Override
+    public List<MapLocation> listWithCellular() {
+        return this.mapLocationsPositionRepository.findAllWithCellular();
     }
 
     @Override

@@ -1,4 +1,4 @@
-###      Authorization
+###      AUTHORIZATION
 POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
 Content-Type: application/json
 
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 > {% client.global.set("auth", response.body.result); %}
 
-###      get all hosts
+###      GET ALL HOSTS
 POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
 Content-Type: application/json
 
@@ -36,7 +36,44 @@ Content-Type: application/json
     "auth": "{{auth}}"
 }
 
-###      get all group of hosts
+###      GET HOST BY NAME
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "host.get",
+    "params": {
+        "output": [
+            "hostid",
+            "host"
+        ],
+        "search": {"host": "ggo-4-d"} ,
+        "selectInterfaces": [
+            "interfaceid",
+            "ip"
+        ],
+        "selectTriggers": ["triggerid","description"]
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
+###      RETRIEVING ALL SERVICES
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "service.get",
+    "params": {
+       "output": ["serviceid","name"]
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
+###      GET ALL GROUP OF HOSTS
 POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
 Content-Type: application/json
 
@@ -50,9 +87,7 @@ Content-Type: application/json
     "auth": "{{auth}}"
 }
 
-
-
-###      get Templates
+###      GET TEMPLATES
 POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
 Content-Type: application/json
 
@@ -66,7 +101,7 @@ Content-Type: application/json
     "auth": "{{auth}}"
 }
 
-###      create HOST
+###      CREATE HOST
 POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
 Content-Type: application/json
 
@@ -112,7 +147,7 @@ Content-Type: application/json
     "auth": "{{auth}}"
 }
 
-###      get STATUS OF HOST
+###      GET STATUS OF HOST
 POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
 Content-Type: application/json
 
@@ -133,9 +168,6 @@ Content-Type: application/json
     "id": 2,
     "auth": "{{auth}}"
 }
-
-
-
 
 ###################################################
 POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
@@ -170,7 +202,6 @@ Content-Type: application/json
   "id" : 101,
   "auth" : "d7b5befea060a3cea989d73dcdb51f7a"
 }
-
 
 ###      CREATE new main SERVICE
 POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
@@ -213,7 +244,6 @@ Content-Type: application/json
     "auth": "{{auth}}"
 }
 
-
 ###      Get all triggers for Access Point
 POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
 Content-Type: application/json
@@ -229,8 +259,6 @@ Content-Type: application/json
     "id": 1,
     "auth": "{{auth}}"
 }
-
-
 
 ###      Get Статистику по сервисам за период!!!!! ура, просто докидываем, список точек, и времянной период! в секундах
 POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php

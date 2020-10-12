@@ -30,8 +30,10 @@ public interface ApiFeaturesRequests {
     Page<LocationFeaturesEditingRequestFull> requestsByUser(Pageable pageable, @AuthenticationPrincipal User user);
 
     @GetMapping("/{request}/accept")
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
     void acceptRequest(@PathVariable LocationFeaturesEditingRequest request);
 
     @GetMapping(value = "/{request}/decline", params = {"comment"})
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
     void declineRequest(@PathVariable LocationFeaturesEditingRequest request, @RequestParam String comment);
 }

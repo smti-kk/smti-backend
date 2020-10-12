@@ -18,15 +18,15 @@ import ru.cifrak.telecomit.backend.cache.service.AuthTokenCacheService;
 import ru.cifrak.telecomit.backend.entities.User;
 
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 @RequestMapping("/auth")
 public class AuthAPI {
+    private static final String API_PATH = "/auth";
+
     private final PasswordEncoder passwordEncoder;
 
     private final RepositoryUser userRepository;
@@ -41,39 +41,39 @@ public class AuthAPI {
 
     @PostMapping("/login/")
     public ResponseEntity<TokenDTO> register(@Validated @RequestBody AuthFrontDTO data) throws NoSuchAlgorithmException {
-        log.info("-> [api] auth/login/");
-        final Optional<User> userOptional = userRepository.findByEmail(data.getEmail());
+        log.info("-> POST {}{}", API_PATH, "/login/");
+        final Optional<User> userOptional = userRepository.findByEmailAndIsActiveTrue(data.getEmail());
 
         if (!userOptional.isPresent()) {
-            log.info("<- [api] auth/login/");
+            log.warn("<- POST {}{} user not found or disabled", API_PATH, "/login/");
             return ResponseEntity.badRequest().build();
         }
 
         final User user = userOptional.get();
 
         if (!passwordEncoder.matches(data.getPassword(), user.getPassword())) {
-            log.info("<- [api] auth/login/");
+            log.warn("<- POST {}{} wrong user or password", API_PATH, "/login/");
             return ResponseEntity.badRequest().build();
         }
 
         final Optional<AuthTokenCache> optionalAuthToken = authTokenCacheService.findByUser(user);
 
         if (optionalAuthToken.isPresent()) {
-            log.info("<- [api] auth/login/");
+            log.info("<- POST {}{}", API_PATH, "/login/");
             return ResponseEntity.ok(new TokenDTO(optionalAuthToken.get().getId()));
         }
 
         final ZoneId zoneId = ZoneId.systemDefault(); // TODO get from properties
 
         final AuthTokenCache newAuthTokenCache = authTokenCacheService.createForUser(user, zoneId);
-        log.info("<- [api] auth/login/");
+        log.info("<- POST {}{}", API_PATH, "/login/");
         return ResponseEntity.ok(new TokenDTO(newAuthTokenCache.getId()));
     }
 
     @GetMapping("/account_info")
     public ResponseEntity<User> account_info(@AuthenticationPrincipal User user) {
-        log.info("-> [api] auth/account_info");
-        log.info("<- [api] auth/account_info");
+        log.info("[{}]-> GET {}{}", user.getUsername(), API_PATH, "/account_info");
+        log.info("[{}]<- GET {}{}", user.getUsername(), API_PATH, "/account_info");
         return ResponseEntity.ok(user);
     }
 }

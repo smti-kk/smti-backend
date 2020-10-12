@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.api;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,7 +10,7 @@ import ru.cifrak.telecomit.backend.entities.TypeTrunkChannel;
 import ru.cifrak.telecomit.backend.repository.RepositoryTypeTruncChannel;
 
 import java.util.List;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/type/trunk-channel")
 public class ApiTypeTrunkChannel {
