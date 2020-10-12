@@ -1,10 +1,9 @@
 package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.*;
+import ru.cifrak.telecomit.backend.entities.TypeOrganization;
 import ru.cifrak.telecomit.backend.entities.TypeSmo;
 import ru.cifrak.telecomit.backend.repository.RepositorySmoType;
 
@@ -33,4 +32,15 @@ public class ApiSmoType {
         return repository.findById(id).orElse(null);
     }
 
+    @PostMapping
+    @Secured({"ROLE_ADMIN"})
+    public TypeSmo createSmoType(@RequestBody TypeSmo typeSmo) {
+        return repository.save(typeSmo);
+    }
+
+    @DeleteMapping("/{id}")
+    @Secured({"ROLE_ADMIN"})
+    public void deleteSmoType(@PathVariable Integer id) {
+        repository.deleteById(id);
+    }
 }
