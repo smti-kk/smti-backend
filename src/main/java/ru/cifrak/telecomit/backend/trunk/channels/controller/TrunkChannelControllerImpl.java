@@ -45,6 +45,9 @@ public class TrunkChannelControllerImpl implements TrunkChannelController {
     @Override
     @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
     public TrunkChannel update(TrunkChannel trunkChannel) {
+        if (trunkChannel.getProgram() == null){
+            trunkChannel.setCompleted(null);
+        }
         return trunkChannelRepository.save(trunkChannel);
     }
 }
