@@ -1,6 +1,7 @@
 package ru.cifrak.telecomit.backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -75,12 +76,14 @@ public class Account {
     @JoinTable(name = "user_locations",
             joinColumns = {@JoinColumn(name = "key_user")},
             inverseJoinColumns = {@JoinColumn(name = "key_location")})
+    @JsonIgnoreProperties({"parent"})
     private Set<DLocationBase> locations;
 
     @OneToMany
     @JoinTable(name = "user_organizations",
             joinColumns = {@JoinColumn(name = "key_user")},
             inverseJoinColumns = {@JoinColumn(name = "key_organization")})
+    @JsonIgnoreProperties({"location","parent","children","accessPoints","type","smo"})
     private Set<Organization> organizations;
 
 }

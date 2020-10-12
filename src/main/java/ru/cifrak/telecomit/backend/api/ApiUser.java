@@ -1,6 +1,8 @@
 package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,14 +10,16 @@ import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.auth.repository.RepositoryAccount;
 import ru.cifrak.telecomit.backend.auth.repository.RepositoryUser;
 import ru.cifrak.telecomit.backend.entities.Account;
-import ru.cifrak.telecomit.backend.entities.Organization;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.UserRole;
 import ru.cifrak.telecomit.backend.exceptions.JPAException;
+import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
+import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -24,19 +28,23 @@ public class ApiUser {
     private final static String API_PATH = "/api/user/";
     private final RepositoryUser rUser;
     private final RepositoryAccount rAccount;
+    private final RepositoryLocation rLocation;
+    private final RepositoryOrganization rOrganization;
     private final PasswordEncoder passwordEncoder;
 
-    public ApiUser(RepositoryUser userRepository, RepositoryAccount rAccount, PasswordEncoder passwordEncoder) {
+    public ApiUser(RepositoryUser userRepository, RepositoryAccount rAccount, RepositoryLocation rLocation, RepositoryOrganization rOrganization, PasswordEncoder passwordEncoder) {
         this.rUser = userRepository;
         this.rAccount = rAccount;
+        this.rLocation = rLocation;
+        this.rOrganization = rOrganization;
         this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
-    public List<Account> list(@AuthenticationPrincipal User user) {
+    public Page<Account> list(Pageable pageable, @AuthenticationPrincipal User user) {
         log.info("[{}]-> GET {}", user.getUsername(), API_PATH);
-        List<Account> results = rAccount.findAllByUsernameIsNot("admin");
+        Page<Account> results = rAccount.findAllByUsernameIsNot("admin", pageable);
         log.info("[{}]<- GET {}", user.getUsername(), API_PATH);
         return results;
     }
@@ -49,7 +57,10 @@ public class ApiUser {
         Account item = rAccount.findById(value.getId()).get();
         if (item.getOid() == null) {
             item.setEmail(value.getEmail());
-//            item.setPassword(value.getPassword());
+            if (value.getPassword() != null) {
+                item.setPassword(value.getPassword());
+            }
+            item.setUsername(value.getUsername());
             item.setFirstName(value.getFirstName());
             item.setLastName(value.getLastName());
             item.setPatronymicName(value.getPatronymicName());
@@ -98,6 +109,12 @@ public class ApiUser {
         List<UserRole> roles = new ArrayList();
         roles.addAll(value.getRoles());
         item.setRoles(roles);
+        if(value.getLocations()!= null){
+            item.setLocations(rLocation.findAllById(value.getLocations().stream().map(i->i.getId()).collect(Collectors.toList())));
+        }
+        if(value.getOrganizations()!= null){
+            item.setOrganizations(rOrganization.findAllById(value.getOrganizations().stream().map(i->i.getId()).collect(Collectors.toList())));
+        }
         try {
             item = rUser.save(item);
         } catch (Exception e) {

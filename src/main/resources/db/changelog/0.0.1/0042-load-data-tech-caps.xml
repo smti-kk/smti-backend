@@ -4,6 +4,6 @@
         <sqlFile path="data/technical_capability.sql" relativeToChangelogFile="true" />
     </changeSet>
     <changeSet author="a-panov" id="2">
-        <sql dbms="postgresql" endDelimiter=";">ALTER SEQUENCE technical_capability_id_seq restart with 10783;</sql>
+        <sql endDelimiter=";">ALTER SEQUENCE technical_capability_id_seq restart with 10783;</sql>
     </changeSet>
 </databaseChangeLog>

@@ -21,7 +21,7 @@
         </createTable>
     </changeSet>
     <changeSet author="turkovvs" id="112">
-        <sql dbms="postgresql" endDelimiter=";">
+        <sql endDelimiter=";">
             INSERT into operator_service (label) values('Интернет'),
                                                         ('Мобильная связь'),
                                                         ('ТВ'),
