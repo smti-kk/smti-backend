@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet author="turkovvs" id="1234">
-        <sql dbms="postgresql" endDelimiter=";">
+        <sql endDelimiter=";">
             ALTER TABLE public.feature_edit DROP CONSTRAINT "FKgy6lyquhxp7h3a4idtq1kceef";
             ALTER TABLE public.feature_edit ADD CONSTRAINT "FKadwqdwqdqwqwexxx" FOREIGN KEY (tc_id) REFERENCES technical_capability(id) on delete cascade;
             ALTER TABLE public.feature_edit ADD CONSTRAINT "FKadwqdwqdqwqwexxx2" FOREIGN KEY (new_value_id) REFERENCES technical_capability(id) on delete cascade;

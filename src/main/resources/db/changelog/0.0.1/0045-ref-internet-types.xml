@@ -3,14 +3,14 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet author="panovav" id="1">
-        <sql dbms="postgresql" endDelimiter=";">
+        <sql endDelimiter=";">
             UPDATE type_internet_access SET name='xDSL(Медь)' WHERE name='ADSL (медный кабель)';
             UPDATE type_internet_access SET name='Не задано'  WHERE name='Отсутствует';
             update type_internet_access set name = 'ВОЛС' where name = 'FTTB (оптика)';
         </sql>
     </changeSet>
     <changeSet author="panovav" id="2">
-        <sql dbms="postgresql" endDelimiter=";">
+        <sql endDelimiter=";">
             delete from type_internet_access tia where tia."name" not in ('xDSL(Медь)', 'Не задано','ВОЛС', 'Спутник', 'БШПД');
         </sql>
     </changeSet>

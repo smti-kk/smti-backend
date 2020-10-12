@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet author="panovav" id="1">
-        <sql dbms="postgresql" endDelimiter=";">
+        <sql endDelimiter=";">
             create table bck_access_point as (select * from access_point ap);
         </sql>
         <rollback>
@@ -12,7 +12,7 @@
     </changeSet>
 
     <changeSet author="panovav" id="2">
-        <sql dbms="postgresql" endDelimiter=";">
+        <sql endDelimiter=";">
             -- 1st remove at last position comma
             update access_point
             set address = subq.adr_sb

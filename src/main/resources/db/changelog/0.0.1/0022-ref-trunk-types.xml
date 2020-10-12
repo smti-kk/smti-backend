@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet author="panovav" id="1">
-        <sql dbms="postgresql" endDelimiter=";">
+        <sql endDelimiter=";">
             UPDATE type_trunk_channel SET name='Спутник' WHERE name='спутник';
             UPDATE type_trunk_channel SET name='Медь' WHERE name='медный кабель';
             UPDATE type_trunk_channel SET name='Радио' WHERE name='радиоканал';

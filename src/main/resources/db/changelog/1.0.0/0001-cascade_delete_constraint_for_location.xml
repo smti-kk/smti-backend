@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet author="proskuringe" id="1">
-        <sql dbms="postgresql" endDelimiter=";">
+        <sql endDelimiter=";">
             ALTER TABLE public.trunk_channel DROP CONSTRAINT "FKt2b34f1n9b9keue1oupoo9gs3";
             ALTER TABLE public.trunk_channel ADD CONSTRAINT "request_for_edit_deletecascade_start" FOREIGN KEY (key_location_start) REFERENCES location(id) on delete cascade;
 
