@@ -33,7 +33,6 @@ public class ReportAccessPointDTO implements Serializable {
         this.customer = entity.getCustomer();
         this.declaredSpeed = entity.getDeclaredSpeed();
         this.internetAccess = entity.getInternetAccess() != null ? new TypeInternetAccessDTO(entity.getInternetAccess()) : null;
-        System.out.println(this.internetAccess);
         if (entity.getClass().isAssignableFrom(ApSMO.class)) {
             this.type = "SMO";
         } else if (entity.getClass().isAssignableFrom(ApESPD.class)) {
