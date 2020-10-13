@@ -90,7 +90,7 @@ public class AccessPointDetailInOrganizationDTO {
 //        this.netTrafficLastWeek = entity.getNetTrafficLastWeek();
         this.networks = entity.getNetworks();
         this.quality = entity.getQuality();
-        this.state = entity.getState();
+        this.state = entity.getState() != null ? entity.getState().toString() : null;
         this.ucn = entity.getUcn();
         this.updatedAt = entity.getModifiedDate();
         this.visible = entity.getVisible();
