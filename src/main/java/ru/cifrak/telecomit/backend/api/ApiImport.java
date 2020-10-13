@@ -5,6 +5,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -60,6 +61,7 @@ import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelImpo
 import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelsFromExcelDTO;
 import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelsFromExcelDTOValidated;
 import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelsSaveService;
+import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.repository.*;
 
 // TODO: добавить метод handleFileTcpPayphone (?)
@@ -172,7 +174,7 @@ public class ApiImport {
 
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-internet")
-    public ResponseEntity<ByteArrayResource> handleFileTcInternet(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ByteArrayResource> handleFileTcInternet(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal User user) {
         HttpHeaders headers = new HttpHeaders();
         try {
             TcInternetImportResult importResult = new TcesInternetFromExcelDTOValidated(
@@ -180,7 +182,7 @@ public class ApiImport {
                     repositoryLocation,
                     repositoryTypeTruncChannel,
                     new TcesInternetFromExcelDTO(file)).getTcesDTO();
-            tcesInternetSaveService.save(importResult.getListToImport());
+            tcesInternetSaveService.save(importResult.getListToImport(), user);
             if (importResult.getImportFailure() > 0) {
                 log.error("<-POST /api/import/tc-internet :: error");
                 headers.set("import-success", String.valueOf(importResult.getImportSuccess()));
@@ -210,7 +212,7 @@ public class ApiImport {
 
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-mobile")
-    public ResponseEntity<ByteArrayResource> handleFileTcMobile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ByteArrayResource> handleFileTcMobile(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal User user) {
         HttpHeaders headers = new HttpHeaders();
         try {
             TcMobileImportResult importResult = new TcesMobileFromExcelDTOValidated(
@@ -218,7 +220,7 @@ public class ApiImport {
                     repositoryLocation,
                     repositoryMobileType,
                     new TcesMobileFromExcelDTO(file)).getTcesDTO();
-            tcesMobileSaveService.save(importResult.getListToImport());
+            tcesMobileSaveService.save(importResult.getListToImport(), user);
             if (importResult.getImportFailure() > 0) {
                 log.error("<-POST /api/import/tc-mobile :: error");
                 headers.set("import-success", String.valueOf(importResult.getImportSuccess()));
@@ -248,14 +250,14 @@ public class ApiImport {
 
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-payphone")
-    public ResponseEntity<ByteArrayResource> handleFileTcPayphone(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ByteArrayResource> handleFileTcPayphone(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal User user) {
         HttpHeaders headers = new HttpHeaders();
         try {
             TcPayphoneImportResult importResult = new TcesPayphoneFromExcelDTOValidated(
                     repositoryOperator,
                     repositoryLocation,
                     new TcesPayphoneFromExcelDTO(file)).getTcesDTO();
-            tcesPayphoneSaveService.save(importResult.getListToImport());
+            tcesPayphoneSaveService.save(importResult.getListToImport(), user);
             if (importResult.getImportFailure() > 0) {
                 log.error("<-POST /api/import/tc-payphone :: error");
                 headers.set("import-success", String.valueOf(importResult.getImportSuccess()));
@@ -285,14 +287,14 @@ public class ApiImport {
 
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-infomat")
-    public ResponseEntity<ByteArrayResource> handleFileTcInfomat(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ByteArrayResource> handleFileTcInfomat(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal User user) {
         HttpHeaders headers = new HttpHeaders();
         try {
             TcInfomatImportResult importResult = new TcesInfomatFromExcelDTOValidated(
                     repositoryOperator,
                     repositoryLocation,
                     new TcesInfomatFromExcelDTO(file)).getTcesDTO();
-            tcesInfomatSaveService.save(importResult.getListToImport());
+            tcesInfomatSaveService.save(importResult.getListToImport(), user);
             if (importResult.getImportFailure() > 0) {
                 log.error("<-POST /api/import/tc-infomat :: error");
                 headers.set("import-success", String.valueOf(importResult.getImportSuccess()));
@@ -322,14 +324,14 @@ public class ApiImport {
 
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-ats")
-    public ResponseEntity<ByteArrayResource> handleFileTcAts(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ByteArrayResource> handleFileTcAts(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal User user) {
         HttpHeaders headers = new HttpHeaders();
         try {
             TcAtsImportResult importResult = new TcesAtsFromExcelDTOValidated(
                     repositoryOperator,
                     repositoryLocation,
                     new TcesAtsFromExcelDTO(file)).getTcesDTO();
-            tcesAtsSaveService.save(importResult.getListToImport());
+            tcesAtsSaveService.save(importResult.getListToImport(), user);
             if (importResult.getImportFailure() > 0) {
                 log.error("<-POST /api/import/tc-ats :: error");
                 headers.set("import-success", String.valueOf(importResult.getImportSuccess()));
@@ -359,14 +361,14 @@ public class ApiImport {
 
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-tv")
-    public ResponseEntity<ByteArrayResource> handleFileTcTv(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ByteArrayResource> handleFileTcTv(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal User user) {
         HttpHeaders headers = new HttpHeaders();
         try {
             TcTvImportResult importResult = new TcesTvFromExcelDTOValidated(
                     repositoryOperator,
                     repositoryLocation,
                     new TcesTvFromExcelDTO(file)).getTcesDTO();
-            tcesTvSaveService.save(importResult.getListToImport());
+            tcesTvSaveService.save(importResult.getListToImport(), user);
             if (importResult.getImportFailure() > 0) {
                 log.error("<-POST /api/import/tc-tv :: error");
                 headers.set("import-success", String.valueOf(importResult.getImportSuccess()));
@@ -396,14 +398,14 @@ public class ApiImport {
 
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-radio")
-    public ResponseEntity<ByteArrayResource> handleFileTcRadio(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ByteArrayResource> handleFileTcRadio(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal User user) {
         HttpHeaders headers = new HttpHeaders();
         try {
             TcRadioImportResult importResult = new TcesRadioFromExcelDTOValidated(
                     repositoryOperator,
                     repositoryLocation,
                     new TcesRadioFromExcelDTO(file)).getTcesDTO();
-            tcesRadioSaveService.save(importResult.getListToImport());
+            tcesRadioSaveService.save(importResult.getListToImport(), user);
             if (importResult.getImportFailure() > 0) {
                 log.error("<-POST /api/import/tc-radio :: error");
                 headers.set("import-success", String.valueOf(importResult.getImportSuccess()));
@@ -433,14 +435,14 @@ public class ApiImport {
 
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/tc-post")
-    public ResponseEntity<ByteArrayResource> handleFileTcPost(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ByteArrayResource> handleFileTcPost(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal User user) {
         HttpHeaders headers = new HttpHeaders();
         try {
             TcPostImportResult importResult = new TcesPostFromExcelDTOValidated(
                     repositoryOperator,
                     repositoryLocation,
                     new TcesPostFromExcelDTO(file)).getTcesDTO();
-            tcesPostSaveService.save(importResult.getListToImport());
+            tcesPostSaveService.save(importResult.getListToImport(), user);
             if (importResult.getImportFailure() > 0) {
                 log.error("<-POST /api/import/tc-post :: error");
                 headers.set("import-success", String.valueOf(importResult.getImportSuccess()));
