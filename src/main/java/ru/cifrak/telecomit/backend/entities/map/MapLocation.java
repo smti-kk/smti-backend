@@ -15,7 +15,8 @@ import java.util.UUID;
         @NamedEntityGraph(
                 name = "map-location-full",
                 attributeNodes = {
-                        @NamedAttributeNode("parent")
+                        @NamedAttributeNode("parent"),
+                        @NamedAttributeNode("geoData")
                 }
         )
 })
