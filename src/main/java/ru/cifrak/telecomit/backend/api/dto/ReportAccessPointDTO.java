@@ -42,6 +42,6 @@ public class ReportAccessPointDTO implements Serializable {
         this.zabbixDeviceName = entity.getMonitoringLink() != null ? entity.getMonitoringLink().getMap().getDeviceName() : null;
         this.zabbixDeviceIp = entity.getMonitoringLink() != null ? entity.getMonitoringLink().getMap().getDeviceIp() : null;
         this.governmentDevelopmentProgram = entity.getGovernmentDevelopmentProgram() != null ? entity.getGovernmentDevelopmentProgram().getName() : null;
-        this.utmLastDayTraffic = entity.getMonitoringLink() != null ? Converter.megabytes(entity.getMonitoringLink().getMap().getLastDayTraffic()) : "--";
+        this.utmLastDayTraffic = entity.getMonitoringLink() != null ? Converter.megabytes(entity.getMonitoringLink().getMap().getLastDayTraffic()!= null ? entity.getMonitoringLink().getMap().getLastDayTraffic() : 0L) : "--";
     }
 }
