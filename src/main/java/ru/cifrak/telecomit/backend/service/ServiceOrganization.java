@@ -1,9 +1,12 @@
 package ru.cifrak.telecomit.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cifrak.telecomit.backend.api.dto.MonitoringAccessPointWizardDTO;
+import ru.cifrak.telecomit.backend.api.dto.UTM5ReportTrafficDTO;
 import ru.cifrak.telecomit.backend.api.dto.response.ExternalSystemCreateStatusDTO;
 import ru.cifrak.telecomit.backend.entities.APConnectionState;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
@@ -17,9 +20,19 @@ import ru.cifrak.telecomit.backend.repository.RepositoryMonitoringAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
 import ru.cifrak.telecomit.backend.security.UTM5Config;
 import ru.cifrak.telecomit.backend.security.ZabbixConfig;
+import ru.cifrak.telecomit.backend.utils.Converter;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 
@@ -31,13 +44,20 @@ public class ServiceOrganization {
     private final RepositoryMonitoringAccessPoints rMonitoringAccessPoints;
     private final RepositoryJournalMAP rJournalMAP;
     private final ServiceExternalBlenders blenders;
+    private final ServiceExternalReports sReports;
 
-    public ServiceOrganization(RepositoryOrganization rOrganization, RepositoryAccessPoints rAccessPoints, RepositoryMonitoringAccessPoints rMonitoringAccessPoints, RepositoryJournalMAP rJournalMAP, UTM5Config utm5Config, ZabbixConfig zabbixConfig, ServiceExternalBlenders blenders) {
+    public ServiceOrganization(RepositoryOrganization rOrganization,
+                               RepositoryAccessPoints rAccessPoints,
+                               RepositoryMonitoringAccessPoints rMonitoringAccessPoints,
+                               RepositoryJournalMAP rJournalMAP,
+                               ServiceExternalBlenders blenders,
+                               ServiceExternalReports sReports) {
         this.rOrganization = rOrganization;
         this.rAccessPoints = rAccessPoints;
         this.rMonitoringAccessPoints = rMonitoringAccessPoints;
         this.rJournalMAP = rJournalMAP;
         this.blenders = blenders;
+        this.sReports = sReports;
     }
 
     public List<Organization> all() {
@@ -105,5 +125,31 @@ public class ServiceOrganization {
         } else {
             throw new NotAllowedException("You cannot init Access Point in non belonging Organization");
         }
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void chr() throws JsonProcessingException {
+        log.info("[application]-> This is going for bytes in UTM5");
+        LocalDate now = LocalDate.now(ZoneId.of("Asia/Krasnoyarsk"));
+        LocalDate previous = now.minus(1, ChronoUnit.DAYS);
+        Long till = now.atStartOfDay(ZoneId.of("Asia/Krasnoyarsk")).toInstant().toEpochMilli() / 1000;
+        Long from = previous.atStartOfDay(ZoneId.of("Asia/Krasnoyarsk")).toInstant().toEpochMilli() / 1000;
+        List<UTM5ReportTrafficDTO> data = sReports.getReportFromUTM5(from, till);
+        log.trace("report: {}", data);
+        Map<Integer, UTM5ReportTrafficDTO> utm5Data = data.stream().filter(i -> i.getTclass().equals(10)).collect(Collectors.toMap(UTM5ReportTrafficDTO::getAccount_id, item -> item));
+        List<JournalMAP> jmaps = rJournalMAP.findAll();
+
+        jmaps = jmaps.stream()
+                .peek(jmap -> {
+                            if (utm5Data.get(jmap.getMap().getIdAccount()) != null) {
+                                jmap.getMap().setLastDayTraffic(utm5Data.get(jmap.getMap().getIdAccount()).getBytes());
+                            }
+                        }
+                ).collect(Collectors.toList());
+
+        for (JournalMAP j : jmaps){
+            if (j.getMap().getLastDayTraffic() != null) rMonitoringAccessPoints.save(j.getMap());
+        }
+        log.info("[application]<- This is going for bytes in UTM5");
     }
 }
