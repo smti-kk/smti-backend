@@ -21,19 +21,27 @@ public interface ApiFeaturesRequests {
     @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     Page<LocationFeaturesEditingRequestFull> requests(Pageable pageable);
 
+    @GetMapping("/full")
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
+    Page<LocationFeaturesEditingRequestFull> requestsAndImportsAndEditions(Pageable pageable);
+
     @GetMapping("/{locationId}")
     @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     List<LocationFeaturesEditingRequestFull> requestsByLocation(@PathVariable Integer locationId);
 
     @GetMapping("/by-user")
     @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
-    Page<LocationFeaturesEditingRequestFull> requestsByUser(Pageable pageable, @AuthenticationPrincipal User user);
+    Page<LocationFeaturesEditingRequestFull> requestsByUser(Pageable pageable,
+                                                            @AuthenticationPrincipal User user);
 
     @GetMapping("/{request}/accept")
     @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
-    void acceptRequest(@PathVariable LocationFeaturesEditingRequest request);
+    void acceptRequest(@PathVariable LocationFeaturesEditingRequest request,
+                       @AuthenticationPrincipal User user);
 
     @GetMapping(value = "/{request}/decline", params = {"comment"})
     @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
-    void declineRequest(@PathVariable LocationFeaturesEditingRequest request, @RequestParam String comment);
+    void declineRequest(@PathVariable LocationFeaturesEditingRequest request,
+                        @RequestParam String comment,
+                        @AuthenticationPrincipal User user);
 }

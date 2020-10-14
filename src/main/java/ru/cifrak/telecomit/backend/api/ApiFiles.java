@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.api;
 import org.apache.poi.util.IOUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import ru.cifrak.telecomit.backend.service.DBFileStorageService;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 
 @RestController
@@ -29,8 +31,12 @@ public class ApiFiles {
     @GetMapping("/{fileId}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileId) {
         DBFile dbFile;
+        CacheControl cacheControl = CacheControl.maxAge( 5, TimeUnit.SECONDS)
+                .noTransform()
+                .mustRevalidate();
         dbFile = dbFileStorageService.getFile(fileId);
         return ResponseEntity.ok()
+                .cacheControl(cacheControl)
                 .contentType(MediaType.parseMediaType(dbFile.getFileType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + dbFile.getFileName() + "\"")
                 .body(new ByteArrayResource(dbFile.getData()));

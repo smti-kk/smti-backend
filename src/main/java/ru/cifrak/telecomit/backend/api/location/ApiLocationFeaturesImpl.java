@@ -60,6 +60,7 @@ public class ApiLocationFeaturesImpl implements ApiLocationFeatures {
         LocationFeaturesEditingRequest savedRequest = featuresRequests.save(eReq);
         if ((user.getRoles().contains(UserRole.OPERATOR) || user.getRoles().contains(UserRole.ADMIN))) {
             savedRequest.accept(serviceWritableTc);
+            savedRequest.setComment("Отредактировано оператором " + user.getUsername());
             featuresRequests.save(savedRequest);
             locationService.refreshCache();
         }
