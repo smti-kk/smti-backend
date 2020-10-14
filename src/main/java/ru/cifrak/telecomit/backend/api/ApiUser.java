@@ -58,7 +58,7 @@ public class ApiUser {
         if (item.getOid() == null) {
             item.setEmail(value.getEmail());
             if (value.getPassword() != null) {
-                item.setPassword(value.getPassword());
+                item.setPassword(passwordEncoder.encode(value.getPassword()));
             }
             item.setUsername(value.getUsername());
             item.setFirstName(value.getFirstName());
@@ -84,6 +84,7 @@ public class ApiUser {
         return item;
     }
 
+    @Deprecated
     @PutMapping(value = "/{id}/", consumes = "application/json", produces = "application/json")
     @Secured({"ROLE_ADMIN"})
     public void updatePWD(@PathVariable(name = "id") final User account, @RequestBody String value, @AuthenticationPrincipal User user) throws JPAException {
