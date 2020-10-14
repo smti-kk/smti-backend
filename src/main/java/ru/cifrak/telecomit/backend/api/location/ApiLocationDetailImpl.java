@@ -129,13 +129,14 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
         locationService.refreshCache();
     }
 
-    @DeleteMapping(params = {"id", "population"})
+    @DeleteMapping(params = {"id", "population", "area"})
     @Secured({"ROLE_ADMIN"})
     public void update(@RequestParam("id") Integer id,
                        @RequestParam("population") Integer population,
+                       @RequestParam("area") Integer area,
                        @AuthenticationPrincipal User user) {
         log.info("user {} update location {} with id", user.getEmail(), id);
-        repository.updatePopulation(id, population);
+        repository.updatePopulationAndParent(id, population, area);
         locationService.refreshCache();
     }
 }
