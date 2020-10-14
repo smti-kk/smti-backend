@@ -5,8 +5,11 @@ import ru.cifrak.telecomit.backend.utils.Converter;
 import ru.cifrak.telecomit.backend.utils.IpReversed;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,5 +29,16 @@ public class IntoMegabytesTest {
             "begin:\t" + bdt +
             "\nend:\t" + edt
         );
+    }
+
+    @Test
+    public void tTest(){
+        LocalDate now = LocalDate.now(ZoneId.of("Asia/Krasnoyarsk"));
+        LocalDate previous = now.minus(1, ChronoUnit.DAYS);
+        Long till = now.atStartOfDay(ZoneId.of("Asia/Krasnoyarsk")).toInstant().toEpochMilli()/1000;
+        Long from = previous.atStartOfDay(ZoneId.of("Asia/Krasnoyarsk")).toInstant().toEpochMilli()/1000;
+        System.out.println("now\t: " + now + "\ttill\t:"+till);
+        System.out.println("pre\t: " + previous+"\tfrom \t:"+from);
+
     }
 }

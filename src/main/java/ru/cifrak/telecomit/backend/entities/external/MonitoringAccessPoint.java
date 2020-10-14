@@ -36,6 +36,9 @@ public class MonitoringAccessPoint implements Serializable {
     @Column
     private Integer idService;
 
+    @Column
+    private Long lastDayTraffic;
+
     //TODO:[generate TICKET]: перенести список сетей, которые подвергаются билингу, сейчас они в точках сидят.
 
     // ZABBIX properties

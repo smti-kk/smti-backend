@@ -6,6 +6,7 @@ import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.ApESPD;
 import ru.cifrak.telecomit.backend.entities.ApSMO;
 import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
+import ru.cifrak.telecomit.backend.utils.Converter;
 
 import java.io.Serializable;
 
@@ -41,6 +42,6 @@ public class ReportAccessPointDTO implements Serializable {
         this.zabbixDeviceName = entity.getMonitoringLink() != null ? entity.getMonitoringLink().getMap().getDeviceName() : null;
         this.zabbixDeviceIp = entity.getMonitoringLink() != null ? entity.getMonitoringLink().getMap().getDeviceIp() : null;
         this.governmentDevelopmentProgram = entity.getGovernmentDevelopmentProgram() != null ? entity.getGovernmentDevelopmentProgram().getName() : null;
-        this.utmLastDayTraffic = "--";
+        this.utmLastDayTraffic = entity.getMonitoringLink() != null ? Converter.megabytes(entity.getMonitoringLink().getMap().getLastDayTraffic()) : "--";
     }
 }
