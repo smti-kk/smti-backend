@@ -70,7 +70,7 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
             comment += " с комментарием \"" + request.getComment() + "\"";
         }
         request.accept(serviceWritableTc);
-        request.setComment(MessageFormat.format("Заявка пользователя {0} {3} подтверждена оператором {1}",
+        request.setComment(MessageFormat.format("Заявка пользователя {0} {2} подтверждена оператором {1}",
                 request.getUser().getUsername(),
                 user.getUsername(),
                 comment));
