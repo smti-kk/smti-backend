@@ -6,7 +6,7 @@ COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
 # TURN ON ONLY in LOCAL DEVELOPMENT
-COPY .m2 .m2
+#COPY .m2 .m2
 
 RUN ./mvnw -Dmaven.repo.local=.m2 install -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
