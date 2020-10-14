@@ -72,7 +72,7 @@ public class TcesAtsSaveService {
                 repositoryFeatureEdits.save(featureEdit);
                 LocationFeaturesEditingRequest importRequest = new LocationFeaturesEditingRequest(
                         tcByLocOpT.getLocationId(),
-                        "Импорт из файла",
+                        "Импорт из файла пользователем " + user.getUsername(),
                         user,
                         Collections.singleton(featureEdit)
                 );

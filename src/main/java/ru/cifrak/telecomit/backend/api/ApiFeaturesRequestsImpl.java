@@ -12,6 +12,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryLocationFeaturesRequests
 import ru.cifrak.telecomit.backend.service.LocationService;
 import ru.cifrak.telecomit.backend.service.ServiceWritableTc;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 @Slf4j
@@ -36,7 +37,14 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     public Page<LocationFeaturesEditingRequestFull> requests(Pageable pageable) {
         log.info("->GET /api/features-requests/");
         log.info("<- GET /api/features-requests/");
-        return repositoryFeaturesRequests.findAllByOrderByCreatedDesc(pageable);
+        return repositoryFeaturesRequests.findAllRequests(pageable);
+    }
+
+    @Override
+    public Page<LocationFeaturesEditingRequestFull> requestsAndImportsAndEditions(Pageable pageable) {
+        log.info("->GET /api/features-requests/full/");
+        log.info("<- GET /api/features-requests/full/");
+        return repositoryFeaturesRequests.findAllRequestsAndImportAndEditions(pageable);
     }
 
     @Override
@@ -54,19 +62,29 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     }
 
     @Override
-    public void acceptRequest(LocationFeaturesEditingRequest request) {
+    public void acceptRequest(LocationFeaturesEditingRequest request, User user) {
         log.info("->GET /api/features-requests/{request}/accept");
         log.info("<- GET /api/features-requests/{request}/accept");
         request.accept(serviceWritableTc);
+        request.setComment(MessageFormat.format("Заявка пользователя {0} подтверждена оператором {1}",
+                request.getUser().getUsername(),
+                user.getUsername()));
         repositoryLocationFeaturesRequests.save(request);
         locationService.refreshCache();
     }
 
     @Override
-    public void declineRequest(LocationFeaturesEditingRequest request, String comment) {
+    public void declineRequest(LocationFeaturesEditingRequest request,
+                               String comment,
+                               User user) {
         log.info("->GET /api/features-requests/{request}/decline");
         log.info("<- GET /api/features-requests/{request}/decline");
         request.decline(comment);
+        request.setComment(
+                MessageFormat.format("Заявка пользователя {0} отклонена с комментарием оператора {2}: {1}",
+                        request.getUser().getUsername(),
+                        comment,
+                        user.getUsername()));
         repositoryLocationFeaturesRequests.save(request);
         locationService.refreshCache();
     }

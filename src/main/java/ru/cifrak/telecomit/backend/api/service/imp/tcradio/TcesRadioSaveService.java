@@ -66,7 +66,7 @@ public class TcesRadioSaveService {
                 featureEdit = repositoryFeatureEdits.save(featureEdit);
                 LocationFeaturesEditingRequest importRequest = new LocationFeaturesEditingRequest(
                         tcesByLocOpT.get(0).getLocationId(),
-                        "Импорт из файла",
+                        "Импорт из файла пользователем " + user.getUsername(),
                         user,
                         Collections.singleton(featureEdit)
                 );
@@ -87,7 +87,7 @@ public class TcesRadioSaveService {
                 repositoryFeatureEdits.save(featureEdit);
                 LocationFeaturesEditingRequest importRequest = new LocationFeaturesEditingRequest(
                         tcByLocOpT.getLocationId(),
-                        "Импорт из файла",
+                        "Импорт из файла пользователем " + user.getUsername(),
                         user,
                         Collections.singleton(featureEdit)
                 );
