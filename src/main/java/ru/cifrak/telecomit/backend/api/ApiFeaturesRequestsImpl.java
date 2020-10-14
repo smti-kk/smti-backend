@@ -65,10 +65,15 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     public void acceptRequest(LocationFeaturesEditingRequest request, User user) {
         log.info("->GET /api/features-requests/{request}/accept");
         log.info("<- GET /api/features-requests/{request}/accept");
+        String comment = "";
+        if (request.getComment() != null && request.getComment().length() > 0) {
+            comment += " с комментарием \"" + request.getComment() + "\"";
+        }
         request.accept(serviceWritableTc);
-        request.setComment(MessageFormat.format("Заявка пользователя {0} подтверждена оператором {1}",
+        request.setComment(MessageFormat.format("Заявка пользователя {0} {3} подтверждена оператором {1}",
                 request.getUser().getUsername(),
-                user.getUsername()));
+                user.getUsername(),
+                comment));
         repositoryLocationFeaturesRequests.save(request);
         locationService.refreshCache();
     }

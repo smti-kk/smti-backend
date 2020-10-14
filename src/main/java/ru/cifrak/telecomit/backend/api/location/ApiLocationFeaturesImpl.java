@@ -59,8 +59,12 @@ public class ApiLocationFeaturesImpl implements ApiLocationFeatures {
         repositoryFeatureEdits.saveAll(eReq.getFeatureEdits());
         LocationFeaturesEditingRequest savedRequest = featuresRequests.save(eReq);
         if ((user.getRoles().contains(UserRole.OPERATOR) || user.getRoles().contains(UserRole.ADMIN))) {
+            String comment = "";
+            if (request.getComment() != null && request.getComment().length() > 0) {
+                comment += " с комментарием " + request.getComment();
+            }
             savedRequest.accept(serviceWritableTc);
-            savedRequest.setComment("Отредактировано оператором " + user.getUsername());
+            savedRequest.setComment("Отредактировано оператором " + user.getUsername() + comment);
             featuresRequests.save(savedRequest);
             locationService.refreshCache();
         }
