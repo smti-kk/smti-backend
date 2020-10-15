@@ -2,10 +2,8 @@ package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.entities.GovernmentDevelopmentProgram;
 import ru.cifrak.telecomit.backend.entities.TypeSmo;
 import ru.cifrak.telecomit.backend.repository.RepositoryGovernmentProgram;
@@ -35,6 +33,18 @@ public class ApiGovPrograms {
         log.info("->GET /api/gov-program/::{}",id);
         log.info("<- GET /api/gov-program/::{}",id);
         return repository.findById(id).orElse(null);
+    }
+
+    @PostMapping
+    @Secured({"ROLE_ADMIN"})
+    public GovernmentDevelopmentProgram createGovProgram(@RequestBody GovernmentDevelopmentProgram program) {
+        return repository.save(program);
+    }
+
+    @DeleteMapping("/{id}")
+    @Secured({"ROLE_ADMIN"})
+    public void deleteGovProgram(@PathVariable Integer id) {
+        repository.deleteById(id);
     }
 
 }
