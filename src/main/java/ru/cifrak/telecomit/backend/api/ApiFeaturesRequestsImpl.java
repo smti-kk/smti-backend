@@ -12,7 +12,6 @@ import ru.cifrak.telecomit.backend.repository.RepositoryLocationFeaturesRequests
 import ru.cifrak.telecomit.backend.service.LocationService;
 import ru.cifrak.telecomit.backend.service.ServiceWritableTc;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 @Slf4j
@@ -65,15 +64,7 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     public void acceptRequest(LocationFeaturesEditingRequest request, User user) {
         log.info("->GET /api/features-requests/{request}/accept");
         log.info("<- GET /api/features-requests/{request}/accept");
-        String comment = "";
-        if (request.getComment() != null && request.getComment().length() > 0) {
-            comment += " с комментарием \"" + request.getComment() + "\"";
-        }
         request.accept(serviceWritableTc);
-        request.setComment(MessageFormat.format("Заявка пользователя {0} {2} подтверждена оператором {1}",
-                request.getUser().getUsername(),
-                user.getUsername(),
-                comment));
         repositoryLocationFeaturesRequests.save(request);
         locationService.refreshCache();
     }
@@ -85,11 +76,6 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         log.info("->GET /api/features-requests/{request}/decline");
         log.info("<- GET /api/features-requests/{request}/decline");
         request.decline(comment);
-        request.setComment(
-                MessageFormat.format("Заявка пользователя {0} отклонена с комментарием оператора {2}: {1}",
-                        request.getUser().getUsername(),
-                        comment,
-                        user.getUsername()));
         repositoryLocationFeaturesRequests.save(request);
         locationService.refreshCache();
     }
