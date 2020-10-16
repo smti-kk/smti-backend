@@ -2,6 +2,7 @@ package ru.cifrak.telecomit.backend.entities.external;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.cifrak.telecomit.backend.entities.APConnectionState;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -88,4 +89,9 @@ public class MonitoringAccessPoint implements Serializable {
      */
     @Column
     private Long sensorTriggerEnergy;
+
+    // *******************************************************
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private APConnectionState connectionState = APConnectionState.NOT_MONITORED;
 }
