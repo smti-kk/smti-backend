@@ -1,0 +1,12 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="turkov" id="121321321312312">
+        <sql endDelimiter=";">
+            UPDATE access_point ap SET connection_state = 'Работает' where connection_state = 'ACTIVE';
+            UPDATE access_point SET connection_state = 'Не_работает' where connection_state = 'DISABLED';
+            UPDATE access_point SET connection_state = 'Не_подключено' where connection_state = 'NOT_MONITORED';
+        </sql>
+    </changeSet>
+</databaseChangeLog>
