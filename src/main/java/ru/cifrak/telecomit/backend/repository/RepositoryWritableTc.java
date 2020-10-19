@@ -1,7 +1,5 @@
 package ru.cifrak.telecomit.backend.repository;
 
-import org.jetbrains.annotations.NotNull;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,7 +17,7 @@ public interface RepositoryWritableTc extends JpaRepository<WritableTc, Integer>
     @Query("SELECT DISTINCT tc.govYearComplete FROM WritableTc tc where tc.govYearComplete is not NULL")
     List<Integer> existGovCompleteYears();
 
-    WritableTc findByLocationIdAndStateAndOperatorId(Integer locationId, TcState state, Integer operatorId);
+    WritableTc findByLocationIdAndStateAndOperatorIdAndType(Integer locationId, TcState state, Integer operatorId, String type);
 
 //    List<WritableTc> findByLocationIdAndOperatorIdAndType(
 //            Integer locationId,

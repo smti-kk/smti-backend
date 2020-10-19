@@ -1,10 +1,7 @@
 package ru.cifrak.telecomit.backend.api.service.imp.tcinfomat;
 
 import org.springframework.stereotype.Service;
-import ru.cifrak.telecomit.backend.entities.ServiceQuality;
-import ru.cifrak.telecomit.backend.entities.TcInfomat;
-import ru.cifrak.telecomit.backend.entities.TcState;
-import ru.cifrak.telecomit.backend.entities.User;
+import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.locationsummary.*;
 import ru.cifrak.telecomit.backend.repository.*;
 import ru.cifrak.telecomit.backend.service.LocationService;
@@ -62,8 +59,9 @@ public class TcesInfomatSaveService {
                 featureEdit = repositoryFeatureEdits.save(featureEdit);
                 LocationFeaturesEditingRequest importRequest = new LocationFeaturesEditingRequest(
                         tcesByLocOpT.get(0).getLocationId(),
-                        "Импорт из файла пользователем " + user.getUsername(),
+                        "",
                         user,
+                        ChangeSource.IMPORT,
                         Collections.singleton(featureEdit)
                 );
                 importRequest.accept(serviceWritableTc);
@@ -87,8 +85,9 @@ public class TcesInfomatSaveService {
                 repositoryFeatureEdits.save(featureEdit);
                 LocationFeaturesEditingRequest importRequest = new LocationFeaturesEditingRequest(
                         tcByLocOpT.getLocationId(),
-                        "Импорт из файла пользователем " + user.getUsername(),
+                        "",
                         user,
+                        ChangeSource.IMPORT,
                         Collections.singleton(featureEdit)
                 );
                 repositoryLocationFeaturesRequests.save(importRequest);

@@ -55,4 +55,8 @@ public class LocationFeaturesEditingRequestFull {
 
     @LastModifiedBy
     private String modifiedBy;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private ChangeSource changeSource;
 }

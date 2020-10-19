@@ -51,14 +51,20 @@ public class LocationFeaturesEditingRequest {
 
     private String declineComment;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private ChangeSource changeSource;
+
     public LocationFeaturesEditingRequest(Integer locationId,
                                           String comment,
                                           User user,
+                                          ChangeSource changeSource,
                                           Set<FeatureEdit> features) {
         this.locationId = locationId;
         this.comment = comment;
         this.user = user;
         this.featureEdits = features;
+        this.changeSource = changeSource;
     }
 
     public LocationFeaturesEditingRequest() {
