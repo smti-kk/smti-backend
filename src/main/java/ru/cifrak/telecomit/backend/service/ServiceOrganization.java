@@ -111,7 +111,7 @@ public class ServiceOrganization {
             jjmap.setAp(ap);
             jjmap.setMap(map);
             rJournalMAP.save(jjmap);
-            ap.setConnectionState(APConnectionState.Работает);
+            ap.setConnectionState(APConnectionState.ACTIVE);
             rAccessPoints.save(ap);
             log.info("(<) save journal map");
             if (errors.isEmpty()) {
