@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
 import org.locationtech.jts.geom.Point;
+import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -162,5 +163,9 @@ public class AccessPointFull extends AuditingSoftDelete implements Serializable 
     private LocalDate started;
     @Column
     private LocalDate ended;
+
+
+    @OneToOne(mappedBy = "ap")
+    private JournalMAP monitoringLink;
 
 }

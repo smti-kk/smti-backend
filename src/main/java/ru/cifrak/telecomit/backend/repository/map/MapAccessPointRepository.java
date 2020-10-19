@@ -4,8 +4,13 @@ import org.locationtech.jts.geom.Polygon;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
+import ru.cifrak.telecomit.backend.entities.AccessPoint;
+import ru.cifrak.telecomit.backend.entities.AccessPointFull;
+import ru.cifrak.telecomit.backend.entities.TypeAccessPoint;
 import ru.cifrak.telecomit.backend.entities.map.MapAccessPoint;
+import ru.cifrak.telecomit.backend.entities.map.MapAccessPointDTO;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -13,24 +18,24 @@ import java.util.List;
  * Предоставление информации о точках подключения
  * <br/> из базы данных для схемы-карты
  */
-public interface MapAccessPointRepository extends Repository<MapAccessPoint, Integer> {
-    @Query("SELECT new ru.cifrak.telecomit.backend.entities.map.MapAccessPoint(ap.id, ap.point, ap.connectionState)" +
-            " FROM MapAccessPoint ap " +
+public interface MapAccessPointRepository extends Repository<AccessPointFull, Integer> {
+    @Query("SELECT ap" +
+            " FROM AccessPointFull ap left join fetch ap.monitoringLink jmap left join fetch jmap.map map" +
             " WHERE ap.type = :type")
-    List<MapAccessPoint> findAll(@Param("type") String type);
+    List<AccessPointFull> findAll(@Param("type") TypeAccessPoint type);
 
-    @Query("SELECT new ru.cifrak.telecomit.backend.entities.map.MapAccessPoint(ap.id, ap.point, ap.connectionState)" +
-            " FROM MapAccessPoint ap " +
+    @Query("SELECT ap" +
+            " FROM AccessPointFull ap left join fetch ap.monitoringLink jmap left join fetch jmap.map map" +
             " WHERE ap.type = :type" +
             "   and within(ap.point, :bbox) = true")
-    List<MapAccessPoint> findAllByBbox(@Param("bbox") Polygon bbox,
-                                       @Param("type") String type);
+    List<AccessPointFull> findAllByBbox(@Param("bbox") Polygon bbox,
+                                       @Param("type") TypeAccessPoint type);
 
-    @Query("SELECT new ru.cifrak.telecomit.backend.entities.map.MapAccessPoint(ap.id, ap.point, ap.connectionState)" +
-            " FROM MapAccessPoint ap " +
-            " WHERE ap.type = :type and ap.modified > :modified")
-    List<MapAccessPoint> findByModifiedAndType(@Param("type") String type,
-                                               @Param("modified") Date modified);
+    @Query("SELECT ap" +
+            " FROM AccessPointFull ap left join fetch ap.monitoringLink jmap left join fetch jmap.map map" +
+            " WHERE ap.type = :type and ap.monitoringLink.map.timeState > :modified")
+    List<AccessPointFull> findByModifiedAndType(@Param("type") TypeAccessPoint type,
+                                               @Param("modified") LocalDateTime modified);
 
     @Query("SELECT l.id FROM Location l WHERE " +
             "exists (" +
