@@ -17,6 +17,7 @@ import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
 import ru.cifrak.telecomit.backend.security.ZabbixConfig;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -31,12 +32,7 @@ public class ServiceExternalZabbix {
     }
 
     public void linking(AccessPoint ap, MonitoringAccessPoint map, MonitoringAccessPointWizardDTO wizard) throws Exception {
-        WebClient client = WebClient
-                .builder()
-                .baseUrl(zabbixConfig.getHost())
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .defaultUriVariables(Collections.singletonMap("url", zabbixConfig.getHost()))
-                .build();
+        WebClient client = getWebClient();
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -156,6 +152,17 @@ public class ServiceExternalZabbix {
             }
         }
 
+    }
+
+    @NotNull
+    private WebClient getWebClient() {
+        WebClient client = WebClient
+                .builder()
+                .baseUrl(zabbixConfig.getHost())
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultUriVariables(Collections.singletonMap("url", zabbixConfig.getHost()))
+                .build();
+        return client;
     }
 
     private ExtZabbixDtoResponseServices getDeviceServices(ExtZabbixDto device, ObjectMapper mapper, WebClient client, String authToken) throws JsonProcessingException {
@@ -432,4 +439,42 @@ public class ServiceExternalZabbix {
         }
     }
 
+    public List<Long> getTriggersInTroubleState(List<String> triggers) throws JsonProcessingException {
+        log.trace("[   ] -> go for triggers in trouble state");
+        WebClient client = getWebClient();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        WebClient.RequestHeadersSpec<?> authenticate = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoAuth(zabbixConfig.getLogin(), zabbixConfig.getPassword())));
+
+        String resp = authenticate.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponse respAuthentication = mapper.readValue(resp, ExtZabbixDtoResponse.class);
+        String authToken = (String) respAuthentication.getResult();
+
+        WebClient.RequestHeadersSpec<?> responsePRC = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("trigger.get",
+                        new ExtZabbixDtoGetTriggersInTroubleState(triggers),
+                        42,
+                        authToken
+                )));
+        String responseServiceDataResponseTime = responsePRC.retrieve().bodyToMono(String.class).block();
+        ExtZabbixDtoResponseTriggersInTrouble triggersInTrouble = mapper.readValue(responseServiceDataResponseTime, ExtZabbixDtoResponseTriggersInTrouble.class);
+        log.trace("triggers-responce::{}", triggersInTrouble);
+        log.trace("[   ] <- go for triggers in trouble state");
+
+        if (triggersInTrouble.getResult().size()>0){
+            List<Long> result = new ArrayList<>();
+            for (Map<String, String> item :triggersInTrouble.getResult()){
+                result.add(Long.valueOf(item.get("triggerid")));
+            }
+            return result;
+        }
+
+        return Collections.EMPTY_LIST;
+    }
 }

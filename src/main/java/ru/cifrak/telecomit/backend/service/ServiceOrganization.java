@@ -20,6 +20,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryMonitoringAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -139,11 +140,12 @@ public class ServiceOrganization {
                 .peek(jmap -> {
                             if (utm5Data.get(jmap.getMap().getIdAccount()) != null) {
                                 jmap.getMap().setLastDayTraffic(utm5Data.get(jmap.getMap().getIdAccount()).getBytes());
+                                jmap.getMap().setTimeTraffic(LocalDateTime.now());
                             }
                         }
                 ).collect(Collectors.toList());
 
-        for (JournalMAP j : jmaps){
+        for (JournalMAP j : jmaps) {
             if (j.getMap().getLastDayTraffic() != null) rMonitoringAccessPoints.save(j.getMap());
         }
         log.info("[application]<- This is going for bytes in UTM5");
@@ -151,18 +153,25 @@ public class ServiceOrganization {
 
     @Scheduled(cron = "0 0 */1 * * *")
     public void autoMonitoringAccesspointStatus() throws JsonProcessingException {
-        log.info("[application]-> goin for activity status in zabbix");
-        sZabbix.getTriggersInTroubleState();
+        log.info("[application]-> going for activity status in zabbix");
+        List<JournalMAP> jmaps = rJournalMAP.findAll();
+        List<String> triggers = jmaps.stream().filter(i -> i.getMap().getDeviceTriggerUnavailable() != null).map(i -> i.getMap().getDeviceTriggerUnavailable().toString()).collect(Collectors.toList());
+        log.trace("triggers:: {}", triggers);
+        List<Long> items = sZabbix.getTriggersInTroubleState(triggers);
 
-        jmaps = jmaps.stream()
+        jmaps.stream()
                 .peek(jmap -> {
-                            if (utm5Data.get(jmap.getMap().getIdAccount()) != null) {
-                                jmap.getMap().setLastDayTraffic(utm5Data.get(jmap.getMap().getIdAccount()).getBytes());
+                            if (items.contains(jmap.getMap().getDeviceTriggerUnavailable())) {
+                                jmap.getMap().setConnectionState(APConnectionState.DISABLED);
+                                jmap.getMap().setTimeState(LocalDateTime.now());
+                            } else {
+                                jmap.getMap().setConnectionState(APConnectionState.ACTIVE);
+                                jmap.getMap().setTimeState(LocalDateTime.now());
                             }
+                            rJournalMAP.save(jmap);
                         }
                 ).collect(Collectors.toList());
 
-
-        log.info("[application]<- goin for activity status in zabbix");
+        log.info("[application]<- going for activity status in zabbix");
     }
 }
