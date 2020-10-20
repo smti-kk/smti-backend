@@ -2,9 +2,11 @@ package ru.cifrak.telecomit.backend.entities.external;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.cifrak.telecomit.backend.entities.APConnectionState;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * Параметры из внешних систем для мониторинга.
@@ -36,6 +38,13 @@ public class MonitoringAccessPoint implements Serializable {
     @Column
     private Integer idService;
 
+    @Column
+    private Long lastDayTraffic;
+
+    @Column
+    private LocalDateTime timeTraffic;
+
+
     //TODO:[generate TICKET]: перенести список сетей, которые подвергаются билингу, сейчас они в точках сидят.
 
     // ZABBIX properties
@@ -44,6 +53,9 @@ public class MonitoringAccessPoint implements Serializable {
      */
     @Column
     private Long serviceId;
+
+    @Column
+    private LocalDateTime timeState;
 
     // ZABBIX ------------ DEVICE
 
@@ -85,4 +97,9 @@ public class MonitoringAccessPoint implements Serializable {
      */
     @Column
     private Long sensorTriggerEnergy;
+
+    // *******************************************************
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private APConnectionState connectionState = APConnectionState.NOT_MONITORED;
 }

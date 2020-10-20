@@ -139,8 +139,8 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @Column(length = 6)
     private String quality;
 
-    @Column(length = 4)
-    private String state;
+    @Enumerated(EnumType.STRING)
+    private ParticipationStatus state;
 
     /**
      * UCN  - Unique Contract Number. Уникальынй номер контракта.

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.LocationFeaturesSaveRequest;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.UserRole;
+import ru.cifrak.telecomit.backend.entities.locationsummary.ChangeSource;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationFeaturesEditingRequest;
 import ru.cifrak.telecomit.backend.repository.RepositoryFeatureEdits;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocationFeaturesRequests;
@@ -46,6 +47,7 @@ public class ApiLocationFeaturesImpl implements ApiLocationFeatures {
                 locationId,
                 request.getComment(),
                 user,
+                ChangeSource.REQUEST,
                 serviceWritableTc.defineEditActions(request.getFeatures(), locationId)
         );
         eReq.getFeatureEdits().forEach(fe -> {
@@ -60,6 +62,7 @@ public class ApiLocationFeaturesImpl implements ApiLocationFeatures {
         LocationFeaturesEditingRequest savedRequest = featuresRequests.save(eReq);
         if ((user.getRoles().contains(UserRole.OPERATOR) || user.getRoles().contains(UserRole.ADMIN))) {
             savedRequest.accept(serviceWritableTc);
+            savedRequest.setChangeSource(ChangeSource.EDITING);
             featuresRequests.save(savedRequest);
             locationService.refreshCache();
         }

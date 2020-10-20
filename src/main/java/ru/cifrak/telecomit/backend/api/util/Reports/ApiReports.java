@@ -259,7 +259,7 @@ public class ApiReports {
 
         exportToExcelConfiguration.addColumn(7, ReportMapDTO::getInternetAccessType, "Технология подключения");
         exportToExcelConfiguration.addColumn(8, ReportMapDTO::getZabbixDeviceIp, "IP");
-        exportToExcelConfiguration.addColumn(9, ReportMapDTO::getNA, "mask");
+        exportToExcelConfiguration.addColumn(9, ReportMapDTO::getMask, "mask");
         exportToExcelConfiguration.addColumn(10, ReportMapDTO::getNA, "ID");
         exportToExcelConfiguration.addColumn(11, ReportMapDTO::getZabbixDeviceName, "Точка подключени");
         exportToExcelConfiguration.addColumn(12, ReportMapDTO::getNA, "Vlan");

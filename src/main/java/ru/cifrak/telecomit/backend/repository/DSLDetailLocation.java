@@ -54,6 +54,6 @@ public interface DSLDetailLocation extends JpaRepository<LocationForTable, Integ
 
     @Transactional
     @Modifying
-    @Query("UPDATE LocationForTable l SET l.population = :population WHERE l.id = :id")
-    void updatePopulation(Integer id, Integer population);
+    @Query(value = "UPDATE public.location SET population = :population, parent_id = :parent WHERE id = :id", nativeQuery = true)
+    void updatePopulationAndParent(Integer id, Integer population, Integer parent);
 }

@@ -13,8 +13,8 @@ public enum ParticipationStatus {
     @Override
     public String toString() {
         switch (this) {
-            case DONE:  return "Исполненно";
-            case NONE:  return "Не исполненно";
+            case DONE:  return "Исполнено";
+            case NONE:  return "Не исполнено";
             case PLAN:  return "План";
             default:    throw new IllegalArgumentException();
         }

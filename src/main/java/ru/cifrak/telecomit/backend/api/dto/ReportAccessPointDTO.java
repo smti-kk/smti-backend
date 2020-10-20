@@ -2,10 +2,12 @@ package ru.cifrak.telecomit.backend.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import ru.cifrak.telecomit.backend.entities.APConnectionState;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.ApESPD;
 import ru.cifrak.telecomit.backend.entities.ApSMO;
 import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
+import ru.cifrak.telecomit.backend.utils.Converter;
 
 import java.io.Serializable;
 
@@ -24,6 +26,7 @@ public class ReportAccessPointDTO implements Serializable {
     private String utmLastDayTraffic;
     private String governmentDevelopmentProgram;
     private String type;
+    private String connectionState;
 
 
     public ReportAccessPointDTO(AccessPoint entity) {
@@ -41,6 +44,7 @@ public class ReportAccessPointDTO implements Serializable {
         this.zabbixDeviceName = entity.getMonitoringLink() != null ? entity.getMonitoringLink().getMap().getDeviceName() : null;
         this.zabbixDeviceIp = entity.getMonitoringLink() != null ? entity.getMonitoringLink().getMap().getDeviceIp() : null;
         this.governmentDevelopmentProgram = entity.getGovernmentDevelopmentProgram() != null ? entity.getGovernmentDevelopmentProgram().getName() : null;
-        this.utmLastDayTraffic = "--";
+        this.utmLastDayTraffic = entity.getMonitoringLink() != null ? Converter.megabytes(entity.getMonitoringLink().getMap().getLastDayTraffic() != null ? entity.getMonitoringLink().getMap().getLastDayTraffic() : 0L) : "--";
+        this.connectionState = entity.getMonitoringLink() != null ? entity.getMonitoringLink().getMap().getConnectionState() != null ? entity.getMonitoringLink().getMap().getConnectionState().toString() : APConnectionState.NOT_MONITORED.toString() : APConnectionState.NOT_MONITORED.toString();
     }
 }

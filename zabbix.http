@@ -281,3 +281,31 @@ Content-Type: application/json
 }
 
 
+### Получить статус тригерра по точек
+### Короче таким запросом мы получаем тригеры в состоянии ПРОБЛЕМА
+### т.е. мы должны взять все тригеры и сказать что они все ативны, и потом спросить а то из вас в проблеме, и вот пробегаемся
+### и кого встретили, тот значит в проблеме, а если ни кого, то значит всё океей.
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "trigger.get",
+    "params": {
+    "triggerids": ["17225", "17183", "17162", "16472", "16222", "15938", "15982", "16034", "17120", "16514", "17246", "17141"],
+        "output": [
+            "extend"
+        ],
+        "filter": {
+             "value": "1"
+        }
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
+###
+### "selectFunctions": "extend",
+###         "hostids": "10295",
+###         "selectHosts": ["hostid","name"],
+###         "selectTags": "extend",

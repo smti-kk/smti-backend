@@ -152,10 +152,11 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
     @Secured({"ROLE_OPERATOR", "ROLE_ADMIN"})
     public void makeItActive(Integer locationId, Integer featureId) {
         WritableTc feature = repositoryWritableTc.getOne(featureId);
-        WritableTc activeFeature = repositoryWritableTc.findByLocationIdAndStateAndOperatorId(
+        WritableTc activeFeature = repositoryWritableTc.findByLocationIdAndStateAndOperatorIdAndType(
                 locationId,
                 TcState.ACTIVE,
-                feature.getOperatorId()
+                feature.getOperatorId(),
+                feature.getType()
         );
         feature.setState(TcState.ACTIVE);
         if (activeFeature != null) {

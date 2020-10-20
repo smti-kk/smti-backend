@@ -10,17 +10,18 @@ import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTcForImport;
 import java.util.List;
 
 @Repository
-public interface RepositoryWritableTcForImport extends JpaRepository<WritableTcForImport, Integer> {
-    List<WritableTcForImport> findAllByLocationIdAndState(Integer locationId, TcState state);
+public interface RepositoryWritableTcForImport extends JpaRepository<WritableTc, Integer> {
+    List<WritableTc> findAllByLocationIdAndState(Integer locationId, TcState state);
 
-    @Query("SELECT DISTINCT tc.govYearComplete FROM WritableTcForImport tc where tc.govYearComplete is not NULL")
+    @Query("SELECT DISTINCT tc.govYearComplete FROM WritableTc tc where tc.govYearComplete is not NULL")
     List<Integer> existGovCompleteYears();
 
-    WritableTcForImport findByLocationIdAndStateAndOperatorId(Integer locationId, TcState state, Integer operatorId);
+    WritableTc findByLocationIdAndStateAndOperatorId(Integer locationId, TcState state, Integer operatorId);
 
-    List<WritableTcForImport> findByLocationIdAndOperatorIdAndType(
+    List<WritableTc> findByLocationIdAndOperatorIdAndTypeAndState(
             Integer locationId,
             Integer operatorId,
-            String type
+            String type,
+            TcState tcState
     );
 }

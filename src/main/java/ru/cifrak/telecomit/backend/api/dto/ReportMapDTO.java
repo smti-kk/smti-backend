@@ -14,6 +14,7 @@ public class ReportMapDTO {
     private String organization;
     private String networks;
     private String NA;
+    private String mask="/29";
     // ---                    UTM5
     private Integer ucn;
     private String consumption;

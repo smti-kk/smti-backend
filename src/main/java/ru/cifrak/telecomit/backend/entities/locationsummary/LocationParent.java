@@ -11,7 +11,6 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "location")
-@Immutable
 @Getter
 public class LocationParent implements Serializable {
     @Id

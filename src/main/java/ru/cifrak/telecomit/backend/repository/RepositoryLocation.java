@@ -39,6 +39,7 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
     List<Location> locationFilter();
 
     @Query("SELECT l from Location l left join GeoData g on l.geoData.id = g.id where l.level = 1")
+    @EntityGraph(value = Location.SIMPLE)
     List<Location> areaBorders();
 
     @Query("SELECT l from Location l where l.level = 1 ")
@@ -53,14 +54,13 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
 
     @EntityGraph(value = Location.WITH_FEATURES)
     @Query(value = "SELECT l from Location l" +
-            " where l.type not in ('р-н', 'край', 'с/с', 'тер') and l.name like '%Орловк%'"
+            " where l.type not in ('р-н', 'край', 'с/с', 'тер')"
     )
     Page<Location> findAll(Pageable pageable);
 
-    //TODO: REMOVE!!!!!!! sql - and l.name like '%Орловк%'
     @EntityGraph(value = Location.WITH_ORGANIZATIONS_ACCESSPOINTS)
     @Query(value = "SELECT l from Location l" +
-            " where l.type not in ('р-н', 'край', 'с/с', 'тер') and l.name like '%Орловк%'"
+            " where l.type not in ('р-н', 'край', 'с/с', 'тер')"
     )
     Page<Location> findAllReportOrganization(Pageable pageable);
 

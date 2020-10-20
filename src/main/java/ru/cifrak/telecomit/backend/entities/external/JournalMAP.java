@@ -16,10 +16,21 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 
+@NamedEntityGraphs({
+        @NamedEntityGraph(
+                name = JournalMAP.ALL,
+                attributeNodes = {
+                        @NamedAttributeNode("map"),
+                        @NamedAttributeNode("ap")
+                }
+        )
+})
+
 @Entity
 @Table(schema = "external_systems")
 public class JournalMAP extends Auditing implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static final String ALL = "JournalMAP.ALL";
     @Id
     @SequenceGenerator(name = "JMPA_ID_GENERATOR", sequenceName = "jmpa_id_seq", allocationSize = 1, schema = "external_systems")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "JMPA_ID_GENERATOR")

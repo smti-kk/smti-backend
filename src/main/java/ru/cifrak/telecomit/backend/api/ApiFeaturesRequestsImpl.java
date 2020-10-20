@@ -36,7 +36,14 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     public Page<LocationFeaturesEditingRequestFull> requests(Pageable pageable) {
         log.info("->GET /api/features-requests/");
         log.info("<- GET /api/features-requests/");
-        return repositoryFeaturesRequests.findAllByOrderByCreatedDesc(pageable);
+        return repositoryFeaturesRequests.findAllRequests(pageable);
+    }
+
+    @Override
+    public Page<LocationFeaturesEditingRequestFull> requestsAndImportsAndEditions(Pageable pageable) {
+        log.info("->GET /api/features-requests/full/");
+        log.info("<- GET /api/features-requests/full/");
+        return repositoryFeaturesRequests.findAllRequestsAndImportAndEditions(pageable);
     }
 
     @Override
@@ -54,7 +61,7 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     }
 
     @Override
-    public void acceptRequest(LocationFeaturesEditingRequest request) {
+    public void acceptRequest(LocationFeaturesEditingRequest request, User user) {
         log.info("->GET /api/features-requests/{request}/accept");
         log.info("<- GET /api/features-requests/{request}/accept");
         request.accept(serviceWritableTc);
@@ -63,7 +70,9 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     }
 
     @Override
-    public void declineRequest(LocationFeaturesEditingRequest request, String comment) {
+    public void declineRequest(LocationFeaturesEditingRequest request,
+                               String comment,
+                               User user) {
         log.info("->GET /api/features-requests/{request}/decline");
         log.info("<- GET /api/features-requests/{request}/decline");
         request.decline(comment);
