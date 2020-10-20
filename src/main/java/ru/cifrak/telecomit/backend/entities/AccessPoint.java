@@ -173,7 +173,7 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private APConnectionState connectionState = APConnectionState.Не_подключено;
+    private APConnectionState connectionState = APConnectionState.NOT_MONITORED;
 
     @OneToOne(mappedBy = "ap")
     private JournalMAP monitoringLink;

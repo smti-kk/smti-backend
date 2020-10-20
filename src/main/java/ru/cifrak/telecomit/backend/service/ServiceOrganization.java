@@ -18,17 +18,11 @@ import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryJournalMAP;
 import ru.cifrak.telecomit.backend.repository.RepositoryMonitoringAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
-import ru.cifrak.telecomit.backend.security.UTM5Config;
-import ru.cifrak.telecomit.backend.security.ZabbixConfig;
-import ru.cifrak.telecomit.backend.utils.Converter;
 
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +38,7 @@ public class ServiceOrganization {
     private final RepositoryMonitoringAccessPoints rMonitoringAccessPoints;
     private final RepositoryJournalMAP rJournalMAP;
     private final ServiceExternalBlenders blenders;
+    private final ServiceExternalZabbix sZabbix;
     private final ServiceExternalReports sReports;
 
     public ServiceOrganization(RepositoryOrganization rOrganization,
@@ -51,12 +46,14 @@ public class ServiceOrganization {
                                RepositoryMonitoringAccessPoints rMonitoringAccessPoints,
                                RepositoryJournalMAP rJournalMAP,
                                ServiceExternalBlenders blenders,
+                               ServiceExternalZabbix sZabbix,
                                ServiceExternalReports sReports) {
         this.rOrganization = rOrganization;
         this.rAccessPoints = rAccessPoints;
         this.rMonitoringAccessPoints = rMonitoringAccessPoints;
         this.rJournalMAP = rJournalMAP;
         this.blenders = blenders;
+        this.sZabbix = sZabbix;
         this.sReports = sReports;
     }
 
@@ -111,7 +108,7 @@ public class ServiceOrganization {
             jjmap.setAp(ap);
             jjmap.setMap(map);
             rJournalMAP.save(jjmap);
-            ap.setConnectionState(APConnectionState.Работает);
+            ap.setConnectionState(APConnectionState.ACTIVE);
             rAccessPoints.save(ap);
             log.info("(<) save journal map");
             if (errors.isEmpty()) {
@@ -128,7 +125,7 @@ public class ServiceOrganization {
     }
 
     @Scheduled(cron = "0 0 0 * * *")
-    public void chr() throws JsonProcessingException {
+    public void autoMonitoringAccesspointDownloadedData() throws JsonProcessingException {
         log.info("[application]-> This is going for bytes in UTM5");
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Krasnoyarsk"));
         LocalDate previous = now.minus(1, ChronoUnit.DAYS);
@@ -143,13 +140,38 @@ public class ServiceOrganization {
                 .peek(jmap -> {
                             if (utm5Data.get(jmap.getMap().getIdAccount()) != null) {
                                 jmap.getMap().setLastDayTraffic(utm5Data.get(jmap.getMap().getIdAccount()).getBytes());
+                                jmap.getMap().setTimeTraffic(LocalDateTime.now());
                             }
                         }
                 ).collect(Collectors.toList());
 
-        for (JournalMAP j : jmaps){
+        for (JournalMAP j : jmaps) {
             if (j.getMap().getLastDayTraffic() != null) rMonitoringAccessPoints.save(j.getMap());
         }
         log.info("[application]<- This is going for bytes in UTM5");
+    }
+
+    @Scheduled(cron = "0 0 */1 * * *")
+    public void autoMonitoringAccesspointStatus() throws JsonProcessingException {
+        log.info("[application]-> going for activity status in zabbix");
+        List<JournalMAP> jmaps = rJournalMAP.findAll();
+        List<String> triggers = jmaps.stream().filter(i -> i.getMap().getDeviceTriggerUnavailable() != null).map(i -> i.getMap().getDeviceTriggerUnavailable().toString()).collect(Collectors.toList());
+        log.trace("triggers:: {}", triggers);
+        List<Long> items = sZabbix.getTriggersInTroubleState(triggers);
+
+        jmaps.stream()
+                .peek(jmap -> {
+                            if (items.contains(jmap.getMap().getDeviceTriggerUnavailable())) {
+                                jmap.getMap().setConnectionState(APConnectionState.DISABLED);
+                                jmap.getMap().setTimeState(LocalDateTime.now());
+                            } else {
+                                jmap.getMap().setConnectionState(APConnectionState.ACTIVE);
+                                jmap.getMap().setTimeState(LocalDateTime.now());
+                            }
+                            rJournalMAP.save(jmap);
+                        }
+                ).collect(Collectors.toList());
+
+        log.info("[application]<- going for activity status in zabbix");
     }
 }

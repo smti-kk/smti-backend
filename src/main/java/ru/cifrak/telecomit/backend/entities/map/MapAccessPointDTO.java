@@ -4,20 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.locationtech.jts.geom.Geometry;
 import ru.cifrak.telecomit.backend.entities.APConnectionState;
-import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
+import ru.cifrak.telecomit.backend.entities.AccessPointFull;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
 import java.util.Date;
 
-@Entity
-@Table(name = "access_point")
 @Data
-public class MapAccessPoint {
+public class MapAccessPointDTO {
     @Id
     private Integer id;
 
@@ -35,13 +34,26 @@ public class MapAccessPoint {
     @Column(nullable = false)
     private APConnectionState connectionState;
 
-    public MapAccessPoint(Integer id, Geometry point, APConnectionState connectionState) {
+    public MapAccessPointDTO(Integer id, Geometry point, APConnectionState connectionState) {
         this.id = id;
         this.point = point;
-        this.connectionState = connectionState;
+        if (connectionState != null) {
+            this.connectionState = connectionState;
+        } else {
+            this.connectionState = APConnectionState.NOT_MONITORED;
+        }
     }
 
-    public MapAccessPoint() {
+    public MapAccessPointDTO(AccessPointFull item) {
+        this.id = item.getId();
+        this.point = item.getPoint();
+        this.connectionState = APConnectionState.NOT_MONITORED;
+        if (item.getMonitoringLink() != null) if (item.getMonitoringLink().getMap().getConnectionState() != null) {
+            this.connectionState = item.getMonitoringLink().getMap().getConnectionState();
+        }
+    }
+
+    public MapAccessPointDTO() {
     }
 
     public Integer getId() {
