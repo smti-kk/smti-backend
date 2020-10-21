@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.ExelReportLocation;
@@ -130,7 +129,7 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
         locationService.refreshCache();
     }
 
-    @PostMapping(params = {"id", "population", "area"})
+    @DeleteMapping(params = {"id", "population", "area"})
     @Secured({"ROLE_ADMIN"})
     public void update(@RequestParam("id") Integer id,
                        @RequestParam("population") Integer population,
