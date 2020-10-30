@@ -424,7 +424,13 @@ public class ServiceExternalZabbix {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(jsonRPC));
         String rpcResponce = requestNewHost.retrieve().bodyToMono(String.class).block();
-        Map<String, Object> map = mapper.readValue(rpcResponce, Map.class);
+        Map<String, Object> map = null;
+        try {
+            map = mapper.readValue(rpcResponce, Map.class);
+        } catch (JsonProcessingException e) {
+            log.warn("parse error");
+            e.printStackTrace();
+        }
         Map<String, List<String>> respResult;
         respResult = (Map<String, List<String>>) map.get("result");
         if (respResult != null) {
@@ -435,6 +441,7 @@ public class ServiceExternalZabbix {
         } else {
             //TODO:[generate TICKET]: make ZabbixNameExistsException
             // and make round to try get ID from this name.
+            log.warn("Such name exists");
             throw new Exception("Such name exists");
         }
     }
