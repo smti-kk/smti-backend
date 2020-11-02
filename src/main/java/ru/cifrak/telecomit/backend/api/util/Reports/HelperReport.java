@@ -93,7 +93,7 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(1, FeatureExportDTO::getDistrictName, "Район");
         exportToExcelConfiguration.addColumn(2, FeatureExportDTO::getDistrict, "Тип МО");
         exportToExcelConfiguration.addColumn(3, FeatureExportDTO::getLocationName, "Населенный пункт");
-        exportToExcelConfiguration.addColumn(4, FeatureExportDTO::getLocationName, "ТТип населенного пункта");
+        exportToExcelConfiguration.addColumn(4, FeatureExportDTO::getLocationName, "Тип населенного пункта");
         exportToExcelConfiguration.addColumn(5, Integer.class,FeatureExportDTO::getPopulation, "Население");
 
         exportToExcelConfiguration.addColumn(6, FeatureExportDTO::getActual, tcType.toString() + "(сейчас" + currentYear + ")");
