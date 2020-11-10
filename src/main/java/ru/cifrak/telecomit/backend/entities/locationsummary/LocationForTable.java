@@ -74,7 +74,6 @@ public class LocationForTable implements Serializable {
 
     @OneToMany(mappedBy = "locationParent", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
-    @JsonIgnore
     private List<LocationForTable> children;
 
     public LocationForTable() {
