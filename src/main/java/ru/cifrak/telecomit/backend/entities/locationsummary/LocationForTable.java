@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.entities.locationsummary;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -73,6 +74,7 @@ public class LocationForTable implements Serializable {
 
     @OneToMany(mappedBy = "locationParent", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
+    @JsonIgnore
     private List<LocationForTable> children;
 
     public LocationForTable() {
