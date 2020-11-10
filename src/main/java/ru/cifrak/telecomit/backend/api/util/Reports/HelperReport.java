@@ -65,20 +65,21 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(1, ExelReportLocation::getDistrictName, "Район");
         exportToExcelConfiguration.addColumn(2, ExelReportLocation::getDistrict, "Тип МО");
         exportToExcelConfiguration.addColumn(3, ExelReportLocation::getLocationName, "Населенный пункт");
-        exportToExcelConfiguration.addColumn(4, Integer.class,ExelReportLocation::getPopulation, "Население");
-        exportToExcelConfiguration.addColumn(5, ExelReportLocation::getESPD, "ЕСПД");
-        exportToExcelConfiguration.addColumn(6, ExelReportLocation::getSMO, "СЗО");
-        exportToExcelConfiguration.addColumn(7, ExelReportLocation::getRSMO, "РСЗО");
-        exportToExcelConfiguration.addColumn(8, ExelReportLocation::getZSPD, "ЗСПД");
-        exportToExcelConfiguration.addColumn(9, ExelReportLocation::getTelephone, "Сотовая связь");
-        exportToExcelConfiguration.addColumn(10, ExelReportLocation::getInternet, "Интернет");
-        exportToExcelConfiguration.addColumn(11, ExelReportLocation::getCellular, "Телефон");
-        exportToExcelConfiguration.addColumn(12, ExelReportLocation::getPayphone, "Таксофон (кол-во)");
-        exportToExcelConfiguration.addColumn(13,Boolean.class, ExelReportLocation::getInfomat, "Инфомат");
-        exportToExcelConfiguration.addColumn(14, ExelReportLocation::getRadio, "Радио");
-        exportToExcelConfiguration.addColumn(15, ExelReportLocation::getTV, "Телевидение");
-        exportToExcelConfiguration.addColumn(16, ExelReportLocation::getPost, "Почта");
-        exportToExcelConfiguration.addColumn(17, ExelReportLocation::getOKATO, "ОКАТО");
+        exportToExcelConfiguration.addColumn(4, ExelReportLocation::getLocationType, "Тип населенного пункта");
+        exportToExcelConfiguration.addColumn(5, Integer.class,ExelReportLocation::getPopulation, "Население");
+        exportToExcelConfiguration.addColumn(6, ExelReportLocation::getESPD, "ЕСПД");
+        exportToExcelConfiguration.addColumn(7, ExelReportLocation::getSMO, "СЗО");
+        exportToExcelConfiguration.addColumn(8, ExelReportLocation::getRSMO, "РСЗО");
+        exportToExcelConfiguration.addColumn(9, ExelReportLocation::getZSPD, "ЗСПД");
+        exportToExcelConfiguration.addColumn(10, ExelReportLocation::getTelephone, "Сотовая связь");
+        exportToExcelConfiguration.addColumn(11, ExelReportLocation::getInternet, "Интернет");
+        exportToExcelConfiguration.addColumn(12, ExelReportLocation::getCellular, "Телефон");
+        exportToExcelConfiguration.addColumn(13, ExelReportLocation::getPayphone, "Таксофон (кол-во)");
+        exportToExcelConfiguration.addColumn(14,Boolean.class, ExelReportLocation::getInfomat, "Инфомат");
+        exportToExcelConfiguration.addColumn(15, ExelReportLocation::getRadio, "Радио");
+        exportToExcelConfiguration.addColumn(16, ExelReportLocation::getTV, "Телевидение");
+        exportToExcelConfiguration.addColumn(17, ExelReportLocation::getPost, "Почта");
+        exportToExcelConfiguration.addColumn(18, ExelReportLocation::getOKATO, "ОКАТО");
 
         return new ExcelExporter<>(exportToExcelConfiguration);
     }
@@ -92,14 +93,15 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(1, FeatureExportDTO::getDistrictName, "Район");
         exportToExcelConfiguration.addColumn(2, FeatureExportDTO::getDistrict, "Тип МО");
         exportToExcelConfiguration.addColumn(3, FeatureExportDTO::getLocationName, "Населенный пункт");
-        exportToExcelConfiguration.addColumn(4, Integer.class,FeatureExportDTO::getPopulation, "Население");
+        exportToExcelConfiguration.addColumn(4, FeatureExportDTO::getLocationName, "Тип населенного пункта");
+        exportToExcelConfiguration.addColumn(5, Integer.class,FeatureExportDTO::getPopulation, "Население");
 
-        exportToExcelConfiguration.addColumn(5, FeatureExportDTO::getActual, tcType.toString() + "(сейчас" + currentYear + ")");
-        exportToExcelConfiguration.addColumn(6, FeatureExportDTO::getPlanForOneYear, tcType.toString() + "(план" + currentYear + 1 + ")");
-        exportToExcelConfiguration.addColumn(7, FeatureExportDTO::getPlanForTwoYear, tcType.toString() + "(план" + currentYear + 2 + ")");
-        exportToExcelConfiguration.addColumn(8, FeatureExportDTO::getArchive, tcType.toString() + "(архив)");
+        exportToExcelConfiguration.addColumn(6, FeatureExportDTO::getActual, tcType.toString() + "(сейчас" + currentYear + ")");
+        exportToExcelConfiguration.addColumn(7, FeatureExportDTO::getPlanForOneYear, tcType.toString() + "(план" + currentYear + 1 + ")");
+        exportToExcelConfiguration.addColumn(8, FeatureExportDTO::getPlanForTwoYear, tcType.toString() + "(план" + currentYear + 2 + ")");
+        exportToExcelConfiguration.addColumn(9, FeatureExportDTO::getArchive, tcType.toString() + "(архив)");
 
-        exportToExcelConfiguration.addColumn(9, FeatureExportDTO::getOKATO, "ОКАТО");
+        exportToExcelConfiguration.addColumn(10, FeatureExportDTO::getOKATO, "ОКАТО");
 
         return new ExcelExporter<>(exportToExcelConfiguration);
     }
