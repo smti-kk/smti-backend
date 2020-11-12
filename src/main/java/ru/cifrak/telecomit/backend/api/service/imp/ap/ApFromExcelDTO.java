@@ -32,6 +32,8 @@ public class ApFromExcelDTO {
 
     private final String declaredSpeed;
 
+    private final String program;
+
     private final String typeAccessPoint;
 
     public ApFromExcelDTO(Row row) {
@@ -49,6 +51,7 @@ public class ApFromExcelDTO {
                 row.getCell(13).getStringCellValue().trim(),
                 row.getCell(14).getStringCellValue().trim(),
                 row.getCell(15).getStringCellValue().trim(),
+                row.getCell(17).getStringCellValue().trim(),
                 row.getCell(19).getStringCellValue().trim()
         );
     }

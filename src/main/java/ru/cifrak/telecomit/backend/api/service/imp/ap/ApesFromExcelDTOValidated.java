@@ -31,6 +31,8 @@ public class ApesFromExcelDTOValidated {
 
     private final RepositoryLocation repositoryLocation;
 
+    private final RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram;
+
     private final ApesDTOFromExcel origin;
 
     public ApesFromExcelDTOValidated(
@@ -39,12 +41,14 @@ public class ApesFromExcelDTOValidated {
             RepositorySmoType repositorySmoType,
             RepositoryOrganizationType repositoryOrganizationType,
             RepositoryLocation repositoryLocation,
+            RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram,
             ApesDTOFromExcel origin) {
         this.repositoryOrganization = repositoryOrganization;
         this.repositoryInternetAccessType = repositoryInternetAccessType;
         this.repositorySmoType = repositorySmoType;
         this.repositoryOrganizationType = repositoryOrganizationType;
         this.repositoryLocation = repositoryLocation;
+        this.repositoryGovernmentDevelopmentProgram = repositoryGovernmentDevelopmentProgram;
         this.origin = origin;
     }
 
@@ -162,6 +166,12 @@ public class ApesFromExcelDTOValidated {
                     + "}.");
         }
 
+        badDTO = this.checkProgram(tcesDTO);
+        if (badDTO != null) {
+            throw new FromExcelDTOErrorException("Ошибка в программе, должна быть одной из {"
+                    + String.join(", ", repositoryGovernmentDevelopmentProgram.findAllAcronym()) + "}.");
+        }
+
         badDTO = this.checkTypeAccessPoint(tcesDTO);
         if (badDTO != null) {
             throw new FromExcelDTOErrorException("Ошибка в типе точки подключения, должна быть одной из {"
@@ -179,6 +189,19 @@ public class ApesFromExcelDTOValidated {
         String result = null;
         for (ApFromExcelDTO tcDTO : tcesDTO) {
             if (repositoryOrganizationType.findByName(tcDTO.getType()) == null) {
+                result = tcDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkProgram(List<ApFromExcelDTO> tcesDTO) {
+        String result = null;
+        // TODO: List<String> -> List<GovernmentDevelopmentProgram>.
+        List<String> programs = repositoryGovernmentDevelopmentProgram.findAllAcronym();
+        for (ApFromExcelDTO tcDTO : tcesDTO) {
+            if (!tcDTO.getProgram().isEmpty() && !programs.contains(tcDTO.getProgram())) {
                 result = tcDTO.getNpp();
                 break;
             }
