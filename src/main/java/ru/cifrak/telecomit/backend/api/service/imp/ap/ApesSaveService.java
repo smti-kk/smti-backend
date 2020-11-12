@@ -52,6 +52,7 @@ public class ApesSaveService {
                     getOrganization(tcDTO));
             if (apes.size() > 0) {
                 // TODO: Transaction.
+                apes.get(0).setAddress(tcDTO.getAddress());
                 apes.get(0).setContractor(tcDTO.getContractor());
                 apes.get(0).setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
                 apes.get(0).setDeclaredSpeed(tcDTO.getDeclaredSpeed());
@@ -77,6 +78,7 @@ public class ApesSaveService {
                 }
                 ap.setPoint(createPoint(tcDTO.getLongitude(), tcDTO.getLatitude()));
                 ap.setOrganization(getOrganization(tcDTO));
+                ap.setAddress(tcDTO.getAddress());
                 ap.setContractor(tcDTO.getContractor());
                 ap.setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
                 ap.setDeclaredSpeed(tcDTO.getDeclaredSpeed());

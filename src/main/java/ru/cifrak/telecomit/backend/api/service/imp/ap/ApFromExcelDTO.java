@@ -49,7 +49,7 @@ public class ApFromExcelDTO {
                 row.getCell(13).getStringCellValue().trim(),
                 row.getCell(14).getStringCellValue().trim(),
                 row.getCell(15).getStringCellValue().trim(),
-                row.getCell(20).getStringCellValue().trim()
+                row.getCell(19).getStringCellValue().trim()
         );
     }
 }

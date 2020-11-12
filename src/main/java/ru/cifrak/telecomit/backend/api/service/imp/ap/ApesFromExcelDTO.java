@@ -41,6 +41,7 @@ public class ApesFromExcelDTO implements ApesDTOFromExcel {
                 row.getCell(8).setCellType(Cell.CELL_TYPE_STRING);
                 row.getCell(9).setCellType(Cell.CELL_TYPE_STRING);
                 row.getCell(15).setCellType(Cell.CELL_TYPE_STRING);
+                row.getCell(19).setCellType(Cell.CELL_TYPE_STRING);
                 if (this.notEmptyRow(row)) {
                     tces.add(new ApFromExcelDTO(row));
                 }
@@ -63,7 +64,7 @@ public class ApesFromExcelDTO implements ApesDTOFromExcel {
                 || !row.getCell(13).getStringCellValue().trim().isEmpty()
                 || !row.getCell(14).getStringCellValue().trim().isEmpty()
                 || !row.getCell(15).getStringCellValue().trim().isEmpty()
-                || !row.getCell(20).getStringCellValue().trim().isEmpty();
+                || !row.getCell(19).getStringCellValue().trim().isEmpty();
     }
 
     @SneakyThrows
