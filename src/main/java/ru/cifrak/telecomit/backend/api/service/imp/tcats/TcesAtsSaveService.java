@@ -59,7 +59,7 @@ public class TcesAtsSaveService {
                 tcByLocOpT.setLocationId(repositoryLocation.findByFias(UUID.fromString(tcDTO.getFias())).getId());
                 tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcDTO.getOperator()).getId());
                 tcByLocOpT.setType(TcAts.class.getAnnotation(DiscriminatorValue.class).value());
-                tcByLocOpT.setQuality(ServiceQuality.NORMAL);
+                tcByLocOpT.setQuality(ServiceQuality.GOOD);
                 tcByLocOpT.setState(TcState.ACTIVE);
                 // TODO: Transaction.
 
