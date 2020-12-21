@@ -75,7 +75,7 @@ public class TcesInfomatSaveService {
                 tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcDTO.getOperator()).getId());
                 tcByLocOpT.setPayphones(Integer.parseInt(tcDTO.getQuantity()));
                 tcByLocOpT.setType(TcInfomat.class.getAnnotation(DiscriminatorValue.class).value());
-                tcByLocOpT.setQuality(ServiceQuality.NORMAL);
+                tcByLocOpT.setQuality(ServiceQuality.GOOD);
                 tcByLocOpT.setState(TcState.ACTIVE);
                 // TODO: Transaction.
 
