@@ -480,7 +480,8 @@ public class ApiImport {
                     repositoryInternetAccessType,
                     repositorySmoType,
                     repositoryOrganizationType,
-                    repositoryLocation, new ApesFromExcelDTO(file)).getTcesDTO();
+                    repositoryLocation,
+                    repositoryGovernmentDevelopmentProgram, new ApesFromExcelDTO(file)).getTcesDTO();
             apesSaveService.save(importResult.getListToImport());
             if (importResult.getImportFailure() > 0) {
                 log.error("<-POST /api/import/access-point :: error");

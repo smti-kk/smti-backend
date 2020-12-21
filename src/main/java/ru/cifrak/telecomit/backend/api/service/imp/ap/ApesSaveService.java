@@ -26,6 +26,8 @@ public class ApesSaveService {
 
     private final RepositoryOrganizationType repositoryOrganizationType;
 
+    private final RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram;
+
     private final LocationService locationService;
 
     public ApesSaveService(
@@ -35,6 +37,7 @@ public class ApesSaveService {
             RepositoryInternetAccessType repositoryInternetAccessType,
             RepositorySmoType repositorySmoType,
             RepositoryOrganizationType repositoryOrganizationType,
+            RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram,
             LocationService locationService) {
         this.repositoryLocation = repositoryLocation;
         this.repositoryAccessPoints = repositoryAccessPoints;
@@ -42,6 +45,7 @@ public class ApesSaveService {
         this.repositoryInternetAccessType = repositoryInternetAccessType;
         this.repositorySmoType = repositorySmoType;
         this.repositoryOrganizationType = repositoryOrganizationType;
+        this.repositoryGovernmentDevelopmentProgram = repositoryGovernmentDevelopmentProgram;
         this.locationService = locationService;
     }
 
@@ -51,43 +55,65 @@ public class ApesSaveService {
                     createPoint(tcDTO.getLongitude(), tcDTO.getLatitude()),
                     getOrganization(tcDTO));
             if (apes.size() > 0) {
-                // TODO: Transaction.
-                apes.get(0).setContractor(tcDTO.getContractor());
-                apes.get(0).setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
-                apes.get(0).setDeclaredSpeed(tcDTO.getDeclaredSpeed());
-                repositoryAccessPoints.save(apes.get(0));
-            } else {
-                AccessPoint ap;
-                switch (tcDTO.getTypeAccessPoint()) {
-                    case ("ЕСПД"):
-                        ap = new ApESPD();
-                        break;
-                    case ("РСЗО"):
-                        ap = new ApRSMO();
-                        break;
-                    case ("СЗО"):
-                        ap = new ApSMO();
-                        break;
-                    case ("ЗСПД"):
-                        ap = new ApZSPD();
-                        break;
-                    default:
-                        ap = new ApContract();
-                        break;
+                if (getTypeAPInString(apes.get(0)).equals(tcDTO.getTypeAccessPoint())) {
+                    // TODO: Transaction.
+                    apes.get(0).setAddress(tcDTO.getAddress());
+                    apes.get(0).setContractor(tcDTO.getContractor());
+                    apes.get(0).setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
+                    apes.get(0).setDeclaredSpeed(tcDTO.getDeclaredSpeed());
+                    apes.get(0).setGovernmentDevelopmentProgram(repositoryGovernmentDevelopmentProgram.findByAcronym(tcDTO.getProgram()));
+                    repositoryAccessPoints.save(apes.get(0));
+                } else {
+                    AccessPoint ap;
+                    switch (tcDTO.getTypeAccessPoint()) {
+                        case ("ЕСПД"):
+                            ap = new ApESPD();
+                            break;
+                        case ("РСЗО"):
+                            ap = new ApRSMO();
+                            break;
+                        case ("СЗО"):
+                            ap = new ApSMO();
+                            break;
+                        case ("ЗСПД"):
+                            ap = new ApZSPD();
+                            break;
+                        default:
+                            ap = new ApContract();
+                            break;
+                    }
+                    ap.setPoint(createPoint(tcDTO.getLongitude(), tcDTO.getLatitude()));
+                    ap.setOrganization(getOrganization(tcDTO));
+                    ap.setAddress(tcDTO.getAddress());
+                    ap.setContractor(tcDTO.getContractor());
+                    ap.setGovernmentDevelopmentProgram(repositoryGovernmentDevelopmentProgram.findByAcronym(tcDTO.getProgram()));
+                    ap.setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
+                    ap.setDeclaredSpeed(tcDTO.getDeclaredSpeed());
+                    ap.setVisible(true);
+                    ap.setMaxAmount(0);
+                    ap.setDeleted(false);
+                    // TODO: Transaction.
+                    repositoryAccessPoints.save(ap);
                 }
-                ap.setPoint(createPoint(tcDTO.getLongitude(), tcDTO.getLatitude()));
-                ap.setOrganization(getOrganization(tcDTO));
-                ap.setContractor(tcDTO.getContractor());
-                ap.setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
-                ap.setDeclaredSpeed(tcDTO.getDeclaredSpeed());
-                ap.setVisible(true);
-                ap.setMaxAmount(0);
-                ap.setDeleted(false);
-                // TODO: Transaction.
-                repositoryAccessPoints.save(ap);
             }
             locationService.refreshCache();
         }
+    }
+
+    private String getTypeAPInString(AccessPoint ap) {
+        String type;
+        if (ap instanceof ApESPD) {
+            type = "ЕСПД";
+        } else if (ap instanceof ApRSMO) {
+            type = "РСЗО";
+        } else if (ap instanceof ApSMO) {
+            type = "СЗО";
+        } else if (ap instanceof ApZSPD) {
+            type = "ЗСПД";
+        } else {
+            type = "Контракт";
+        }
+        return type;
     }
 
     private Organization getOrganization(ApFromExcelDTO ap) {

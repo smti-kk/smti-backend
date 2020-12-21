@@ -77,7 +77,7 @@ public class TcesTvSaveService {
                 tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcTOO.getOperator()).getId());
                 tcByLocOpT.setTvOrRadioTypes(types);
                 tcByLocOpT.setType(TcTv.class.getAnnotation(DiscriminatorValue.class).value());
-                tcByLocOpT.setQuality(ServiceQuality.NORMAL);
+                tcByLocOpT.setQuality(ServiceQuality.GOOD);
                 tcByLocOpT.setState(TcState.ACTIVE);
                 // TODO: Transaction.
                 // start journal

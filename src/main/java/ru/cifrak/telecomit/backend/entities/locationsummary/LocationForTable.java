@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.entities.locationsummary;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
