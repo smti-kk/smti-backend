@@ -84,7 +84,7 @@ public class TcesPostSaveService {
                     tcByLocOpT.setTypePost(TypePost.POST.getId());
                 }
                 tcByLocOpT.setType(TcPost.class.getAnnotation(DiscriminatorValue.class).value());
-                tcByLocOpT.setQuality(ServiceQuality.GOOD);
+                tcByLocOpT.setQuality(ServiceQuality.NORMAL);
                 tcByLocOpT.setState(TcState.ACTIVE);
                 // TODO: Transaction.
                 // start journal

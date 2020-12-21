@@ -72,7 +72,7 @@ public class TcesPayphoneSaveService {
                 tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcDTO.getOperator()).getId());
                 tcByLocOpT.setPayphones(Integer.parseInt(tcDTO.getQuantity()));
                 tcByLocOpT.setType(TcPayphone.class.getAnnotation(DiscriminatorValue.class).value());
-                tcByLocOpT.setQuality(ServiceQuality.GOOD);
+                tcByLocOpT.setQuality(ServiceQuality.NORMAL);
                 tcByLocOpT.setState(TcState.ACTIVE);
                 // TODO: Transaction.
                 // start journal

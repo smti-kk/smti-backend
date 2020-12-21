@@ -76,7 +76,7 @@ public class TcesInternetSaveService {
                 tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcDTO.getOperator()).getId());
                 tcByLocOpT.setTrunkChannel(repositoryTypeTruncChannel.findByName(tcDTO.getChannel()).getId());
                 tcByLocOpT.setType(TcInternet.class.getAnnotation(DiscriminatorValue.class).value());
-                tcByLocOpT.setQuality(ServiceQuality.GOOD);
+                tcByLocOpT.setQuality(ServiceQuality.NORMAL);
                 tcByLocOpT.setState(TcState.ACTIVE);
                 // TODO: Transaction.
                 // start journal

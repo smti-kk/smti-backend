@@ -76,7 +76,7 @@ public class TcesMobileSaveService {
                 tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcDTO.getOperator()).getId());
                 tcByLocOpT.setTypeMobile(repositoryMobileType.findByName(tcDTO.getType()).getId());
                 tcByLocOpT.setType(TcMobile.class.getAnnotation(DiscriminatorValue.class).value());
-                tcByLocOpT.setQuality(ServiceQuality.GOOD);
+                tcByLocOpT.setQuality(ServiceQuality.NORMAL);
                 tcByLocOpT.setState(TcState.ACTIVE);
                 // TODO: Transaction.
                 // start journal
