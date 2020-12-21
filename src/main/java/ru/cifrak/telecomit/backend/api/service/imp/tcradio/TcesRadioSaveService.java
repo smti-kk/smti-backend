@@ -79,7 +79,7 @@ public class TcesRadioSaveService {
                 tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcTOO.getOperator()).getId());
                 tcByLocOpT.setTvOrRadioTypes(types);
                 tcByLocOpT.setType(TcRadio.class.getAnnotation(DiscriminatorValue.class).value());
-                tcByLocOpT.setQuality(ServiceQuality.NORMAL);
+                tcByLocOpT.setQuality(ServiceQuality.GOOD);
                 tcByLocOpT.setState(TcState.ACTIVE);
                 // TODO: Transaction.
                 // start journal
