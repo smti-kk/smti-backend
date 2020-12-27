@@ -34,7 +34,8 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
             " l.type not like 'р-н' " +
             "and l.type not like 'край' " +
             "and l.type not like 'с/с' " +
-            "and l.type not like 'тер' "
+            "and l.type not like 'тер' " +
+            "order by l.name "
     )
     List<Location> locationFilter();
 
@@ -42,7 +43,7 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
     @EntityGraph(value = Location.SIMPLE)
     List<Location> areaBorders();
 
-    @Query("SELECT l from Location l where l.level = 1 ")
+    @Query("SELECT l from Location l where l.level = 1 order by l.type, l.name")
     List<Location> parents();
 
     @EntityGraph(value = Location.WITH_FEATURES)
