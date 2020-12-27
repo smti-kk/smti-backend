@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOErrorException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTONppException;
+import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 
 import java.io.ByteArrayOutputStream;
@@ -115,6 +116,11 @@ public class LocationsFromExcelDTOValidated {
                     + String.join(", ", repository.findAllTypes()) + "}.");
         }
 
+        badLocationDTO = this.checkMo(locationsDTO);
+        if (badLocationDTO != null) {
+            throw new FromExcelDTOErrorException("Ошибка в МО, не найден в БД.");
+        }
+
         badLocationDTO = this.checkPopulation(locationsDTO);
         if (badLocationDTO != null) {
             throw new FromExcelDTOErrorException("Ошибка в населении, должно быть в числовом формате.");
@@ -216,6 +222,17 @@ public class LocationsFromExcelDTOValidated {
         for (LocationFromExcelDTO locationDTO : locationsDTO) {
             if (!typesOfLocationsDTO.contains(locationDTO.getType())
                     || !typesOfLocationsDTO.contains(locationDTO.getTypeMO())) {
+                result = locationDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkMo(List<LocationFromExcelDTO> locationsDTO) {
+        String result = null;
+        for (LocationFromExcelDTO locationDTO : locationsDTO) {
+            if (repository.findByNameAndType(locationDTO.getNameMO(), locationDTO.getTypeMO()) == null) {
                 result = locationDTO.getNpp();
                 break;
             }
