@@ -1,5 +1,7 @@
 package ru.cifrak.telecomit.backend.service;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.cache.annotation.CacheEvict;
@@ -34,9 +36,11 @@ public class LocationService {
     @Cacheable("location_parents")
     public List<LocationParent> parents() {
         QLocationParent parent = QLocationParent.locationParent;
-        return new JPAQuery<LocationParent>(entityManager)
+        JPAQuery<LocationParent> jQ = new JPAQuery<LocationParent>(entityManager)
                 .from(parent)
-                .where(parent.level.eq(1))
+                .where(parent.level.eq(1));
+        jQ.orderBy(new OrderSpecifier<>(Order.ASC, parent.type), new OrderSpecifier<>(Order.ASC, parent.name));
+        return jQ
                 .fetch();
     }
 

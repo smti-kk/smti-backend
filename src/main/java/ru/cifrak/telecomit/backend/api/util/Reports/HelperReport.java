@@ -79,7 +79,6 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(15, ExelReportLocation::getRadio, "Радио");
         exportToExcelConfiguration.addColumn(16, ExelReportLocation::getTV, "Телевидение");
         exportToExcelConfiguration.addColumn(17, ExelReportLocation::getPost, "Почта");
-        exportToExcelConfiguration.addColumn(18, ExelReportLocation::getOKATO, "ОКАТО");
 
         return new ExcelExporter<>(exportToExcelConfiguration);
     }
@@ -100,8 +99,6 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(7, FeatureExportDTO::getPlanForOneYear, tcType.toString() + "(план" + currentYear + 1 + ")");
         exportToExcelConfiguration.addColumn(8, FeatureExportDTO::getPlanForTwoYear, tcType.toString() + "(план" + currentYear + 2 + ")");
         exportToExcelConfiguration.addColumn(9, FeatureExportDTO::getArchive, tcType.toString() + "(архив)");
-
-        exportToExcelConfiguration.addColumn(10, FeatureExportDTO::getOKATO, "ОКАТО");
 
         return new ExcelExporter<>(exportToExcelConfiguration);
     }
