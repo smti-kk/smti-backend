@@ -53,19 +53,18 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
     public Page<LocationFC> locations(
             Pageable pageable,
             List<Integer> parentIds,
-            String locationName,
             List<Integer> operators,
             List<Integer> connectionTypes,
             Integer govProgram,
             Integer govProgramYear,
             Integer hasAnyInternet,
-            TcType type
+            TcType type,
+            String... locationNames
     ) {
         if (type.equals(TcType.INET)) {
             return featureComparingService.locations(
                     pageable,
                     parentIds,
-                    locationName,
                     operators,
                     null,
                     connectionTypes,
@@ -73,13 +72,13 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
                     govProgram,
                     govProgramYear,
                     hasAnyInternet,
-                    null
+                    null,
+                    locationNames
             );
         } else if (type.equals(TcType.MOBILE)) {
             return featureComparingService.locations(
                     pageable,
                     parentIds,
-                    locationName,
                     null,
                     operators,
                     null,
@@ -87,7 +86,8 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
                     govProgram,
                     govProgramYear,
                     null,
-                    hasAnyInternet
+                    hasAnyInternet,
+                    locationNames
             );
         } else {
             return null;
@@ -97,19 +97,18 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
     @Override
     public ResponseEntity<ByteArrayResource> locations(
             List<Integer> parentIds,
-            String locationName,
             List<Integer> operators,
             List<Integer> connectionTypes,
             Integer govProgram,
             Integer govProgramYear,
             Integer hasAnyInternet,
-            TcType type
+            TcType type,
+            String... locationNames
     ) throws IOException {
         List<LocationFC> locationFCS;
         if (type.equals(TcType.INET)) {
             locationFCS = featureComparingService.locations(
                     parentIds,
-                    locationName,
                     operators,
                     null,
                     connectionTypes,
@@ -117,12 +116,12 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
                     govProgram,
                     govProgramYear,
                     hasAnyInternet,
-                    null
+                    null,
+                    locationNames
             );
         } else if (type.equals(TcType.MOBILE)) {
             locationFCS = featureComparingService.locations(
                     parentIds,
-                    locationName,
                     null,
                     operators,
                     null,
@@ -130,7 +129,8 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
                     govProgram,
                     govProgramYear,
                     null,
-                    hasAnyInternet
+                    hasAnyInternet,
+                    locationNames
             );
         } else {
             throw new IllegalArgumentException("Unsupported type " + type);

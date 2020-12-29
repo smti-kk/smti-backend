@@ -20,25 +20,25 @@ public interface FeaturesComparingApi {
     Page<LocationFC> locations(
             Pageable pageable,
             @RequestParam(value = "parents", required = false) List<Integer> parentIds,
-            @RequestParam(value = "locationName", required = false) String locationName,
             @RequestParam(value = "operators", required = false) List<Integer> internetOperators,
             @RequestParam(value = "connectionTypes", required = false) List<Integer> connectionTypes,
             @RequestParam(value = "govProgram", required = false) Integer govProgram,
             @RequestParam(value = "govProgramYear", required = false) Integer govProgramYear,
             @RequestParam(value = "govProgramYear", required = false) Integer hasAnyInternet,
-            @PathVariable(value = "type") TcType type
+            @PathVariable(value = "type") TcType type,
+            @RequestParam(value = "locationName", required = false) String... locationNames
     );
 
     @GetMapping("/{type}/export-excel")
     ResponseEntity<ByteArrayResource> locations(
             @RequestParam(value = "parents", required = false) List<Integer> parentIds,
-            @RequestParam(value = "locationName", required = false) String locationName,
             @RequestParam(value = "operators", required = false) List<Integer> internetOperators,
             @RequestParam(value = "connectionTypes", required = false) List<Integer> connectionTypes,
             @RequestParam(value = "govProgram", required = false) Integer govProgram,
             @RequestParam(value = "govProgramYear", required = false) Integer govProgramYear,
             @RequestParam(value = "govProgramYear", required = false) Integer hasAnyInternet,
-            @PathVariable(value = "type") TcType type
+            @PathVariable(value = "type") TcType type,
+            @RequestParam(value = "locationName", required = false) String... locationNames
     ) throws IOException;
 
     @PostMapping("/{locationId}/{featureId}/activation")

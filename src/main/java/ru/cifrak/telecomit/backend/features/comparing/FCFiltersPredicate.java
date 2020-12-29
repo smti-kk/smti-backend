@@ -10,7 +10,7 @@ import java.util.List;
 public class FCFiltersPredicate {
 
     private final List<Integer> parentIds;
-    private final String locationName;
+    private final String[] locationNames;
     private final List<Integer> internetOperators;
     private final List<Integer> mobileOperators;
     private final List<Integer> connectionTypes;
@@ -19,10 +19,10 @@ public class FCFiltersPredicate {
     private final Integer govProgramYear;
     private final Integer hasAnyInternet;
     private final Integer hasAnyMobile;
+    private boolean locationNamesNotNull;
 
     public FCFiltersPredicate(
             List<Integer> parentIds,
-            String locationName,
             List<Integer> internetOperators,
             List<Integer> mobileOperators,
             List<Integer> connectionTypes,
@@ -30,10 +30,14 @@ public class FCFiltersPredicate {
             Integer govProgram,
             Integer govProgramYear,
             Integer hasAnyInternet,
-            Integer hasAnyMobile
+            Integer hasAnyMobile,
+            String... locationNames
     ) {
         this.parentIds = parentIds;
-        this.locationName = locationName;
+        this.locationNamesNotNull = locationNamesNotNullCheck(locationNames);
+        this.locationNames = locationNames != null && this.locationNamesNotNull
+                ? Arrays.stream(locationNames).map(String::toLowerCase).toArray(String[]::new)
+                : locationNames;
         this.internetOperators = internetOperators;
         this.mobileOperators = mobileOperators;
         this.connectionTypes = connectionTypes;
@@ -51,8 +55,10 @@ public class FCFiltersPredicate {
         if (parentIds != null) {
             predicate = predicate.and(locationFC.locationParent.id.in(parentIds));
         }
-        if (locationName != null) {
-            predicate = predicate.and(locationFC.name.containsIgnoreCase(locationName));
+        if (locationNames != null && locationNames.length > 0) {
+            if (locationNamesNotNull) {
+                predicate = predicate.and(locationFC.name.toLowerCase().in(locationNames));
+            }
         }
         if (internetOperators != null) {
             predicate = predicate.and(
@@ -99,5 +105,18 @@ public class FCFiltersPredicate {
             predicate = predicate.and(locationFC.technicalCapabilities.any().type.eq(TcType.MOBILE));
         }
         return predicate;
+    }
+
+    private boolean locationNamesNotNullCheck(String... locationNames) {
+        boolean result = true;
+        if (locationNames != null && locationNames.length > 0) {
+            for (String name : locationNames) {
+                if (name == null) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 }

@@ -6,8 +6,8 @@ import ru.cifrak.telecomit.backend.entities.*;
 import java.util.List;
 
 public class OrganizationSpec {
-    public static Specification<Organization> inLocation(Location... location) {
-        return (root, cq, cb) -> cb.and(root.get(Organization_.location).in(location));
+    public static Specification<Organization> inLocation(Location... locations) {
+        return (root, cq, cb) -> cb.and(root.get(Organization_.location).in(locations));
     }
 
     public static Specification<Organization> withType(TypeOrganization type) {
