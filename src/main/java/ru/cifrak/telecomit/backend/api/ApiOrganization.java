@@ -51,17 +51,20 @@ public class ApiOrganization {
     public PaginatedList<ReportOrganizationDTO> reportAll(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
-            @RequestParam(name = "location", required = false) Location location,
             @RequestParam(name = "parents", required = false) List<Location> parents,
             @RequestParam(name = "type", required = false) TypeOrganization type,
             @RequestParam(name = "smo", required = false) TypeSmo smo,
             @RequestParam(name = "sort", required = false) String sort,
             @RequestParam(name = "population-start", required = false) Integer pStart,
             @RequestParam(name = "population-end", required = false) Integer pEnd,
-            @RequestParam(name = "organization", required = false) String organization
+            @RequestParam(name = "organization", required = false) String organization,
+            @RequestParam(name = "location", required = false) Location... location
     ) {
+        String locationStr = location != null
+                ? Arrays.stream(location).map(l -> String.valueOf(l.getId())).collect(Collectors.joining(","))
+                : "";
         log.info("->GET /api/organization/report/[page={}, size={}, location={}, orgname={}, type={}, smo={}, sort={}]",
-                page, size, location == null ? "" : location.getId(), organization, type, smo, sort);
+                page, size, locationStr, organization, type, smo, sort);
         //HINT: https://github.com/vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting
         Set<String> sortingFileds = new LinkedHashSet<>(
                 Arrays.asList(StringUtils.split(StringUtils.defaultIfEmpty(sort, ""), ",")));
@@ -77,8 +80,17 @@ public class ApiOrganization {
             pageConfig = PageRequest.of(page - 1, size);
         }
         Specification<ru.cifrak.telecomit.backend.entities.Organization> spec = Specification.where(null);
-        if (location != null) {
-            spec = spec != null ? spec.and(OrganizationSpec.inLocation(location)) : null;
+        if (location != null && location.length > 0) {
+            boolean locationsNotNull = true;
+            for (Location loc : location) {
+                if (loc == null) {
+                    locationsNotNull = false;
+                    break;
+                }
+            }
+            if (locationsNotNull) {
+                spec = spec != null ? spec.and(OrganizationSpec.inLocation(location)) : null;
+            }
         }
         if (type != null) {
             spec = spec.and(OrganizationSpec.withType(type));

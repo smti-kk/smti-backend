@@ -29,6 +29,7 @@ public class ExelReportLocation {
     private String TV;
     private String post;
     private String OKATO;
+    private String fias;
 
 
     public ExelReportLocation(@NotNull Location location) {
@@ -96,6 +97,7 @@ public class ExelReportLocation {
 
         this.OKATO = location.getOkato();
 
+        this.fias = location.getFias().toString();
     }
 
 }
