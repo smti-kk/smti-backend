@@ -9,7 +9,6 @@ public interface FeatureComparingService {
     Page<LocationFC> locations(
             Pageable pageable,
             List<Integer> parentIds,
-            String locationName,
             List<Integer> internetOperators,
             List<Integer> mobileOperators,
             List<Integer> connectionTypes,
@@ -17,12 +16,12 @@ public interface FeatureComparingService {
             Integer govProgram,
             Integer govProgramYear,
             Integer hasAnyInternet,
-            Integer hasAnyMobile
+            Integer hasAnyMobile,
+            String... locationNames
     );
 
     List<LocationFC> locations(
             List<Integer> parentIds,
-            String locationName,
             List<Integer> internetOperators,
             List<Integer> mobileOperators,
             List<Integer> connectionTypes,
@@ -30,6 +29,7 @@ public interface FeatureComparingService {
             Integer govProgram,
             Integer govProgramYear,
             Integer hasAnyInternet,
-            Integer hasAnyMobile
+            Integer hasAnyMobile,
+            String... locationNames
     );
 }

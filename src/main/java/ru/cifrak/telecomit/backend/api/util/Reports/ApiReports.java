@@ -64,8 +64,7 @@ public class ApiReports {
     public PaginatedList<ReportAccessPointFullDTO> reportAll(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
-            @RequestParam(name = "location", required = false) Location location,
-            @RequestParam(name = "type", required = false) TypeOrganization type,
+             @RequestParam(name = "type", required = false) TypeOrganization type,
             @RequestParam(name = "smo", required = false) TypeSmo smo,
             @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp,
             @RequestParam(name = "inet", required = false) TypeInternetAccess inettype,
@@ -75,10 +74,14 @@ public class ApiReports {
             @RequestParam(name = "population-start", required = false) Integer pStart,
             @RequestParam(name = "population-end", required = false) Integer pEnd,
             @RequestParam(name = "ap", required = false) List<TypeAccessPoint> ap,
-            @RequestParam(name = "sort", required = false) String sort
+            @RequestParam(name = "sort", required = false) String sort,
+            @RequestParam(name = "location", required = false) Location... locations
     ) {
+        String locationStr = locations != null
+                ? Arrays.stream(locations).map(l -> String.valueOf(l.getId())).collect(Collectors.joining(","))
+                : "";
         log.info("->GET /api/report/organization/[page={}, size={}, location={}, type={}, smo={}, gdp={}, inet={}, parents=xx, orgname={}, operator={} ]",
-                page, size, location == null ? "" : location.getId(), type, smo, gdp, inettype, organization, contractor);
+                page, size, locationStr, type, smo, gdp, inettype, organization, contractor);
         //HINT: https://github.com/vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting
         Set<String> sortingFileds = new LinkedHashSet<>(
                 Arrays.asList(
@@ -97,8 +100,17 @@ public class ApiReports {
             pageConfig = PageRequest.of(page - 1, size);
         }
         Specification<AccessPointFull> spec = Specification.where(null);
-        if (location != null) {
-            spec = spec != null ? spec.and(SpecificationAccessPointFull.inLocation(location)) : null;
+        if (locations != null && locations.length > 0) {
+            boolean locationsNotNull = true;
+            for (Location loc : locations) {
+                if (loc == null) {
+                    locationsNotNull = false;
+                    break;
+                }
+            }
+            if (locationsNotNull) {
+                spec = spec != null ? spec.and(SpecificationAccessPointFull.inLocations(locations)) : null;
+            }
         }
         if (type != null) {
             spec = spec.and(SpecificationAccessPointFull.withType(type));
@@ -146,7 +158,6 @@ public class ApiReports {
     public PaginatedList<ReportApContractDTO> reportContracts(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
-            @RequestParam(name = "location", required = false) Location location,
             @RequestParam(name = "type", required = false) TypeOrganization type,
             @RequestParam(name = "smo", required = false) TypeSmo smo,
             @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp,
@@ -159,10 +170,14 @@ public class ApiReports {
             @RequestParam(name = "contract", required = false) String contract,
             @RequestParam(name = "contract-start", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cStart,
             @RequestParam(name = "contract-end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate cEnd,
-            @RequestParam(name = "sort", required = false) String sort
+            @RequestParam(name = "sort", required = false) String sort,
+            @RequestParam(name = "location", required = false) Location... locations
     ) {
+        String locationStr = locations != null
+                ? Arrays.stream(locations).map(l -> String.valueOf(l.getId())).collect(Collectors.joining(","))
+                : "";
         log.info("->GET /api/report/contract/[page={}, size={}, location={}, type={}, smo={}, gdp={}, inet={}, parents=xx, orgname={}, operator={} ]",
-                page, size, location == null ? "" : location.getId(), type, smo, gdp, inettype, organization, contractor);
+                page, size, locationStr, type, smo, gdp, inettype, organization, contractor);
         //HINT: https://github.com/vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting
         Set<String> sortingFileds = new LinkedHashSet<>(
                 Arrays.asList(StringUtils.split(StringUtils
@@ -179,8 +194,17 @@ public class ApiReports {
             pageConfig = PageRequest.of(page - 1, size);
         }
         Specification<AccessPointFull> spec = Specification.where(SpecificationAccessPointFull.apcontract());
-        if (location != null) {
-            spec = spec.and(SpecificationAccessPointFull.inLocation(location));
+        if (locations != null && locations.length > 0) {
+            boolean locationsNotNull = true;
+            for (Location loc : locations) {
+                if (loc == null) {
+                    locationsNotNull = false;
+                    break;
+                }
+            }
+            if (locationsNotNull) {
+                spec = spec.and(SpecificationAccessPointFull.inLocations(locations));
+            }
         }
         if (type != null) {
             spec = spec.and(SpecificationAccessPointFull.withType(type));
