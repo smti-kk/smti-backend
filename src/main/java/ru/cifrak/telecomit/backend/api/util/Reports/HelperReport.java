@@ -79,6 +79,7 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(15, ExelReportLocation::getRadio, "Радио");
         exportToExcelConfiguration.addColumn(16, ExelReportLocation::getTV, "Телевидение");
         exportToExcelConfiguration.addColumn(17, ExelReportLocation::getPost, "Почта");
+        exportToExcelConfiguration.addColumn(18, ExelReportLocation::getFias, "ФИАС");
 
         return new ExcelExporter<>(exportToExcelConfiguration);
     }
