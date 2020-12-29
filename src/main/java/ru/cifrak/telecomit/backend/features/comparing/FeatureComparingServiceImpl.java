@@ -21,7 +21,6 @@ public class FeatureComparingServiceImpl implements FeatureComparingService {
     public Page<LocationFC> locations(
             Pageable pageable,
             List<Integer> parentIds,
-            String locationName,
             List<Integer> internetOperators,
             List<Integer> mobileOperators,
             List<Integer> connectionTypes,
@@ -29,11 +28,11 @@ public class FeatureComparingServiceImpl implements FeatureComparingService {
             Integer govProgram,
             Integer govProgramYear,
             Integer hasAnyInternet,
-            Integer hasAnyMobile
+            Integer hasAnyMobile,
+            String... locationNames
     ) {
         BooleanExpression predicate = new FCFiltersPredicate(
                 parentIds,
-                locationName,
                 internetOperators,
                 mobileOperators,
                 connectionTypes,
@@ -41,14 +40,14 @@ public class FeatureComparingServiceImpl implements FeatureComparingService {
                 govProgram,
                 govProgramYear,
                 hasAnyInternet,
-                hasAnyMobile
+                hasAnyMobile,
+                locationNames
         ).booleanExpression();
         return locationRepository.findAll(predicate, pageable);
     }
 
     @Override
     public List<LocationFC> locations(List<Integer> parentIds,
-                                      String locationName,
                                       List<Integer> internetOperators,
                                       List<Integer> mobileOperators,
                                       List<Integer> connectionTypes,
@@ -56,10 +55,10 @@ public class FeatureComparingServiceImpl implements FeatureComparingService {
                                       Integer govProgram,
                                       Integer govProgramYear,
                                       Integer hasAnyInternet,
-                                      Integer hasAnyMobile) {
+                                      Integer hasAnyMobile,
+                                      String... locationNames) {
         BooleanExpression predicate = new FCFiltersPredicate(
                 parentIds,
-                locationName,
                 internetOperators,
                 mobileOperators,
                 connectionTypes,
@@ -67,7 +66,8 @@ public class FeatureComparingServiceImpl implements FeatureComparingService {
                 govProgram,
                 govProgramYear,
                 hasAnyInternet,
-                hasAnyMobile
+                hasAnyMobile,
+                locationNames
         ).booleanExpression();
         List<LocationFC> result = new ArrayList<>();
         locationRepository

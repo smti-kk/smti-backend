@@ -8,6 +8,10 @@ import java.util.List;
 
 public class SpecificationAccessPointFull {
 
+    public static Specification<AccessPointFull> inLocations(Location... locations) {
+        return (root, cq, cb) -> cb.and(root.get(AccessPointFull_.organization).get(Organization_.location).in(locations));
+    }
+
     public static Specification<AccessPointFull> inLocation(Location location) {
         return (root, cq, cb) -> cb.equal(root.get(AccessPointFull_.organization).get(Organization_.location), location);
     }

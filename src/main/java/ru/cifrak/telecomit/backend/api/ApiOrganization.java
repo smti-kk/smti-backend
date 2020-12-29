@@ -58,10 +58,10 @@ public class ApiOrganization {
             @RequestParam(name = "population-start", required = false) Integer pStart,
             @RequestParam(name = "population-end", required = false) Integer pEnd,
             @RequestParam(name = "organization", required = false) String organization,
-            @RequestParam(name = "location", required = false) Location... location
+            @RequestParam(name = "location", required = false) Location... locations
     ) {
-        String locationStr = location != null
-                ? Arrays.stream(location).map(l -> String.valueOf(l.getId())).collect(Collectors.joining(","))
+        String locationStr = locations != null
+                ? Arrays.stream(locations).map(l -> String.valueOf(l.getId())).collect(Collectors.joining(","))
                 : "";
         log.info("->GET /api/organization/report/[page={}, size={}, location={}, orgname={}, type={}, smo={}, sort={}]",
                 page, size, locationStr, organization, type, smo, sort);
@@ -80,16 +80,16 @@ public class ApiOrganization {
             pageConfig = PageRequest.of(page - 1, size);
         }
         Specification<ru.cifrak.telecomit.backend.entities.Organization> spec = Specification.where(null);
-        if (location != null && location.length > 0) {
+        if (locations != null && locations.length > 0) {
             boolean locationsNotNull = true;
-            for (Location loc : location) {
+            for (Location loc : locations) {
                 if (loc == null) {
                     locationsNotNull = false;
                     break;
                 }
             }
             if (locationsNotNull) {
-                spec = spec != null ? spec.and(OrganizationSpec.inLocation(location)) : null;
+                spec = spec != null ? spec.and(OrganizationSpec.inLocation(locations)) : null;
             }
         }
         if (type != null) {
