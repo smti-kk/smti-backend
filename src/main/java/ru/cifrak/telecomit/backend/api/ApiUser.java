@@ -44,7 +44,7 @@ public class ApiUser {
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     public Page<Account> list(Pageable pageable, @AuthenticationPrincipal User user) {
         log.info("[{}]-> GET {}", user.getUsername(), API_PATH);
-        Page<Account> results = rAccount.findAllByUsernameIsNot("admin", pageable);
+        Page<Account> results = rAccount.findAllByUsernameIsNotOrderByLastName("admin", pageable);
         log.info("[{}]<- GET {}", user.getUsername(), API_PATH);
         return results;
     }

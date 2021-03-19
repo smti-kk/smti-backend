@@ -40,9 +40,9 @@ public class ExelReportLocation {
         this.district = location.getParent().getType();
         this.districtName = location.getParent().getName();
         this.cellular = location.getTechnicalCapabilities().stream()
-                .filter(tc -> tc instanceof TcAts)
+                .filter(tc -> tc instanceof TcAts && tc.getState() == TcState.ACTIVE)
                 .map(tc -> tc.getOperator().getName())
-                .collect(Collectors.joining(","));;
+                .collect(Collectors.joining(","));
 
         this.ESPD = location.getOrganizations().stream()
                 .anyMatch(org -> org.getAccessPoints().stream()
@@ -63,35 +63,35 @@ public class ExelReportLocation {
                 )? "1" : "0";
 
         this.internet = location.getTechnicalCapabilities().stream()
-                .filter(tc -> tc instanceof TcInternet)
+                .filter(tc -> tc instanceof TcInternet && tc.getState() == TcState.ACTIVE)
                 .map(tc -> tc.getOperator().getName() + " (" + Optional.ofNullable(((TcInternet) tc).getTrunkChannel()).map(TypeTrunkChannel::getName)
                         .orElse("Не выбрано") + ")")
                 .collect(Collectors.joining(","));
         this.telephone = location.getTechnicalCapabilities().stream()
-                .filter(tc -> tc instanceof TcMobile)
+                .filter(tc -> tc instanceof TcMobile && tc.getState() == TcState.ACTIVE)
                 .map(tc -> tc.getOperator().getName() + " (" + ((TcMobile) tc).getType().getName() + ")")
                 .collect(Collectors.joining(","));
 
         this.payphone = location.getTechnicalCapabilities().stream()
-                .filter(tc -> tc instanceof TcPayphone)
+                .filter(tc -> tc instanceof TcPayphone && tc.getState() == TcState.ACTIVE)
                 .map(tc -> tc.getOperator().getName() + " (" + ((TcPayphone) tc).getQuantity() + ")")
                 .collect(Collectors.joining(","));
 
         this.infomat = location.getTechnicalCapabilities().stream()
-                .anyMatch(tc -> tc instanceof TcInfomat) ? "1" : "0";
+                .anyMatch(tc -> tc instanceof TcInfomat && tc.getState() == TcState.ACTIVE) ? "1" : "0";
 
         this.radio = location.getTechnicalCapabilities().stream()
-                .filter(tc -> tc instanceof TcRadio)
+                .filter(tc -> tc instanceof TcRadio && tc.getState() == TcState.ACTIVE)
                 .map(tc -> tc.getOperator().getName() + " (" + ((TcRadio) tc).signalAsString() + ")")
                 .collect(Collectors.joining(","));
 
         this.TV = location.getTechnicalCapabilities().stream()
-                .filter(tc -> tc instanceof TcTv)
+                .filter(tc -> tc instanceof TcTv && tc.getState() == TcState.ACTIVE)
                 .map(tc -> tc.getOperator().getName() + " (" + (((TcTv) tc).signalAsString()) + ")")
                 .collect(Collectors.joining(","));
 
         this.post = location.getTechnicalCapabilities().stream()
-                .filter(tc -> tc instanceof TcPost)
+                .filter(tc -> tc instanceof TcPost && tc.getState() == TcState.ACTIVE)
                 .map(tc -> tc.getOperator().getName() + " (" + ((TcPost) tc).getType() + ")")
                 .collect(Collectors.joining(","));
 

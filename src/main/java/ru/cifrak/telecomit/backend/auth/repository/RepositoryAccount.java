@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface RepositoryAccount extends JpaRepository<Account, Long> {
 
     @EntityGraph(Account.WITH_ALL)
-    Page<Account> findAllByUsernameIsNot(String name, Pageable pageable);
+    Page<Account> findAllByUsernameIsNotOrderByLastName(String name, Pageable pageable);
 
     @EntityGraph(Account.WITH_ALL)
     @Override
