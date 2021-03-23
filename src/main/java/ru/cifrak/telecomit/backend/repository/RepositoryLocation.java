@@ -35,6 +35,7 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
             "and l.type not like 'край' " +
             "and l.type not like 'с/с' " +
             "and l.type not like 'тер' " +
+            "and l.type not like 'округ' " +
             "order by l.name "
     )
     List<Location> locationFilter();
