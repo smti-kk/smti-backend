@@ -51,7 +51,7 @@ public class FCFiltersPredicate {
     public BooleanExpression booleanExpression() {
         QLocationFC locationFC = QLocationFC.locationFC;
         QLocationFeature locationFeature = QLocationFeature.locationFeature;
-        com.querydsl.core.types.dsl.BooleanExpression predicate = locationFC.type.notIn(Arrays.asList("р-н", "край", "с/с", "тер"));
+        com.querydsl.core.types.dsl.BooleanExpression predicate = locationFC.type.notIn(Arrays.asList("р-н", "край", "с/с", "тер", "округ"));
         if (parentIds != null) {
             predicate = predicate.and(locationFC.locationParent.id.in(parentIds));
         }

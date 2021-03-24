@@ -49,20 +49,20 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
 
     @EntityGraph(value = Location.WITH_FEATURES)
     @Query(value = "SELECT l from Location l where" +
-            " l.type not in ('р-н', 'край', 'с/с', 'тер')" +
+            " l.type not in ('р-н', 'край', 'с/с', 'тер', 'округ')" +
             "and l.geoData.administrativeCenter is not NULL " +
             "and (l.parent.id = ?1 or l.id = ?1)")
     List<Location> findAllByParentId(Integer parentId);
 
     @EntityGraph(value = Location.WITH_FEATURES)
     @Query(value = "SELECT l from Location l" +
-            " where l.type not in ('р-н', 'край', 'с/с', 'тер')"
+            " where l.type not in ('р-н', 'край', 'с/с', 'тер', 'округ')"
     )
     Page<Location> findAll(Pageable pageable);
 
     @EntityGraph(value = Location.WITH_ORGANIZATIONS_ACCESSPOINTS)
     @Query(value = "SELECT l from Location l" +
-            " where l.type not in ('р-н', 'край', 'с/с', 'тер')"
+            " where l.type not in ('р-н', 'край', 'с/с', 'тер', 'округ')"
     )
     Page<Location> findAllReportOrganization(Pageable pageable);
 
