@@ -18,8 +18,7 @@ import ru.cifrak.telecomit.backend.repository.DSLDetailLocation;
 import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class LocationService {
@@ -39,9 +38,18 @@ public class LocationService {
         JPAQuery<LocationParent> jQ = new JPAQuery<LocationParent>(entityManager)
                 .from(parent)
                 .where(parent.level.eq(1));
-        jQ.orderBy(new OrderSpecifier<>(Order.ASC, parent.type), new OrderSpecifier<>(Order.ASC, parent.name));
-        return jQ
-                .fetch();
+        List<LocationParent> orderedParents = jQ.fetch();
+        orderedParents.sort(((Comparator<LocationParent>) (l1, l2) -> {
+            int orderValueL1 =
+                    l1.getType().equalsIgnoreCase("г") ? 1 :
+                            l1.getType().equalsIgnoreCase("р-н") || l1.getType().equalsIgnoreCase("округ") ? 2 : 3;
+            int orderValueL2 =
+                    l2.getType().equalsIgnoreCase("г") ? 1 :
+                            l2.getType().equalsIgnoreCase("р-н") || l2.getType().equalsIgnoreCase("округ") ? 2 : 3;
+            return orderValueL1 - orderValueL2;
+        }).thenComparing(LocationParent::getName));
+        return orderedParents;
+
     }
 
     @Cacheable(value = "locations")
