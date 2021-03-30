@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.LocationSimple;
 import ru.cifrak.telecomit.backend.api.dto.LocationSimpleFilterDTO;
 import ru.cifrak.telecomit.backend.entities.DLocationBase;
+import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 import ru.cifrak.telecomit.backend.repository.RepositoryDLocationBase;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 @Slf4j
@@ -50,9 +52,20 @@ public class ApiLocation {
     public List<LocationSimple> parents() {
         log.info("->GET /api/location/base/parents/");
         log.info("<- GET /api/location/base/parents/");
-        return repository.parents().stream()
-                .map(LocationSimple::new)
-                .collect(Collectors.toList());
+        List<LocationSimple> orderedParents =
+                repository.parents().stream()
+                        .map(LocationSimple::new)
+                        .collect(Collectors.toList());
+        orderedParents.sort(((Comparator<LocationSimple>) (l1, l2) -> {
+            int orderValueL1 =
+                    l1.getType().equalsIgnoreCase("г") ? 1 :
+                            l1.getType().equalsIgnoreCase("р-н") || l1.getType().equalsIgnoreCase("округ") ? 3 : 2;
+            int orderValueL2 =
+                    l2.getType().equalsIgnoreCase("г") ? 1 :
+                            l2.getType().equalsIgnoreCase("р-н") || l2.getType().equalsIgnoreCase("округ") ? 3 : 2;
+            return orderValueL1 - orderValueL2;
+        }).thenComparing(LocationSimple::getName));
+        return orderedParents;
     }
 
     @GetMapping(params = "parent")
