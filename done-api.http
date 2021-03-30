@@ -3,7 +3,7 @@ POST http://localhost:8080/auth/login/
 Content-Type: application/json
 //{"username": "admin", "password": "pwd"}
 
-{"email": "admin", "password": "pwd"}
+{"email": "admin@admin.ru", "password": "RjymCjkywtNhfdf"}
 
 > {% client.global.set("auth_token", response.body.token); %}
 
