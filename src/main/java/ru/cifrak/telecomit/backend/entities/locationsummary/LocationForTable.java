@@ -7,6 +7,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.Immutable;
 import ru.cifrak.telecomit.backend.entities.map.TechnicalCapabilityForLocationTable;
+import ru.cifrak.telecomit.backend.exceptions.WrongParentException;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -51,6 +52,13 @@ import java.util.Set;
         )
 })
 public class LocationForTable implements Serializable {
+
+    @PreUpdate
+    public void updateAttempt() throws WrongParentException {
+        if (id.equals(locationParent.getId())) {
+                throw new WrongParentException();
+        }
+    }
 
     @Id
     private Integer id;
