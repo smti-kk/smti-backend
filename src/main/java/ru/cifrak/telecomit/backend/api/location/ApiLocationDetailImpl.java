@@ -20,6 +20,7 @@ import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
+import ru.cifrak.telecomit.backend.exceptions.WrongParentException;
 import ru.cifrak.telecomit.backend.repository.DSLDetailLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
@@ -36,6 +37,7 @@ import static ru.cifrak.telecomit.backend.api.util.Reports.HelperReport.generate
 @Slf4j
 @RestController
 public class ApiLocationDetailImpl implements ApiLocationDetail {
+    public static final int KRASNOYARSK_REGION_ID = 4;
     private final LocationService locationService;
     private final DSLDetailLocation repository;
     private final RepositoryLocation repositoryLocation;
@@ -134,9 +136,14 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
     public void update(@RequestParam("id") Integer id,
                        @RequestParam("population") Integer population,
                        @RequestParam("area") Integer area,
-                       @AuthenticationPrincipal User user) {
+                       @AuthenticationPrincipal User user) throws WrongParentException {
         log.info("user {} update location {} with id", user.getEmail(), id);
-        repository.updatePopulationAndParent(id, population, area);
+        if (repository.getOne(id).getLocationParent().getId() == KRASNOYARSK_REGION_ID &&
+                area != KRASNOYARSK_REGION_ID) {
+            throw new WrongParentException();
+        } else {
+            repository.updatePopulationAndParent(id, population, area);
+        }
         locationService.refreshCache();
     }
 }
