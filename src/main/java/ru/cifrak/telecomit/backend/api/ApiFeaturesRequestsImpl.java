@@ -4,29 +4,41 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
+import ru.cifrak.telecomit.backend.auth.repository.RepositoryAccount;
+import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationFeaturesEditingRequest;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationFeaturesEditingRequestFull;
+import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
+import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
 import ru.cifrak.telecomit.backend.repository.RepositoryFeaturesRequests;
+import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocationFeaturesRequests;
 import ru.cifrak.telecomit.backend.service.LocationService;
 import ru.cifrak.telecomit.backend.service.ServiceWritableTc;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     private final RepositoryFeaturesRequests repositoryFeaturesRequests;
+    private final RepositoryAccount repositoryAccount;
+    private final RepositoryLocation repositoryLocation;
     private final RepositoryLocationFeaturesRequests repositoryLocationFeaturesRequests;
     private final ServiceWritableTc serviceWritableTc;
     private final LocationService locationService;
 
     public ApiFeaturesRequestsImpl(RepositoryFeaturesRequests repositoryFeaturesRequests,
+                                   RepositoryAccount repositoryAccount,
+                                   RepositoryLocation repositoryLocation,
                                    RepositoryLocationFeaturesRequests repositoryLocationFeaturesRequests,
                                    ServiceWritableTc serviceWritableTc,
                                    LocationService locationService) {
         this.repositoryFeaturesRequests = repositoryFeaturesRequests;
+        this.repositoryAccount = repositoryAccount;
+        this.repositoryLocation = repositoryLocation;
         this.repositoryLocationFeaturesRequests = repositoryLocationFeaturesRequests;
         this.serviceWritableTc = serviceWritableTc;
         this.locationService = locationService;
@@ -57,7 +69,15 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     public Page<LocationFeaturesEditingRequestFull> requestsByUser(Pageable pageable, User user) {
         log.info("->GET /api/features-requests/by-user");
         log.info("<- GET /api/features-requests/by-user");
-        return repositoryFeaturesRequests.findAllByUserOrderByCreatedDesc(user, pageable);
+        List<Location> locationsByUser =
+                repositoryAccount.findById(user.getId()).orElseThrow(NotFoundException::new)
+                        .getLocations().stream().map(l ->
+                        repositoryLocation.get(l.getId())).collect(Collectors.toList());
+//        List<LocationForTable> locationsByUser =
+//                repositoryAccount.findById(user.getId()).orElseThrow(NotFoundException::new)
+//                        .getLocations().stream().map(l ->
+//                        locationService.getOne(l.getId())).collect(Collectors.toList());
+        return repositoryFeaturesRequests.findByLocation_IdIn(locationsByUser, pageable);
     }
 
     @Override
