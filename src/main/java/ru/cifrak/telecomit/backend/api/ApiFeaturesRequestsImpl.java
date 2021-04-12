@@ -73,10 +73,6 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
                 repositoryAccount.findById(user.getId()).orElseThrow(NotFoundException::new)
                         .getLocations().stream().map(l ->
                         repositoryLocation.get(l.getId())).collect(Collectors.toList());
-//        List<LocationForTable> locationsByUser =
-//                repositoryAccount.findById(user.getId()).orElseThrow(NotFoundException::new)
-//                        .getLocations().stream().map(l ->
-//                        locationService.getOne(l.getId())).collect(Collectors.toList());
         return repositoryFeaturesRequests.findByLocation_IdIn(locationsByUser, pageable);
     }
 
