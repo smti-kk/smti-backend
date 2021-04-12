@@ -5,9 +5,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.locationsummary.EditingRequestStatus;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationFeaturesEditingRequestFull;
+import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
 
 import java.util.List;
 
@@ -26,4 +28,10 @@ public interface RepositoryFeaturesRequests extends JpaRepository<LocationFeatur
     Page<LocationFeaturesEditingRequestFull> findAllRequestsAndImportAndEditions(Pageable pageable);
     List<LocationFeaturesEditingRequestFull> findAllByLocationIdOrderByCreatedDesc(Integer locationId);
     Page<LocationFeaturesEditingRequestFull> findAllByUserOrderByCreatedDesc(User user, Pageable pageable);
+
+    @Query("SELECT lferf " +
+            "FROM LocationFeaturesEditingRequestFull lferf INNER JOIN Location l ON lferf.location = l " +
+            "WHERE l.parent IN (:parentLocations) " +
+            "ORDER BY lferf.created DESC")
+    Page<LocationFeaturesEditingRequestFull> findByLocation_IdIn(List<Location> parentLocations, Pageable pageable);
 }
