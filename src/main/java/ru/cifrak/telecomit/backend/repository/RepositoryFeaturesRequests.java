@@ -31,6 +31,7 @@ public interface RepositoryFeaturesRequests extends JpaRepository<LocationFeatur
 
     @Query("SELECT lferf " +
             "FROM LocationFeaturesEditingRequestFull lferf INNER JOIN Location l ON lferf.location = l " +
-            "WHERE l.parent IN (:parentLocations)")
+            "WHERE l.parent IN (:parentLocations) " +
+            "ORDER BY lferf.created DESC")
     Page<LocationFeaturesEditingRequestFull> findByLocation_IdIn(List<Location> parentLocations, Pageable pageable);
 }
