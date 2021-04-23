@@ -62,32 +62,12 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
             String... locationNames
     ) {
         if (type.equals(TcType.INET)) {
-            return featureComparingService.locations(
-                    pageable,
-                    parentIds,
-                    operators,
-                    null,
-                    connectionTypes,
-                    null,
-                    govProgram,
-                    govProgramYear,
-                    hasAnyInternet,
-                    null,
-                    locationNames
+            return featureComparingService.locationsINET(
+                    pageable
             );
         } else if (type.equals(TcType.MOBILE)) {
-            return featureComparingService.locations(
-                    pageable,
-                    parentIds,
-                    null,
-                    operators,
-                    null,
-                    connectionTypes,
-                    govProgram,
-                    govProgramYear,
-                    null,
-                    hasAnyInternet,
-                    locationNames
+            return featureComparingService.locationsMOBILE(
+                    pageable
             );
         } else {
             return null;

@@ -32,4 +32,12 @@ public interface FeatureComparingService {
             Integer hasAnyMobile,
             String... locationNames
     );
+
+    Page<LocationFC> locationsINET(
+            Pageable pageable
+    );
+
+    Page<LocationFC> locationsMOBILE(
+            Pageable pageable
+    );
 }

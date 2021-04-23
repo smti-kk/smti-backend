@@ -47,6 +47,20 @@ public class FeatureComparingServiceImpl implements FeatureComparingService {
     }
 
     @Override
+    public Page<LocationFC> locationsINET(
+            Pageable pageable
+    ) {
+        return locationRepository.findAllINET(pageable);
+    }
+
+    @Override
+    public Page<LocationFC> locationsMOBILE(
+            Pageable pageable
+    ) {
+        return locationRepository.findAllMOBILE(pageable);
+    }
+
+    @Override
     public List<LocationFC> locations(List<Integer> parentIds,
                                       List<Integer> internetOperators,
                                       List<Integer> mobileOperators,
