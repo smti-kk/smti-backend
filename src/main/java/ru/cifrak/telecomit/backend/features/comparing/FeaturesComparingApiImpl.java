@@ -2,7 +2,9 @@ package ru.cifrak.telecomit.backend.features.comparing;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +47,10 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
     @Override
     @Secured({"ROLE_OPERATOR", "ROLE_ADMIN"})
     public Page<LocationFC> locations(Pageable pageable) {
-        return locationRepository.findAll(pageable);
+        return locationRepository.findAll(
+                PageRequest.of(pageable.getPageNumber(),
+                        pageable.getPageSize(),
+                        Sort.by("locationParent.name").ascending().and(Sort.by("name").ascending())));
     }
 
     @Override
@@ -62,12 +67,36 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
             String... locationNames
     ) {
         if (type.equals(TcType.INET)) {
-            return featureComparingService.locationsINET(
-                    pageable
+            return featureComparingService.locations(
+                    PageRequest.of(pageable.getPageNumber(),
+                            pageable.getPageSize(),
+                            Sort.by("locationParent.name").ascending().and(Sort.by("name").ascending())),
+                    parentIds,
+                    operators,
+                    null,
+                    connectionTypes,
+                    null,
+                    govProgram,
+                    govProgramYear,
+                    hasAnyInternet,
+                    null,
+                    locationNames
             );
         } else if (type.equals(TcType.MOBILE)) {
-            return featureComparingService.locationsMOBILE(
-                    pageable
+            return featureComparingService.locations(
+                    PageRequest.of(pageable.getPageNumber(),
+                            pageable.getPageSize(),
+                            Sort.by("locationParent.name").ascending().and(Sort.by("name").ascending())),
+                    parentIds,
+                    null,
+                    operators,
+                    null,
+                    connectionTypes,
+                    govProgram,
+                    govProgramYear,
+                    null,
+                    hasAnyInternet,
+                    locationNames
             );
         } else {
             return null;
