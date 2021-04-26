@@ -25,10 +25,10 @@ public interface LocationRepository extends JpaRepository<LocationFC, Integer>,
     @Cacheable("locations_fc")
     @Query("SELECT l from LocationFC l where" +
             " l.type not like 'р-н' " +
-            "and l.type not like 'край' " +
-            "and l.type not like 'с/с' " +
-            "and l.type not like 'тер' " +
-            "and l.type not like 'округ' "
+            " and l.type not like 'край'" +
+            " and l.type not like 'с/с'" +
+            " and l.type not like 'тер'" +
+            " and l.type not like 'округ'"
     )
     Page<LocationFC> findAll(@NotNull Pageable pageable);
 
