@@ -2,6 +2,7 @@ package ru.cifrak.telecomit.backend.api;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationFeaturesEditingRequest;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationFeaturesEditingRequestFull;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequestMapping("/api/features-requests")
@@ -23,7 +25,15 @@ public interface ApiFeaturesRequests {
 
     @GetMapping("/full")
     @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
-    Page<LocationFeaturesEditingRequestFull> requestsAndImportsAndEditions(Pageable pageable);
+    Page<LocationFeaturesEditingRequestFull> requestsAndImportsAndEditions(
+            Pageable pageable,
+            @RequestParam(value = "sort", required = false) List<String> sort,
+            @RequestParam(value = "location", required = false) List<Integer> locationIds,
+            @RequestParam(value = "parent", required = false) List<Integer> parentIds,
+            @RequestParam(value = "contractStart", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate contractStart,
+            @RequestParam(value = "contractEnd", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate contractEnd,
+            @RequestParam(value = "action", required = false) List<Integer> actionIds,
+            @RequestParam(value = "user", required = false) List<Integer> userIds);
 
     @GetMapping("/{locationId}")
     @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
