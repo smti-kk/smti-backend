@@ -1,24 +1,22 @@
 package ru.cifrak.telecomit.backend.entities.locationsummary;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum FeatureEditAction {
-    UPDATE,
-    CREATE,
-    DELETE;
+    UPDATE ("UPDATE", "Изменение"),
+    CREATE ("CREATE", "Создание"),
+    DELETE ("DELETE", "Удаление");
+
+    private String name;
+    private String description;
 
     @Override
     public String toString() {
-        String result = null;
-        switch (this) {
-            case UPDATE:
-                result = "Изменение";
-                break;
-            case CREATE:
-                result = "Создание";
-                break;
-            case DELETE:
-                result = "Удаление";
-                break;
-        }
-        return result;
+        return  (this.getDescription());
     }
 }
