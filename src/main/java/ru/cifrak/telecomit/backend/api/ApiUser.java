@@ -43,9 +43,18 @@ public class ApiUser {
     @GetMapping
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     public Page<Account> list(Pageable pageable, @AuthenticationPrincipal User user) {
-        log.info("[{}]-> GET {}", user.getUsername(), API_PATH);
+        log.info("[{}]-> GET {}", user != null ? user.getUsername() : "", API_PATH);
         Page<Account> results = rAccount.findAllByUsernameIsNotOrderByLastName("admin", pageable);
-        log.info("[{}]<- GET {}", user.getUsername(), API_PATH);
+        log.info("[{}]<- GET {}", user != null ? user.getUsername() : "", API_PATH);
+        return results;
+    }
+
+    @GetMapping("/all/")
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
+    public List<Account> listAll(@AuthenticationPrincipal User user) {
+        log.info("[{}]-> GET {}{}", user != null ? user.getUsername() : "", API_PATH, "all/");
+        List<Account> results = rAccount.findAll();
+        log.info("[{}]<- GET {}{}", user != null ? user.getUsername() : "", API_PATH, "all/");
         return results;
     }
 
