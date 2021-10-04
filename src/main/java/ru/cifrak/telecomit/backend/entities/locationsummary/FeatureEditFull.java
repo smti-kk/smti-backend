@@ -22,4 +22,12 @@ public class FeatureEditFull {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     private LocationFeature newValue;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "location_features_editing_request_feature_edits",
+            joinColumns = @JoinColumn(name = "feature_edits_id", referencedColumnName="ID"),
+            inverseJoinColumns = @JoinColumn(name = "location_features_editing_request_id", referencedColumnName="ID")
+    )
+    private LocationFeaturesEditingRequestFull1 locationFeaturesEditingRequest;
 }
