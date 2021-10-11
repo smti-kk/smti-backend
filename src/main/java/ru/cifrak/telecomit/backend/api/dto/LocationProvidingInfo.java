@@ -65,15 +65,26 @@ public class LocationProvidingInfo {
     private List<LocationForTable> geChilds(LocationForTable location) {
         List<LocationForTable> childs = new ArrayList<>();
         if (location.getPopulation() != 0 && location.getPopulation() != null) {
-            childs.add(location);
+            if (!"р-н".equals(location.getType())
+                    && !"край".equals(location.getType())
+                    && !"с/с".equals(location.getType())
+                    && !"тер".equals(location.getType())
+                    && !"округ".equals(location.getType())
+            ) {
+                childs.add(location);
+            }
         }
         location.getChildren().forEach(c -> {
-            if (c.getChildren().isEmpty() && !"с/с".equals(c.getType())) {
-                childs.add(c);
-            } else {
-                if (c.getPopulation() != 0 && c.getPopulation() != null) {
+            if (c.getChildren().isEmpty()) {
+                if (!"р-н".equals(c.getType())
+                        && !"край".equals(c.getType())
+                        && !"с/с".equals(c.getType())
+                        && !"тер".equals(c.getType())
+                        && !"округ".equals(c.getType())
+                ) {
                     childs.add(c);
                 }
+            } else {
                 childs.addAll(geChilds(c));
             }
         });
