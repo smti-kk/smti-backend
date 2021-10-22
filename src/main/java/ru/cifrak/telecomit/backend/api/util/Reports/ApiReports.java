@@ -34,7 +34,10 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -73,6 +76,7 @@ public class ApiReports {
             @RequestParam(name = "contractor", required = false) String contractor,
             @RequestParam(name = "population-start", required = false) Integer pStart,
             @RequestParam(name = "population-end", required = false) Integer pEnd,
+            @RequestParam(name = "address", required = false) String address,
             @RequestParam(name = "ap", required = false) List<TypeAccessPoint> ap,
             @RequestParam(name = "sort", required = false) String sort,
             @RequestParam(name = "location", required = false) Location... locations
@@ -141,6 +145,9 @@ public class ApiReports {
         }
         if (ap != null) {
             spec = spec.and(SpecificationAccessPointFull.type(ap));
+        }
+        if (address != null) {
+            spec = spec.and(SpecificationAccessPointFull.inAddress(address));
         }
         Page<AccessPointFull> pageDatas = rAccessPoints.findAll(spec, pageConfig);
         PaginatedList<ReportAccessPointFullDTO> pList = new PaginatedList<>(
