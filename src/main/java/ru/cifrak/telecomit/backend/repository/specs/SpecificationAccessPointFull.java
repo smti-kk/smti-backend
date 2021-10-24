@@ -17,7 +17,7 @@ public class SpecificationAccessPointFull {
     }
 
     public static Specification<AccessPointFull> inAddress(String address) {
-        return (root, cq, cb) -> cb.equal(root.get(AccessPointFull_.organization).get(Organization_.address), address);
+        return (root, cq, cb) -> cb.equal(root.get(AccessPointFull_.address), address);
     }
 
     public static Specification<AccessPointFull> withType(TypeOrganization type) {
