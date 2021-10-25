@@ -572,6 +572,10 @@ GET http://localhost:8080/api/user/
 Authorization: Token {{auth_token}}
 Content-Type: application/json
 
+###
+GET http://localhost:8080/api/user/all/
+#POST http://localhost:8080/api/organization/3410/ap/3802/init-monitoring
+Content-Type: application/json
 
 ###
 GET http://localhost:8080/api/location/base/
@@ -620,6 +624,10 @@ Content-Type: application/json
 ###
 DELETE http://localhost:8080/api/detail-locations/1440
 Authorization: Token {{auth_token}}
+Content-Type: application/json
+
+###
+GET http://localhost:8080/api/simple/actions/
 Content-Type: application/json
 
 ###

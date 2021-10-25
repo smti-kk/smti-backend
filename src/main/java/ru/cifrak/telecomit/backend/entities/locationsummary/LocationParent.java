@@ -1,7 +1,6 @@
 package ru.cifrak.telecomit.backend.entities.locationsummary;
 
 import lombok.Getter;
-import org.springframework.data.annotation.Immutable;
 import ru.cifrak.telecomit.backend.entities.Location;
 
 import javax.persistence.Entity;
@@ -24,6 +23,12 @@ public class LocationParent implements Serializable {
         this.type = location.getType();
         this.name = location.getName();
         this.level = location.getLevel();
+    }
+
+    public LocationParent(Integer id, String type, String name) {
+        this.id = id;
+        this.type = type;
+        this.name = name;
     }
 
     public LocationParent() {
