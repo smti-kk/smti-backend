@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +26,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/user/")
 public class ApiUser {
-    private final static String API_PATH = "/api/user/";
+    private static final String API_PATH = "/api/user/";
+    private static final String[] USER_ALL_SORTING_FIELDS = {"lastName", "firstName", "patronymicName", "id"};
+
     private final RepositoryUser rUser;
     private final RepositoryAccount rAccount;
     private final RepositoryLocation rLocation;
@@ -53,7 +56,7 @@ public class ApiUser {
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
     public List<Account> listAll(@AuthenticationPrincipal User user) {
         log.info("[{}]-> GET {}{}", user != null ? user.getUsername() : "", API_PATH, "all/");
-        List<Account> results = rAccount.findAll();
+        List<Account> results = rAccount.findAll(Sort.by(USER_ALL_SORTING_FIELDS));
         log.info("[{}]<- GET {}{}", user != null ? user.getUsername() : "", API_PATH, "all/");
         return results;
     }
