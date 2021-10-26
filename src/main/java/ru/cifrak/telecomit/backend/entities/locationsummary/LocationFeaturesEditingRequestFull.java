@@ -33,7 +33,7 @@ public class LocationFeaturesEditingRequestFull {
     @ManyToOne
     private User user;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "location_features_editing_request_feature_edits",
             joinColumns = @JoinColumn(name = "location_features_editing_request_id"),
