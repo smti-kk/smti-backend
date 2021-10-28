@@ -2,6 +2,8 @@ package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.api.dto.*;
 import ru.cifrak.telecomit.backend.api.dto.response.ExternalSystemCreateStatusDTO;
-import ru.cifrak.telecomit.backend.api.util.Reports.HelperReport;
+import ru.cifrak.telecomit.backend.api.util.reports.HelperReport;
 import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.exceptions.NotAllowedException;
 import ru.cifrak.telecomit.backend.repository.*;
@@ -20,6 +22,7 @@ import ru.cifrak.telecomit.backend.service.ServiceOrganization;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -58,80 +61,167 @@ public class ApiOrganization {
             @RequestParam(name = "population-start", required = false) Integer pStart,
             @RequestParam(name = "population-end", required = false) Integer pEnd,
             @RequestParam(name = "organization", required = false) String organization,
+            @RequestParam(name = "logicalCondition", required = false) LogicalCondition logicalCondition,
             @RequestParam(name = "location", required = false) Location... locations
     ) {
-        String locationStr = locations != null
-                ? Arrays.stream(locations).map(l -> String.valueOf(l.getId())).collect(Collectors.joining(","))
-                : "";
-        log.info("->GET /api/organization/report/[page={}, size={}, location={}, orgname={}, type={}, smo={}, sort={}]",
-                page, size, locationStr, organization, type, smo, sort);
-        //HINT: https://github.com/vijjayy81/spring-boot-jpa-rest-demo-filter-paging-sorting
-        Set<String> sortingFileds = new LinkedHashSet<>(
-                Arrays.asList(StringUtils.split(StringUtils.defaultIfEmpty(sort, ""), ",")));
+        log.info("--> GET /api/organization/report/");
+        PaginatedList<ReportOrganizationDTO> pList = getPListReportOrganizationDTO(getData(
+                page, size, type, smo, parents, organization, pStart, pEnd,
+                sort, logicalCondition, locations));
+        log.info("<-- GET /api/organization/report/");
+        return pList;
+    }
 
-        List<Sort.Order> sortingOrders = sortingFileds.stream().map(HelperReport::getOrder)
+    private Page<Organization> getData(int page,
+                                          int size,
+                                          TypeOrganization type,
+                                          TypeSmo smo,
+                                          List<Location> parents,
+                                          String organization,
+                                          Integer pStart,
+                                          Integer pEnd,
+                                          String sort,
+                                          LogicalCondition logicalCondition,
+                                          Location[] locations) {
+        return rOrganization.findAll(getSpec(type, smo, parents, organization, pStart, pEnd,
+                        logicalCondition, locations),
+                PageRequest.of(page - 1, size, Sort.by(getSortingOrders(sort))));
+    }
+
+    @NotNull
+    private List<Sort.Order> getSortingOrders(String sort) {
+        return new LinkedHashSet<>(
+                Arrays.asList(StringUtils.split(StringUtils.defaultIfEmpty(sort, ""), ",")))
+                .stream()
+                .map(HelperReport::getOrder)
                 .collect(Collectors.toList());
+    }
 
-        Sort sortData = sortingOrders.isEmpty() ? null : Sort.by(sortingOrders);
-        Pageable pageConfig;
-        if (sortData != null) {
-            pageConfig = PageRequest.of(page - 1, size, sortData);
-        } else {
-            pageConfig = PageRequest.of(page - 1, size);
-        }
-        Specification<ru.cifrak.telecomit.backend.entities.Organization> spec = Specification.where(null);
-        if (locations != null && locations.length > 0) {
-            boolean locationsNotNull = true;
+    @Nullable
+    private Specification<Organization> getSpec(TypeOrganization type,
+                                                   TypeSmo smo,
+                                                   List<Location> parents,
+                                                   String organization,
+                                                   Integer pStart,
+                                                   Integer pEnd,
+                                                   LogicalCondition logicalCondition,
+                                                   Location[] locations) {
+        List<Specification<Organization>> specs = getSpecs(type, smo, parents, organization, locations);
+        Specification<Organization> mainSpec = logicalCondition == LogicalCondition.OR ?
+                getSpecsWithOrCondition(specs)
+                : getSpecsWithAndCondition(specs);
+        return getSpecsWithAndCondition(getNecessarySpecs(pStart, pEnd)).and(mainSpec);
+    }
+
+    private List<Specification<Organization>> getSpecs(TypeOrganization type,
+                                                          TypeSmo smo,
+                                                          List<Location> parents,
+                                                          String organization,
+                                                          Location[] locations) {
+        List<Specification<Organization>> result = new ArrayList<>();
+        result.add(getSpecType(type));
+        result.add(getSpecSmo(smo));
+        result.add(getSpecParents(parents));
+        result.add(getSpecOrganization(organization));
+        result.add(getSpecLocations(locations));
+        return result;
+    }
+    private Specification<Organization> getSpecType(TypeOrganization type) {
+        return type != null ?
+                OrganizationSpec.withType(type)
+                : null;
+    }
+
+    private Specification<Organization> getSpecSmo(TypeSmo smo) {
+        return smo != null ?
+                OrganizationSpec.withSmo(smo)
+                : null;
+    }
+
+    private Specification<Organization> getSpecOrganization(String organization) {
+        return organization != null ?
+                OrganizationSpec.withOrgname(organization)
+                : null;
+    }
+
+    private Specification<Organization> getSpecParents(List<Location> parents) {
+        return parents != null ?
+                OrganizationSpec.inParent(parents)
+                : null;
+    }
+
+    @Nullable
+    private Specification<Organization> getSpecLocations(Location[] locations) {
+        return locationsNotNull(locations) ?
+                OrganizationSpec.inLocation(locations)
+                : null;
+    }
+
+    private boolean locationsNotNull(Location[] locations) {
+        boolean locationsNotNull;
+        if (locations != null) {
+            locationsNotNull = true;
             for (Location loc : locations) {
                 if (loc == null) {
                     locationsNotNull = false;
                     break;
                 }
             }
-            if (locationsNotNull) {
-                spec = spec != null ? spec.and(OrganizationSpec.inLocation(locations)) : null;
-            }
+        } else {
+            locationsNotNull = false;
         }
-        if (type != null) {
-            spec = spec.and(OrganizationSpec.withType(type));
-        }
-        if (smo != null) {
-            spec = spec.and(OrganizationSpec.withSmo(smo));
-        }
-//        if (gdp != null) {
-//            spec = spec.and(SpecificationAccessPointFull.withGovProgram(gdp));
-//        }
-//        if (inettype != null) {
-//            spec = spec.and(SpecificationAccessPointFull.withInetType(inettype));
-//        }
-        if (parents != null) {
-            spec = spec.and(OrganizationSpec.inParent(parents));
-        }
-        if (organization != null) {
-            spec = spec.and(OrganizationSpec.withOrgname(organization));
-        }
-//        if (contractor != null) {
-//            spec = spec.and(SpecificationAccessPointFull.withOperator(contractor));
-//        }
-        if (pStart != null) {
-            spec = spec.and(OrganizationSpec.pStart(pStart));
-        }
-        if (pEnd != null) {
-            spec = spec.and(OrganizationSpec.pEnd(pEnd));
-        }
-//        if (ap != null) {
-//            spec = spec.and(SpecificationAccessPointFull.type(ap));
-//        }
-        Page<Organization> pageDatas = rOrganization.findAll(spec, pageConfig);
-        PaginatedList<ReportOrganizationDTO> pList = new PaginatedList<>(pageDatas.getTotalElements(), pageDatas.stream().map(ReportOrganizationDTO::new).collect(Collectors.toList()));
-        log.info("<-GET /api/organization/report/");
-        return pList;
+        return locationsNotNull;
+    }
+
+    private Specification<Organization> getSpecsWithOrCondition(List<Specification<Organization>> specs) {
+        AtomicReference<Specification<Organization>> result =
+                new AtomicReference<>(OrganizationSpec.FALSE_SPEC);
+        specs.forEach(spec -> result.set(
+                Objects.requireNonNull(result.get().or(OrganizationSpec.forOrCondition(spec)))));
+        return result.get();
+    }
+
+    private Specification<Organization> getSpecsWithAndCondition(List<Specification<Organization>> specs) {
+        AtomicReference<Specification<Organization>> result =
+                new AtomicReference<>(OrganizationSpec.TRUE_SPEC);
+        specs.forEach(spec -> result.set(
+                Objects.requireNonNull(result.get().and(OrganizationSpec.forAndCondition(spec)))));
+        return result.get();
+    }
+
+    private List<Specification<Organization>> getNecessarySpecs(Integer pStart, Integer pEnd) {
+        List<Specification<Organization>> result = new ArrayList<>();
+        result.add(getSpecPStart(pStart));
+        result.add(getSpecPEnd(pEnd));
+        return result;
+    }
+
+    private Specification<Organization> getSpecPEnd(Integer pEnd) {
+        return pEnd != null ?
+                OrganizationSpec.pEnd(pEnd)
+                : null;
+    }
+
+    private Specification<Organization> getSpecPStart(Integer pStart) {
+        return pStart != null ?
+                OrganizationSpec.pStart(pStart)
+                : null;
+    }
+
+    @NotNull
+    private PaginatedList<ReportOrganizationDTO> getPListReportOrganizationDTO(Page<Organization> pData) {
+        return new PaginatedList<>(
+                pData.getTotalElements(),
+                pData.stream()
+                        .map(ReportOrganizationDTO::new)
+                        .collect(Collectors.toList())
+        );
     }
 
     @DeleteMapping("/{locationId}")
     @Secured({"ROLE_ADMIN"})
     public void remove(@PathVariable Integer locationId) {
-        log.info("zzzz"+String.valueOf(locationId));
+        log.info("zzzz" + locationId);
         rOrganization.deleteById(locationId);
     }
 

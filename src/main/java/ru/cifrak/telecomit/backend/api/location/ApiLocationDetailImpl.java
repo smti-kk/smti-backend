@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static ru.cifrak.telecomit.backend.api.util.Reports.HelperReport.generateExelFormatLocationType;
+import static ru.cifrak.telecomit.backend.api.util.reports.HelperReport.generateExelFormatLocationType;
 
 @Slf4j
 @RestController

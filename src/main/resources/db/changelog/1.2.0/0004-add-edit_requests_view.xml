@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="tolstonogovav" id="1">
+        <createView viewName="feature_edit_with_true_changes"
+                    schemaName="public">
+            SELECT fe.*
+            FROM
+                feature_edit fe LEFT OUTER JOIN technical_capability tc
+                    ON tc.id=fe.tc_id
+                LEFT OUTER JOIN technical_capability tc_new_value
+                    ON tc_new_value.id=fe.new_value_id
+            WHERE
+                NOT fe.action='UPDATE'
+                OR fe.action='UPDATE' AND (
+                    ((tc.split='PAYPHONE' OR tc.split='INFOMAT') AND NOT tc.quantity=tc_new_value.quantity)
+                    OR (tc.split='INET' AND (NOT tc.key_type_trunkchannel=tc_new_value.key_type_trunkchannel OR NOT tc.quality=tc_new_value.quality))
+                    OR (tc.split='MOBILE' AND (NOT tc.key_type_mobile=tc_new_value.key_type_mobile OR NOT tc.quality=tc_new_value.quality))
+                    OR (tc.split='POST' AND NOT tc.type_post=tc_new_value.type_post)
+                    OR ((tc.split='RADIO' OR tc.split='TV') AND NOT tc.type=tc_new_value.type)
+                    OR (tc.split='ATS'));
+        </createView>
+    </changeSet>
+</databaseChangeLog>

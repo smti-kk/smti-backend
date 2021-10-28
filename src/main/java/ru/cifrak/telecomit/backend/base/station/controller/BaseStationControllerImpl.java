@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.base.station.BaseStationService;
 import ru.cifrak.telecomit.backend.base.station.entity.BaseStation;
+import ru.cifrak.telecomit.backend.entities.LogicalCondition;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
 
 import java.util.Date;
@@ -29,7 +30,8 @@ public class BaseStationControllerImpl implements BaseStationController {
                                           Double propHeightRightBorder,
                                           Date actionDateFrom,
                                           Date actionDateTo,
-                                          String address) {
+                                          String address,
+                                          LogicalCondition logicalCondition) {
         return baseStationService.baseStations(
                 pageable,
                 operatorIds,
@@ -40,7 +42,8 @@ public class BaseStationControllerImpl implements BaseStationController {
                 propHeightRightBorder,
                 actionDateFrom,
                 actionDateTo,
-                address
+                address,
+                logicalCondition
         );
     }
 

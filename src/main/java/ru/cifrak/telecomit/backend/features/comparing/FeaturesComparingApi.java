@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.cifrak.telecomit.backend.entities.LogicalCondition;
 import ru.cifrak.telecomit.backend.entities.TcType;
 
 import java.io.IOException;
@@ -24,7 +25,8 @@ public interface FeaturesComparingApi {
             @RequestParam(value = "connectionTypes", required = false) List<Integer> connectionTypes,
             @RequestParam(value = "govProgram", required = false) Integer govProgram,
             @RequestParam(value = "govProgramYear", required = false) Integer govProgramYear,
-            @RequestParam(value = "govProgramYear", required = false) Integer hasAnyInternet,
+            @RequestParam(value = "hasAny", required = false) Integer hasAny,
+            @RequestParam(value = "logicalCondition", required = false) LogicalCondition logicalCondition,
             @PathVariable(value = "type") TcType type,
             @RequestParam(value = "locationName", required = false) String... locationNames
     );
@@ -36,7 +38,8 @@ public interface FeaturesComparingApi {
             @RequestParam(value = "connectionTypes", required = false) List<Integer> connectionTypes,
             @RequestParam(value = "govProgram", required = false) Integer govProgram,
             @RequestParam(value = "govProgramYear", required = false) Integer govProgramYear,
-            @RequestParam(value = "govProgramYear", required = false) Integer hasAnyInternet,
+            @RequestParam(value = "hasAny", required = false) Integer hasAny,
+            @RequestParam(value = "logicalCondition", required = false) LogicalCondition logicalCondition,
             @PathVariable(value = "type") TcType type,
             @RequestParam(value = "locationName", required = false) String... locationNames
     ) throws IOException;

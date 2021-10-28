@@ -1,5 +1,7 @@
 package ru.cifrak.telecomit.backend.api;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -11,15 +13,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.auth.repository.RepositoryAccount;
-import ru.cifrak.telecomit.backend.entities.Location;
-import ru.cifrak.telecomit.backend.entities.Signal;
-import ru.cifrak.telecomit.backend.entities.TcType;
-import ru.cifrak.telecomit.backend.entities.User;
+import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.locationsummary.*;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
 import ru.cifrak.telecomit.backend.features.comparing.LocationFeature;
 import ru.cifrak.telecomit.backend.repository.*;
-import ru.cifrak.telecomit.backend.repository.specs.FeatureEditFullSpec;
+import ru.cifrak.telecomit.backend.repository.specs.FeatureEditFullTrueChangesSpec;
 import ru.cifrak.telecomit.backend.service.LocationService;
 import ru.cifrak.telecomit.backend.service.ServiceWritableTc;
 import ru.cifrak.telecomit.backend.utils.SortingOrder;
@@ -29,11 +28,13 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
+    public static final BooleanExpression TRUE_EXPRESSION = Expressions.asBoolean(true).isTrue();
 
     private static final Map<String, String[]> SORTING_FIELDS = new HashMap<String, String[]>() {{
         put("id", new String[]{"id"});
@@ -51,13 +52,19 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
 
     private static final int PAGE_SIZE_TO_GENERATE_EXCEL = 100;
 
+    private static final List<EditingRequestStatus> STATUSES_FOR_JOURNAL = new ArrayList<EditingRequestStatus>() {{
+        add(EditingRequestStatus.ACCEPTED);
+    }};
+
+    private static final String DEFAULT_SORT_FIELD = "id";
     private final RepositoryFeaturesRequests repositoryFeaturesRequests;
     private final RepositoryAccount repositoryAccount;
     private final RepositoryLocation repositoryLocation;
     private final RepositoryLocationFeaturesRequests repositoryLocationFeaturesRequests;
     private final ServiceWritableTc serviceWritableTc;
     private final LocationService locationService;
-    private final RepositoryFeatureEditFulls repositoryFeatureEditFulls;
+    private final RepositoryFeatureEditFullTrueChanges repositoryFeatureEditFullTrueChanges;
+    private final DSLDetailLocation dslDetailLocation;
 
     public ApiFeaturesRequestsImpl(RepositoryFeaturesRequests repositoryFeaturesRequests,
                                    RepositoryAccount repositoryAccount,
@@ -65,20 +72,22 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
                                    RepositoryLocationFeaturesRequests repositoryLocationFeaturesRequests,
                                    ServiceWritableTc serviceWritableTc,
                                    LocationService locationService,
-                                   RepositoryFeatureEditFulls repositoryFeatureEditFulls) {
+                                   RepositoryFeatureEditFullTrueChanges repositoryFeatureEditFullTrueChanges,
+                                   DSLDetailLocation dslDetailLocation) {
         this.repositoryFeaturesRequests = repositoryFeaturesRequests;
         this.repositoryAccount = repositoryAccount;
         this.repositoryLocation = repositoryLocation;
         this.repositoryLocationFeaturesRequests = repositoryLocationFeaturesRequests;
         this.serviceWritableTc = serviceWritableTc;
         this.locationService = locationService;
-        this.repositoryFeatureEditFulls = repositoryFeatureEditFulls;
+        this.repositoryFeatureEditFullTrueChanges = repositoryFeatureEditFullTrueChanges;
+        this.dslDetailLocation = dslDetailLocation;
     }
 
     @Override
     public Page<LocationFeaturesEditingRequestFull> requests(Pageable pageable) {
-        log.info("->GET /api/features-requests/");
-        log.info("<- GET /api/features-requests/");
+        log.info("--> GET /api/features-requests/");
+        log.info("<-- GET /api/features-requests/");
         return repositoryFeaturesRequests.findAllRequests(pageable);
     }
 
@@ -91,43 +100,138 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
             LocalDate contractEnd,
             List<FeatureEditAction> actions,
             List<User> users,
-            List<LocationForTable> locations) {
-        log.info("->GET /api/features-requests/full/");
-        log.info("<-GET /api/features-requests/full/");
-        return getLocationFeaturesEditingRequestFulls(
-                getFeatureEditFullSpecification(parents, contractStart, contractEnd, actions, users, locations),
-                createPageable(pageable, sort));
+            List<LocationForTable> locations,
+            LogicalCondition logicalCondition) {
+        log.info("--> GET /api/features-requests/full/");
+        Page<LocationFeaturesEditingRequestFull> requests =
+                getLocationFeaturesEditingRequestFulls(
+                        getFeatureEditFullTrueChangesSpecification(
+                                parents, contractStart, contractEnd, actions, users, locations, STATUSES_FOR_JOURNAL,
+                                logicalCondition),
+                        createPageable(pageable, sort));
+        log.info("<-- GET /api/features-requests/full/");
+        return requests;
+    }
+
+    private List<LocationForTable> getParents(User user, List<LocationForTable> parents) {
+        List<LocationForTable> result = new ArrayList<>();
+        dslDetailLocation.findAll(
+                        getPredicate(parents,
+                                repositoryAccount.findById(user.getId()).orElseThrow(NotFoundException::new)
+                                        .getLocations()
+                                        .stream().map(DLocationBase::getId).collect(Collectors.toList())))
+                .forEach(result::add);
+        return result;
+    }
+
+    private BooleanExpression getPredicate(List<LocationForTable> parents, List<Integer> parentsByUser) {
+        QLocationForTable locationForTable = QLocationForTable.locationForTable;
+        BooleanExpression parentsByUserPredicate = locationForTable.id.in(parentsByUser);
+        BooleanExpression parentsPredicate = parents != null ?
+                locationForTable.id.in(
+                        parents.stream().map(LocationForTable::getId).collect(Collectors.toList()))
+                : TRUE_EXPRESSION;
+        return parentsPredicate.and(parentsByUserPredicate);
     }
 
     @Nullable
-    private Specification<FeatureEditFull> getFeatureEditFullSpecification(
+    private Specification<FeatureEditFullTrueChanges> getFeatureEditFullTrueChangesSpecification(
             List<LocationForTable> parents,
             LocalDate contractStart,
             LocalDate contractEnd,
             List<FeatureEditAction> actions,
             List<User> users,
-            List<LocationForTable> locations) {
-        Specification<FeatureEditFull> spec = Objects.requireNonNull(Specification.where(null));
-        if (users != null && users.size() > 0) {
-            spec = spec.and(FeatureEditFullSpec.inUser(users));
-        }
-        if (locations != null && locations.size() > 0) {
-            spec = spec != null ? spec.and(FeatureEditFullSpec.inLocation(locations)) : null;
-        }
-        if (parents != null && parents.size() > 0) {
-            spec = spec != null ? spec.and(FeatureEditFullSpec.inParent(convertLocationParent2LocationForTable(parents))) : null;
-        }
-        if (contractStart != null) {
-            spec = spec != null ? spec.and(FeatureEditFullSpec.greaterThan(contractStart)) : null;
-        }
-        if (contractEnd != null) {
-            spec = spec != null ? spec.and(FeatureEditFullSpec.lessThan(contractEnd)) : null;
-        }
-        if (actions != null && actions.size() != 0) {
-            spec = spec != null ? spec.and(FeatureEditFullSpec.inAction(actions)) : null;
-        }
-//        spec = spec != null ? spec.and(FeatureEditFullSpec.excludeDuplicateChanges()) : null;
-        return spec;
+            List<LocationForTable> locations,
+            List<EditingRequestStatus> statuses,
+            LogicalCondition logicalCondition) {
+        List<Specification<FeatureEditFullTrueChanges>> specs =
+                getSpecs(parents, contractStart, contractEnd, actions, users, statuses, locations);
+        Specification<FeatureEditFullTrueChanges> mainSpec = logicalCondition == LogicalCondition.OR ?
+                getSpecsWithOrCondition(specs)
+                : getSpecsWithAndCondition(specs);
+        return getSpecsWithAndCondition(getNecessarySpecs()).and(mainSpec);
+    }
+
+    private List<Specification<FeatureEditFullTrueChanges>> getSpecs(List<LocationForTable> parents,
+                                                                     LocalDate contractStart,
+                                                                     LocalDate contractEnd,
+                                                                     List<FeatureEditAction> actions,
+                                                                     List<User> users,
+                                                                     List<EditingRequestStatus> statuses,
+                                                                     List<LocationForTable> locations) {
+        List<Specification<FeatureEditFullTrueChanges>> result = new ArrayList<>();
+        result.add(getSpecParents(parents));
+        result.add(getSpecContractStart(contractStart));
+        result.add(getSpecContractEnd(contractEnd));
+        result.add(getSpecActions(actions));
+        result.add(getSpecUsers(users));
+        result.add(getSpecStatuses(statuses));
+        result.add(getSpecLocations(locations));
+        return result;
+    }
+
+    private Specification<FeatureEditFullTrueChanges> getSpecsWithOrCondition(
+            List<Specification<FeatureEditFullTrueChanges>> specs) {
+        AtomicReference<Specification<FeatureEditFullTrueChanges>> result =
+                new AtomicReference<>(FeatureEditFullTrueChangesSpec.FALSE_SPEC);
+        specs.forEach(spec -> result.set(
+                Objects.requireNonNull(result.get().or(FeatureEditFullTrueChangesSpec.forOrCondition(spec)))));
+        return result.get();
+    }
+
+    private Specification<FeatureEditFullTrueChanges> getSpecsWithAndCondition(
+            List<Specification<FeatureEditFullTrueChanges>> specs) {
+        AtomicReference<Specification<FeatureEditFullTrueChanges>> result =
+                new AtomicReference<>(FeatureEditFullTrueChangesSpec.TRUE_SPEC);
+        specs.forEach(spec -> result.set(
+                Objects.requireNonNull(result.get().and(FeatureEditFullTrueChangesSpec.forAndCondition(spec)))));
+        return result.get();
+    }
+
+    private List<Specification<FeatureEditFullTrueChanges>> getNecessarySpecs() {
+        return new ArrayList<>();
+    }
+
+    private Specification<FeatureEditFullTrueChanges> getSpecContractStart(LocalDate contractStart) {
+        return contractStart != null ?
+                FeatureEditFullTrueChangesSpec.greaterThan(contractStart)
+                : null;
+    }
+
+    private Specification<FeatureEditFullTrueChanges> getSpecContractEnd(LocalDate contractEnd) {
+        return contractEnd != null ?
+                FeatureEditFullTrueChangesSpec.lessThan(contractEnd)
+                : null;
+    }
+
+    private Specification<FeatureEditFullTrueChanges> getSpecParents(List<LocationForTable> parents) {
+        return parents != null ?
+                FeatureEditFullTrueChangesSpec.inParent(convertLocationParent2LocationForTable(parents))
+                : null;
+    }
+
+    private Specification<FeatureEditFullTrueChanges> getSpecActions(List<FeatureEditAction> actions) {
+        return actions != null ?
+                FeatureEditFullTrueChangesSpec.inAction(actions)
+                : null;
+    }
+
+    private Specification<FeatureEditFullTrueChanges> getSpecUsers(List<User> users) {
+        return users != null ?
+                FeatureEditFullTrueChangesSpec.inUser(users)
+                : null;
+    }
+
+    private Specification<FeatureEditFullTrueChanges> getSpecLocations(List<LocationForTable> locations) {
+        return locations != null ?
+                FeatureEditFullTrueChangesSpec.inLocation(locations)
+                : null;
+    }
+
+    private Specification<FeatureEditFullTrueChanges> getSpecStatuses(List<EditingRequestStatus> statuses) {
+        return statuses != null ?
+                FeatureEditFullTrueChangesSpec.inStatus(statuses)
+                : null;
     }
 
     @NotNull
@@ -151,16 +255,18 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
             LocalDate contractEnd,
             List<FeatureEditAction> actions,
             List<User> users,
-            List<LocationForTable> locations) {
-        log.info("->GET /api/features-requests/full-excel/");
-        Specification<FeatureEditFull> spec = Specification.where(null);
+            List<LocationForTable> locations,
+            LogicalCondition logicalCondition) {
+        log.info("--> GET /api/features-requests/full-excel/");
         long timeStart = System.currentTimeMillis();
         List<LocationFeaturesEditingRequestFull> requests = getLocationFeaturesEditingRequestFullsCollection(
-                getFeatureEditFullSpecification(parents, contractStart, contractEnd, actions, users, locations),
+                getFeatureEditFullTrueChangesSpecification(
+                        parents, contractStart, contractEnd, actions, users, locations, STATUSES_FOR_JOURNAL,
+                        logicalCondition),
                 sort);
         Workbook book = createBook(requests);
         ByteArrayResource body = createBody(book);
-        log.info("<- GET /api/features-requests/full-excel/ (" + (System.currentTimeMillis() - timeStart) / 1000 + " s)");
+        log.info("<-- GET /api/features-requests/full-excel/ (" + (System.currentTimeMillis() - timeStart) / 1000 + " s)");
         return ResponseEntity.ok(body);
     }
 
@@ -170,9 +276,6 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         try {
             book.write(baos);
             book.close();
-//            try(OutputStream outputStream = new FileOutputStream("journal " + LocalDateTime.now().toString().replaceAll(":", "-") + ".xlsx")) {
-//                baos.writeTo(outputStream);
-//            }
         } catch (IOException e) {
             log.error("/api/features-requests/full-excel/  error to create byte stream.");
         }
@@ -197,13 +300,16 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     }
 
     @NotNull
-    private List<LocationFeaturesEditingRequestFull> getLocationFeaturesEditingRequestFullsCollection(Specification<FeatureEditFull> spec, List<String> sort) {
+    private List<LocationFeaturesEditingRequestFull> getLocationFeaturesEditingRequestFullsCollection(
+            Specification<FeatureEditFullTrueChanges> spec,
+            List<String> sort) {
         boolean requestsExists = true;
         int pageNumber = 0;
         List<LocationFeaturesEditingRequestFull> requests = new ArrayList<>();
         List<LocationFeaturesEditingRequestFull> requestsToAdd;
         while (requestsExists) {
-            requestsToAdd = getLocationFeaturesEditingRequestFulls(spec, createPageable(pageNumber++, sort)).getContent();
+            requestsToAdd = getLocationFeaturesEditingRequestFulls(spec, createPageable(pageNumber++, sort))
+                    .getContent();
             if (requestsToAdd.size() > 0) {
                 requests.addAll(requestsToAdd);
             } else {
@@ -252,42 +358,6 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         cell.setCellValue((String) rowValues.get(7));
         cell = row.createCell(8);
         cell.setCellValue((String) rowValues.get(8));
-    }
-
-    /**
-     * Calculates cell height by information about header string and column width from ExcelColumn object.
-     * Calculating is based by default Excel font (Calibri) and default Excel font size (11).
-     *
-     * @param sheet sheet of book
-     * @param columnNumber number of column with header, for which the height is calculated
-     * @param rowValues values in cells in row
-     * @return cell height, that auto-fit header string with word wrap
-     */
-    private int getCellHeightByColumnHeaderInfo(Sheet sheet, int columnNumber, List<Object> rowValues) {
-        int result = 1;
-        int columnWidth = (int) (sheet.getColumnWidth(columnNumber) / 256 + 0.71F);
-        Integer[] words = Arrays.stream(rowValues.get(columnNumber).toString().split(" "))
-                .map(String::length).toArray(Integer[]::new);
-        int limitLength = 0;
-        for (int i = 0; i < words.length; i++) {
-            if (words[i] > columnWidth) {
-                result += words[i] / columnWidth - (limitLength == 0 ? 1 : 0);
-                int wordRestToAdd = words[i] % columnWidth;
-                if (wordRestToAdd != 0) {
-                    result++;
-                    if (i != words.length - 1) {
-                        limitLength = wordRestToAdd;
-                    }
-                }
-            } else if (i != words.length - 1) {
-                limitLength += (limitLength == 0 ? 0 : 1) + words[i];
-                if (limitLength > columnWidth) {
-                    result++;
-                    limitLength = 0;
-                }
-            }
-        }
-        return result;
     }
 
     @NotNull
@@ -394,7 +464,7 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     }
 
     private Sort createSort(List<String> sort) {
-        Sort sortingSection = Sort.unsorted();
+        Sort sortingSection;
         if (sort != null && sort.size() == 2
                 && SORTING_FIELDS.keySet().stream().anyMatch(field -> field.equals(sort.get(0)))
                 && Arrays.stream(SortingOrder.values()).map(Enum::toString).anyMatch(order -> order.equals(sort.get(1).toUpperCase()))) {
@@ -404,25 +474,19 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
             } else {
                 sortingSection = sortingSection.descending();
             }
+            if (!DEFAULT_SORT_FIELD.equals(sort.get(0))) {
+                sortingSection = sortingSection.and(Sort.by(SORTING_FIELDS.get(DEFAULT_SORT_FIELD)).descending());
+            }
+        } else {
+            sortingSection = Sort.by(SORTING_FIELDS.get(DEFAULT_SORT_FIELD)).descending();
         }
         return sortingSection;
     }
 
     private Pageable createPageable(Pageable pageable, List<String> sort) {
-        if (sort != null && sort.size() == 2
-                && SORTING_FIELDS.keySet().stream().anyMatch(field -> field.equals(sort.get(0)))
-                && Arrays.stream(SortingOrder.values()).map(Enum::toString).anyMatch(order -> order.equals(sort.get(1).toUpperCase()))) {
-            Sort sortingSection = Sort.by(SORTING_FIELDS.get(sort.get(0)));
-            if (sort.get(1).toUpperCase().equals(SortingOrder.ASC.toString())) {
-                sortingSection = sortingSection.ascending();
-            } else {
-                sortingSection = sortingSection.descending();
-            }
-            pageable = PageRequest.of(pageable.getPageNumber(),
-                    pageable.getPageSize(),
-                    sortingSection);
-        }
-        return pageable;
+        return PageRequest.of(pageable.getPageNumber(),
+                pageable.getPageSize(),
+                createSort(sort));
     }
 
     private Pageable createPageable(int pageNumber, List<String> sort) {
@@ -432,23 +496,27 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     }
 
     @NotNull
-    private Page<LocationFeaturesEditingRequestFull> getLocationFeaturesEditingRequestFulls(Specification<FeatureEditFull> spec, Pageable pageable) {
-        Page<FeatureEditFull> allRequestsAndImportAndEditions = repositoryFeatureEditFulls.findAll(spec, pageable);
+    private Page<LocationFeaturesEditingRequestFull> getLocationFeaturesEditingRequestFulls(Specification<FeatureEditFullTrueChanges> spec, Pageable pageable) {
+        Page<FeatureEditFullTrueChanges> allRequestsAndImportAndEditions =
+                repositoryFeatureEditFullTrueChanges.findAll(spec, pageable);
         return new PageImpl<>(
                 transferFeatureEditFullContent2LocationFeaturesEditingRequestFullContent(allRequestsAndImportAndEditions.getContent()),
                 allRequestsAndImportAndEditions.getPageable(),
                 allRequestsAndImportAndEditions.getTotalElements());
     }
 
-    private List<LocationFeaturesEditingRequestFull> transferFeatureEditFullContent2LocationFeaturesEditingRequestFullContent(List<FeatureEditFull> content) {
+    private List<LocationFeaturesEditingRequestFull> transferFeatureEditFullContent2LocationFeaturesEditingRequestFullContent(List<FeatureEditFullTrueChanges> content) {
         List<LocationFeaturesEditingRequestFull> result = new ArrayList<>();
-        for (FeatureEditFull featureEdit : content) {
-            LocationFeaturesEditingRequestFull request2LocationFeaturesEditingRequestFull = new LocationFeaturesEditingRequestFull();
-            LocationFeaturesEditingRequestFull1 requestFromFeatureEditFull = featureEdit.getLocationFeaturesEditingRequest();
+        for (FeatureEditFullTrueChanges featureEdit : content) {
+            LocationFeaturesEditingRequestFull request2LocationFeaturesEditingRequestFull =
+                    new LocationFeaturesEditingRequestFull();
+            LocationFeaturesEditingRequestFull1 requestFromFeatureEditFull =
+                    featureEdit.getLocationFeaturesEditingRequest();
             request2LocationFeaturesEditingRequestFull.setId(requestFromFeatureEditFull.getId());
             request2LocationFeaturesEditingRequestFull.setLocation(requestFromFeatureEditFull.getLocation());
             request2LocationFeaturesEditingRequestFull.setComment(requestFromFeatureEditFull.getComment());
-            request2LocationFeaturesEditingRequestFull.setDeclineComment(requestFromFeatureEditFull.getDeclineComment());
+            request2LocationFeaturesEditingRequestFull
+                    .setDeclineComment(requestFromFeatureEditFull.getDeclineComment());
             request2LocationFeaturesEditingRequestFull.setCreated(requestFromFeatureEditFull.getCreated());
             request2LocationFeaturesEditingRequestFull.setUser(requestFromFeatureEditFull.getUser());
             request2LocationFeaturesEditingRequestFull.setStatus(requestFromFeatureEditFull.getStatus());
@@ -459,7 +527,7 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         return result;
     }
 
-    private Set<FeatureEditFull> setOfOneFeature(FeatureEditFull feature) {
+    private Set<FeatureEditFull> setOfOneFeature(FeatureEditFullTrueChanges feature) {
         FeatureEditFull feature2Set = new FeatureEditFull();
         feature2Set.setId(feature.getId());
         feature2Set.setAction(feature.getAction());
@@ -470,26 +538,34 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
 
     @Override
     public List<LocationFeaturesEditingRequestFull> requestsByLocation(Integer locationId) {
-        log.info("->GET /api/features-requests/::{}", locationId);
-        log.info("<- GET /api/features-requests/::{}", locationId);
+        log.info("--> GET /api/features-requests/::{}", locationId);
+        log.info("<-- GET /api/features-requests/::{}", locationId);
         return repositoryFeaturesRequests.findAllByLocationIdOrderByCreatedDesc(locationId);
     }
 
     @Override
-    public Page<LocationFeaturesEditingRequestFull> requestsByUser(Pageable pageable, User user) {
-        log.info("->GET /api/features-requests/by-user");
-        log.info("<- GET /api/features-requests/by-user");
-        List<Location> locationsByUser =
-                repositoryAccount.findById(user.getId()).orElseThrow(NotFoundException::new)
-                        .getLocations().stream().map(l ->
-                                repositoryLocation.get(l.getId())).collect(Collectors.toList());
-        return repositoryFeaturesRequests.findByLocation_IdIn(locationsByUser, pageable);
+    public Page<LocationFeaturesEditingRequestFull> requestsByUser(Pageable pageable,
+                                                                   User user,
+                                                                   List<LocationForTable> parents,
+                                                                   List<LocationForTable> locations,
+                                                                   List<EditingRequestStatus> statuses,
+                                                                   LogicalCondition logicalCondition
+    ) {
+        log.info("--> GET /api/features-requests/by-user");
+        Page<LocationFeaturesEditingRequestFull> requests =
+                getLocationFeaturesEditingRequestFulls(
+                        getFeatureEditFullTrueChangesSpecification(
+                                getParents(user, parents), null, null, null, null,
+                                locations, statuses, logicalCondition),
+                        createPageable(pageable, null));
+        log.info("<-- GET /api/features-requests/by-user");
+        return requests;
     }
 
     @Override
     public void acceptRequest(LocationFeaturesEditingRequest request, User user) {
-        log.info("->GET /api/features-requests/{request}/accept");
-        log.info("<- GET /api/features-requests/{request}/accept");
+        log.info("--> GET /api/features-requests/{request}/accept");
+        log.info("<-- GET /api/features-requests/{request}/accept");
         request.accept(serviceWritableTc);
         repositoryLocationFeaturesRequests.save(request);
         locationService.refreshCache();
@@ -499,8 +575,8 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     public void declineRequest(LocationFeaturesEditingRequest request,
                                String comment,
                                User user) {
-        log.info("->GET /api/features-requests/{request}/decline");
-        log.info("<- GET /api/features-requests/{request}/decline");
+        log.info("--> GET /api/features-requests/{request}/decline");
+        log.info("<-- GET /api/features-requests/{request}/decline");
         request.decline(comment);
         repositoryLocationFeaturesRequests.save(request);
         locationService.refreshCache();

@@ -1,9 +1,10 @@
 package ru.cifrak.telecomit.backend.features.comparing;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.cifrak.telecomit.backend.entities.LogicalCondition;
+import ru.cifrak.telecomit.backend.entities.TcType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,58 +22,50 @@ public class FeatureComparingServiceImpl implements FeatureComparingService {
     public Page<LocationFC> locations(
             Pageable pageable,
             List<Integer> parentIds,
-            List<Integer> internetOperators,
-            List<Integer> mobileOperators,
+            List<Integer> operators,
             List<Integer> connectionTypes,
-            List<Integer> mobileTypes,
             Integer govProgram,
             Integer govProgramYear,
-            Integer hasAnyInternet,
-            Integer hasAnyMobile,
-            String... locationNames
-    ) {
-        BooleanExpression predicate = new FCFiltersPredicate(
+            Integer hasAny,
+            TcType type,
+            LogicalCondition logicalCondition,
+            String... locationNames) {
+        FCFiltersPredicate predicate = new FCFiltersPredicate(
                 parentIds,
-                internetOperators,
-                mobileOperators,
+                operators,
                 connectionTypes,
-                mobileTypes,
                 govProgram,
                 govProgramYear,
-                hasAnyInternet,
-                hasAnyMobile,
-                locationNames
-        ).booleanExpression();
-        return locationRepository.findAll(predicate, pageable);
+                hasAny,
+                type,
+                logicalCondition,
+                locationNames);
+        return locationRepository.findAll(predicate.booleanExpression(), pageable);
     }
 
     @Override
-    public List<LocationFC> locations(List<Integer> parentIds,
-                                      List<Integer> internetOperators,
-                                      List<Integer> mobileOperators,
-                                      List<Integer> connectionTypes,
-                                      List<Integer> mobileTypes,
-                                      Integer govProgram,
-                                      Integer govProgramYear,
-                                      Integer hasAnyInternet,
-                                      Integer hasAnyMobile,
-                                      String... locationNames) {
-        BooleanExpression predicate = new FCFiltersPredicate(
+    public List<LocationFC> locations(
+            List<Integer> parentIds,
+            List<Integer> operators,
+            List<Integer> connectionTypes,
+            Integer govProgram,
+            Integer govProgramYear,
+            Integer hasAny,
+            TcType type,
+            LogicalCondition logicalCondition,
+            String... locationNames) {
+        FCFiltersPredicate predicate = new FCFiltersPredicate(
                 parentIds,
-                internetOperators,
-                mobileOperators,
+                operators,
                 connectionTypes,
-                mobileTypes,
                 govProgram,
                 govProgramYear,
-                hasAnyInternet,
-                hasAnyMobile,
-                locationNames
-        ).booleanExpression();
+                hasAny,
+                type,
+                logicalCondition,
+                locationNames);
         List<LocationFC> result = new ArrayList<>();
-        locationRepository
-                .findAll(predicate)
-                .forEach(result::add);
+        locationRepository.findAll(predicate.booleanExpression()).forEach(result::add);
         return result;
     }
 }

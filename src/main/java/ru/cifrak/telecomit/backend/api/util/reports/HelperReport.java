@@ -1,4 +1,4 @@
-package ru.cifrak.telecomit.backend.api.util.Reports;
+package ru.cifrak.telecomit.backend.api.util.reports;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
