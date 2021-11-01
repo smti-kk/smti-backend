@@ -63,7 +63,7 @@ public class ApiReports {
     }
 
     @GetMapping("/ap-all/")
-    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
     public PaginatedList<ReportAccessPointFullDTO> reportAll(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
