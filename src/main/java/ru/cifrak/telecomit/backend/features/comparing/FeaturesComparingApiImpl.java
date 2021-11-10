@@ -64,7 +64,7 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
             List<Integer> connectionTypes,
             Integer govProgram,
             Integer govProgramYear,
-            Integer hasAny,
+            Boolean hasAny,
             LogicalCondition logicalCondition,
             TcType type,
             String... locationNames
@@ -76,10 +76,14 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
                 connectionTypes,
                 govProgram,
                 govProgramYear,
-                hasAny,
+                getHasAnyNotNull(hasAny),
                 type,
                 logicalCondition,
                 locationNames);
+    }
+
+    private boolean getHasAnyNotNull(Boolean hasAny) {
+        return hasAny != null ? hasAny : false;
     }
 
     @Override
@@ -89,7 +93,7 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
             List<Integer> connectionTypes,
             Integer govProgram,
             Integer govProgramYear,
-            Integer hasAny,
+            Boolean hasAny,
             LogicalCondition logicalCondition,
             TcType type,
             String... locationNames
@@ -100,7 +104,7 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
                 connectionTypes,
                 govProgram,
                 govProgramYear,
-                hasAny,
+                getHasAnyNotNull(hasAny),
                 type,
                 logicalCondition,
                 locationNames);
@@ -118,7 +122,7 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
             List<Integer> connectionTypes,
             Integer govProgram,
             Integer govProgramYear,
-            Integer hasAny,
+            Boolean hasAny,
             TcType type,
             LogicalCondition logicalCondition,
             String... locationNames

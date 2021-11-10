@@ -26,7 +26,7 @@ public class FeatureComparingServiceImpl implements FeatureComparingService {
             List<Integer> connectionTypes,
             Integer govProgram,
             Integer govProgramYear,
-            Integer hasAny,
+            Boolean hasAny,
             TcType type,
             LogicalCondition logicalCondition,
             String... locationNames) {
@@ -50,7 +50,7 @@ public class FeatureComparingServiceImpl implements FeatureComparingService {
             List<Integer> connectionTypes,
             Integer govProgram,
             Integer govProgramYear,
-            Integer hasAny,
+            Boolean hasAny,
             TcType type,
             LogicalCondition logicalCondition,
             String... locationNames) {

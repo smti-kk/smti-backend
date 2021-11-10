@@ -15,7 +15,7 @@ public interface FeatureComparingService {
             List<Integer> connectionTypes,
             Integer govProgram,
             Integer govProgramYear,
-            Integer hasAny,
+            Boolean hasAny,
             TcType tcType,
             LogicalCondition logicalCondition,
             String... locationNames
@@ -27,7 +27,7 @@ public interface FeatureComparingService {
             List<Integer> connectionTypes,
             Integer govProgram,
             Integer govProgramYear,
-            Integer hasAny,
+            Boolean hasAny,
             TcType tcType,
             LogicalCondition logicalCondition,
             String... locationNames

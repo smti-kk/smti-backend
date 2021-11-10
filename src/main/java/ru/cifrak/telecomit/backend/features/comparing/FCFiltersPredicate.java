@@ -23,7 +23,7 @@ public class FCFiltersPredicate {
     private final List<Integer> connectionTypes;
     private final Integer govProgram;
     private final Integer govProgramYear;
-    private final Integer hasAny;
+    private final Boolean hasAny;
     private final TcType type;
     private final LogicalCondition logicalCondition;
     private final boolean locationNamesNotNull;
@@ -34,7 +34,7 @@ public class FCFiltersPredicate {
             List<Integer> connectionTypes,
             Integer govProgram,
             Integer govProgramYear,
-            Integer hasAny,
+            Boolean hasAny,
             TcType type,
             LogicalCondition logicalCondition,
             String... locationNames
@@ -119,7 +119,7 @@ public class FCFiltersPredicate {
     @Nullable
     private BooleanExpression getConnectionTypePredicate(QLocationFC locationFC) {
         BooleanExpression result;
-        if (hasAny != null) {
+        if (hasAny) {
             result = locationFC.technicalCapabilities.any().type.eq(type);
         } else {
             if (type == TcType.INET) {

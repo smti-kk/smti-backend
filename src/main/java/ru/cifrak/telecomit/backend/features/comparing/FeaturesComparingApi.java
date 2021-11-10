@@ -25,7 +25,7 @@ public interface FeaturesComparingApi {
             @RequestParam(value = "connectionTypes", required = false) List<Integer> connectionTypes,
             @RequestParam(value = "govProgram", required = false) Integer govProgram,
             @RequestParam(value = "govProgramYear", required = false) Integer govProgramYear,
-            @RequestParam(value = "hasAny", required = false) Integer hasAny,
+            @RequestParam(value = "hasAny", required = false) Boolean hasAny,
             @RequestParam(value = "logicalCondition", required = false) LogicalCondition logicalCondition,
             @PathVariable(value = "type") TcType type,
             @RequestParam(value = "locationName", required = false) String... locationNames
@@ -38,7 +38,7 @@ public interface FeaturesComparingApi {
             @RequestParam(value = "connectionTypes", required = false) List<Integer> connectionTypes,
             @RequestParam(value = "govProgram", required = false) Integer govProgram,
             @RequestParam(value = "govProgramYear", required = false) Integer govProgramYear,
-            @RequestParam(value = "hasAny", required = false) Integer hasAny,
+            @RequestParam(value = "hasAny", required = false) Boolean hasAny,
             @RequestParam(value = "logicalCondition", required = false) LogicalCondition logicalCondition,
             @PathVariable(value = "type") TcType type,
             @RequestParam(value = "locationName", required = false) String... locationNames
