@@ -296,7 +296,7 @@ public class ApiOrganization {
     }
 
     @GetMapping("/{id}/")
-    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
     public OrganizationDTO item(@PathVariable Integer id) {
         log.info("->GET /api/organization/{}/", id);
         return rOrganization.findById(id).map(OrganizationDTO::new).orElse(null);
@@ -365,13 +365,13 @@ public class ApiOrganization {
     }
 
     @GetMapping("/{id}/ap/")
-    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
     public List<AccessPointDetailInOrganizationDTO> apsByOrganization(@PathVariable Integer id) {
         log.info("->GET /api/organization/{}/ap", id);
         return rAccessPoints.getAllByOrganizationIdAndDeletedIsFalse(id).stream().map(AccessPointDetailInOrganizationDTO::new).collect(Collectors.toList());
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
     @PostMapping(value = "/{id}/ap/", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createAP(
             @PathVariable(name = "id") final Organization organization,
@@ -392,7 +392,7 @@ public class ApiOrganization {
         }
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
     @PutMapping(value = "/{id}/ap/", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> updateAP(
             @PathVariable(name = "id") final Organization organization,
@@ -414,7 +414,7 @@ public class ApiOrganization {
     }
 
     @PostMapping("/{id}/ap/{apid}/init-monitoring")
-    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION"})
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
     public ExternalSystemCreateStatusDTO initMonitoring(@PathVariable Integer id, @PathVariable Integer apid,
                                                         @RequestBody final MonitoringAccessPointWizardDTO wizard, @AuthenticationPrincipal User user) throws NotAllowedException {
         log.info("[{}]->GET /{}/ap/{}/init-monitoring", user.getUsername(), id, apid);
