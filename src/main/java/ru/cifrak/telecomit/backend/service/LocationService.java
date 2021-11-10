@@ -91,7 +91,8 @@ public class LocationService {
             "gov_years",
             "location_areas",
             "trunk_channels",
-            "type_mobiles"
+            "type_mobiles",
+            "feature_edit_full"
     }, allEntries = true)
     public void refreshCache() {
         lastRefreshDate = new Date();

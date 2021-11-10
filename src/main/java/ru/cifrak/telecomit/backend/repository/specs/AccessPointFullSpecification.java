@@ -6,14 +6,26 @@ import ru.cifrak.telecomit.backend.entities.*;
 import java.time.LocalDate;
 import java.util.List;
 
-public class SpecificationAccessPointFull {
+public class AccessPointFullSpecification {
+    public static final Specification<AccessPointFull> TRUE_SPEC = (root, cq, cb) -> cb.conjunction();
+    public static final Specification<AccessPointFull> FALSE_SPEC = (root, cq, cb) -> cb.disjunction();
+
+    public static Specification<AccessPointFull> forOrCondition(Specification<AccessPointFull> spec) {
+        return spec != null ? spec : AccessPointFullSpecification.FALSE_SPEC;
+    }
+
+    public static Specification<AccessPointFull> forAndCondition(Specification<AccessPointFull> spec) {
+        return spec != null ? spec : AccessPointFullSpecification.TRUE_SPEC;
+    }
 
     public static Specification<AccessPointFull> inLocations(Location... locations) {
-        return (root, cq, cb) -> cb.and(root.get(AccessPointFull_.organization).get(Organization_.location).in(locations));
+        return (root, cq, cb) -> root.get(AccessPointFull_.organization).get(Organization_.location).in(locations);
     }
 
     public static Specification<AccessPointFull> inLocation(Location location) {
-        return (root, cq, cb) -> cb.equal(root.get(AccessPointFull_.organization).get(Organization_.location), location);
+        return (root, cq, cb) -> cb.equal(
+                root.get(AccessPointFull_.organization).get(Organization_.location),
+                location);
     }
 
     public static Specification<AccessPointFull> inAddress(String address) {
@@ -37,39 +49,54 @@ public class SpecificationAccessPointFull {
     }
 
     public static Specification<AccessPointFull> inParent(List<Location> parents) {
-        return (root, cq, cb) -> cb.and(root.get(AccessPointFull_.organization).get(Organization_.location).get(Location_.parent).in(parents));
+        return (root, cq, cb) ->
+                root.get(AccessPointFull_.organization).get(Organization_.location).get(Location_.parent).in(parents);
     }
 
     public static Specification<AccessPointFull> withOrgname(String orgname) {
-        return (root, cq, cb) -> cb.like(cb.lower(root.get(AccessPointFull_.organization).get(Organization_.name)), "%" + orgname.toLowerCase() + "%");
+        return (root, cq, cb) -> cb.like(
+                cb.lower(root.get(AccessPointFull_.organization).get(Organization_.name)),
+                "%" + orgname.toLowerCase() + "%");
     }
 
     public static Specification<AccessPointFull> withOperator(String operator) {
-        return (root, cq, cb) -> cb.like(cb.lower(root.get(AccessPointFull_.contractor)), "%" + operator.toLowerCase() + "%");
+        return (root, cq, cb) -> cb.like(
+                cb.lower(root.get(AccessPointFull_.contractor)),
+                "%" + operator.toLowerCase() + "%");
     }
 
     public static Specification<AccessPointFull> pStart(Integer pStart) {
-        return (root, cq, cb) -> cb.and(cb.greaterThanOrEqualTo(root.get(AccessPointFull_.organization).get(Organization_.location).get(Location_.population), (pStart)));
+        return (root, cq, cb) -> cb.greaterThanOrEqualTo(
+                root.get(AccessPointFull_.organization).get(Organization_.location).get(Location_.population),
+                pStart);
     }
 
     public static Specification<AccessPointFull> pEnd(Integer pEnd) {
-        return (root, cq, cb) -> cb.and(cb.lessThanOrEqualTo(root.get(AccessPointFull_.organization).get(Organization_.location).get(Location_.population), (pEnd)));
+        return (root, cq, cb) -> cb.lessThanOrEqualTo(
+                root.get(AccessPointFull_.organization).get(Organization_.location).get(Location_.population),
+                pEnd);
     }
 
     public static Specification<AccessPointFull> contract(String contract) {
-        return (root, cq, cb) -> cb.like(cb.lower(root.get(AccessPointFull_.number)), "%" + contract.toLowerCase() + "%");
+        return (root, cq, cb) -> cb.like(
+                cb.lower(root.get(AccessPointFull_.number)),
+                "%" + contract.toLowerCase() + "%");
     }
 
     public static Specification<AccessPointFull> cStart(LocalDate cStart) {
-        return (root, cq, cb) -> cb.and(cb.greaterThanOrEqualTo(root.get(AccessPointFull_.started), cStart));
+        return (root, cq, cb) -> cb.greaterThanOrEqualTo(
+                root.get(AccessPointFull_.started),
+                cStart);
     }
 
     public static Specification<AccessPointFull> cEnd(LocalDate cEnd) {
-        return (root, cq, cb) -> cb.and(cb.lessThanOrEqualTo(root.get(AccessPointFull_.ended), cEnd));
+        return (root, cq, cb) -> cb.lessThanOrEqualTo(
+                root.get(AccessPointFull_.ended),
+                cEnd);
     }
 
     public static Specification<AccessPointFull> type(List<TypeAccessPoint> aps) {
-        return (root, cq, cb) -> cb.and(root.get(AccessPointFull_.type).in(aps));
+        return (root, cq, cb) -> root.get(AccessPointFull_.type).in(aps);
     }
 
     public static Specification<AccessPointFull> apcontract() {

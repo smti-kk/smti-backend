@@ -29,6 +29,11 @@ public interface DSLDetailLocation extends JpaRepository<LocationForTable, Integ
     @Override
     @EntityGraph("detail-locations")
     @NotNull
+    Iterable<LocationForTable> findAll(@NotNull Predicate predicate);
+
+    @Override
+    @EntityGraph("detail-locations")
+    @NotNull
     Page<LocationForTable> findAll(@NotNull Predicate predicate, @NotNull Pageable pageable);
 
     @Override

@@ -12,10 +12,10 @@ import ru.cifrak.telecomit.backend.entities.AccessPointFull;
 import java.util.List;
 
 
-public interface RepositoryAccessPointsFull extends JpaRepository<AccessPointFull, Integer>, JpaSpecificationExecutor {
+public interface RepositoryAccessPointsFull extends JpaRepository<AccessPointFull, Integer>, JpaSpecificationExecutor<AccessPointFull> {
     @EntityGraph(AccessPointFull.REPORT_ALL)
     @Override
-    Page findAll(Specification spec, Pageable pageable);
+    Page<AccessPointFull> findAll(Specification spec, Pageable pageable);
 
 
     @EntityGraph(AccessPointFull.REPORT_ALL)
@@ -24,9 +24,10 @@ public interface RepositoryAccessPointsFull extends JpaRepository<AccessPointFul
 
     @EntityGraph(AccessPointFull.REPORT_ALL_EXPORT)
     @Override
-    List findAll(Specification specification, Sort sort);
+    List<AccessPointFull> findAll(Specification specification, Sort sort);
+
     @EntityGraph(AccessPointFull.REPORT_ALL_EXPORT)
     @Override
-    List findAll(Specification specification);
+    List<AccessPointFull> findAll(Specification specification);
 
 }

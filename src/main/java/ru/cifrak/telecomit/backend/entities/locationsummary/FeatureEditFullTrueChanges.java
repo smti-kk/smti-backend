@@ -7,15 +7,15 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "feature_edit")
+@Table(name = "feature_edit_with_true_changes")
 @Data
 @NamedEntityGraphs({
         @NamedEntityGraph(
-                name = FeatureEditFull.FULL
+                name = FeatureEditFullTrueChanges.FULL
         )
 })
-public class FeatureEditFull implements Serializable {
-    public static final String FULL = "FeatureEditFull.FULL";
+public class FeatureEditFullTrueChanges implements Serializable {
+    public static final String FULL = "FeatureEditFullTrueChanges.FULL";
 
     @Id
     @SequenceGenerator(name = "FEATURE_EDIT_GENERATOR", sequenceName = "features_edit_id_seq", allocationSize = 1)
