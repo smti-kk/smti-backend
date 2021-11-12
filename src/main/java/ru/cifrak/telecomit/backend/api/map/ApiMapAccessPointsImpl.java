@@ -32,7 +32,7 @@ public class ApiMapAccessPointsImpl implements ApiMapAccessPoints {
     }
 
     @Override
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_ORGANIZATION"})
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
     public List<MapAccessPointDTO> list(TypeAccessPoint type) {
         List<MapAccessPointDTO> result = mapAccessPointRepository.findAll(type).stream().map(MapAccessPointDTO::new).collect(Collectors.toList());
         return result;
