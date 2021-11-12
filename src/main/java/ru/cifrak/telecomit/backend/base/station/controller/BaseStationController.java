@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/api/base-stations")
 public interface BaseStationController {
     @GetMapping(params = {"page", "size"})
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_CONTRACTOR"})
     Page<BaseStation> baseStations(
             Pageable pageable,
             @RequestParam(value = "operatorIds", required = false) List<Integer> operatorIds,
@@ -31,11 +31,11 @@ public interface BaseStationController {
     );
 
     @GetMapping
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_CONTRACTOR"})
     List<BaseStation> baseStations();
 
     @GetMapping("/{baseStationId}")
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_CONTRACTOR"})
     BaseStation baseStation(@PathVariable Integer baseStationId) throws NotFoundException;
 
     @DeleteMapping("/{baseStationId}")
