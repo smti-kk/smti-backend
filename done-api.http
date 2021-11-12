@@ -633,3 +633,7 @@ Content-Type: application/json
 ###
 GET http://localhost:8080/api/autocomplit/?address=Ленина
 Content-Type: application/json
+
+###
+GET http://localhost:8080/api/report/organization/ap-all/monitoring/
+Authorization: Token {{auth_token}}

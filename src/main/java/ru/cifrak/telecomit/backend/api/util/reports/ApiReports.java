@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.api.dto.*;
 import ru.cifrak.telecomit.backend.entities.AccessPointFull;
 import ru.cifrak.telecomit.backend.entities.*;
+import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
+import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
 import ru.cifrak.telecomit.backend.repository.RepositoryAccessPointsFull;
 import ru.cifrak.telecomit.backend.repository.specs.AccessPointFullSpecification;
 import ru.cifrak.telecomit.backend.service.ReportName;
@@ -35,6 +37,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -47,9 +50,9 @@ public class ApiReports {
     private final RepositoryAccessPointsFull rAccessPoints;
     private final ServiceExternalReports serviceExternalReports;
 
-
     @Autowired
-    public ApiReports(RepositoryAccessPointsFull rAccessPoints, ServiceExternalReports serviceExternalReports) {
+    public ApiReports(RepositoryAccessPointsFull rAccessPoints,
+                      ServiceExternalReports serviceExternalReports) {
         this.rAccessPoints = rAccessPoints;
         this.serviceExternalReports = serviceExternalReports;
     }
@@ -158,6 +161,60 @@ public class ApiReports {
                 contractor, pStart, pEnd, address, ap, sort, logicalCondition, locations));
         log.info("<-- GET /api/report/organization/ap-all/");
         return pList;
+    }
+
+    @GetMapping("/ap-all/monitoring/")
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
+    public Map<APConnectionState, Long> accessPointsStatusQuantity(
+            @RequestParam(name = "type", required = false) TypeOrganization type,
+            @RequestParam(name = "smo", required = false) TypeSmo smo,
+            @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp,
+            @RequestParam(name = "inet", required = false) TypeInternetAccess inettype,
+            @RequestParam(name = "parents", required = false) List<Location> parents,
+            @RequestParam(name = "organization", required = false) String organization,
+            @RequestParam(name = "contractor", required = false) String contractor,
+            @RequestParam(name = "population-start", required = false) Integer pStart,
+            @RequestParam(name = "population-end", required = false) Integer pEnd,
+            @RequestParam(name = "address", required = false) String address,
+            @RequestParam(name = "ap", required = false) List<TypeAccessPoint> ap,
+            @RequestParam(name = "logicalCondition", required = false) LogicalCondition logicalCondition,
+            @RequestParam(name = "location", required = false) Location... locations) {
+        log.info("--> GET /api/report/organization/ap-all//monitoring/");
+        List<AccessPointFull> apList = getAp(type, smo, gdp, inettype, parents, organization, contractor,
+                pStart, pEnd, address, ap, logicalCondition, locations);
+        List<APConnectionState> reportApList = getReportAp(apList);
+        Map<APConnectionState, Long> countedStatusesAp = getCountedStatusesAp(reportApList);
+        Map<APConnectionState, Long> countedFullStatusesAp = getCountedFullStatusesAp(countedStatusesAp);
+        log.info("<-- GET /api/report/organization/ap-all/monitoring/");
+        return countedFullStatusesAp;
+    }
+
+    @NotNull
+    private Map<APConnectionState, Long> getCountedFullStatusesAp(Map<APConnectionState, Long> countedStatusesAp) {
+        return Arrays.stream(APConnectionState.values())
+                .collect(Collectors.toMap(state -> state, state -> countedStatusesAp.getOrDefault(state, 0L)));
+    }
+
+    private Map<APConnectionState, Long> getCountedStatusesAp(List<APConnectionState> reportApList) {
+        return reportApList.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    }
+
+    @NotNull
+    private List<APConnectionState> getReportAp(List<AccessPointFull> apList) {
+        return apList.stream()
+                .map(apf -> Optional.ofNullable(apf.getMonitoringLink())
+                        .map(JournalMAP::getMap)
+                        .map(MonitoringAccessPoint::getConnectionState)
+                        .orElse(APConnectionState.NOT_MONITORED))
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private List<AccessPointFull> getAp(TypeOrganization type, TypeSmo smo, GovernmentDevelopmentProgram gdp, TypeInternetAccess inettype, List<Location> parents, String organization, String contractor, Integer pStart, Integer pEnd, String address, List<TypeAccessPoint> ap, LogicalCondition logicalCondition, Location[] locations) {
+        return rAccessPoints.findAll(
+                getSpec(type, smo, gdp, inettype, parents, organization, contractor,
+                        pStart, pEnd, address, ap, logicalCondition, locations));
     }
 
     private List<AccessPointFull> getData(TypeOrganization type,
