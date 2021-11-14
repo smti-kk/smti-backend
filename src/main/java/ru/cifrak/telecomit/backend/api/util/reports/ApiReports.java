@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.api.dto.*;
 import ru.cifrak.telecomit.backend.entities.AccessPointFull;
@@ -58,8 +59,10 @@ public class ApiReports {
     }
 
     @GetMapping(value = "/ap-all/export/")
+    @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
     @ResponseBody
     public ResponseEntity<ByteArrayResource> exportReportAll(
+            @AuthenticationPrincipal User user,
             @RequestParam(name = "type", required = false) TypeOrganization type,
             @RequestParam(name = "smo", required = false) TypeSmo smo,
             @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp,
@@ -73,10 +76,11 @@ public class ApiReports {
             @RequestParam(name = "ap", required = false) List<TypeAccessPoint> ap,
             @RequestParam(name = "sort", required = false) String sort,
             @RequestParam(name = "logicalCondition", required = false) LogicalCondition logicalCondition,
+            @RequestParam(name = "state", required = false) List<APConnectionState> state,
             @RequestParam(name = "location", required = false) Location... locations) throws IOException {
         log.info("--> GET /api/report/organization/ap-all/export/");
         ByteArrayResource resource = getResource(type, smo, gdp, inettype, parents, organization, contractor,
-                pStart, pEnd, address, ap, sort, logicalCondition, locations);
+                pStart, pEnd, address, ap, sort, logicalCondition, state, locations);
         log.info("<-- GET /api/report/organization/ap-all/export/");
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, new ReportName(ExcelExportTypes.ORGANIZATION).toString())
@@ -125,10 +129,11 @@ public class ApiReports {
                                           List<TypeAccessPoint> ap,
                                           String sort,
                                           LogicalCondition logicalCondition,
+                                          List<APConnectionState> state,
                                           Location[] locations) throws IOException {
         List<ExelReportAccessPointFullDTO> result = getData(
                 type, smo, gdp, inettype, parents, organization,
-                contractor, pStart, pEnd, address, ap, sort, logicalCondition, locations)
+                contractor, pStart, pEnd, address, ap, sort, logicalCondition, state, locations)
                 .stream()
                 .map(ExelReportAccessPointFullDTO::new)
                 .collect(Collectors.toList());
@@ -141,6 +146,7 @@ public class ApiReports {
     public PaginatedList<ReportAccessPointFullDTO> reportAll(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
+            @AuthenticationPrincipal User user,
             @RequestParam(name = "type", required = false) TypeOrganization type,
             @RequestParam(name = "smo", required = false) TypeSmo smo,
             @RequestParam(name = "gdp", required = false) GovernmentDevelopmentProgram gdp,
@@ -154,11 +160,12 @@ public class ApiReports {
             @RequestParam(name = "ap", required = false) List<TypeAccessPoint> ap,
             @RequestParam(name = "sort", required = false) String sort,
             @RequestParam(name = "logicalCondition", required = false) LogicalCondition logicalCondition,
+            @RequestParam(name = "state", required = false) List<APConnectionState> state,
             @RequestParam(name = "location", required = false) Location... locations) {
         log.info("--> GET /api/report/organization/ap-all/");
         PaginatedList<ReportAccessPointFullDTO> pList = getPListReportAccessPointFullDTO(getData(
                 page, size, type, smo, gdp, inettype, parents, organization,
-                contractor, pStart, pEnd, address, ap, sort, logicalCondition, locations));
+                contractor, pStart, pEnd, address, ap, sort, logicalCondition, state, locations));
         log.info("<-- GET /api/report/organization/ap-all/");
         return pList;
     }
@@ -211,10 +218,22 @@ public class ApiReports {
     }
 
     @NotNull
-    private List<AccessPointFull> getAp(TypeOrganization type, TypeSmo smo, GovernmentDevelopmentProgram gdp, TypeInternetAccess inettype, List<Location> parents, String organization, String contractor, Integer pStart, Integer pEnd, String address, List<TypeAccessPoint> ap, LogicalCondition logicalCondition, Location[] locations) {
+    private List<AccessPointFull> getAp(TypeOrganization type,
+                                        TypeSmo smo,
+                                        GovernmentDevelopmentProgram gdp,
+                                        TypeInternetAccess inettype,
+                                        List<Location> parents,
+                                        String organization,
+                                        String contractor,
+                                        Integer pStart,
+                                        Integer pEnd,
+                                        String address,
+                                        List<TypeAccessPoint> ap,
+                                        LogicalCondition logicalCondition,
+                                        Location[] locations) {
         return rAccessPoints.findAll(
                 getSpec(type, smo, gdp, inettype, parents, organization, contractor,
-                        pStart, pEnd, address, ap, logicalCondition, locations));
+                        pStart, pEnd, address, ap, logicalCondition, locations, null));
     }
 
     private List<AccessPointFull> getData(TypeOrganization type,
@@ -230,9 +249,10 @@ public class ApiReports {
                                           List<TypeAccessPoint> ap,
                                           String sort,
                                           LogicalCondition logicalCondition,
+                                          List<APConnectionState> state,
                                           Location[] locations) {
         return rAccessPoints.findAll(getSpec(type, smo, gdp, inettype, parents, organization, contractor,
-                        pStart, pEnd, address, ap, logicalCondition, locations),
+                        pStart, pEnd, address, ap, logicalCondition, locations, state),
                 Sort.by(getSortingOrders(sort)));
     }
 
@@ -293,9 +313,10 @@ public class ApiReports {
                                           List<TypeAccessPoint> ap,
                                           String sort,
                                           LogicalCondition logicalCondition,
+                                          List<APConnectionState> state,
                                           Location[] locations) {
         return rAccessPoints.findAll(getSpec(type, smo, gdp, inettype, parents, organization, contractor,
-                        pStart, pEnd, address, ap, logicalCondition, locations),
+                        pStart, pEnd, address, ap, logicalCondition, locations, state),
                 PageRequest.of(page - 1, size, Sort.by(getSortingOrders(sort))));
     }
 
@@ -355,9 +376,10 @@ public class ApiReports {
                                                    String address,
                                                    List<TypeAccessPoint> ap,
                                                    LogicalCondition logicalCondition,
-                                                   Location[] locations) {
+                                                   Location[] locations,
+                                                   List<APConnectionState> state) {
         List<Specification<AccessPointFull>> specs = getSpecs(type, smo, gdp, inettype, parents, organization,
-                contractor, address, ap, locations);
+                contractor, address, ap, locations, state);
         Specification<AccessPointFull> mainSpec = logicalCondition == LogicalCondition.OR ?
                 getSpecsWithOrCondition(specs)
                 : getSpecsWithAndCondition(specs);
@@ -422,7 +444,8 @@ public class ApiReports {
                                                           String contractor,
                                                           String address,
                                                           List<TypeAccessPoint> ap,
-                                                          Location[] locations) {
+                                                          Location[] locations,
+                                                          List<APConnectionState> state) {
         List<Specification<AccessPointFull>> result = new ArrayList<>();
         result.add(getSpecLocations(locations));
         result.add(getSpecType(type));
@@ -434,6 +457,7 @@ public class ApiReports {
         result.add(getSpecContractor(contractor));
         result.add(getSpecAp(ap));
         result.add(getSpecAddress(address));
+        result.add(getSpecState(state));
         return result;
     }
 
@@ -494,6 +518,12 @@ public class ApiReports {
     private Specification<AccessPointFull> getSpecParents(List<Location> parents) {
         return parents != null ?
                 AccessPointFullSpecification.inParent(parents)
+                : null;
+    }
+
+    private Specification<AccessPointFull> getSpecState(List<APConnectionState> state) {
+        return state != null ?
+                AccessPointFullSpecification.inState(state)
                 : null;
     }
 

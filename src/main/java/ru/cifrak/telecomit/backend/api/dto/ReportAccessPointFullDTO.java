@@ -24,6 +24,7 @@ public class ReportAccessPointFullDTO {
     private String dayTraffic;
     private APConnectionState connectionState;
     private LocalDateTime createDate;
+    private String problemDefinition;
 
 
     public ReportAccessPointFullDTO(AccessPoint entity) {
@@ -64,6 +65,10 @@ public class ReportAccessPointFullDTO {
                 .orElse(APConnectionState.NOT_MONITORED);
         this.createDate = Optional.ofNullable(entity.getCreatedDate())
                 .orElse(LocalDateTime.now(ZoneId.systemDefault()));
+        this.problemDefinition = Optional.ofNullable(entity.getMonitoringLink())
+                .map(JournalMAP::getMap)
+                .map(MonitoringAccessPoint::getProblemDefinition)
+                .orElse("");
     }
 
     public String CustomOutputOfOrgName() {
