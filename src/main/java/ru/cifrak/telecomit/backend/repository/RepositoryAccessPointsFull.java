@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.repository;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,19 +16,23 @@ import java.util.List;
 public interface RepositoryAccessPointsFull extends JpaRepository<AccessPointFull, Integer>, JpaSpecificationExecutor<AccessPointFull> {
     @EntityGraph(AccessPointFull.REPORT_ALL)
     @Override
-    Page<AccessPointFull> findAll(Specification spec, Pageable pageable);
+    @NotNull
+    Page<AccessPointFull> findAll(Specification spec, @NotNull Pageable pageable);
 
 
     @EntityGraph(AccessPointFull.REPORT_ALL)
     @Override
+    @NotNull
     List<AccessPointFull> findAll();
 
     @EntityGraph(AccessPointFull.REPORT_ALL_EXPORT)
     @Override
-    List<AccessPointFull> findAll(Specification specification, Sort sort);
+    @NotNull
+    List<AccessPointFull> findAll(Specification specification, @NotNull Sort sort);
 
     @EntityGraph(AccessPointFull.REPORT_ALL_EXPORT)
     @Override
+    @NotNull
     List<AccessPointFull> findAll(Specification specification);
 
 }

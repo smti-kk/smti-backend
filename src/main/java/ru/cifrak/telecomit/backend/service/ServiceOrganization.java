@@ -158,20 +158,15 @@ public class ServiceOrganization {
         List<String> triggers = jmaps.stream().filter(i -> i.getMap().getDeviceTriggerUnavailable() != null).map(i -> i.getMap().getDeviceTriggerUnavailable().toString()).collect(Collectors.toList());
         log.trace("triggers:: {}", triggers);
         List<Long> items = sZabbix.getTriggersInTroubleState(triggers);
-
-        jmaps.stream()
-                .peek(jmap -> {
-                            if (items.contains(jmap.getMap().getDeviceTriggerUnavailable())) {
-                                jmap.getMap().setConnectionState(APConnectionState.DISABLED);
-                                jmap.getMap().setTimeState(LocalDateTime.now());
-                            } else {
-                                jmap.getMap().setConnectionState(APConnectionState.ACTIVE);
-                                jmap.getMap().setTimeState(LocalDateTime.now());
-                            }
-                            rJournalMAP.save(jmap);
-                        }
-                ).collect(Collectors.toList());
-
+        jmaps.forEach(jmap -> {
+            if (items.contains(jmap.getMap().getDeviceTriggerUnavailable())) {
+                jmap.getMap().setConnectionState(APConnectionState.DISABLED);
+            } else {
+                jmap.getMap().setConnectionState(APConnectionState.ACTIVE);
+            }
+            jmap.getMap().setTimeState(LocalDateTime.now());
+            rJournalMAP.save(jmap);
+        });
         log.info("[application]<- going for activity status in zabbix");
     }
 }
