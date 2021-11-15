@@ -38,4 +38,10 @@ public class FeatureEditFullTrueChanges implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "location_features_editing_request_id", referencedColumnName="ID")
     )
     private LocationFeaturesEditingRequestFull1 locationFeaturesEditingRequest;
+
+    @Column
+    private String sortAction;
+
+    @Column
+    private String sortChangeSource;
 }

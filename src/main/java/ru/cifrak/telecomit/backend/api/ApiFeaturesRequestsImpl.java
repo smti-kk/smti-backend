@@ -39,8 +39,8 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     private static final Map<String, String[]> SORTING_FIELDS = new HashMap<String, String[]>() {{
         put("id", new String[]{"id"});
         put("created", new String[]{"locationFeaturesEditingRequest.created"});
-        put("source", new String[]{"locationFeaturesEditingRequest.changeSource"});
-        put("action", new String[]{"action"});
+        put("source", new String[]{"sortChangeSource"});
+        put("action", new String[]{"sortAction"});
         put("user", new String[]{"locationFeaturesEditingRequest.user.oid"});
         put("userName", new String[]{
                 "locationFeaturesEditingRequest.user.lastName",
