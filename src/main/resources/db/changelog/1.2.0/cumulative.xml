@@ -4,4 +4,5 @@
     <include file="0002-add-column-lfer.xml" relativeToChangelogFile="true" />
     <include file="0003-add-map-status.xml" relativeToChangelogFile="true" />
     <include file="0004-add-edit_requests_view.xml" relativeToChangelogFile="true" />
+    <include file="0005-add-problem_definition-to-map.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

@@ -2,6 +2,7 @@ package ru.cifrak.telecomit.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -161,6 +162,9 @@ public class ServiceOrganization {
         jmaps.forEach(jmap -> {
             if (items.contains(jmap.getMap().getDeviceTriggerUnavailable())) {
                 jmap.getMap().setConnectionState(APConnectionState.DISABLED);
+            } if (isProblemExists(items, jmap)) {
+                jmap.getMap().setConnectionState(APConnectionState.PROBLEM);
+                jmap.getMap().setProblemDefinition(getProblemDefinition(items, jmap));
             } else {
                 jmap.getMap().setConnectionState(APConnectionState.ACTIVE);
             }
@@ -168,5 +172,26 @@ public class ServiceOrganization {
             rJournalMAP.save(jmap);
         });
         log.info("[application]<- going for activity status in zabbix");
+    }
+
+    private boolean isProblemExists(List<Long> items, JournalMAP jmap) {
+        return items.contains(jmap.getMap().getSensorTriggerEnergy())
+                || items.contains(jmap.getMap().getDeviceTriggerResponseLost())
+                || items.contains(jmap.getMap().getDeviceTriggerResponseLow());
+    }
+
+    @NotNull
+    private String getProblemDefinition(List<Long> items, JournalMAP jmap) {
+        List<String> problems = new ArrayList<>();
+        if (items.contains(jmap.getMap().getSensorTriggerEnergy())) {
+            problems.add("Unavailable by ICMP ping Energy");
+        }
+        if (items.contains(jmap.getMap().getDeviceTriggerResponseLost())) {
+            problems.add("High ICMP ping loss");
+        }
+        if (items.contains(jmap.getMap().getDeviceTriggerResponseLow())) {
+            problems.add("High ICMP ping response time");
+        }
+        return String.join(". ", problems);
     }
 }

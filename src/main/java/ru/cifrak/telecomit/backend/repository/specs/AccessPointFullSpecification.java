@@ -2,6 +2,8 @@ package ru.cifrak.telecomit.backend.repository.specs;
 
 import org.springframework.data.jpa.domain.Specification;
 import ru.cifrak.telecomit.backend.entities.*;
+import ru.cifrak.telecomit.backend.entities.external.JournalMAP_;
+import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint_;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,12 +22,6 @@ public class AccessPointFullSpecification {
 
     public static Specification<AccessPointFull> inLocations(Location... locations) {
         return (root, cq, cb) -> root.get(AccessPointFull_.organization).get(Organization_.location).in(locations);
-    }
-
-    public static Specification<AccessPointFull> inLocation(Location location) {
-        return (root, cq, cb) -> cb.equal(
-                root.get(AccessPointFull_.organization).get(Organization_.location),
-                location);
     }
 
     public static Specification<AccessPointFull> inAddress(String address) {
@@ -51,6 +47,12 @@ public class AccessPointFullSpecification {
     public static Specification<AccessPointFull> inParent(List<Location> parents) {
         return (root, cq, cb) ->
                 root.get(AccessPointFull_.organization).get(Organization_.location).get(Location_.parent).in(parents);
+    }
+
+    public static Specification<AccessPointFull> inState(List<APConnectionState> state) {
+        return (root, cq, cb) ->
+                root.get(AccessPointFull_.monitoringLink)
+                        .get(JournalMAP_.map).get(MonitoringAccessPoint_.connectionState).in(state);
     }
 
     public static Specification<AccessPointFull> withOrgname(String orgname) {

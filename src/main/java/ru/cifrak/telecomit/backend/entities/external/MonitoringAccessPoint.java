@@ -102,4 +102,7 @@ public class MonitoringAccessPoint implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private APConnectionState connectionState = APConnectionState.NOT_MONITORED;
+
+    @Column
+    private String problemDefinition;
 }
