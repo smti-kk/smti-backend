@@ -164,8 +164,9 @@ public class AccessPointFull extends AuditingSoftDelete implements Serializable 
     @Column
     private LocalDate ended;
 
-
     @OneToOne(mappedBy = "ap")
     private JournalMAP monitoringLink;
 
+    @OneToOne(mappedBy = "ap")
+    private ApStatusView apStatusView;
 }
