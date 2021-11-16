@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="tolstonogovav" id="1">
+        <createView viewName="ap_status_view" schemaName="public">
+            SELECT
+              ap.id,
+              CASE
+                WHEN jm IS NULL THEN 'NOT_MONITORED'
+                ELSE map.connection_state
+                END AS "connection_state",
+              ap.id::integer AS "key_ap"
+            FROM
+              public.access_point ap
+                LEFT OUTER JOIN external_systems.journalmap jm ON ap.id = jm.key_ap
+                LEFT OUTER JOIn external_systems.monitoring_access_point map ON jm.key_map = map.id
+            ORDER BY
+                ap.id;
+        </createView>
+    </changeSet>
+</databaseChangeLog>

@@ -51,8 +51,7 @@ public class AccessPointFullSpecification {
 
     public static Specification<AccessPointFull> inState(List<APConnectionState> state) {
         return (root, cq, cb) ->
-                root.get(AccessPointFull_.monitoringLink)
-                        .get(JournalMAP_.map).get(MonitoringAccessPoint_.connectionState).in(state);
+                root.get(AccessPointFull_.apStatusView).get(ApStatusView_.connectionState).in(state);
     }
 
     public static Specification<AccessPointFull> withOrgname(String orgname) {
