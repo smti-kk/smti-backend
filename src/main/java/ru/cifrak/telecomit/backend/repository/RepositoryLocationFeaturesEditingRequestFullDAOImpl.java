@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cifrak.telecomit.backend.entities.locationsummary.FeatureEditFull;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Slf4j
 @Transactional
 @Repository
 public class RepositoryLocationFeaturesEditingRequestFullDAOImpl implements RepositoryLocationFeaturesEditingRequestFullDAO {
@@ -29,6 +31,7 @@ public class RepositoryLocationFeaturesEditingRequestFullDAOImpl implements Repo
         List<LocationFeaturesEditingRequestFull> requests = getRequests(years, cb);
         requests.forEach(request -> {
             Set<FeatureEditFull> featureEdits = request.getFeatureEdits();
+            log.info("    delete request: id={}, created={}", request.getId(), request.getCreated());
             result.addAndGet(deleteEntity(LocationFeaturesEditingRequestFull.class, cb, request));
             featureEdits.forEach(featureEdit -> deleteEntity(FeatureEditFull.class, cb, featureEdit));
         });
@@ -62,6 +65,7 @@ public class RepositoryLocationFeaturesEditingRequestFullDAOImpl implements Repo
                 LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT).minusYears(years).plusDays(1)
         );
         cq.where(predicate);
+        cq.orderBy(cb.asc(root.get("id")));
         return entityManager.createQuery(cq).getResultList();
     }
 }
