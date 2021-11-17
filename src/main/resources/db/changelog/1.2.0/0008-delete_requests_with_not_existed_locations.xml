@@ -1,0 +1,53 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="tolstonogovav" id="1">
+        <delete schemaName="public" tableName="feature_edit">
+            <where>
+                id IN (
+                    SELECT lferfe_lose.feature_edits_id
+                    FROM (
+                        SELECT lferfe.*
+                        FROM (
+                            SELECT lfer.id
+                            FROM public.location_features_editing_request lfer
+                                LEFT OUTER JOIN public.location l ON lfer.location_id = l.id
+                        WHERE l IS NULL
+                        ) ll
+                            INNER JOIN public.location_features_editing_request_feature_edits lferfe
+                                ON ll.id = lferfe.location_features_editing_request_id
+                    ) lferfe_lose
+                );
+            </where>
+        </delete>
+        <delete schemaName="public" tableName="location_features_editing_request_feature_edits">
+            <where>
+                location_features_editing_request_id IN (
+                    SELECT lferfe_lose.location_features_editing_request_id
+                    FROM (
+                        SELECT lferfe.*
+                        FROM (
+                            SELECT lfer.id
+                            FROM public.location_features_editing_request lfer
+                                LEFT OUTER JOIN public.location l ON lfer.location_id = l.id
+                        WHERE l IS NULL
+                        ) ll
+                            INNER JOIN public.location_features_editing_request_feature_edits lferfe
+                                ON ll.id = lferfe.location_features_editing_request_id
+                    ) lferfe_lose
+                );
+            </where>
+        </delete>
+        <delete schemaName="public" tableName="location_features_editing_request">
+            <where>
+                id IN (
+                    SELECT lfer.id
+                    FROM public.location_features_editing_request lfer
+                        LEFT OUTER JOIN public.location l ON lfer.location_id = l.id
+                    WHERE l IS NULL
+                );
+            </where>
+        </delete>
+    </changeSet>
+</databaseChangeLog>
