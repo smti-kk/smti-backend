@@ -640,3 +640,7 @@ Content-Type: application/json
 ###
 GET http://localhost:8080/api/report/organization/ap-all/monitoring/
 Authorization: Token {{auth_token}}
+
+###
+GET http://localhost:8080/api/monitoring-notification/
+Authorization: Token {{auth_token}}
