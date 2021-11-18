@@ -1,8 +1,8 @@
 package ru.cifrak.telecomit.backend.service;
 
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -22,6 +22,12 @@ import java.util.*;
 
 @Service
 public class LocationService {
+    /**
+     * Added .isTrue() and .isFalse(), because .asBoolean() returns ConstantImpl, that are not casts to Predicate.
+     */
+    private static final BooleanExpression TRUE_EXPRESSION = Expressions.asBoolean(true).isTrue();
+    private static final BooleanExpression FALSE_EXPRESSION = Expressions.asBoolean(true).isFalse();
+
     private final DSLDetailLocation repository;
 
     @PersistenceContext
@@ -100,5 +106,10 @@ public class LocationService {
 
     public Date getLastRefreshDate() {
         return lastRefreshDate;
+    }
+
+    public Predicate getPredicateForLocationForReference() {
+        BooleanExpression predicate = TRUE_EXPRESSION;
+        return predicate;
     }
 }

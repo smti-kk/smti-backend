@@ -2,6 +2,8 @@ package ru.cifrak.telecomit.backend.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,9 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.LocationSimple;
 import ru.cifrak.telecomit.backend.api.dto.LocationSimpleFilterDTO;
 import ru.cifrak.telecomit.backend.entities.DLocationBase;
-import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
+import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForReference;
 import ru.cifrak.telecomit.backend.repository.RepositoryDLocationBase;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
+import ru.cifrak.telecomit.backend.repository.RepositoryLocationForReference;
+import ru.cifrak.telecomit.backend.service.LocationService;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -23,10 +27,17 @@ import java.util.stream.Collectors;
 public class ApiLocation {
     private final RepositoryLocation repository;
     private final RepositoryDLocationBase rDLocationBase;
+    private final RepositoryLocationForReference repositoryLocationForReference;
+    private final LocationService locationService;
 
-    public ApiLocation(RepositoryLocation repository, RepositoryDLocationBase rDLocationBase) {
+    public ApiLocation(RepositoryLocation repository,
+                       RepositoryDLocationBase rDLocationBase,
+                       RepositoryLocationForReference repositoryLocationForReference,
+                       LocationService locationService) {
         this.repository = repository;
         this.rDLocationBase = rDLocationBase;
+        this.repositoryLocationForReference = repositoryLocationForReference;
+        this.locationService = locationService;
     }
 
     @GetMapping
@@ -45,6 +56,16 @@ public class ApiLocation {
         return repository.locationFilter().stream()
                 .map(LocationSimpleFilterDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/location-reference/all/")
+    public Page<LocationForReference> getAllLocationReference(Pageable pageable) {
+        log.info("->GET /api/location/base/locations-reference/");
+        log.info("<- GET /api/location/base/locations-reference/");
+        Page<LocationForReference> list =
+                repositoryLocationForReference.findAll(
+                        locationService.getPredicateForLocationForReference(), pageable);
+        return list;
     }
 
     @GetMapping("/parents/")
@@ -83,6 +104,4 @@ public class ApiLocation {
         log.info("<- GET /api/location/base/");
         return rDLocationBase.findAllByTypeNotIn(Arrays.asList(new String[]{"с/с", "край", "тер"}));
     }
-
-
 }
