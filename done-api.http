@@ -644,3 +644,6 @@ Authorization: Token {{auth_token}}
 ###
 GET http://localhost:8080/api/monitoring-notification/
 Authorization: Token {{auth_token}}
+
+###
+GET http://localhost:8080/api/simple/type-locations/
