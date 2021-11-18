@@ -6,17 +6,18 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum TypeLocation {
-    REGION ("край"),
-    CITY_DISTRICT ("городской округ"),
-    MUNICIPAL_DISTRICT ("муниципальный округ"),
-    MUNICIOAL_AREA ("муниципальный район"),
-    CITY ("город"),
-    URBAN_SETTLEMENT ("поселок городского типа"),
-    VILLAGE ("деревня"),
-    COUNTRYSIDE ("село"),
-    SETTLEMENT ("поселок");
+    REGION ("край", true),
+    CITY_DISTRICT ("городской округ", true),
+    MUNICIPAL_DISTRICT ("муниципальный округ", true),
+    MUNICIOAL_AREA ("муниципальный район", false),
+    CITY ("город", false),
+    URBAN_SETTLEMENT ("поселок городского типа", false),
+    VILLAGE ("деревня", false),
+    COUNTRYSIDE ("село", false),
+    SETTLEMENT ("поселок", false);
 
     private final String description;
+    private final boolean canBeParent;
 
     @Override
     public String toString() {
