@@ -9,9 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.cifrak.telecomit.backend.api.dto.MonitoringAccessPointWizardDTO;
 import ru.cifrak.telecomit.backend.api.dto.UTM5ReportTrafficDTO;
 import ru.cifrak.telecomit.backend.api.dto.response.ExternalSystemCreateStatusDTO;
-import ru.cifrak.telecomit.backend.entities.APConnectionState;
-import ru.cifrak.telecomit.backend.entities.AccessPoint;
-import ru.cifrak.telecomit.backend.entities.Organization;
+import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
 import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
 import ru.cifrak.telecomit.backend.exceptions.NotAllowedException;
@@ -41,6 +39,7 @@ public class ServiceOrganization {
     private final ServiceExternalBlenders blenders;
     private final ServiceExternalZabbix sZabbix;
     private final ServiceExternalReports sReports;
+    private final ServiceMonitoringNotification serviceMonitoringNotification;
 
     public ServiceOrganization(RepositoryOrganization rOrganization,
                                RepositoryAccessPoints rAccessPoints,
@@ -48,7 +47,8 @@ public class ServiceOrganization {
                                RepositoryJournalMAP rJournalMAP,
                                ServiceExternalBlenders blenders,
                                ServiceExternalZabbix sZabbix,
-                               ServiceExternalReports sReports) {
+                               ServiceExternalReports sReports,
+                               ServiceMonitoringNotification serviceMonitoringNotification) {
         this.rOrganization = rOrganization;
         this.rAccessPoints = rAccessPoints;
         this.rMonitoringAccessPoints = rMonitoringAccessPoints;
@@ -56,22 +56,28 @@ public class ServiceOrganization {
         this.blenders = blenders;
         this.sZabbix = sZabbix;
         this.sReports = sReports;
+        this.serviceMonitoringNotification = serviceMonitoringNotification;
     }
 
     public List<Organization> all() {
         return rOrganization.findAll();
     }
 
-    public ExternalSystemCreateStatusDTO linkAccessPointWithMonitoringSystems(Integer id, Integer apid, MonitoringAccessPointWizardDTO wizard) throws NotAllowedException {
+    public ExternalSystemCreateStatusDTO linkAccessPointWithMonitoringSystems(Integer id,
+                                                                              Integer apid,
+                                                                              MonitoringAccessPointWizardDTO wizard,
+                                                                              User user) throws NotAllowedException {
         // xx.xx.xx. тут надо сходить по идее в БД и посмотреть а есть ли у нас данные наши.
         AccessPoint ap = rAccessPoints.getOne(apid);
         JournalMAP jjmap = rJournalMAP.findByAp_Id(ap.getId());
         MonitoringAccessPoint map;
+        boolean new_map = false;
         if (jjmap == null || jjmap.getMap() == null) {
             if (jjmap == null) {
                 jjmap = new JournalMAP();
             }
             map = new MonitoringAccessPoint();
+            new_map = true;
         } else {
             map = jjmap.getMap();
         }
@@ -86,6 +92,10 @@ public class ServiceOrganization {
                     blenders.linkWithUTM5(ap, map);
                     log.info("(>) save monitoring access point");
                     map = rMonitoringAccessPoints.save(map);
+                    if (new_map) {
+                        addMonitoringNotification(ap, user);
+                        new_map = false;
+                    }
                     log.info("(<) save monitoring access point");
                 } catch (Exception e) {
                     errors.add("Система UTM вернула ошибку: " + e.getMessage());
@@ -99,6 +109,9 @@ public class ServiceOrganization {
                 blenders.linkWithZabbix(ap, map, wizard);
                 log.info("(>) save monitoring access point");
                 rMonitoringAccessPoints.save(map);
+                if (new_map) {
+                    addMonitoringNotification(ap, user);
+                }
                 log.info("(<) save monitoring access point");
             } catch (Exception e) {
                 errors.equals("ZABBIX:error: " + e.getMessage());
@@ -122,6 +135,12 @@ public class ServiceOrganization {
 
         } else {
             throw new NotAllowedException("You cannot init Access Point in non belonging Organization");
+        }
+    }
+
+    private void addMonitoringNotification(AccessPoint ap, User user) {
+        if (user.getRoles().contains(UserRole.CONTRACTOR)) {
+            serviceMonitoringNotification.addMonitoringNotification(ap);
         }
     }
 

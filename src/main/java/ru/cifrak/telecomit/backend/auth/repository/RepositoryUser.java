@@ -13,10 +13,12 @@ import java.util.Set;
 @Repository
 public interface RepositoryUser extends JpaRepository<User, Long> {
     Optional<User> findByOid(Long oid);
+
     Optional<User> findByUsername(String phone);
+
     Optional<User> findByEmailAndIsActiveTrue(String email);
 
-    List<User> findByRolesInAndIsActiveTrue(Set<UserRole> roles);
+    List<User> findDistinctByRolesInAndIsActiveTrueOrderById(Set<UserRole> roles);
 
     // Для выгрузки
     List<User> findAllByCreateDateTimeGreaterThanEqualAndCreateDateTimeLessThanOrderByIdAsc(

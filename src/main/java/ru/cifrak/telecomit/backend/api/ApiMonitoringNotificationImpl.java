@@ -19,7 +19,6 @@ public class ApiMonitoringNotificationImpl implements ApiMonitoringNotification 
 
     @Override
     public List<MonitoringNotificationDTO> getNotifications(User user) {
-        List<MonitoringNotificationDTO> list = serviceMonitoringNotification.getNotifications(user);
-        return list;
+        return serviceMonitoringNotification.getNotifications(user);
     }
 }

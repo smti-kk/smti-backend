@@ -31,4 +31,9 @@ public class MonitoringNotification {
     @NonNull
     @Column(name = "sended")
     protected Boolean sended = false;
+
+    public MonitoringNotification(AccessPoint ap, User user) {
+        this.ap = ap;
+        this.user = user;
+    }
 }
