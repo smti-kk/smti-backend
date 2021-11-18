@@ -8,4 +8,5 @@
     <include file="0006-update-edit_requests_view.xml" relativeToChangelogFile="true" />
     <include file="0007-add-ap_status_view.xml" relativeToChangelogFile="true" />
     <include file="0008-delete_requests_with_not_existed_locations.xml" relativeToChangelogFile="true" />
+    <include file="0009-add-table-monitoring_notification.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
