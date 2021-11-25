@@ -7,10 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.entities.TypeLocation;
 import ru.cifrak.telecomit.backend.entities.locationsummary.FeatureEditAction;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Slf4j
 @RestController
 @RequestMapping("/api/simple/")
@@ -21,7 +17,8 @@ public class ApiSimple {
     }
 
     @GetMapping("/type-locations/")
-    public List<String> getTypeLocation() {
-        return Arrays.stream(TypeLocation.values()).map(TypeLocation::getDescription).collect(Collectors.toList());
+    public TypeLocation[] getTypeLocation() {
+        return TypeLocation.values();
+//        return Arrays.stream(TypeLocation.values()).map(TypeLocation::getDescription).collect(Collectors.toList());
     }
 }

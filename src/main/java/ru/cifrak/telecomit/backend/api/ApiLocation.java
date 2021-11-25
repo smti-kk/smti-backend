@@ -23,6 +23,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocationForReference;
 import ru.cifrak.telecomit.backend.service.LocationService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -86,48 +87,46 @@ public class ApiLocation {
     @PostMapping("/location-reference/update/{id}/")
     @Transactional
     @Secured({"ROLE_ADMIN"})
-    ResponseEntity<String> updateLocation(
+    ResponseEntity<List<String>> updateLocation(
             @PathVariable(name = "id") final LocationForReference location,
             @RequestParam(value = "type", required = false) TypeLocation type,
             @RequestParam(value = "population", required = false) Integer population,
             @RequestParam(value = "parent", required = false) LocationParent parent
     ) {
-        ResponseEntity<String> result;
+        ResponseEntity<List<String>> result;
         log.info("--> GET /api/location/location-reference/update/{}/", location.getId());
-        String locationError = checkLocationForReference(type, population, parent);
-        if (locationError == null) {
+        List<String> locationErrors = checkLocationForReference(type, population, parent);
+        if (locationErrors.size() == 0) {
             location.setType(type.toString());
             location.setPopulation(population);
             location.setLocationParent(parent);
             repositoryLocationForReference.save(location);
-            result = ResponseEntity.ok("Ok");
+            result = ResponseEntity.ok(locationErrors);
         } else {
-            result = ResponseEntity.badRequest().body(locationError);
+            result = ResponseEntity.badRequest().body(locationErrors);
         }
         log.info("<-- GET /api/location/location-reference/update/{}/", location.getId());
         return result;
     }
 
-    private String checkLocationForReference(TypeLocation type, Integer population, LocationParent parent) {
-        String result;
+    private List<String> checkLocationForReference(TypeLocation type, Integer population, LocationParent parent) {
+        List<String> errors = new ArrayList<>();
         if (type != null && Arrays.stream(TypeLocation.values())
                 .filter(TypeLocation::isCanBeParent)
                 .map(TypeLocation::getDescription)
                 .collect(Collectors.toList())
                 .contains(type.toString())) {
-            result = "Wrong type location";
+            errors.add("Wrong type location");
         } else if (population < 0) {
-            result = "Wrong population of location";
+            errors.add("Wrong population of location");
         } else if (!Arrays.stream(TypeLocation.values())
                 .filter(tl -> !tl.isCanBeParent())
                 .map(TypeLocation::getDescription)
                 .collect(Collectors.toList())
                 .contains(parent.getType())) {
-            result = "Wrong type of location parent";
-        } else {
-            result = null;
+            errors.add("Wrong type of location parent");
         }
-        return result;
+        return errors;
     }
 
     @GetMapping("/parents/")

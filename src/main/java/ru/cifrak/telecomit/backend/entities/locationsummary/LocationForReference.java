@@ -39,8 +39,8 @@ public class LocationForReference implements Serializable {
     @Column(length = 16)
     private String oktmo;
 
-    @JsonIgnoreProperties({"location"})
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnoreProperties({"location"})
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "geo_data_id")
     private GeoData geoData;
 
