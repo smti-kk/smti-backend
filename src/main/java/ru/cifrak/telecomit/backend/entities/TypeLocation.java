@@ -21,6 +21,6 @@ public enum TypeLocation {
 
     @Override
     public String toString() {
-        return getDescription();
+        return this.name();
     }
 }

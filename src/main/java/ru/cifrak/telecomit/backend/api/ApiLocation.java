@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import ru.cifrak.telecomit.backend.entities.LogicalCondition;
 import ru.cifrak.telecomit.backend.entities.TypeLocation;
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForReference;
+import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 import ru.cifrak.telecomit.backend.repository.RepositoryDLocationBase;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocationForReference;
@@ -69,8 +71,7 @@ public class ApiLocation {
             @RequestParam(value = "parents", required = false) List<Integer> parentIds,
             @RequestParam(value = "locationNames", required = false) List<String> locationNames,
             @RequestParam(value = "logicalCondition", required = false) LogicalCondition logicalCondition) {
-        log.info("->GET /api/location/base/locations-reference/");
-        log.info("<- GET /api/location/base/locations-reference/");
+        log.info("--> GET /api/location/location-reference/filtered/");
         Page<LocationForReference> list =
                 repositoryLocationForReference.findAll(
                         locationService.getPredicateForLocationForReference(locationIds,
@@ -78,37 +79,55 @@ public class ApiLocation {
                                 locationNames,
                                 logicalCondition),
                         pageable);
+        log.info("<-- GET /api/location/location-reference/filtered/");
         return list;
     }
 
-    @PostMapping("/location-reference/update/")
+    @PostMapping("/location-reference/update/{id}/")
     @Transactional
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
-    void updateLocation(@RequestBody LocationForReference location) {
-        log.info("--> Update location for reference.");
-        checkLocationForReference(location);
-        repositoryLocationForReference.save(location);
-        log.info("<-- Update location for reference.");
+    @Secured({"ROLE_ADMIN"})
+    ResponseEntity<String> updateLocation(
+            @PathVariable(name = "id") final LocationForReference location,
+            @RequestParam(value = "type", required = false) TypeLocation type,
+            @RequestParam(value = "population", required = false) Integer population,
+            @RequestParam(value = "parent", required = false) LocationParent parent
+    ) {
+        ResponseEntity<String> result;
+        log.info("--> GET /api/location/location-reference/update/{}/", location.getId());
+        String locationError = checkLocationForReference(type, population, parent);
+        if (locationError == null) {
+            location.setType(type.toString());
+            location.setPopulation(population);
+            location.setLocationParent(parent);
+            repositoryLocationForReference.save(location);
+            result = ResponseEntity.ok("Ok");
+        } else {
+            result = ResponseEntity.badRequest().body(locationError);
+        }
+        log.info("<-- GET /api/location/location-reference/update/{}/", location.getId());
+        return result;
     }
 
-    private void checkLocationForReference(LocationForReference location) {
-        if (location.getPopulation() < 0) {
-            throw new IllegalArgumentException("Population of location < 0");
-        }
-        if (Arrays.stream(TypeLocation.values())
+    private String checkLocationForReference(TypeLocation type, Integer population, LocationParent parent) {
+        String result;
+        if (type != null && Arrays.stream(TypeLocation.values())
                 .filter(TypeLocation::isCanBeParent)
                 .map(TypeLocation::getDescription)
                 .collect(Collectors.toList())
-                .contains(location.getType())) {
-            throw new IllegalArgumentException("Wrong type of location");
-        }
-        if (Arrays.stream(TypeLocation.values())
+                .contains(type.toString())) {
+            result = "Wrong type location";
+        } else if (population < 0) {
+            result = "Wrong population of location";
+        } else if (!Arrays.stream(TypeLocation.values())
                 .filter(tl -> !tl.isCanBeParent())
                 .map(TypeLocation::getDescription)
                 .collect(Collectors.toList())
-                .contains(location.getLocationParent().getType())) {
-            throw new IllegalArgumentException("Wrong type of parent");
+                .contains(parent.getType())) {
+            result = "Wrong type of location parent";
+        } else {
+            result = null;
         }
+        return result;
     }
 
     @GetMapping("/parents/")
