@@ -647,3 +647,6 @@ Authorization: Token {{auth_token}}
 
 ###
 GET http://localhost:8080/api/simple/type-locations/
+
+###
+GET http://localhost:8080/api/location/location-reference/filtered/?page=0&size=10&locationNames=АБАН

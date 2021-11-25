@@ -4,13 +4,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+import ru.cifrak.telecomit.backend.api.dto.LocationFeaturesSaveRequest;
 import ru.cifrak.telecomit.backend.api.dto.LocationSimple;
 import ru.cifrak.telecomit.backend.api.dto.LocationSimpleFilterDTO;
 import ru.cifrak.telecomit.backend.entities.DLocationBase;
+import ru.cifrak.telecomit.backend.entities.LogicalCondition;
+import ru.cifrak.telecomit.backend.entities.TypeLocation;
+import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForReference;
 import ru.cifrak.telecomit.backend.repository.RepositoryDLocationBase;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
@@ -58,14 +62,53 @@ public class ApiLocation {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/location-reference/all/")
-    public Page<LocationForReference> getAllLocationReference(Pageable pageable) {
+    @GetMapping("/location-reference/filtered/")
+    public Page<LocationForReference> getAllLocationReference(
+            Pageable pageable,
+            @RequestParam(value = "locations", required = false) List<Integer> locationIds,
+            @RequestParam(value = "parents", required = false) List<Integer> parentIds,
+            @RequestParam(value = "locationNames", required = false) List<String> locationNames,
+            @RequestParam(value = "logicalCondition", required = false) LogicalCondition logicalCondition) {
         log.info("->GET /api/location/base/locations-reference/");
         log.info("<- GET /api/location/base/locations-reference/");
         Page<LocationForReference> list =
                 repositoryLocationForReference.findAll(
-                        locationService.getPredicateForLocationForReference(), pageable);
+                        locationService.getPredicateForLocationForReference(locationIds,
+                                parentIds,
+                                locationNames,
+                                logicalCondition),
+                        pageable);
         return list;
+    }
+
+    @PostMapping("/location-reference/update/")
+    @Transactional
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY"})
+    void updateLocation(@RequestBody LocationForReference location) {
+        log.info("--> Update location for reference.");
+        checkLocationForReference(location);
+        repositoryLocationForReference.save(location);
+        log.info("<-- Update location for reference.");
+    }
+
+    private void checkLocationForReference(LocationForReference location) {
+        if (location.getPopulation() < 0) {
+            throw new IllegalArgumentException("Population of location < 0");
+        }
+        if (Arrays.stream(TypeLocation.values())
+                .filter(TypeLocation::isCanBeParent)
+                .map(TypeLocation::getDescription)
+                .collect(Collectors.toList())
+                .contains(location.getType())) {
+            throw new IllegalArgumentException("Wrong type of location");
+        }
+        if (Arrays.stream(TypeLocation.values())
+                .filter(tl -> !tl.isCanBeParent())
+                .map(TypeLocation::getDescription)
+                .collect(Collectors.toList())
+                .contains(location.getLocationParent().getType())) {
+            throw new IllegalArgumentException("Wrong type of parent");
+        }
     }
 
     @GetMapping("/parents/")

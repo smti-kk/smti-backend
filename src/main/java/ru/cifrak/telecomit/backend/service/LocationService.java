@@ -9,16 +9,20 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.cifrak.telecomit.backend.entities.LogicalCondition;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
+import ru.cifrak.telecomit.backend.entities.locationsummary.QLocationForReference;
 import ru.cifrak.telecomit.backend.entities.locationsummary.QLocationParent;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
+import ru.cifrak.telecomit.backend.features.comparing.QLocationFC;
 import ru.cifrak.telecomit.backend.repository.DSLDetailLocation;
 
 import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class LocationService {
@@ -108,8 +112,63 @@ public class LocationService {
         return lastRefreshDate;
     }
 
-    public Predicate getPredicateForLocationForReference() {
-        BooleanExpression predicate = TRUE_EXPRESSION;
+    public Predicate getPredicateForLocationForReference(
+            List<Integer> locationIds,
+            List<Integer> parentIds,
+            List<String> locationNames,
+            LogicalCondition logicalCondition) {
+        QLocationForReference locationFR = QLocationForReference.locationForReference;
+        BooleanExpression parentPredicate = getParentPredicate(locationFR, parentIds);
+        BooleanExpression locationPredicate = getLocationPredicate(locationFR, locationIds);
+        BooleanExpression locationNamesPredicate = getLocationNamesPredicate(locationFR, locationNames);
+        BooleanExpression predicate = getTypePredicate(locationFR);
+        if (logicalCondition == LogicalCondition.OR) {
+            predicate = predicate.and(
+                    (locationPredicate != null ? locationPredicate : FALSE_EXPRESSION)
+                            .or(parentPredicate != null ? parentPredicate : FALSE_EXPRESSION)
+                            .or(locationNamesPredicate != null ? locationNamesPredicate : FALSE_EXPRESSION));
+        } else {
+            predicate = predicate.and(
+                    (locationPredicate != null ? locationPredicate : TRUE_EXPRESSION)
+                            .and(parentPredicate != null ? parentPredicate : TRUE_EXPRESSION)
+                            .and(locationNamesPredicate != null ? locationNamesPredicate : TRUE_EXPRESSION));
+        }
         return predicate;
+    }
+
+    private BooleanExpression getParentPredicate(QLocationForReference locationFR, List<Integer> parentIds) {
+        return parentIds != null ?
+                locationFR.locationParent.id.in(parentIds)
+                : null;
+    }
+
+    private BooleanExpression getLocationPredicate(QLocationForReference locationFR, List<Integer> locationIds) {
+        return locationIds != null ?
+                locationFR.id.in(locationIds)
+                : null;
+    }
+
+    private BooleanExpression getLocationNamesPredicate(QLocationForReference locationFR, List<String> locationNames) {
+        return locationNames != null && locationNames.size() > 0 && locationNamesNotNullCheck(locationNames) ?
+                locationFR.name.toLowerCase().in(
+                        locationNames.stream().map(String::toLowerCase).collect(Collectors.toList()))
+                : null;
+    }
+
+    private boolean locationNamesNotNullCheck(List<String> locationNames) {
+        boolean result = true;
+        if (locationNames != null && locationNames.size() > 0) {
+            for (String name : locationNames) {
+                if (name == null) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    private BooleanExpression getTypePredicate(QLocationForReference locationFR) {
+        return locationFR.type.notIn(Arrays.asList("р-н", "край", "с/с", "тер", "округ"));
     }
 }
