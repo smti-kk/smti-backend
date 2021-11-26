@@ -15,7 +15,6 @@ import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 import ru.cifrak.telecomit.backend.entities.locationsummary.QLocationForReference;
 import ru.cifrak.telecomit.backend.entities.locationsummary.QLocationParent;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
-import ru.cifrak.telecomit.backend.features.comparing.QLocationFC;
 import ru.cifrak.telecomit.backend.repository.DSLDetailLocation;
 
 import javax.annotation.Nullable;
@@ -26,6 +25,21 @@ import java.util.stream.Collectors;
 
 @Service
 public class LocationService {
+    public static final List<String> PARENT_LOCATION_TYPES = new ArrayList<String>() {{
+        add("го");
+        add("гп");
+        add("мо");
+        add("р-н");
+    }};
+
+    public static final List<String> NOT_PARENT_LOCATION_TYPES = new ArrayList<String>() {{
+        add("г");
+        add("пгт");
+        add("д");
+        add("с");
+        add("п");
+    }};
+
     /**
      * Added .isTrue() and .isFalse(), because .asBoolean() returns ConstantImpl, that are not casts to Predicate.
      */
@@ -113,6 +127,7 @@ public class LocationService {
     }
 
     public Predicate getPredicateForLocationForReference(
+            Boolean canBeParent,
             List<Integer> locationIds,
             List<Integer> parentIds,
             List<String> locationNames,
@@ -121,7 +136,7 @@ public class LocationService {
         BooleanExpression parentPredicate = getParentPredicate(locationFR, parentIds);
         BooleanExpression locationPredicate = getLocationPredicate(locationFR, locationIds);
         BooleanExpression locationNamesPredicate = getLocationNamesPredicate(locationFR, locationNames);
-        BooleanExpression predicate = getTypePredicate(locationFR);
+        BooleanExpression predicate = getcanBeParentPredicate(locationFR, canBeParent);
         if (logicalCondition == LogicalCondition.OR) {
             predicate = predicate.and(
                     (locationPredicate != null ? locationPredicate : FALSE_EXPRESSION)
@@ -134,6 +149,12 @@ public class LocationService {
                             .and(locationNamesPredicate != null ? locationNamesPredicate : TRUE_EXPRESSION));
         }
         return predicate;
+    }
+
+    private BooleanExpression getcanBeParentPredicate(QLocationForReference locationFR, Boolean canBeParent) {
+        return canBeParent == null || !canBeParent ?
+                locationFR.type.in(NOT_PARENT_LOCATION_TYPES)
+                : locationFR.type.in(PARENT_LOCATION_TYPES);
     }
 
     private BooleanExpression getParentPredicate(QLocationForReference locationFR, List<Integer> parentIds) {
@@ -166,9 +187,5 @@ public class LocationService {
             }
         }
         return result;
-    }
-
-    private BooleanExpression getTypePredicate(QLocationForReference locationFR) {
-        return locationFR.type.notIn(Arrays.asList("р-н", "край", "с/с", "тер", "округ"));
     }
 }

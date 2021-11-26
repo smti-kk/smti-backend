@@ -1,6 +1,5 @@
 package ru.cifrak.telecomit.backend.entities.locationsummary;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import ru.cifrak.telecomit.backend.entities.GeoData;
@@ -39,7 +38,6 @@ public class LocationForReference implements Serializable {
     @Column(length = 16)
     private String oktmo;
 
-//    @JsonIgnoreProperties({"location"})
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "geo_data_id")
     private GeoData geoData;

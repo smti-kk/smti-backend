@@ -19,6 +19,5 @@ public class ApiSimple {
     @GetMapping("/type-locations/")
     public TypeLocation[] getTypeLocation() {
         return TypeLocation.values();
-//        return Arrays.stream(TypeLocation.values()).map(TypeLocation::getDescription).collect(Collectors.toList());
     }
 }

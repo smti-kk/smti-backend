@@ -6,16 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import ru.cifrak.telecomit.backend.api.dto.LocationFeaturesSaveRequest;
 import ru.cifrak.telecomit.backend.api.dto.LocationSimple;
 import ru.cifrak.telecomit.backend.api.dto.LocationSimpleFilterDTO;
 import ru.cifrak.telecomit.backend.entities.DLocationBase;
+import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.entities.LogicalCondition;
-import ru.cifrak.telecomit.backend.entities.TypeLocation;
-import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForReference;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 import ru.cifrak.telecomit.backend.repository.RepositoryDLocationBase;
@@ -23,10 +20,8 @@ import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocationForReference;
 import ru.cifrak.telecomit.backend.service.LocationService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import javax.annotation.Nullable;
+import java.util.*;
 import java.util.stream.Collectors;
 @Slf4j
 @RestController
@@ -68,6 +63,7 @@ public class ApiLocation {
     @GetMapping("/location-reference/filtered/")
     public Page<LocationForReference> getAllLocationReference(
             Pageable pageable,
+            @RequestParam(value = "canBeParent", required = false) Boolean canBeParent,
             @RequestParam(value = "locations", required = false) List<Integer> locationIds,
             @RequestParam(value = "parents", required = false) List<Integer> parentIds,
             @RequestParam(value = "locationNames", required = false) List<String> locationNames,
@@ -75,56 +71,114 @@ public class ApiLocation {
         log.info("--> GET /api/location/location-reference/filtered/");
         Page<LocationForReference> list =
                 repositoryLocationForReference.findAll(
-                        locationService.getPredicateForLocationForReference(locationIds,
+                        locationService.getPredicateForLocationForReference(
+                                canBeParent,
+                                locationIds,
                                 parentIds,
                                 locationNames,
-                                logicalCondition),
+                                logicalCondition != null ? logicalCondition : LogicalCondition.AND),
                         pageable);
         log.info("<-- GET /api/location/location-reference/filtered/");
         return list;
     }
 
+
     @PostMapping("/location-reference/update/{id}/")
     @Transactional
     @Secured({"ROLE_ADMIN"})
     ResponseEntity<List<String>> updateLocation(
-            @PathVariable(name = "id") final LocationForReference location,
-            @RequestParam(value = "type", required = false) TypeLocation type,
+            @PathVariable(name = "id") final Integer locationId,
+            @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "population", required = false) Integer population,
-            @RequestParam(value = "parent", required = false) LocationParent parent
+            @RequestParam(value = "parent", required = false) Integer parentId
     ) {
+        log.info("--> GET /api/location/location-reference/update/{}/", locationId);
         ResponseEntity<List<String>> result;
-        log.info("--> GET /api/location/location-reference/update/{}/", location.getId());
-        List<String> locationErrors = checkLocationForReference(type, population, parent);
+        LocationForReference location = repositoryLocationForReference.findById(locationId).orElse(null);
+        Location parent;
+        if (parentId != null) {
+            parent = repository.findById(parentId).orElse(null);
+        } else {
+            parent = null;
+        }
+        List<String> locationErrors = checkLocationForReference(
+                locationId, parentId, location, type, population, parent);
         if (locationErrors.size() == 0) {
-            location.setType(type.toString());
-            location.setPopulation(population);
-            location.setLocationParent(parent);
-            repositoryLocationForReference.save(location);
+            boolean toUpdate = false;
+            assert location != null;
+            if (type != null && !type.equals(location.getType())) {
+                location.setType(type);
+                toUpdate = true;
+            }
+            if (population != null && !population.equals(location.getPopulation())) {
+                location.setPopulation(population);
+                toUpdate = true;
+            }
+            if (parentId != null) {
+                assert parent != null;
+                if (!parentId.equals(location.getLocationParent().getId())) {
+                    location.setLocationParent(new LocationParent(parent));
+                    toUpdate = true;
+                }
+            }
+            if (toUpdate) {
+                repositoryLocationForReference.save(location);
+            }
             result = ResponseEntity.ok(locationErrors);
         } else {
             result = ResponseEntity.badRequest().body(locationErrors);
         }
-        log.info("<-- GET /api/location/location-reference/update/{}/", location.getId());
+        log.info("<-- GET /api/location/location-reference/update/{}/", locationId);
         return result;
     }
 
-    private List<String> checkLocationForReference(TypeLocation type, Integer population, LocationParent parent) {
+    private List<String> checkLocationForReference(Integer locationId,
+                                                   Integer parentId,
+                                                   @Nullable LocationForReference location,
+                                                   String type,
+                                                   Integer population,
+                                                   @Nullable Location parent) {
         List<String> errors = new ArrayList<>();
-        if (type != null && Arrays.stream(TypeLocation.values())
-                .filter(TypeLocation::isCanBeParent)
-                .map(TypeLocation::getDescription)
-                .collect(Collectors.toList())
-                .contains(type.toString())) {
-            errors.add("Wrong type location");
-        } else if (population < 0) {
-            errors.add("Wrong population of location");
-        } else if (!Arrays.stream(TypeLocation.values())
-                .filter(tl -> !tl.isCanBeParent())
-                .map(TypeLocation::getDescription)
-                .collect(Collectors.toList())
-                .contains(parent.getType())) {
-            errors.add("Wrong type of location parent");
+        if (location == null) {
+            errors.add("Not found specified location with id = " + locationId);
+        } else if (LocationService.PARENT_LOCATION_TYPES.contains(location.getType())) {
+            if (population != null || parentId != null) {
+                errors.add("Location with type " + location.getType()
+                        + " can be parent, then only type can be changed");
+            }
+            if (type != null) {
+                if (LocationService.NOT_PARENT_LOCATION_TYPES.contains(type)) {
+                    errors.add("Location with type " + location.getType()
+                            + " can be parent, then can be changed only to parent type");
+                } else if (!LocationService.PARENT_LOCATION_TYPES.contains(type)) {
+                    errors.add("Location can no be updated to type " + type);
+                }
+            }
+        } else if (LocationService.NOT_PARENT_LOCATION_TYPES.contains(location.getType())) {
+            if (type != null) {
+                if (LocationService.PARENT_LOCATION_TYPES.contains(type)) {
+                    errors.add("Location with type " + location.getType()
+                            + " cannot be parent, then can be changed only to not parent type");
+                } else if (!LocationService.NOT_PARENT_LOCATION_TYPES.contains(type)) {
+                    errors.add("Location can no be updated to type " + type);
+                }
+            }
+            if (population != null && population < 0) {
+                errors.add("Wrong population of location (" + population + " < 0)");
+            } else if (parentId != null) {
+                if (parent == null) {
+                    errors.add("Not found parent location with id = " + parentId);
+                } else {
+                    if (parentId.equals(locationId)) {
+                        errors.add("Location cannot be parent to itself");
+                    }
+                    if (!LocationService.PARENT_LOCATION_TYPES.contains(parent.getType())) {
+                        errors.add("Type of specified parent location is " + parent.getType() + ", cannot be parent");
+                    }
+                }
+            }
+        } else {
+            errors.add("Location with type " + location.getType() + " cannot be update");
         }
         return errors;
     }
