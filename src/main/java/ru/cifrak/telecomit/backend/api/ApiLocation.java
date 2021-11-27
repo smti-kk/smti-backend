@@ -195,10 +195,10 @@ public class ApiLocation {
         orderedParents.sort(((Comparator<LocationSimple>) (l1, l2) -> {
             int orderValueL1 =
                     l1.getType().equalsIgnoreCase("г") ? 1 :
-                            l1.getType().equalsIgnoreCase("р-н") || l1.getType().equalsIgnoreCase("округ") ? 3 : 2;
+                            l1.getType().equalsIgnoreCase("р-н") || l1.getType().equalsIgnoreCase("мо") ? 3 : 2;
             int orderValueL2 =
                     l2.getType().equalsIgnoreCase("г") ? 1 :
-                            l2.getType().equalsIgnoreCase("р-н") || l2.getType().equalsIgnoreCase("округ") ? 3 : 2;
+                            l2.getType().equalsIgnoreCase("р-н") || l2.getType().equalsIgnoreCase("мо") ? 3 : 2;
             return orderValueL1 - orderValueL2;
         }).thenComparing(LocationSimple::getName));
         return orderedParents;

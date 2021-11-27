@@ -35,7 +35,7 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
             "and l.type not like 'край' " +
             "and l.type not like 'с/с' " +
             "and l.type not like 'тер' " +
-            "and l.type not like 'округ' " +
+            "and l.type not like 'мо' " +
             "order by l.name "
     )
     List<Location> locationFilter();
@@ -49,20 +49,20 @@ public interface RepositoryLocation extends JpaRepository<Location, Integer> {
 
     @EntityGraph(value = Location.WITH_FEATURES)
     @Query(value = "SELECT l from Location l where" +
-            " l.type not in ('р-н', 'край', 'с/с', 'тер', 'округ')" +
+            " l.type not in ('р-н', 'край', 'с/с', 'тер', 'мо')" +
             "and l.geoData.administrativeCenter is not NULL " +
             "and (l.parent.id = ?1 or l.id = ?1)")
     List<Location> findAllByParentId(Integer parentId);
 
     @EntityGraph(value = Location.WITH_FEATURES)
     @Query(value = "SELECT l from Location l" +
-            " where l.type not in ('р-н', 'край', 'с/с', 'тер', 'округ')"
+            " where l.type not in ('р-н', 'край', 'с/с', 'тер', 'мо')"
     )
     Page<Location> findAll(Pageable pageable);
 
     @EntityGraph(value = Location.WITH_ORGANIZATIONS_ACCESSPOINTS)
     @Query(value = "SELECT l from Location l" +
-            " where l.type not in ('р-н', 'край', 'с/с', 'тер', 'округ')"
+            " where l.type not in ('р-н', 'край', 'с/с', 'тер', 'мо')"
     )
     Page<Location> findAllReportOrganization(Pageable pageable);
 
