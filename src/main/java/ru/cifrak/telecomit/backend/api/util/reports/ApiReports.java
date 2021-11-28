@@ -80,7 +80,7 @@ public class ApiReports {
             @RequestParam(name = "location", required = false) Location... locations) throws IOException {
         log.info("--> GET /api/report/organization/ap-all/export/");
         ByteArrayResource resource = getResource(type, smo, gdp, inettype, parents, organization, contractor,
-                pStart, pEnd, address, ap, sort, logicalCondition, state, locations);
+                pStart, pEnd, address, ap, sort, logicalCondition, state, locations, user);
         log.info("<-- GET /api/report/organization/ap-all/export/");
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, new ReportName(ExcelExportTypes.ORGANIZATION).toString())
@@ -130,20 +130,21 @@ public class ApiReports {
                                           String sort,
                                           LogicalCondition logicalCondition,
                                           List<APConnectionState> state,
-                                          Location[] locations) throws IOException {
+                                          Location[] locations,
+                                          User user) throws IOException {
         List<ExelReportAccessPointFullDTO> result = getData(
                 type, smo, gdp, inettype, parents, organization,
                 contractor, pStart, pEnd, address, ap, sort, logicalCondition, state, locations)
                 .stream()
-                .map(ExelReportAccessPointFullDTO::new)
+                .map(apf -> new ExelReportAccessPointFullDTO(apf, user))
                 .collect(Collectors.toList());
         IntStream.range(0, result.size()).forEach(i -> result.get(i).setPp(i + 1));
-        return new ByteArrayResource(generateExelFormat().exportToByteArray(result));
+        return new ByteArrayResource(generateExelFormat(user).exportToByteArray(result));
     }
 
     @GetMapping("/ap-all/")
     @Secured({"ROLE_ADMIN", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
-    public PaginatedList<ReportAccessPointFullDTO> reportAll(
+    public PaginatedList<ReportAccessPointFullAllDTO> reportAll(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
             @AuthenticationPrincipal User user,
@@ -163,9 +164,9 @@ public class ApiReports {
             @RequestParam(name = "state", required = false) List<APConnectionState> state,
             @RequestParam(name = "location", required = false) Location... locations) {
         log.info("--> GET /api/report/organization/ap-all/");
-        PaginatedList<ReportAccessPointFullDTO> pList = getPListReportAccessPointFullDTO(getData(
+        PaginatedList<ReportAccessPointFullAllDTO> pList = getPListReportAccessPointFullDTO(getData(
                 page, size, type, smo, gdp, inettype, parents, organization,
-                contractor, pStart, pEnd, address, ap, sort, logicalCondition, state, locations));
+                contractor, pStart, pEnd, address, ap, sort, logicalCondition, state, locations), user);
         log.info("<-- GET /api/report/organization/ap-all/");
         return pList;
     }
@@ -331,11 +332,13 @@ public class ApiReports {
     }
 
     @NotNull
-    private PaginatedList<ReportAccessPointFullDTO> getPListReportAccessPointFullDTO(Page<AccessPointFull> pData) {
+    private PaginatedList<ReportAccessPointFullAllDTO> getPListReportAccessPointFullDTO(Page<AccessPointFull> pData, User user) {
         return new PaginatedList<>(
                 pData.getTotalElements(),
                 pData.stream()
-                        .map(ReportAccessPointFullDTO::new)
+                        .map(apf -> user.getRoles().contains(UserRole.CONTRACTOR) ?
+                                new ReportAccessPointFullDTO(apf)
+                                : new ReportAccessPointFullNotContractorDTO(apf))
                         .collect(Collectors.toList())
         );
     }

@@ -8,6 +8,8 @@ import ru.cifrak.telecomit.backend.api.dto.ExelReportAccessPointFullDTO;
 import ru.cifrak.telecomit.backend.api.dto.ExelReportLocation;
 import ru.cifrak.telecomit.backend.api.dto.FeatureExportDTO;
 import ru.cifrak.telecomit.backend.entities.TcType;
+import ru.cifrak.telecomit.backend.entities.User;
+import ru.cifrak.telecomit.backend.entities.UserRole;
 import ru.cifrak.telecomit.backend.utils.export.ExcelExporter;
 import ru.cifrak.telecomit.backend.utils.export.ExportToExcelConfiguration;
 
@@ -19,9 +21,7 @@ public class HelperReport {
     private static final int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
     public static ExcelExporter<ExelReportAccessPointFullDTO> generateExelFormat () {
-
         ExportToExcelConfiguration<ExelReportAccessPointFullDTO> exportToExcelConfiguration = new ExportToExcelConfiguration<>();
-
         exportToExcelConfiguration.addColumn(0, Integer.class, ExelReportAccessPointFullDTO::getPp, "№ п/п");
         exportToExcelConfiguration.addColumn(1, Integer.class, ExelReportAccessPointFullDTO::getIdOrg, "ID учреждения");
         exportToExcelConfiguration.addColumn(2, ExelReportAccessPointFullDTO::getMunicipalLocationType, "Вид муниципального образования");
@@ -53,7 +53,51 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(27, ExelReportAccessPointFullDTO::getGovernmentProgramName, "Государственная программа");
         exportToExcelConfiguration.addColumn(28, ExelReportAccessPointFullDTO::getParticipationStatus, "Статус участия");
         exportToExcelConfiguration.addColumn(29, Integer.class, ExelReportAccessPointFullDTO::getYearOverGovProgram, "Год реализации");
+        return new ExcelExporter<>(exportToExcelConfiguration);
+    }
 
+    public static ExcelExporter<ExelReportAccessPointFullDTO> generateExelFormat (User user) {
+        ExportToExcelConfiguration<ExelReportAccessPointFullDTO> exportToExcelConfiguration = new ExportToExcelConfiguration<>();
+        exportToExcelConfiguration.addColumn(0, Integer.class, ExelReportAccessPointFullDTO::getPp, "№ п/п");
+        exportToExcelConfiguration.addColumn(1, Integer.class, ExelReportAccessPointFullDTO::getIdOrg, "ID учреждения");
+        exportToExcelConfiguration.addColumn(2, ExelReportAccessPointFullDTO::getMunicipalLocationType, "Вид муниципального образования");
+        exportToExcelConfiguration.addColumn(3, ExelReportAccessPointFullDTO::getMunicipalName, "Муниципальное образование");
+        exportToExcelConfiguration.addColumn(4, ExelReportAccessPointFullDTO::getLocationType, "Тип населенного пункта");
+        exportToExcelConfiguration.addColumn(5, ExelReportAccessPointFullDTO::getLocationName, "Наименование населенного пункта");
+        exportToExcelConfiguration.addColumn(6, ExelReportAccessPointFullDTO::getOKTMO, "ОКТМО");
+        exportToExcelConfiguration.addColumn(7, Integer.class, ExelReportAccessPointFullDTO::getNumberInhabitants, "Численность населения (данные Росстата)");
+        exportToExcelConfiguration.addColumn(8, ExelReportAccessPointFullDTO::getFullNameOrganization, "Полное наименование учреждения");
+        exportToExcelConfiguration.addColumn(9, ExelReportAccessPointFullDTO::getFIASOrganization, "Номер учреждения в ФИАС");
+        exportToExcelConfiguration.addColumn(10, ExelReportAccessPointFullDTO::getFullAddressOrganization, "Адрес учреждения");
+        exportToExcelConfiguration.addColumn(11, Double.class,ExelReportAccessPointFullDTO::getLatitude, "Широта");
+        exportToExcelConfiguration.addColumn(12, Double.class,ExelReportAccessPointFullDTO::getLongitude, "Долгота");
+        exportToExcelConfiguration.addColumn(13, ExelReportAccessPointFullDTO::getSMO, "Вид СЗО");
+        exportToExcelConfiguration.addColumn(14, ExelReportAccessPointFullDTO::getCompanyType, "Тип учреждения");
+        exportToExcelConfiguration.addColumn(15, Boolean.class,ExelReportAccessPointFullDTO::getPointView, "Отображается");
+        exportToExcelConfiguration.addColumn(16, ExelReportAccessPointFullDTO::getAccessPointCustomer, "Заказчик");
+        exportToExcelConfiguration.addColumn(17, ExelReportAccessPointFullDTO::getContract, "Контракт");
+        //кто это такой
+        exportToExcelConfiguration.addColumn(18, Integer.class,ExelReportAccessPointFullDTO::getUcn, "Название узла согласно кодификатору");
+        exportToExcelConfiguration.addColumn(19, ExelReportAccessPointFullDTO::getAccessNode, "Узел доступа (Идентификатор узла для работы мониторинга)");
+        exportToExcelConfiguration.addColumn(20, ExelReportAccessPointFullDTO::getDescriptionAccess, "Описание");
+        exportToExcelConfiguration.addColumn(21, ExelReportAccessPointFullDTO::getIncludeType, "Тип подключения");
+        exportToExcelConfiguration.addColumn(22, ExelReportAccessPointFullDTO::getOperatorName, "Оператор связи");
+        exportToExcelConfiguration.addColumn(23, ExelReportAccessPointFullDTO::getDeclaredSpeed, "Скорость по контракту (Мбит/с)");
+        exportToExcelConfiguration.addColumn(24, ExelReportAccessPointFullDTO::getChannelWidth, "Ширина канала (Мбит/с)");
+        exportToExcelConfiguration.addColumn(25, ExelReportAccessPointFullDTO::getCommunicationAssessment, "Качество связи");
+        exportToExcelConfiguration.addColumn(26, Integer.class, ExelReportAccessPointFullDTO::getUcn, "Уникальный номер по контракту (ЕСПД, СЗО)");
+        exportToExcelConfiguration.addColumn(27, ExelReportAccessPointFullDTO::getGovernmentProgramName, "Государственная программа");
+        exportToExcelConfiguration.addColumn(28, ExelReportAccessPointFullDTO::getParticipationStatus, "Статус участия");
+        exportToExcelConfiguration.addColumn(29, Integer.class, ExelReportAccessPointFullDTO::getYearOverGovProgram, "Год реализации");
+        if (user.getRoles().contains(UserRole.CONTRACTOR)) {
+            exportToExcelConfiguration.addColumn(30, Date.class, ExelReportAccessPointFullDTO::getCreateDate, "Дата постановки на мониторинг");
+            exportToExcelConfiguration.addColumn(31, Integer.class, ExelReportAccessPointFullDTO::getMonitoring, "Мониторинг");
+            exportToExcelConfiguration.addColumn(32, Integer.class, ExelReportAccessPointFullDTO::getConnectionState, "Статус");
+            exportToExcelConfiguration.addColumn(33, Integer.class, ExelReportAccessPointFullDTO::getProblem, "Проблема");
+            exportToExcelConfiguration.addColumn(34, Integer.class, ExelReportAccessPointFullDTO::getImportance, "Важность");
+            exportToExcelConfiguration.addColumn(35, Integer.class, ExelReportAccessPointFullDTO::getProblemDefinition, "Описание проблемы");
+            exportToExcelConfiguration.addColumn(36, Integer.class, ExelReportAccessPointFullDTO::getDayTraffic, "Трафик");
+        }
         return new ExcelExporter<>(exportToExcelConfiguration);
     }
 
