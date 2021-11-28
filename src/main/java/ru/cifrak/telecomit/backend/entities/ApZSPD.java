@@ -16,4 +16,8 @@ public class ApZSPD extends AccessPoint{
     private Hardware hardware;
     @Column
     private Software software;
+    @Column
+    private String equipment;
+    @Column
+    private String softType;
 }
