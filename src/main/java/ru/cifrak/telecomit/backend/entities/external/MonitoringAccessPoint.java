@@ -38,6 +38,9 @@ public class MonitoringAccessPoint implements Serializable {
     @Column
     private Integer idService;
 
+    /**
+     * In bytes.
+     */
     @Column
     private Long lastDayTraffic;
 
