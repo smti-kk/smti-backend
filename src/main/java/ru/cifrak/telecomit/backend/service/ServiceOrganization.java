@@ -172,12 +172,33 @@ public class ServiceOrganization {
     }
 
     @Scheduled(cron = "0 0 */1 * * *")
+//    @Scheduled(cron = "0 28 * * * *")
     public void autoMonitoringAccesspointStatus() throws JsonProcessingException {
         log.info("[application]-> going for activity status in zabbix");
         List<JournalMAP> jmaps = rJournalMAP.findAll();
-        List<String> triggers = jmaps.stream().filter(i -> i.getMap().getDeviceTriggerUnavailable() != null).map(i -> i.getMap().getDeviceTriggerUnavailable().toString()).collect(Collectors.toList());
-        log.trace("triggers:: {}", triggers);
-        List<Long> items = sZabbix.getTriggersInTroubleState(triggers);
+        List<String> triggersUnavailable =
+                jmaps.stream().filter(i -> i.getMap().getDeviceTriggerUnavailable() != null)
+                        .map(i -> i.getMap().getDeviceTriggerUnavailable().toString())
+                        .collect(Collectors.toList());
+        List<String> triggersEnergy =
+                jmaps.stream().filter(i -> i.getMap().getSensorTriggerEnergy() != null)
+                        .map(i -> i.getMap().getSensorTriggerEnergy().toString())
+                        .collect(Collectors.toList());
+        List<String> triggersResponseLost =
+                jmaps.stream().filter(i -> i.getMap().getDeviceTriggerResponseLost() != null)
+                        .map(i -> i.getMap().getDeviceTriggerResponseLost().toString())
+                        .collect(Collectors.toList());
+        List<String> triggersResponseLow =
+                jmaps.stream().filter(i -> i.getMap().getDeviceTriggerResponseLow() != null)
+                        .map(i -> i.getMap().getDeviceTriggerResponseLow().toString())
+                        .collect(Collectors.toList());
+        List<String> triggersAll = new ArrayList<>();
+        triggersAll.addAll(triggersUnavailable);
+        triggersAll.addAll(triggersEnergy);
+        triggersAll.addAll(triggersResponseLost);
+        triggersAll.addAll(triggersResponseLow);
+        log.trace("triggers:: {}", triggersAll);
+        List<Long> items = sZabbix.getTriggersInTroubleState(triggersAll);
         jmaps.forEach(jmap -> {
             if (items.contains(jmap.getMap().getDeviceTriggerUnavailable())) {
                 jmap.getMap().setConnectionState(APConnectionState.DISABLED);
