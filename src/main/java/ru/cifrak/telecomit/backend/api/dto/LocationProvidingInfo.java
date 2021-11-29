@@ -69,7 +69,7 @@ public class LocationProvidingInfo {
                     && !"край".equals(location.getType())
                     && !"с/с".equals(location.getType())
                     && !"тер".equals(location.getType())
-                    && !"округ".equals(location.getType())
+                    && !"мо".equals(location.getType())
             ) {
                 childs.add(location);
             }
@@ -80,7 +80,7 @@ public class LocationProvidingInfo {
                         && !"край".equals(c.getType())
                         && !"с/с".equals(c.getType())
                         && !"тер".equals(c.getType())
-                        && !"округ".equals(c.getType())
+                        && !"мо".equals(c.getType())
                 ) {
                     childs.add(c);
                 }

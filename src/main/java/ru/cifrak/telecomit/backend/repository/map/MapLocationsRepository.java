@@ -20,7 +20,7 @@ public interface MapLocationsRepository extends Repository<ShortLocation, Intege
             "   and l1.type not like 'тер' " +
             "   and l1.type not like 'край' " +
             "   and l1.type not like 'р-н' " +
-            "   and l1.type not like 'округ' " +
+            "   and l1.type not like 'мо' " +
             "   and (LOWER(l1.name) like CONCAT('%',LOWER(:name),'%') or LOWER(l2.name) like CONCAT('%',LOWER(:name),'%'))"
     )
     List<MapLocationSearchResult> findByName(@Param("name") String name);

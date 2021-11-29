@@ -85,7 +85,7 @@ public class FCFiltersPredicate {
     }
 
     private BooleanExpression getTypePredicate(QLocationFC locationFC) {
-        return locationFC.type.notIn(Arrays.asList("р-н", "край", "с/с", "тер", "округ"));
+        return locationFC.type.notIn(Arrays.asList("р-н", "край", "с/с", "тер", "мо"));
     }
 
     @Nullable
