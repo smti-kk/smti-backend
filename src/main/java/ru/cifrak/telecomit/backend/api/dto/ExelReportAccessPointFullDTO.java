@@ -80,7 +80,9 @@ public class ExelReportAccessPointFullDTO {
         this.pointView = convertToRuLoc(Optional.ofNullable(item).map(AccessPointFull::getVisible).orElse(false));
         this.accessPointCustomer = Optional.ofNullable(item).map(AccessPointFull::getCustomer).orElse(NOTHING_TO_SAY);
         //ToDo:contract!
-        this.contract = item.getType().equals(TypeAccessPoint.CONTRACT) ? "№ " + item.getNumber() + ", сумма; "  + item.getAmount() / 100 + "р." : "";
+        this.contract = item.getType().equals(TypeAccessPoint.CONTRACT) ? "№ "
+                + (item.getNumber() == null ? "" : item.getNumber()) + ", сумма; "
+                + (item.getAmount() == null ? 0 : item.getAmount() / 100) + "р." : "";
         //ToDo:accessNode
         this.accessNode = "";
         this.descriptionAccess = Optional.ofNullable(item).map(AccessPointFull::getDescription).orElse(ERROR_DATA_STRING);
