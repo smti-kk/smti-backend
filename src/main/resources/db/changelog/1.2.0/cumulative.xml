@@ -9,4 +9,5 @@
     <include file="0007-add-ap_status_view.xml" relativeToChangelogFile="true" />
     <include file="0008-delete_requests_with_not_existed_locations.xml" relativeToChangelogFile="true" />
     <include file="0009-add-table-monitoring_notification.xml" relativeToChangelogFile="true" />
+    <include file="0010-update-type-in-location.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
