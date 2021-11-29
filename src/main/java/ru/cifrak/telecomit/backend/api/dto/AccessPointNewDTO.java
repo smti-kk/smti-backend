@@ -51,4 +51,6 @@ public class AccessPointNewDTO {
     private Long amount;
     private LocalDate started;
     private LocalDate ended;
+    private String equipment;
+    private String softType;
 }

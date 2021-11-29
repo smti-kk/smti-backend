@@ -54,6 +54,8 @@ public class ServiceAccessPoint {
                 zspd.setHardware(null);
                 //TODO: here we should insert real data
                 zspd.setSoftware(null);
+                zspd.setEquipment(dto.getEquipment());
+                zspd.setSoftType(dto.getSoftType());
                 rAccessPoints.save(zspd);
                 return new AccessPointDetailInOrganizationDTO(zspd);
             case "CONTRACT":

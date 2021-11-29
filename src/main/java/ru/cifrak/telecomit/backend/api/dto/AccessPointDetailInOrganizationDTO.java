@@ -67,6 +67,8 @@ public class AccessPointDetailInOrganizationDTO {
     private Long amount;
     private LocalDate started;
     private LocalDate ended;
+    private String equipment;
+    private String softType;
 
     //MONITORING STATUSES
     private Boolean utm5;
@@ -114,6 +116,8 @@ public class AccessPointDetailInOrganizationDTO {
             this.type = "ZSPD";
             this.hardware = ((ApZSPD) entity).getHardware() != null? ((ApZSPD) entity).getHardware().getName() : null;
             this.software = ((ApZSPD) entity).getSoftware() != null? ((ApZSPD) entity).getSoftware().getName() : null;
+            this.equipment = ((ApZSPD) entity).getEquipment();
+            this.softType = ((ApZSPD) entity).getSoftType();
         } else if (entity.getClass().isAssignableFrom(ApRSMO.class)) {
             this.type = "RSMO";
         } else if (entity.getClass().isAssignableFrom(ApContract.class)) {

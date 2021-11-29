@@ -327,6 +327,7 @@ Content-Type: application/json
   "address": "bar test ZSPD",
   "billing_id": null,
   "internetAccess": 3,
+  "completed": 2222,
   "contractor": "hmhm",
   "customer": null,
   "description": null,
@@ -337,7 +338,7 @@ Content-Type: application/json
   "node": "fghmhmhm",
   "operator": null,
   "quality": "good",
-  "state": null,
+  "state": "NONE",
   "ucn": null,
   "visible": true,
   "point": {
@@ -348,7 +349,10 @@ Content-Type: application/json
     ]
   },
   "type": "ZSPD",
-  "id": null
+  "id": null,
+  "equipment": "hardware",
+  "softType": "vipNet",
+  "declaredSpeed": 6
 }
 
 ###            CONTRACT
@@ -360,6 +364,7 @@ Content-Type: application/json
   "address": "bar test CONTRACT",
   "billing_id": null,
   "internetAccess": 3,
+  "completed": 2222,
   "contractor": "hmhm",
   "customer": null,
   "description": null,
@@ -370,7 +375,7 @@ Content-Type: application/json
   "node": "fghmhmhm",
   "operator": null,
   "quality": "good",
-  "state": null,
+  "state": "NONE",
   "ucn": null,
   "visible": true,
   "point": {
@@ -385,10 +390,46 @@ Content-Type: application/json
   "number": "12-3/12",
   "amount": 10012,
   "started": "2020-01-01",
-  "ended": "2020-12-01"
+  "ended": "2020-12-01",
+  "declaredSpeed": 6
 }
 
+###            ZSPD
+PUT http://localhost:8080/api/organization/3/ap/
+Authorization: Token {{auth_token}}
+Content-Type: application/json
 
+{
+  "address": "bar test ZSPD",
+  "billing_id": null,
+  "internetAccess": 3,
+  "completed": 2222,
+  "contractor": "hmhm",
+  "customer": null,
+  "description": null,
+  "government_program": 2,
+  "ip_config": null,
+  "max_amount": null,
+  "name": " КГБУЗ \"Красноярский краевой психоневрологический диспансер №1\" Филиал 7(г.Ачинск) ККПНД №1",
+  "node": "fghmhmhm",
+  "operator": null,
+  "quality": "good",
+  "state": "NONE",
+  "ucn": null,
+  "visible": true,
+  "point": {
+    "type": "Point",
+    "coordinates": [
+      96.0456,
+      56.6763888
+    ]
+  },
+  "type": "ZSPD",
+  "id": 3809,
+  "equipment": "software",
+  "softType": "kontinent",
+  "declaredSpeed": 6
+}
 
 ### ********************************************************************************************************************
 ### REPORT --- AccessPoints -- ORGANIZATION
