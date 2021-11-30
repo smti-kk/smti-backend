@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cifrak.telecomit.backend.api.dto.MonitoringAccessPointWizardDTO;
 import ru.cifrak.telecomit.backend.api.dto.UTM5ReportTrafficDTO;
+import ru.cifrak.telecomit.backend.api.dto.external.ExtZabbixDevice;
 import ru.cifrak.telecomit.backend.api.dto.response.ExternalSystemCreateStatusDTO;
 import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
@@ -171,10 +172,12 @@ public class ServiceOrganization {
         log.info("[application]<- This is going for bytes in UTM5");
     }
 
-    @Scheduled(cron = "0 0 */1 * * *")
-//    @Scheduled(cron = "0 28 * * * *")
-    public void autoMonitoringAccesspointStatus() throws JsonProcessingException {
+    @Scheduled(cron = "* * * * * *")
+    public void autoMonitoringAccessPointStatus() throws JsonProcessingException {
         log.info("[application]-> going for activity status in zabbix");
+
+        List<ExtZabbixDevice> devices = sZabbix.getDevicesInProblemState();
+
         List<JournalMAP> jmaps = rJournalMAP.findAll();
         List<String> triggersUnavailable =
                 jmaps.stream().filter(i -> i.getMap().getDeviceTriggerUnavailable() != null)
