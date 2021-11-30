@@ -71,6 +71,7 @@ public class ReportAccessPointFullDTO extends ReportAccessPointFullAllDTO {
         this.importance = this.problem ? ImportanceProblemStatus.MIDDLE : null;
         this.createDate = Optional.ofNullable(entity.getCreatedDate())
                 .orElse(LocalDateTime.now(ZoneId.systemDefault()));
+//        AVS
         this.problemDefinition = Optional.ofNullable(entity.getMonitoringLink())
                 .map(JournalMAP::getMap)
                 .map(MonitoringAccessPoint::getProblemDefinition)
