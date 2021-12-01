@@ -1,0 +1,17 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="tolstonogovav" id="1">
+        <addColumn schemaName="external_systems" tableName="monitoring_access_point">
+            <column name="create_datetime"
+                    type="timestamp"
+            />
+        </addColumn>
+        <addNotNullConstraint schemaName="external_systems"
+                              tableName="monitoring_access_point"
+                              columnName="create_datetime"
+                              constraintName="create_datetime_not_null_constraint"
+                              defaultNullValue="2021-10-08"/>
+    </changeSet>
+</databaseChangeLog>
