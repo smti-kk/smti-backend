@@ -20,6 +20,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryJournalMAP;
 import ru.cifrak.telecomit.backend.repository.RepositoryMonitoringAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
 
+import javax.annotation.Nullable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -180,21 +181,30 @@ public class ServiceOrganization {
         Map<String, ExtZabbixDevice> devices = sZabbix.getDevicesInProblemState(maps);
         maps.forEach(map -> {
             ExtZabbixDevice problemDevice = devices.get(map.getDeviceId());
-            if (problemDevice == null) {
+            ExtZabbixDevice problemSensor = devices.get(map.getSensorId());
+            if (problemDevice == null && problemSensor == null) {
                 map.setConnectionState(APConnectionState.ACTIVE);
-            } else if (problemDevice.triggerUnavailableExists()) {
+            } else if (problemDevice != null && problemDevice.triggerUnavailableExists()) {
                 map.setConnectionState(APConnectionState.DISABLED);
             } else {
                 map.setConnectionState(APConnectionState.PROBLEM);
-                map.setProblemDefinition(getProblemDefinition(problemDevice));
+                map.setProblemDefinition(getProblemDefinition(problemDevice, problemSensor));
             }
         });
         log.info("[application]<- going for activity status in zabbix");
     }
 
     @NotNull
-    private String getProblemDefinition(ExtZabbixDevice problemDevice) {
-        return problemDevice.getTriggers().stream().map(ExtZabbixTrigger::getDescription)
-                .collect(Collectors.joining(", "));
+    private String getProblemDefinition(@Nullable ExtZabbixDevice problemDevice, @Nullable ExtZabbixDevice problemSensor) {
+        List<String> result = new ArrayList<>();
+        if (problemDevice != null) {
+            result = problemDevice.getTriggers().stream().map(ExtZabbixTrigger::getDescription)
+                    .collect(Collectors.toList());
+        }
+        if (problemSensor != null) {
+            result.addAll(problemSensor.getTriggers().stream().map(ExtZabbixTrigger::getDescription)
+                    .collect(Collectors.toList()));
+        }
+        return String.join(", ", result);
     }
 }
