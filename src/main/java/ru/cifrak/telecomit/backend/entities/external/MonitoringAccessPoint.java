@@ -108,4 +108,7 @@ public class MonitoringAccessPoint implements Serializable {
 
     @Column
     private String problemDefinition;
+
+    @Column(nullable = false)
+    private LocalDateTime createDatetime;
 }

@@ -71,13 +71,11 @@ public class ServiceOrganization {
         AccessPoint ap = rAccessPoints.getOne(apid);
         JournalMAP jjmap = rJournalMAP.findByAp_Id(ap.getId());
         MonitoringAccessPoint map;
-        boolean new_map = false;
         if (jjmap == null || jjmap.getMap() == null) {
             if (jjmap == null) {
                 jjmap = new JournalMAP();
             }
             map = new MonitoringAccessPoint();
-            new_map = true;
         } else {
             map = jjmap.getMap();
         }
@@ -91,30 +89,24 @@ public class ServiceOrganization {
                     ap.setNetworks(wizard.getNetworks());
                     blenders.linkWithUTM5(ap, map);
                     log.info("(>) save monitoring access point");
+                    map.setCreateDatetime(LocalDateTime.now(ZoneId.systemDefault()));
                     map = rMonitoringAccessPoints.save(map);
-                    if (new_map) {
-                        addMonitoringNotification(ap, user);
-                        new_map = false;
-                    }
                     log.info("(<) save monitoring access point");
                 } catch (Exception e) {
                     errors.add("Система UTM вернула ошибку: " + e.getMessage());
                 }
             } else {
                 errors.add("Список сетей ПУСТОЙ для точки подключения. Это необходимый параметр.");
-
             }
             // это мы заводим в заббикс
             try {
                 blenders.linkWithZabbix(ap, map, wizard);
                 log.info("(>) save monitoring access point");
+                map.setCreateDatetime(LocalDateTime.now(ZoneId.systemDefault()));
                 rMonitoringAccessPoints.save(map);
-                if (new_map) {
-                    addMonitoringNotification(ap, user);
-                }
                 log.info("(<) save monitoring access point");
             } catch (Exception e) {
-                errors.equals("ZABBIX:error: " + e.getMessage());
+                errors.add("ZABBIX:error: " + e.getMessage());
             }
 
             // это сохранение в журнале точек бд
@@ -126,10 +118,12 @@ public class ServiceOrganization {
             rAccessPoints.save(ap);
             log.info("(<) save journal map");
             if (errors.isEmpty()) {
+                addMonitoringNotification(ap, user);
                 return new ExternalSystemCreateStatusDTO("Точка поставлена на мониторинг");
             } else if (errors.size() >= 2) {
                 return new ExternalSystemCreateStatusDTO("Точку НЕУДАЛОСЬ поставить на мониторинг", errors);
             } else {
+                addMonitoringNotification(ap, user);
                 return new ExternalSystemCreateStatusDTO("Точка поставлена на мониторинг с ограничениями", errors);
             }
 
