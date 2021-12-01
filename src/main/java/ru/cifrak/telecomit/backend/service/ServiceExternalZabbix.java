@@ -14,8 +14,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import ru.cifrak.telecomit.backend.api.dto.MonitoringAccessPointWizardDTO;
 import ru.cifrak.telecomit.backend.api.dto.external.*;
 import ru.cifrak.telecomit.backend.entities.AccessPoint;
+import ru.cifrak.telecomit.backend.entities.ImportanceProblemStatus;
 import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
-import ru.cifrak.telecomit.backend.repository.RepositoryMonitoringAccessPoints;
 import ru.cifrak.telecomit.backend.security.ZabbixConfig;
 
 import java.util.*;
@@ -23,13 +23,14 @@ import java.util.*;
 @Slf4j
 @Service
 public class ServiceExternalZabbix {
+    public static final String PORT_LINK_DOWN = "link down";
+
+    public static final String PORT_BANDWIDTH_0 = "bandwidth usage = 0";
+
     private final ZabbixConfig zabbixConfig;
 
-    private final RepositoryMonitoringAccessPoints rMonitoringAccessPoints;
-
-    public ServiceExternalZabbix(ZabbixConfig zabbixConfig, RepositoryMonitoringAccessPoints rMonitoringAccessPoints) {
+    public ServiceExternalZabbix(ZabbixConfig zabbixConfig) {
         this.zabbixConfig = zabbixConfig;
-        this.rMonitoringAccessPoints = rMonitoringAccessPoints;
     }
 
     public void linking(AccessPoint ap, MonitoringAccessPoint map, MonitoringAccessPointWizardDTO wizard) throws Exception {
@@ -446,89 +447,53 @@ public class ServiceExternalZabbix {
         }
     }
 
-    public List<Long> getTriggersInTroubleState(List<String> triggers) throws JsonProcessingException {
-        log.trace("[   ] -> go for triggers in trouble state");
-        WebClient client = getWebClient();
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        WebClient.RequestHeadersSpec<?> authenticate = client
-                .post()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(new ExtZabbixDtoAuth(zabbixConfig.getLogin(), zabbixConfig.getPassword())));
-
-        String authToken = (String) getAuthentication(mapper, authenticate).getResult();
-
-        WebClient.RequestHeadersSpec<?> responsePRC = client
-                .post()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("trigger.get",
-                        new ExtZabbixDtoGetTriggersInTroubleState(triggers),
-                        42,
-                        authToken
-                )));
-        String responseServiceDataResponseTime = responsePRC.retrieve().bodyToMono(String.class).block();
-        ExtZabbixDtoResponseTriggersInTrouble triggersInTrouble = mapper.readValue(responseServiceDataResponseTime, ExtZabbixDtoResponseTriggersInTrouble.class);
-        log.trace("triggers-responce::{}", triggersInTrouble);
-        log.trace("[   ] <- go for triggers in trouble state");
-
-        if (triggersInTrouble.getResult().size()>0){
-            List<Long> result = new ArrayList<>();
-            for (Map<String, String> item :triggersInTrouble.getResult()){
-                result.add(Long.valueOf(item.get("triggerid")));
-            }
-            return result;
-        }
-
-        return Collections.EMPTY_LIST;
-    }
-
-    public List<ExtZabbixDevice> getDevicesInProblemState() throws JsonProcessingException {
-        log.trace("--> go for devices in trouble state");
-
-        List<ExtZabbixDevice> result = new LinkedList<>();
-        List<MonitoringAccessPoint> maps = rMonitoringAccessPoints.findAll();
-
+    public Map<String, ExtZabbixDevice> getDevicesInProblemState(List<MonitoringAccessPoint> maps) throws JsonProcessingException {
+        Map<String, ExtZabbixDevice> result = new HashMap<>();
         WebClient client = getWebClient();
         ObjectMapper mapper = new ObjectMapper();
-
         String authToken = (String) getRespAuthentication(client, mapper).getResult();
-
-//        WebClient.RequestHeadersSpec<?> respDevices;
-
-        maps.forEach(map -> {
-            WebClient.RequestHeadersSpec<?> respDevices = client
+        for (MonitoringAccessPoint map : maps) {
+            WebClient.RequestHeadersSpec<?> respDevice = client
                     .post()
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("trigger.get",
                             new ExtZabbixDeviceRequestParams(map.getDeviceId()),
                             1,
-                            authToken
-                    )));
-        });
-
-        WebClient.RequestHeadersSpec<?> responsePRC = client
-                .post()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("trigger.get",
-                        new ExtZabbixDtoGetTriggersInTroubleState(triggers),
-                        42,
-                        authToken
-                )));
-        String responseServiceDataResponseTime = responsePRC.retrieve().bodyToMono(String.class).block();
-        ExtZabbixDtoResponseTriggersInTrouble triggersInTrouble = mapper.readValue(responseServiceDataResponseTime, ExtZabbixDtoResponseTriggersInTrouble.class);
-        log.trace("triggers-responce::{}", triggersInTrouble);
-        log.trace("[   ] <- go for triggers in trouble state");
-
-        if (triggersInTrouble.getResult().size()>0){
-            List<Long> result = new ArrayList<>();
-            for (Map<String, String> item :triggersInTrouble.getResult()){
-                result.add(Long.valueOf(item.get("triggerid")));
+                            authToken)));
+            ExtZabbixDtoResponseTriggersInTrouble deviceTriggers = mapper.readValue(
+                    respDevice.retrieve().bodyToMono(String.class).block(),
+                    ExtZabbixDtoResponseTriggersInTrouble.class);
+            if (deviceTriggers.getResult().size() > 0) {
+                List<ExtZabbixTrigger> triggers = new ArrayList<>();
+                for (Map<String, String> res : deviceTriggers.getResult()) {
+                    String description = res.get("description");
+                    for (TypeZabbixTrigger value : TypeZabbixTrigger.values()) {
+                        if (description.toLowerCase().contains(value.getDescription())) {
+                            if (value != TypeZabbixTrigger.PORT
+                                    || description.toLowerCase().contains(PORT_LINK_DOWN)
+                                    || description.toLowerCase().contains(PORT_BANDWIDTH_0)) {
+                                triggers.add(new ExtZabbixTrigger(
+                                        res.get("triggerid"),
+                                        value,
+                                        description,
+                                        getTriggerImportance(res.get("priority"))));
+                                log.info("\tDevice id {}: problem: {}.", map.getDeviceId(), description);
+                            }
+                        }
+                    }
+                }
+                if (triggers.size() > 0) {
+                    result.put(map.getDeviceId(), new ExtZabbixDevice(triggers));
+                }
             }
-            return result;
         }
+        return result;
+    }
 
-        return Collections.EMPTY_LIST;
+    private ImportanceProblemStatus getTriggerImportance(String priority) {
+        int value = Integer.parseInt(priority);
+        return value < 3 ? ImportanceProblemStatus.LOW :
+                value > 3 ? ImportanceProblemStatus.HIGH : ImportanceProblemStatus.MIDDLE;
     }
 
     private ExtZabbixDtoResponse getRespAuthentication(WebClient client, ObjectMapper mapper) throws JsonProcessingException {

@@ -10,7 +10,7 @@ import ru.cifrak.telecomit.backend.entities.ImportanceProblemStatus;
 @Setter
 public class ExtZabbixTrigger {
     String triggerId;
+    TypeZabbixTrigger type;
     String description;
     ImportanceProblemStatus importance;
-    boolean value;
 }

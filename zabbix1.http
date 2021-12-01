@@ -28,6 +28,9 @@ Content-Type: application/json
             "host"
         ]
     },
+    "filter": {
+        "hostid": "10434"
+    },
     "id": 2,
     "auth": "{{auth}}"
 }
@@ -40,9 +43,8 @@ Content-Type: application/json
     "jsonrpc": "2.0",
     "method": "trigger.get",
     "params": {
-        "output": ["triggerid", "description", "value", "priority"],
+        "output": "extend",
         "filter": {
-            "value": 1
         }
     },
     "id": 1,

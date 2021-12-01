@@ -1,22 +1,22 @@
 package ru.cifrak.telecomit.backend.api.dto.external;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Value;
-import lombok.experimental.FieldDefaults;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-@FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
-@AllArgsConstructor
+@Value
 public class ExtZabbixDeviceRequestParams {
     String hostids;
-    String[] output = {"triggerid", "description", "value", "priority"};
-    Map<String, String> filter = new HashMap<>();
+    String[] output = {"triggerid", "description", "priority"};
+    Map<String, String> filter;
+
     public ExtZabbixDeviceRequestParams(String deviceId) {
         hostids = deviceId;
-        filter.put("value","1");
+        filter = new HashMap<>();
+//        Problem
+        filter.put("value", "1");
+//        Activated
+        filter.put("status", "0");
     }
 }

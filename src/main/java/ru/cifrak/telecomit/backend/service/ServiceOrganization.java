@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.cifrak.telecomit.backend.api.dto.MonitoringAccessPointWizardDTO;
 import ru.cifrak.telecomit.backend.api.dto.UTM5ReportTrafficDTO;
 import ru.cifrak.telecomit.backend.api.dto.external.ExtZabbixDevice;
+import ru.cifrak.telecomit.backend.api.dto.external.ExtZabbixTrigger;
 import ru.cifrak.telecomit.backend.api.dto.response.ExternalSystemCreateStatusDTO;
 import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
@@ -172,69 +173,28 @@ public class ServiceOrganization {
         log.info("[application]<- This is going for bytes in UTM5");
     }
 
-    @Scheduled(cron = "* * * * * *")
+    @Scheduled(cron = "0 0 * * * *")
     public void autoMonitoringAccessPointStatus() throws JsonProcessingException {
         log.info("[application]-> going for activity status in zabbix");
-
-        List<ExtZabbixDevice> devices = sZabbix.getDevicesInProblemState();
-
-        List<JournalMAP> jmaps = rJournalMAP.findAll();
-        List<String> triggersUnavailable =
-                jmaps.stream().filter(i -> i.getMap().getDeviceTriggerUnavailable() != null)
-                        .map(i -> i.getMap().getDeviceTriggerUnavailable().toString())
-                        .collect(Collectors.toList());
-        List<String> triggersEnergy =
-                jmaps.stream().filter(i -> i.getMap().getSensorTriggerEnergy() != null)
-                        .map(i -> i.getMap().getSensorTriggerEnergy().toString())
-                        .collect(Collectors.toList());
-        List<String> triggersResponseLost =
-                jmaps.stream().filter(i -> i.getMap().getDeviceTriggerResponseLost() != null)
-                        .map(i -> i.getMap().getDeviceTriggerResponseLost().toString())
-                        .collect(Collectors.toList());
-        List<String> triggersResponseLow =
-                jmaps.stream().filter(i -> i.getMap().getDeviceTriggerResponseLow() != null)
-                        .map(i -> i.getMap().getDeviceTriggerResponseLow().toString())
-                        .collect(Collectors.toList());
-        List<String> triggersAll = new ArrayList<>();
-        triggersAll.addAll(triggersUnavailable);
-        triggersAll.addAll(triggersEnergy);
-        triggersAll.addAll(triggersResponseLost);
-        triggersAll.addAll(triggersResponseLow);
-        log.trace("triggers:: {}", triggersAll);
-        List<Long> items = sZabbix.getTriggersInTroubleState(triggersAll);
-        jmaps.forEach(jmap -> {
-            if (items.contains(jmap.getMap().getDeviceTriggerUnavailable())) {
-                jmap.getMap().setConnectionState(APConnectionState.DISABLED);
-            } if (isProblemExists(items, jmap)) {
-                jmap.getMap().setConnectionState(APConnectionState.PROBLEM);
-                jmap.getMap().setProblemDefinition(getProblemDefinition(items, jmap));
+        List<MonitoringAccessPoint> maps = rMonitoringAccessPoints.findAll();
+        Map<String, ExtZabbixDevice> devices = sZabbix.getDevicesInProblemState(maps);
+        maps.forEach(map -> {
+            ExtZabbixDevice problemDevice = devices.get(map.getDeviceId());
+            if (problemDevice == null) {
+                map.setConnectionState(APConnectionState.ACTIVE);
+            } else if (problemDevice.triggerUnavailableExists()) {
+                map.setConnectionState(APConnectionState.DISABLED);
             } else {
-                jmap.getMap().setConnectionState(APConnectionState.ACTIVE);
+                map.setConnectionState(APConnectionState.PROBLEM);
+                map.setProblemDefinition(getProblemDefinition(problemDevice));
             }
-            jmap.getMap().setTimeState(LocalDateTime.now());
-            rJournalMAP.save(jmap);
         });
         log.info("[application]<- going for activity status in zabbix");
     }
 
-    private boolean isProblemExists(List<Long> items, JournalMAP jmap) {
-        return items.contains(jmap.getMap().getSensorTriggerEnergy())
-                || items.contains(jmap.getMap().getDeviceTriggerResponseLost())
-                || items.contains(jmap.getMap().getDeviceTriggerResponseLow());
-    }
-
     @NotNull
-    private String getProblemDefinition(List<Long> items, JournalMAP jmap) {
-        List<String> problems = new ArrayList<>();
-        if (items.contains(jmap.getMap().getSensorTriggerEnergy())) {
-            problems.add("Unavailable by ICMP ping Energy");
-        }
-        if (items.contains(jmap.getMap().getDeviceTriggerResponseLost())) {
-            problems.add("High ICMP ping loss");
-        }
-        if (items.contains(jmap.getMap().getDeviceTriggerResponseLow())) {
-            problems.add("High ICMP ping response time");
-        }
-        return String.join(". ", problems);
+    private String getProblemDefinition(ExtZabbixDevice problemDevice) {
+        return problemDevice.getTriggers().stream().map(ExtZabbixTrigger::getDescription)
+                .collect(Collectors.joining(", "));
     }
 }
