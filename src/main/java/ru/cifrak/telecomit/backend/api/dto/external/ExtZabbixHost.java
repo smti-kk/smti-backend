@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ExtZabbixDevice {
+public class ExtZabbixHost {
     List<ExtZabbixTrigger> triggers;
 
     public boolean triggerUnavailableExists() {

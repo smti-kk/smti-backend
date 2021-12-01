@@ -18,5 +18,7 @@ public class ExtZabbixDeviceRequestParams {
         filter.put("value", "1");
 //        Activated
         filter.put("status", "0");
+//        Not unknown
+        filter.put("state", "0");
     }
 }

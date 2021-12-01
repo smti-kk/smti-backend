@@ -9,6 +9,6 @@ import java.util.List;
 @NoArgsConstructor
 public class ExtZabbixDtoResponseSlaData {
     private String status;
-    private List<Object> problems;
+    private List<List<Object>> problems;
     private List<SlaDto> sla;
 }
