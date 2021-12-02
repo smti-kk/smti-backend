@@ -11,4 +11,5 @@
     <include file="0009-add-table-monitoring_notification.xml" relativeToChangelogFile="true" />
     <include file="0010-update-type-in-location.xml" relativeToChangelogFile="true" />
     <include file="0011-add-columns-to-access-point.xml" relativeToChangelogFile="true" />
+    <include file="0012-add-create_datetime-to-monitoring-access-point.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
