@@ -6,12 +6,13 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum TypeZabbixTrigger {
-    ENERGY ("unavailable by icmp ping energy"),
-    LOST ("high icmp ping loss"),
-    LOW ("high icmp ping response time"),
-    UNAVAILABLE ("unavailable by icmp ping"),
-    DOOR ("door open alarm"),
-    PORT ("ether5");
+    LOST ("high icmp ping loss", true),
+    LOW ("high icmp ping response time", true),
+    UNAVAILABLE ("unavailable by icmp ping", true),
+    PORT ("ether5", true),
+    ENERGY ("voltagedetector alarm", false),
+    DOOR ("door open alarm", false);
 
-    private String description;
+    private final String description;
+    private final boolean deviceTrigger;
 }
