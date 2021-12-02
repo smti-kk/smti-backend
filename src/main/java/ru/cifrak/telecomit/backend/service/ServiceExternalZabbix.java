@@ -23,9 +23,7 @@ import java.util.*;
 @Slf4j
 @Service
 public class ServiceExternalZabbix {
-    public static final String PORT_LINK_DOWN = "link down";
-
-    public static final String PORT_BANDWIDTH_0 = "bandwidth usage = 0";
+    public static final String PORT_LINK_DOWN = "downlink";
 
     private final ZabbixConfig zabbixConfig;
 
@@ -447,47 +445,94 @@ public class ServiceExternalZabbix {
         }
     }
 
-    public Map<String, ExtZabbixDevice> getDevicesInProblemState(List<MonitoringAccessPoint> maps) throws JsonProcessingException {
-        Map<String, ExtZabbixDevice> result = new HashMap<>();
+    public Map<String, ExtZabbixHost> getHostsInProblemState(List<MonitoringAccessPoint> maps)
+            throws JsonProcessingException {
+        Map<String, ExtZabbixHost> result = new HashMap<>();
         WebClient client = getWebClient();
         ObjectMapper mapper = new ObjectMapper();
         String authToken = (String) getRespAuthentication(client, mapper).getResult();
         for (MonitoringAccessPoint map : maps) {
-            WebClient.RequestHeadersSpec<?> respDevice = client
-                    .post()
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("trigger.get",
-                            new ExtZabbixDeviceRequestParams(map.getDeviceId()),
-                            1,
-                            authToken)));
-            ExtZabbixDtoResponseTriggersInTrouble deviceTriggers = mapper.readValue(
-                    respDevice.retrieve().bodyToMono(String.class).block(),
-                    ExtZabbixDtoResponseTriggersInTrouble.class);
-            if (deviceTriggers.getResult().size() > 0) {
-                List<ExtZabbixTrigger> triggers = new ArrayList<>();
-                for (Map<String, String> res : deviceTriggers.getResult()) {
-                    String description = res.get("description");
-                    for (TypeZabbixTrigger value : TypeZabbixTrigger.values()) {
-                        if (description.toLowerCase().contains(value.getDescription())) {
-                            if (value != TypeZabbixTrigger.PORT
-                                    || description.toLowerCase().contains(PORT_LINK_DOWN)
-                                    || description.toLowerCase().contains(PORT_BANDWIDTH_0)) {
-                                triggers.add(new ExtZabbixTrigger(
-                                        res.get("triggerid"),
-                                        value,
-                                        description,
-                                        getTriggerImportance(res.get("priority"))));
-                                log.info("\tDevice id {}: problem: {}.", map.getDeviceId(), description);
-                            }
-                        }
-                    }
+            List<Map<String, String>> hostTriggersResult =
+                    getHostTriggersResult(client, mapper, authToken, map.getDeviceId());
+            if (hostTriggersResult.size() > 0) {
+                List<ExtZabbixTrigger> problemTriggers = getDeviceProblemTriggers(map, hostTriggersResult);
+                if (problemTriggers.size() > 0) {
+                    result.put(map.getDeviceId(), new ExtZabbixHost(problemTriggers));
                 }
-                if (triggers.size() > 0) {
-                    result.put(map.getDeviceId(), new ExtZabbixDevice(triggers));
+            }
+            if (map.getSensorId() != null) {
+                hostTriggersResult =
+                        getHostTriggersResult(client, mapper, authToken, map.getSensorId());
+                if (hostTriggersResult.size() > 0) {
+                    List<ExtZabbixTrigger> problemTriggers = getSensorProblemTriggers(map, hostTriggersResult);
+                    if (problemTriggers.size() > 0) {
+                        result.put(map.getSensorId(), new ExtZabbixHost(problemTriggers));
+                    }
                 }
             }
         }
         return result;
+    }
+
+    @NotNull
+    private List<ExtZabbixTrigger> getDeviceProblemTriggers(MonitoringAccessPoint map,
+                                                            List<Map<String, String>> deviceTriggersResult) {
+        List<ExtZabbixTrigger> triggers = new ArrayList<>();
+        for (Map<String, String> res : deviceTriggersResult) {
+            String description = res.get("description");
+            for (TypeZabbixTrigger value : TypeZabbixTrigger.values()) {
+                if (value.isDeviceTrigger() && description.toLowerCase().contains(value.getDescription())) {
+                    if (value != TypeZabbixTrigger.PORT
+                            || description.toLowerCase().contains(PORT_LINK_DOWN)) {
+                        triggers.add(new ExtZabbixTrigger(
+                                res.get("triggerid"),
+                                value,
+                                description,
+                                getTriggerImportance(res.get("priority"))));
+                        log.info("\tDevice id {}: problem: {}.", map.getDeviceId(), description);
+                    }
+                }
+            }
+        }
+        return triggers;
+    }
+
+    @NotNull
+    private List<ExtZabbixTrigger> getSensorProblemTriggers(MonitoringAccessPoint map,
+                                                            List<Map<String, String>> sensorTriggersResult) {
+        List<ExtZabbixTrigger> triggers = new ArrayList<>();
+        for (Map<String, String> res : sensorTriggersResult) {
+            String description = res.get("description");
+            for (TypeZabbixTrigger value : TypeZabbixTrigger.values()) {
+                if (!value.isDeviceTrigger() && description.toLowerCase().contains(value.getDescription())) {
+                    triggers.add(new ExtZabbixTrigger(
+                            res.get("triggerid"),
+                            value,
+                            description,
+                            getTriggerImportance(res.get("priority"))));
+                    log.info("\tSensor id {}: problem: {}.", map.getSensorId(), description);
+                }
+            }
+        }
+        return triggers;
+    }
+
+    private List<Map<String, String>> getHostTriggersResult(WebClient client,
+                                                            ObjectMapper mapper,
+                                                            String authToken,
+                                                            String hostId)
+            throws JsonProcessingException {
+        WebClient.RequestHeadersSpec<?> respHost = client
+                .post()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(new ExtZabbixDtoRequest("trigger.get",
+                        new ExtZabbixDeviceRequestParams(hostId),
+                        1,
+                        authToken)));
+        List<Map<String, String>> hostTriggersResult = mapper.readValue(
+                respHost.retrieve().bodyToMono(String.class).block(),
+                ExtZabbixDtoResponseTriggersInTrouble.class).getResult();
+        return hostTriggersResult;
     }
 
     private ImportanceProblemStatus getTriggerImportance(String priority) {

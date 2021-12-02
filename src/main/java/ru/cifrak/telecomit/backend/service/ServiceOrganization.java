@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cifrak.telecomit.backend.api.dto.MonitoringAccessPointWizardDTO;
 import ru.cifrak.telecomit.backend.api.dto.UTM5ReportTrafficDTO;
-import ru.cifrak.telecomit.backend.api.dto.external.ExtZabbixDevice;
+import ru.cifrak.telecomit.backend.api.dto.external.ExtZabbixHost;
 import ru.cifrak.telecomit.backend.api.dto.external.ExtZabbixTrigger;
 import ru.cifrak.telecomit.backend.api.dto.response.ExternalSystemCreateStatusDTO;
 import ru.cifrak.telecomit.backend.entities.*;
@@ -176,12 +176,12 @@ public class ServiceOrganization {
 
     @Scheduled(cron = "0 0 * * * *")
     public void autoMonitoringAccessPointStatus() throws JsonProcessingException {
-        log.info("[application]-> going for activity status in zabbix");
+        log.info("--> going for activity status in zabbix");
         List<MonitoringAccessPoint> maps = rMonitoringAccessPoints.findAll();
-        Map<String, ExtZabbixDevice> devices = sZabbix.getDevicesInProblemState(maps);
+        Map<String, ExtZabbixHost> devices = sZabbix.getHostsInProblemState(maps);
         maps.forEach(map -> {
-            ExtZabbixDevice problemDevice = devices.get(map.getDeviceId());
-            ExtZabbixDevice problemSensor = devices.get(map.getSensorId());
+            ExtZabbixHost problemDevice = devices.get(map.getDeviceId());
+            ExtZabbixHost problemSensor = devices.get(map.getSensorId());
             if (problemDevice == null && problemSensor == null) {
                 map.setConnectionState(APConnectionState.ACTIVE);
             } else if (problemDevice != null && problemDevice.triggerUnavailableExists()) {
@@ -191,11 +191,11 @@ public class ServiceOrganization {
                 map.setProblemDefinition(getProblemDefinition(problemDevice, problemSensor));
             }
         });
-        log.info("[application]<- going for activity status in zabbix");
+        log.info("<-- going for activity status in zabbix");
     }
 
     @NotNull
-    private String getProblemDefinition(@Nullable ExtZabbixDevice problemDevice, @Nullable ExtZabbixDevice problemSensor) {
+    private String getProblemDefinition(@Nullable ExtZabbixHost problemDevice, @Nullable ExtZabbixHost problemSensor) {
         List<String> result = new ArrayList<>();
         if (problemDevice != null) {
             result = problemDevice.getTriggers().stream().map(ExtZabbixTrigger::getDescription)
