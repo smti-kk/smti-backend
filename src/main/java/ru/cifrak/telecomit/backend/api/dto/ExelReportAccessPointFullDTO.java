@@ -115,11 +115,17 @@ public class ExelReportAccessPointFullDTO {
                 this.problem = "Да";
             }
             this.importance = problemLocal ? ImportanceProblemStatus.MIDDLE : null;
-            LocalDateTime createdDateTime = Optional.ofNullable(item.getCreatedDate())
-                    .orElse(LocalDateTime.now(ZoneId.systemDefault()));
-            this.createDate = new Date(createdDateTime.getYear() - 1900,
-                    createdDateTime.getMonthValue() -1,
-                    createdDateTime.getDayOfMonth());
+            LocalDateTime createdDateTime = Optional.ofNullable(item.getMonitoringLink())
+                    .map(JournalMAP::getMap)
+                    .map(MonitoringAccessPoint::getCreateDatetime)
+                    .orElse(null);
+            if (createdDateTime != null) {
+                this.createDate = new Date(createdDateTime.getYear() - 1900,
+                        createdDateTime.getMonthValue() - 1,
+                        createdDateTime.getDayOfMonth());
+            } else {
+                this.createDate = null;
+            }
             this.problemDefinition = Optional.ofNullable(item.getMonitoringLink())
                     .map(JournalMAP::getMap)
                     .map(MonitoringAccessPoint::getProblemDefinition)
