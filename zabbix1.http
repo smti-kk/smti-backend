@@ -43,11 +43,12 @@ Content-Type: application/json
     "jsonrpc": "2.0",
     "method": "trigger.get",
     "params": {
-        "hostids": 10506,
+        "hostids": 10507,
         "output": "extend",
         "filter": {
             "status": 0,
-            "state": 0
+            "state": 0,
+            "value": 1
         }
     },
     "id": 1,

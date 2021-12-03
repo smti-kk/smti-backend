@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.entities.external;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.cifrak.telecomit.backend.entities.APConnectionState;
+import ru.cifrak.telecomit.backend.entities.ImportanceProblemStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -111,4 +112,8 @@ public class MonitoringAccessPoint implements Serializable {
 
     @Column(nullable = false)
     private LocalDateTime createDatetime;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private ImportanceProblemStatus importance;
 }

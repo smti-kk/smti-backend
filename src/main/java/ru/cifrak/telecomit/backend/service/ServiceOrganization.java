@@ -178,12 +178,19 @@ public class ServiceOrganization {
             ExtZabbixHost problemSensor = devices.get(map.getSensorId());
             if (problemDevice == null && problemSensor == null) {
                 map.setConnectionState(APConnectionState.ACTIVE);
+                map.setProblemDefinition("");
+                map.setImportance(null);
             } else if (problemDevice != null && problemDevice.triggerUnavailableExists()) {
                 map.setConnectionState(APConnectionState.DISABLED);
+                map.setProblemDefinition("");
+                map.setImportance(null);
             } else {
                 map.setConnectionState(APConnectionState.PROBLEM);
                 map.setProblemDefinition(getProblemDefinition(problemDevice, problemSensor));
+                map.setImportance(getImportance(problemDevice, problemSensor));
             }
+            map.setTimeState(LocalDateTime.now(ZoneId.systemDefault()));
+            rMonitoringAccessPoints.save(map);
         });
         log.info("<-- going for activity status in zabbix");
     }
@@ -200,5 +207,22 @@ public class ServiceOrganization {
                     .collect(Collectors.toList()));
         }
         return String.join(", ", result);
+    }
+
+    @NotNull
+    private ImportanceProblemStatus getImportance(@Nullable ExtZabbixHost problemDevice,
+                                                  @Nullable ExtZabbixHost problemSensor) {
+        ImportanceProblemStatus result = ImportanceProblemStatus.LOW;
+        if (problemDevice != null) {
+            for (ExtZabbixTrigger t : problemDevice.getTriggers()) {
+                result = result.compareTo(t.getImportance()) > 0 ? result : t.getImportance();
+            }
+        }
+        if (problemSensor != null) {
+            for (ExtZabbixTrigger t : problemSensor.getTriggers()) {
+                result = result.compareTo(t.getImportance()) > 0 ? result : t.getImportance();
+            }
+        }
+        return result;
     }
 }
