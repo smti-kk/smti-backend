@@ -68,7 +68,9 @@ public class ReportAccessPointFullDTO extends ReportAccessPointFullAllDTO {
                 .orElse(APConnectionState.NOT_MONITORED);
         this.monitoring = this.connectionState != APConnectionState.NOT_MONITORED;
         this.problem = this.connectionState == APConnectionState.PROBLEM;
-        this.importance = this.problem ? ImportanceProblemStatus.MIDDLE : null;
+        this.importance = Optional.ofNullable(entity.getMonitoringLink()).map(JournalMAP::getMap)
+                .map(MonitoringAccessPoint::getImportance)
+                .orElse(null);
         this.createDate = Optional.ofNullable(entity.getMonitoringLink())
                 .map(JournalMAP::getMap)
                 .map(MonitoringAccessPoint::getCreateDatetime)

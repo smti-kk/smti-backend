@@ -114,7 +114,9 @@ public class ExelReportAccessPointFullDTO {
             if (problemLocal) {
                 this.problem = "Да";
             }
-            this.importance = problemLocal ? ImportanceProblemStatus.MIDDLE : null;
+            this.importance = Optional.ofNullable(item.getMonitoringLink()).map(JournalMAP::getMap)
+                    .map(MonitoringAccessPoint::getImportance)
+                    .orElse(null);
             LocalDateTime createdDateTime = Optional.ofNullable(item.getMonitoringLink())
                     .map(JournalMAP::getMap)
                     .map(MonitoringAccessPoint::getCreateDatetime)
