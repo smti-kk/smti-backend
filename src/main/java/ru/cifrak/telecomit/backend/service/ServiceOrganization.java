@@ -180,19 +180,40 @@ public class ServiceOrganization {
                 map.setConnectionState(APConnectionState.ACTIVE);
                 map.setProblemDefinition("");
                 map.setImportance(null);
-            } else if (problemDevice != null && problemDevice.triggerUnavailableExists()) {
-                map.setConnectionState(APConnectionState.DISABLED);
-                map.setProblemDefinition("");
-                map.setImportance(null);
-            } else {
-                map.setConnectionState(APConnectionState.PROBLEM);
-                map.setProblemDefinition(getProblemDefinition(problemDevice, problemSensor));
-                map.setImportance(getImportance(problemDevice, problemSensor));
+            } else if (problemDevice != null) {
+                ExtZabbixTrigger trigger = problemDevice.triggerUnavailable();
+                if (trigger != null) {
+                    map.setConnectionState(APConnectionState.DISABLED);
+                    map.setProblemDefinition(trigger.getDescription());
+                    map.setImportance(trigger.getImportance());
+                } else {
+                    map.setConnectionState(APConnectionState.PROBLEM);
+                    map.setProblemDefinition(getProblemDefinition(problemDevice, problemSensor));
+                    map.setImportance(getImportance(problemDevice, problemSensor));
+                }
             }
             map.setTimeState(LocalDateTime.now(ZoneId.systemDefault()));
             rMonitoringAccessPoints.save(map);
         });
+        updateAccessPointState();
         log.info("<-- going for activity status in zabbix");
+    }
+
+    private void updateAccessPointState() {
+        List<AccessPoint> accessPointsAll = rAccessPoints.findAll();
+        Map<Integer, MonitoringAccessPoint> jmaps = rJournalMAP.findAll().stream().collect(Collectors.toMap(
+                jmap -> jmap.getAp().getId(),
+                JournalMAP::getMap));
+        for (AccessPoint point : accessPointsAll) {
+            MonitoringAccessPoint jmap = jmaps.get(point.getId());
+            APConnectionState newState = jmap == null ?
+                    APConnectionState.NOT_MONITORED
+                    : jmap.getConnectionState();
+            if (point.getConnectionState() != newState) {
+                point.setConnectionState(newState);
+                rAccessPoints.save(point);
+            }
+        }
     }
 
     @NotNull
