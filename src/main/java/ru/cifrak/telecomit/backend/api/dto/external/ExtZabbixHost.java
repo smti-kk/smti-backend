@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 @FieldDefaults(makeFinal=true, level= AccessLevel.PRIVATE)
 @AllArgsConstructor
@@ -16,11 +16,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ExtZabbixHost {
     List<ExtZabbixTrigger> triggers;
 
-    public boolean triggerUnavailableExists() {
-        AtomicBoolean result = new AtomicBoolean(false);
+    public ExtZabbixTrigger triggerUnavailable() {
+        AtomicReference<ExtZabbixTrigger> result = new AtomicReference<>();
         triggers.forEach(trigger -> {
             if (trigger.getType() == TypeZabbixTrigger.UNAVAILABLE) {
-                result.set(true);
+                result.set(trigger);
             }
         });
         return result.get();
