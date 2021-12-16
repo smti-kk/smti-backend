@@ -10,9 +10,9 @@ import lombok.Getter;
 public enum TypeLocation {
     REGION ("REGION", "край", "край", true),
     CITY_DISTRICT ("CITY_DISTRICT", "городской округ", "го", true),
-    CITY_SETTLEMENT ("CITY_SETTLEMENT", "городской посёлок", "гп", true),
     MUNICIPAL_DISTRICT ("MUNICIPAL_DISTRICT", "муниципальный округ", "мо", true),
     MUNICIPAL_AREA("MUNICIPAL_AREA", "муниципальный район", "р-н", true),
+    CITY_SETTLEMENT ("CITY_SETTLEMENT", "городской посёлок", "гп", false),
     CITY ("CITY", "город", "г", false),
     URBAN_SETTLEMENT ("URBAN_SETTLEMENT", "поселок городского типа", "пгт", false),
     VILLAGE ("VILLAGE", "деревня", "д", false),
