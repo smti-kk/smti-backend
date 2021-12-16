@@ -13,4 +13,5 @@
     <include file="0011-add-columns-to-access-point.xml" relativeToChangelogFile="true" />
     <include file="0012-add-create_datetime-to-monitoring-access-point.xml" relativeToChangelogFile="true" />
     <include file="0013-add-importance-to-monitoring-access-point.xml" relativeToChangelogFile="true" />
+    <include file="0014-insert-CITY_DISTRICT-to-location.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
