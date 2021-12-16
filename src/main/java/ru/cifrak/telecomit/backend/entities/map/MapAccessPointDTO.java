@@ -7,6 +7,8 @@ import lombok.Data;
 import org.locationtech.jts.geom.Geometry;
 import ru.cifrak.telecomit.backend.entities.APConnectionState;
 import ru.cifrak.telecomit.backend.entities.AccessPointFull;
+import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
+import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
 import javax.persistence.Column;
@@ -14,6 +16,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.util.Date;
+import java.util.Optional;
 
 @Data
 public class MapAccessPointDTO {
@@ -47,10 +50,10 @@ public class MapAccessPointDTO {
     public MapAccessPointDTO(AccessPointFull item) {
         this.id = item.getId();
         this.point = item.getPoint();
-        this.connectionState = APConnectionState.NOT_MONITORED;
-        if (item.getMonitoringLink() != null) if (item.getMonitoringLink().getMap().getConnectionState() != null) {
-            this.connectionState = item.getMonitoringLink().getMap().getConnectionState();
-        }
+        this.connectionState = Optional.ofNullable(item.getMonitoringLink())
+                .map(JournalMAP::getMap)
+                .map(MonitoringAccessPoint::getConnectionState)
+                .orElse(APConnectionState.NOT_MONITORED);
     }
 
     public MapAccessPointDTO() {
