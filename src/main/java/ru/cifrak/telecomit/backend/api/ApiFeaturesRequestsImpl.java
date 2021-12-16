@@ -113,10 +113,10 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         return requests;
     }
 
-    private List<LocationForTable> getParents(User user, List<LocationForTable> parents) {
+    private List<LocationForTable> getLocations(User user, List<LocationForTable> locations) {
         List<LocationForTable> result = new ArrayList<>();
         dslDetailLocation.findAll(
-                        getPredicate(parents,
+                        getPredicate(locations,
                                 repositoryAccount.findById(user.getId()).orElseThrow(NotFoundException::new)
                                         .getLocations()
                                         .stream().map(DLocationBase::getId).collect(Collectors.toList())))
@@ -124,14 +124,14 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         return result;
     }
 
-    private BooleanExpression getPredicate(List<LocationForTable> parents, List<Integer> parentsByUser) {
+    private BooleanExpression getPredicate(List<LocationForTable> locations, List<Integer> locationsByUser) {
         QLocationForTable locationForTable = QLocationForTable.locationForTable;
-        BooleanExpression parentsByUserPredicate = locationForTable.id.in(parentsByUser);
-        BooleanExpression parentsPredicate = parents != null ?
+        BooleanExpression locationsByUserPredicate = locationForTable.id.in(locationsByUser);
+        BooleanExpression locationsPredicate = locations != null ?
                 locationForTable.id.in(
-                        parents.stream().map(LocationForTable::getId).collect(Collectors.toList()))
+                        locations.stream().map(LocationForTable::getId).collect(Collectors.toList()))
                 : TRUE_EXPRESSION;
-        return parentsPredicate.and(parentsByUserPredicate);
+        return locationsPredicate.and(locationsByUserPredicate);
     }
 
     @Nullable
@@ -555,8 +555,9 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         Page<LocationFeaturesEditingRequestFull> requests =
                 getLocationFeaturesEditingRequestFulls(
                         getFeatureEditFullTrueChangesSpecification(
-                                getParents(user, parents), null, null, null, null,
-                                locations, statuses, logicalCondition),
+                                parents, null, null, null,
+                                Collections.singletonList(user), getLocations(user, locations), statuses,
+                                logicalCondition == null ? LogicalCondition.AND : logicalCondition),
                         createPageable(pageable, null));
         log.info("<-- GET /api/features-requests/by-user");
         return requests;
