@@ -28,6 +28,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -173,28 +174,32 @@ public class ServiceOrganization {
         log.info("--> going for activity status in zabbix");
         List<MonitoringAccessPoint> maps = rMonitoringAccessPoints.findAll();
         Map<String, ExtZabbixHost> devices = sZabbix.getHostsInProblemState(maps);
-        maps.forEach(map -> {
-            ExtZabbixHost problemDevice = devices.get(map.getDeviceId());
-            ExtZabbixHost problemSensor = devices.get(map.getSensorId());
-            if (problemDevice == null && problemSensor == null) {
-                map.setConnectionState(APConnectionState.ACTIVE);
-                map.setProblemDefinition("");
-                map.setImportance(null);
-            } else if (problemDevice != null) {
-                ExtZabbixTrigger trigger = problemDevice.triggerUnavailable();
-                if (trigger != null) {
-                    map.setConnectionState(APConnectionState.DISABLED);
-                    map.setProblemDefinition(trigger.getDescription());
-                    map.setImportance(trigger.getImportance());
-                } else {
-                    map.setConnectionState(APConnectionState.PROBLEM);
-                    map.setProblemDefinition(getProblemDefinition(problemDevice, problemSensor));
-                    map.setImportance(getImportance(problemDevice, problemSensor));
+        for (MonitoringAccessPoint mapNotManaged : maps) {
+            Optional<MonitoringAccessPoint> mapOptional = rMonitoringAccessPoints.findById(mapNotManaged.getId());
+            if (!mapOptional.isPresent()) {
+                MonitoringAccessPoint map = mapOptional.get();
+                ExtZabbixHost problemDevice = devices.get(map.getDeviceId());
+                ExtZabbixHost problemSensor = devices.get(map.getSensorId());
+                if (problemDevice == null && problemSensor == null) {
+                    map.setConnectionState(APConnectionState.ACTIVE);
+                    map.setProblemDefinition("");
+                    map.setImportance(null);
+                } else if (problemDevice != null) {
+                    ExtZabbixTrigger trigger = problemDevice.triggerUnavailable();
+                    if (trigger != null) {
+                        map.setConnectionState(APConnectionState.DISABLED);
+                        map.setProblemDefinition(trigger.getDescription());
+                        map.setImportance(trigger.getImportance());
+                    } else {
+                        map.setConnectionState(APConnectionState.PROBLEM);
+                        map.setProblemDefinition(getProblemDefinition(problemDevice, problemSensor));
+                        map.setImportance(getImportance(problemDevice, problemSensor));
+                    }
                 }
+                map.setTimeState(LocalDateTime.now(ZoneId.systemDefault()));
+                rMonitoringAccessPoints.save(map);
             }
-            map.setTimeState(LocalDateTime.now(ZoneId.systemDefault()));
-            rMonitoringAccessPoints.save(map);
-        });
+        }
         updateAccessPointState();
         log.info("<-- going for activity status in zabbix");
     }
@@ -204,14 +209,18 @@ public class ServiceOrganization {
         Map<Integer, MonitoringAccessPoint> jmaps = rJournalMAP.findAll().stream().collect(Collectors.toMap(
                 jmap -> jmap.getAp().getId(),
                 JournalMAP::getMap));
-        for (AccessPoint point : accessPointsAll) {
-            MonitoringAccessPoint jmap = jmaps.get(point.getId());
-            APConnectionState newState = jmap == null ?
-                    APConnectionState.NOT_MONITORED
-                    : jmap.getConnectionState();
-            if (point.getConnectionState() != newState) {
-                point.setConnectionState(newState);
-                rAccessPoints.save(point);
+        for (AccessPoint pointNotManaged : accessPointsAll) {
+            Optional<AccessPoint> pointOptional = rAccessPoints.findById(pointNotManaged.getId());
+            if (pointOptional.isPresent()) {
+                AccessPoint point = pointOptional.get();
+                MonitoringAccessPoint jmap = jmaps.get(point.getId());
+                APConnectionState newState = jmap == null ?
+                        APConnectionState.NOT_MONITORED
+                        : jmap.getConnectionState();
+                if (point.getConnectionState() != newState) {
+                    point.setConnectionState(newState);
+                    rAccessPoints.save(point);
+                }
             }
         }
     }
