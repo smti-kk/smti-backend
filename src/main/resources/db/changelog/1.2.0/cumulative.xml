@@ -15,4 +15,5 @@
     <include file="0013-add-importance-to-monitoring-access-point.xml" relativeToChangelogFile="true" />
     <include file="0014-insert-CITY_DISTRICT-to-location.xml" relativeToChangelogFile="true" />
     <include file="0015-update-specified-parent-locatioin.xml" relativeToChangelogFile="true" />
+    <include file="0016-update-specified-locatioin.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
