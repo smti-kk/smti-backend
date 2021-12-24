@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.entities.LogicalCondition;
+import ru.cifrak.telecomit.backend.entities.TypeLocation;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 import ru.cifrak.telecomit.backend.entities.locationsummary.QLocationForReference;
@@ -25,13 +26,26 @@ import java.util.stream.Collectors;
 
 @Service
 public class LocationService {
+    public static final List<String> PARENT_LOCATION_TYPES
+            = Arrays.stream(TypeLocation.values())
+            .filter(typeLocation -> typeLocation != TypeLocation.REGION && typeLocation.isCanBeParent())
+            .map(TypeLocation::getShorted)
+            .collect(Collectors.toList());
+/*
     public static final List<String> PARENT_LOCATION_TYPES = new ArrayList<String>() {{
         add("го");
         add("гп");
         add("мо");
         add("р-н");
     }};
+*/
 
+    public static final List<String> NOT_PARENT_LOCATION_TYPES
+            = Arrays.stream(TypeLocation.values())
+            .filter(typeLocation -> !typeLocation.isCanBeParent())
+            .map(TypeLocation::getShorted)
+            .collect(Collectors.toList());
+/*
     public static final List<String> NOT_PARENT_LOCATION_TYPES = new ArrayList<String>() {{
         add("г");
         add("пгт");
@@ -39,6 +53,7 @@ public class LocationService {
         add("с");
         add("п");
     }};
+*/
 
     /**
      * Added .isTrue() and .isFalse(), because .asBoolean() returns ConstantImpl, that are not casts to Predicate.

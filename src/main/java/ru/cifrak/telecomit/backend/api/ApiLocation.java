@@ -3,7 +3,9 @@ package ru.cifrak.telecomit.backend.api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,11 +79,23 @@ public class ApiLocation {
                                 parentIds,
                                 locationNames,
                                 logicalCondition != null ? logicalCondition : LogicalCondition.AND),
-                        pageable);
+                        createPageable(pageable, canBeParent));
         log.info("<-- GET /api/location/location-reference/filtered/");
         return list;
     }
 
+    private Pageable createPageable(Pageable pageable, Boolean canBeParent) {
+        Sort sortingSection;
+        if (canBeParent == null || !canBeParent) {
+            sortingSection = Sort.by("locationParent.name").ascending()
+                    .and(Sort.by("name")).ascending();
+        } else {
+            sortingSection = Sort.by("name").ascending();
+        }
+        return PageRequest.of(pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sortingSection);
+    }
 
     @PostMapping("/location-reference/update/{id}/")
     @Transactional
