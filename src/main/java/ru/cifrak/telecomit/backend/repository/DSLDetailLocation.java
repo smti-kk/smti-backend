@@ -29,6 +29,11 @@ public interface DSLDetailLocation extends JpaRepository<LocationForTable, Integ
     @Override
     @EntityGraph("detail-locations")
     @NotNull
+    Iterable<LocationForTable> findAll(@NotNull Predicate predicate);
+
+    @Override
+    @EntityGraph("detail-locations")
+    @NotNull
     Page<LocationForTable> findAll(@NotNull Predicate predicate, @NotNull Pageable pageable);
 
     @Override
@@ -43,7 +48,7 @@ public interface DSLDetailLocation extends JpaRepository<LocationForTable, Integ
             "           and l.id in (select ul.id from u.locations ul)) " +
             " or exists (SELECT 1 FROM User u where u.id = :userId " +
             "           and l.locationParent in (select ul.id from u.locations ul))) " +
-            "           and l.type not like 'с/с' and l.type not like 'р-н' and l.type not like 'край' and l.type not like 'тер' and l.type not like 'округ' " +
+            "           and l.type not like 'с/с' and l.type not like 'р-н' and l.type not like 'край' and l.type not like 'тер' and l.type not like 'мо' " +
             " order by l.locationParent.id, l.name")
     List<LocationForTable> findByUserId(@NotNull Long userId);
 

@@ -1,0 +1,229 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="tolstonogovav" id="1">
+        <sql endDelimiter=";">
+            --             город Ачинск
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Ачинск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Ачинск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Боготол
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Боготол' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Боготол' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Бородино
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Бородино' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Бородино' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Дивногорск
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Дивногорск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Дивногорск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Енисейск
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Енисейск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Енисейск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Канск
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Канск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Канск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Красноярск
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Красноярск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Красноярск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Лесосибирск
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Лесосибирск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Лесосибирск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Минусинск
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Минусинск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Минусинск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Назарово
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Назарово' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Назарово' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Норильск
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Норильск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Норильск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Сосновоборск
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Сосновоборск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Сосновоборск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Шарыпово
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Шарыпово' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Шарыпово' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Железногорск
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Железногорск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Железногорск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Зеленогорск
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Зеленогорск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Зеленогорск' AND l.type = 'г'
+                LIMIT 1);
+
+--             посёлок ЗАТО Солнечный
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'ЗАТО Солнечный' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'ЗАТО Солнечный' AND l.type = 'п'
+                LIMIT 1);
+
+--             поселок Кедровый
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Кедровый' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.parent_id = (SELECT l.id
+                FROM public.location l
+                WHERE l.name = 'Кедровый' AND l.type = 'пгт'
+                LIMIT 1);
+        </sql>
+    </changeSet>
+</databaseChangeLog>

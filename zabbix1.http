@@ -1,0 +1,56 @@
+###      AUTHORIZATION
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "method": "user.login",
+  "params": {
+    "user": "api",
+    "password": "Gjktnftv110"
+  },
+  "id": 1,
+  "auth": null
+}
+
+> {% client.global.set("auth", response.body.result); %}
+
+###      GET ALL HOSTS
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "host.get",
+    "params": {
+        "output": [
+            "hostid",
+            "host"
+        ]
+    },
+    "filter": {
+        "hostid": "10434"
+    },
+    "id": 2,
+    "auth": "{{auth}}"
+}
+
+###      Get all triggers for Access Point
+POST http://espd-zabbix.cifra-k.ru/api_jsonrpc.php
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "method": "trigger.get",
+    "params": {
+        "hostids": 10507,
+        "output": "extend",
+        "filter": {
+            "status": 0,
+            "state": 0,
+            "value": 1
+        }
+    },
+    "id": 1,
+    "auth": "{{auth}}"
+}

@@ -18,7 +18,7 @@ public class TrunkChannelControllerImpl implements TrunkChannelController {
     }
 
     @Override
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_MUNICIPALITY", "ROLE_CONTRACTOR"})
     public List<TrunkChannel> list() {
         return trunkChannelRepository.findAll();
     }

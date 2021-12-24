@@ -32,14 +32,14 @@ public class ApiMapAccessPointsImpl implements ApiMapAccessPoints {
     }
 
     @Override
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_ORGANIZATION"})
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
     public List<MapAccessPointDTO> list(TypeAccessPoint type) {
         List<MapAccessPointDTO> result = mapAccessPointRepository.findAll(type).stream().map(MapAccessPointDTO::new).collect(Collectors.toList());
         return result;
     }
 
     @Override
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_ORGANIZATION"})
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
     public List<MapAccessPointDTO> list(TypeAccessPoint type, List<Double> bbox) {
         List<MapAccessPointDTO> result = mapAccessPointRepository.findAllByBbox(
                 bboxFactory.createPolygon(bbox),
@@ -49,7 +49,7 @@ public class ApiMapAccessPointsImpl implements ApiMapAccessPoints {
     }
 
     @Override
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_ORGANIZATION"})
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
     public List<MapAccessPointDTO> list(TypeAccessPoint type, LocalDateTime modified) {
 //        log.info("maps period params: ::{}  ::{}", type, modified);
         return mapAccessPointRepository.findByModifiedAndType(type, modified.atZone(ZoneId.of("Asia/Krasnoyarsk")).toLocalDateTime())
@@ -59,7 +59,7 @@ public class ApiMapAccessPointsImpl implements ApiMapAccessPoints {
     }
 
     @Override
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_ORGANIZATION"})
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_ORGANIZATION", "ROLE_CONTRACTOR"})
     public Integer locationId(Integer accessPointId) {
         return mapAccessPointRepository.locationId(accessPointId);
     }

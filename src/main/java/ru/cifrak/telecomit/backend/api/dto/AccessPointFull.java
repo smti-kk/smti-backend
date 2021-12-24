@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.locationtech.jts.geom.Point;
-import ru.cifrak.telecomit.backend.entities.AccessPoint;
-import ru.cifrak.telecomit.backend.entities.GovernmentDevelopmentProgram;
-import ru.cifrak.telecomit.backend.entities.Operator;
-import ru.cifrak.telecomit.backend.entities.TypeInternetAccess;
+import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
@@ -61,6 +58,8 @@ public class AccessPointFull {
     private Operator operator;
     @JsonProperty(value = "connection_type")
     private TypeInternetAccess connectionType;
+    private String equipment;
+    private String softType;
 
 
     public AccessPointFull(AccessPoint entity) {
@@ -98,5 +97,9 @@ public class AccessPointFull {
 
         this.operator = entity.getOperator();
         this.connectionType = entity.getInternetAccess();
+        if (entity.getClass().isAssignableFrom(ApZSPD.class)) {
+            this.equipment = ((ApZSPD) entity).getEquipment();
+            this.softType = ((ApZSPD) entity).getSoftType();
+        }
     }
 }

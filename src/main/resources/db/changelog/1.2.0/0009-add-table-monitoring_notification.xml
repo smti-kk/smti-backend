@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="tolstonogovav" id="1">
+        <createSequence incrementBy="1" sequenceName="monitoring_notification_id_seq" startValue="1"/>
+        <createTable schemaName="public" tableName="monitoring_notification">
+            <column name="id" type="bigint" defaultValueSequenceNext="monitoring_notification_id_seq">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="key_ap" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="key_user" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sended" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseColumnNames="key_ap"
+                baseTableName="monitoring_notification"
+                constraintName="fk_monitoring_notification_access_point"
+                referencedColumnNames="id"
+                referencedTableName="access_point"
+        />
+        <addForeignKeyConstraint
+                baseColumnNames="key_user"
+                baseTableName="monitoring_notification"
+                constraintName="fk_monitoring_notification_app_user"
+                referencedColumnNames="id"
+                referencedTableName="app_user"
+        />
+    </changeSet>
+</databaseChangeLog>

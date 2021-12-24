@@ -225,3 +225,4 @@ Authorization: Token {{auth_token}}
 #^ ^$ [name='main']
 #^media\/(?P<path>.*)$
 #^static\/(?P<path>.*)$
+GET http://localhost:8080/api/autocomplit?address=Ка

@@ -1,0 +1,410 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="tolstonogovav" id="1">
+        <sql endDelimiter=";">
+            --             город Ачинск
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Ачинск' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Ачинск' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Ачинск' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Ачинск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Ачинск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Боготол
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Боготол' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Боготол' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Боготол' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Боготол' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Боготол' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Бородино
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Бородино' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Бородино' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Бородино' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Бородино' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Бородино' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Дивногорск
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Дивногорск' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Дивногорск' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Дивногорск' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Дивногорск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Дивногорск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Енисейск
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Енисейск' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Енисейск' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Енисейск' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Енисейск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Енисейск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Канск
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Канск' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Канск' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Канск' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Канск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Канск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Красноярск
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Красноярск' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Красноярск' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Красноярск' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Красноярск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Красноярск' AND l.type = 'г'
+                LIMIT 1);
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Красноярск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Песчанка' AND l.type = 'д'
+                LIMIT 1);
+
+--             город Лесосибирск
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Лесосибирск' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Лесосибирск' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Лесосибирск' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Лесосибирск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Лесосибирск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Минусинск
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Минусинск' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Минусинск' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Минусинск' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Минусинск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Минусинск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Назарово
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Назарово' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Назарово' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Назарово' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Назарово' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Назарово' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Норильск
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Норильск' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Норильск' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Норильск' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Норильск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Норильск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Сосновоборск
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Сосновоборск' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Сосновоборск' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Сосновоборск' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Сосновоборск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Сосновоборск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Шарыпово
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Шарыпово' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Шарыпово' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Шарыпово' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Шарыпово' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Шарыпово' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Железногорск
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Железногорск' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Железногорск' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Железногорск' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Железногорск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Железногорск' AND l.type = 'г'
+                LIMIT 1);
+
+--             город Зеленогорск
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Зеленогорск' AND l.type = 'г'
+                LIMIT 1)
+              AND l.name = 'Зеленогорск' AND l.type = 'г' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Зеленогорск' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Зеленогорск' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Зеленогорск' AND l.type = 'г'
+                LIMIT 1);
+
+--             посёлок ЗАТО Солнечный
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'ЗАТО Солнечный' AND l.type = 'п'
+                LIMIT 1)
+              AND l.name = 'ЗАТО Солнечный' AND l.type = 'п' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'ЗАТО Солнечный' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'ЗАТО Солнечный' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'ЗАТО Солнечный' AND l.type = 'п'
+                LIMIT 1);
+
+--             поселок Кедровый
+            INSERT INTO public.location (fias, level, name, okato, oktmo, population, type, geo_data_id, parent_id)
+            SELECT l.fias, l.level, l.name, l.okato, l.oktmo, l.population, 'го', l.geo_data_id, l.parent_id
+            FROM public.location l
+            WHERE l.id = (SELECT l.id
+                          FROM location l
+                          WHERE l.name = 'Кедровый' AND l.type = 'пгт'
+                LIMIT 1)
+              AND l.name = 'Кедровый' AND l.type = 'пгт' AND NOT exists(
+            SELECT 1 FROM public.location l
+            WHERE l.name = 'Кедровый' AND l.type = 'го');
+            WITH
+                l1 AS (SELECT l.id
+                       FROM public.location l
+                       WHERE l.name = 'Кедровый' AND l.type = 'го')
+            UPDATE public.location l
+            SET parent_id = l1.id
+                FROM l1
+            WHERE l.id = (SELECT l.id
+                FROM location l
+                WHERE l.name = 'Кедровый' AND l.type = 'пгт'
+                LIMIT 1);
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.base.station.entity.BaseStation;
+import ru.cifrak.telecomit.backend.entities.LogicalCondition;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
 
 import java.util.Date;
@@ -14,7 +15,7 @@ import java.util.List;
 @RequestMapping("/api/base-stations")
 public interface BaseStationController {
     @GetMapping(params = {"page", "size"})
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_CONTRACTOR"})
     Page<BaseStation> baseStations(
             Pageable pageable,
             @RequestParam(value = "operatorIds", required = false) List<Integer> operatorIds,
@@ -25,15 +26,16 @@ public interface BaseStationController {
             @RequestParam(value = "propHeightRightBorder", required = false) Double propHeightRightBorder,
             @RequestParam(value = "actionDateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date actionDateFrom,
             @RequestParam(value = "actionDateTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date actionDateTo,
-            @RequestParam(value = "address", required = false) String address
+            @RequestParam(value = "address", required = false) String address,
+            @RequestParam(name = "logicalCondition", required = false) LogicalCondition logicalCondition
     );
 
     @GetMapping
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_CONTRACTOR"})
     List<BaseStation> baseStations();
 
     @GetMapping("/{baseStationId}")
-    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR"})
+    @Secured({"ROLE_ADMIN", "ROLE_OPERATOR", "ROLE_CONTRACTOR"})
     BaseStation baseStation(@PathVariable Integer baseStationId) throws NotFoundException;
 
     @DeleteMapping("/{baseStationId}")

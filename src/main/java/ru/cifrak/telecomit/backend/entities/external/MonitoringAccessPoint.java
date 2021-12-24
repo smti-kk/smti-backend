@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.entities.external;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.cifrak.telecomit.backend.entities.APConnectionState;
+import ru.cifrak.telecomit.backend.entities.ImportanceProblemStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -38,6 +39,9 @@ public class MonitoringAccessPoint implements Serializable {
     @Column
     private Integer idService;
 
+    /**
+     * In bytes.
+     */
     @Column
     private Long lastDayTraffic;
 
@@ -102,4 +106,14 @@ public class MonitoringAccessPoint implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private APConnectionState connectionState = APConnectionState.NOT_MONITORED;
+
+    @Column
+    private String problemDefinition;
+
+    @Column(nullable = false)
+    private LocalDateTime createDatetime;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private ImportanceProblemStatus importance;
 }

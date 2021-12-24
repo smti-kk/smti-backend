@@ -5,8 +5,11 @@ import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.auth.repository.RepositoryUser;
 import ru.cifrak.telecomit.backend.cache.entity.AuthTokenCache;
 import ru.cifrak.telecomit.backend.cache.repository.AuthTokenCacheRepository;
+import ru.cifrak.telecomit.backend.entities.UserRole;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -55,4 +58,8 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    @Override
+    public List<User> findDistinctByRolesInAndIsActiveTrueOrderById(Set<UserRole> roles) {
+        return userRepository.findDistinctByRolesInAndIsActiveTrueOrderById(roles);
+    };
 }

@@ -27,6 +27,7 @@ Content-Type: application/json
             "hostid",
             "host"
         ],
+        "selectGroups": "extend",
         "selectInterfaces": [
             "interfaceid",
             "ip"
@@ -252,10 +253,9 @@ Content-Type: application/json
     "jsonrpc": "2.0",
     "method": "trigger.get",
     "params": {
-        "hostids": "10434",
-        "output": ["triggerid","description"]
+        "hostids": "10498",
+        "output": ["triggerid", "description"]
     },
-    "auth": "038e1d7b1735c6a5436ee9eae095879e",
     "id": 1,
     "auth": "{{auth}}"
 }

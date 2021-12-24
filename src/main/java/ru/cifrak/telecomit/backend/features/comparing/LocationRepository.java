@@ -28,7 +28,7 @@ public interface LocationRepository extends JpaRepository<LocationFC, Integer>,
             " and l.type not like 'край'" +
             " and l.type not like 'с/с'" +
             " and l.type not like 'тер'" +
-            " and l.type not like 'округ'"
+            " and l.type not like 'мо'"
     )
     Page<LocationFC> findAll(@NotNull Pageable pageable);
 
