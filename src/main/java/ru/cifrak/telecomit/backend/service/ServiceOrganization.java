@@ -2,15 +2,16 @@ package ru.cifrak.telecomit.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cifrak.telecomit.backend.api.dto.MonitoringAccessPointWizardDTO;
 import ru.cifrak.telecomit.backend.api.dto.UTM5ReportTrafficDTO;
+import ru.cifrak.telecomit.backend.api.dto.external.ExtZabbixHost;
+import ru.cifrak.telecomit.backend.api.dto.external.ExtZabbixTrigger;
 import ru.cifrak.telecomit.backend.api.dto.response.ExternalSystemCreateStatusDTO;
-import ru.cifrak.telecomit.backend.entities.APConnectionState;
-import ru.cifrak.telecomit.backend.entities.AccessPoint;
-import ru.cifrak.telecomit.backend.entities.Organization;
+import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
 import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
 import ru.cifrak.telecomit.backend.exceptions.NotAllowedException;
@@ -19,6 +20,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryJournalMAP;
 import ru.cifrak.telecomit.backend.repository.RepositoryMonitoringAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
 
+import javax.annotation.Nullable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -26,6 +28,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -40,6 +43,7 @@ public class ServiceOrganization {
     private final ServiceExternalBlenders blenders;
     private final ServiceExternalZabbix sZabbix;
     private final ServiceExternalReports sReports;
+    private final ServiceMonitoringNotification serviceMonitoringNotification;
 
     public ServiceOrganization(RepositoryOrganization rOrganization,
                                RepositoryAccessPoints rAccessPoints,
@@ -47,7 +51,8 @@ public class ServiceOrganization {
                                RepositoryJournalMAP rJournalMAP,
                                ServiceExternalBlenders blenders,
                                ServiceExternalZabbix sZabbix,
-                               ServiceExternalReports sReports) {
+                               ServiceExternalReports sReports,
+                               ServiceMonitoringNotification serviceMonitoringNotification) {
         this.rOrganization = rOrganization;
         this.rAccessPoints = rAccessPoints;
         this.rMonitoringAccessPoints = rMonitoringAccessPoints;
@@ -55,13 +60,17 @@ public class ServiceOrganization {
         this.blenders = blenders;
         this.sZabbix = sZabbix;
         this.sReports = sReports;
+        this.serviceMonitoringNotification = serviceMonitoringNotification;
     }
 
     public List<Organization> all() {
         return rOrganization.findAll();
     }
 
-    public ExternalSystemCreateStatusDTO linkAccessPointWithMonitoringSystems(Integer id, Integer apid, MonitoringAccessPointWizardDTO wizard) throws NotAllowedException {
+    public ExternalSystemCreateStatusDTO linkAccessPointWithMonitoringSystems(Integer id,
+                                                                              Integer apid,
+                                                                              MonitoringAccessPointWizardDTO wizard,
+                                                                              User user) throws NotAllowedException {
         // xx.xx.xx. тут надо сходить по идее в БД и посмотреть а есть ли у нас данные наши.
         AccessPoint ap = rAccessPoints.getOne(apid);
         JournalMAP jjmap = rJournalMAP.findByAp_Id(ap.getId());
@@ -84,6 +93,7 @@ public class ServiceOrganization {
                     ap.setNetworks(wizard.getNetworks());
                     blenders.linkWithUTM5(ap, map);
                     log.info("(>) save monitoring access point");
+                    map.setCreateDatetime(LocalDateTime.now(ZoneId.systemDefault()));
                     map = rMonitoringAccessPoints.save(map);
                     log.info("(<) save monitoring access point");
                 } catch (Exception e) {
@@ -91,16 +101,16 @@ public class ServiceOrganization {
                 }
             } else {
                 errors.add("Список сетей ПУСТОЙ для точки подключения. Это необходимый параметр.");
-
             }
             // это мы заводим в заббикс
             try {
                 blenders.linkWithZabbix(ap, map, wizard);
                 log.info("(>) save monitoring access point");
+                map.setCreateDatetime(LocalDateTime.now(ZoneId.systemDefault()));
                 rMonitoringAccessPoints.save(map);
                 log.info("(<) save monitoring access point");
             } catch (Exception e) {
-                errors.equals("ZABBIX:error: " + e.getMessage());
+                errors.add("ZABBIX:error: " + e.getMessage());
             }
 
             // это сохранение в журнале точек бд
@@ -112,15 +122,23 @@ public class ServiceOrganization {
             rAccessPoints.save(ap);
             log.info("(<) save journal map");
             if (errors.isEmpty()) {
+                addMonitoringNotification(ap, user);
                 return new ExternalSystemCreateStatusDTO("Точка поставлена на мониторинг");
             } else if (errors.size() >= 2) {
                 return new ExternalSystemCreateStatusDTO("Точку НЕУДАЛОСЬ поставить на мониторинг", errors);
             } else {
+                addMonitoringNotification(ap, user);
                 return new ExternalSystemCreateStatusDTO("Точка поставлена на мониторинг с ограничениями", errors);
             }
 
         } else {
             throw new NotAllowedException("You cannot init Access Point in non belonging Organization");
+        }
+    }
+
+    private void addMonitoringNotification(AccessPoint ap, User user) {
+        if (user.getRoles().contains(UserRole.CONTRACTOR)) {
+            serviceMonitoringNotification.addMonitoringNotification(ap);
         }
     }
 
@@ -151,27 +169,90 @@ public class ServiceOrganization {
         log.info("[application]<- This is going for bytes in UTM5");
     }
 
-    @Scheduled(cron = "0 0 */1 * * *")
-    public void autoMonitoringAccesspointStatus() throws JsonProcessingException {
-        log.info("[application]-> going for activity status in zabbix");
-        List<JournalMAP> jmaps = rJournalMAP.findAll();
-        List<String> triggers = jmaps.stream().filter(i -> i.getMap().getDeviceTriggerUnavailable() != null).map(i -> i.getMap().getDeviceTriggerUnavailable().toString()).collect(Collectors.toList());
-        log.trace("triggers:: {}", triggers);
-        List<Long> items = sZabbix.getTriggersInTroubleState(triggers);
+    @Scheduled(cron = "0 0 * * * *")
+    public void autoMonitoringAccessPointStatus() throws JsonProcessingException {
+        log.info("--> going for activity status in zabbix");
+        List<MonitoringAccessPoint> maps = rMonitoringAccessPoints.findAll();
+        Map<String, ExtZabbixHost> devices = sZabbix.getHostsInProblemState(maps);
+        for (MonitoringAccessPoint mapNotManaged : maps) {
+            Optional<MonitoringAccessPoint> mapOptional = rMonitoringAccessPoints.findById(mapNotManaged.getId());
+            if (!mapOptional.isPresent()) {
+                MonitoringAccessPoint map = mapOptional.get();
+                ExtZabbixHost problemDevice = devices.get(map.getDeviceId());
+                ExtZabbixHost problemSensor = devices.get(map.getSensorId());
+                if (problemDevice == null && problemSensor == null) {
+                    map.setConnectionState(APConnectionState.ACTIVE);
+                    map.setProblemDefinition("");
+                    map.setImportance(null);
+                } else if (problemDevice != null) {
+                    ExtZabbixTrigger trigger = problemDevice.triggerUnavailable();
+                    if (trigger != null) {
+                        map.setConnectionState(APConnectionState.DISABLED);
+                        map.setProblemDefinition(trigger.getDescription());
+                        map.setImportance(trigger.getImportance());
+                    } else {
+                        map.setConnectionState(APConnectionState.PROBLEM);
+                        map.setProblemDefinition(getProblemDefinition(problemDevice, problemSensor));
+                        map.setImportance(getImportance(problemDevice, problemSensor));
+                    }
+                }
+                map.setTimeState(LocalDateTime.now(ZoneId.systemDefault()));
+                rMonitoringAccessPoints.save(map);
+            }
+        }
+        updateAccessPointState();
+        log.info("<-- going for activity status in zabbix");
+    }
 
-        jmaps.stream()
-                .peek(jmap -> {
-                            if (items.contains(jmap.getMap().getDeviceTriggerUnavailable())) {
-                                jmap.getMap().setConnectionState(APConnectionState.DISABLED);
-                                jmap.getMap().setTimeState(LocalDateTime.now());
-                            } else {
-                                jmap.getMap().setConnectionState(APConnectionState.ACTIVE);
-                                jmap.getMap().setTimeState(LocalDateTime.now());
-                            }
-                            rJournalMAP.save(jmap);
-                        }
-                ).collect(Collectors.toList());
+    private void updateAccessPointState() {
+        List<AccessPoint> accessPointsAll = rAccessPoints.findAll();
+        Map<Integer, MonitoringAccessPoint> jmaps = rJournalMAP.findAll().stream().collect(Collectors.toMap(
+                jmap -> jmap.getAp().getId(),
+                JournalMAP::getMap));
+        for (AccessPoint pointNotManaged : accessPointsAll) {
+            Optional<AccessPoint> pointOptional = rAccessPoints.findById(pointNotManaged.getId());
+            if (pointOptional.isPresent()) {
+                AccessPoint point = pointOptional.get();
+                MonitoringAccessPoint jmap = jmaps.get(point.getId());
+                APConnectionState newState = jmap == null ?
+                        APConnectionState.NOT_MONITORED
+                        : jmap.getConnectionState();
+                if (point.getConnectionState() != newState) {
+                    point.setConnectionState(newState);
+                    rAccessPoints.save(point);
+                }
+            }
+        }
+    }
 
-        log.info("[application]<- going for activity status in zabbix");
+    @NotNull
+    private String getProblemDefinition(@Nullable ExtZabbixHost problemDevice, @Nullable ExtZabbixHost problemSensor) {
+        List<String> result = new ArrayList<>();
+        if (problemDevice != null) {
+            result = problemDevice.getTriggers().stream().map(ExtZabbixTrigger::getDescription)
+                    .collect(Collectors.toList());
+        }
+        if (problemSensor != null) {
+            result.addAll(problemSensor.getTriggers().stream().map(ExtZabbixTrigger::getDescription)
+                    .collect(Collectors.toList()));
+        }
+        return String.join(", ", result);
+    }
+
+    @NotNull
+    private ImportanceProblemStatus getImportance(@Nullable ExtZabbixHost problemDevice,
+                                                  @Nullable ExtZabbixHost problemSensor) {
+        ImportanceProblemStatus result = ImportanceProblemStatus.LOW;
+        if (problemDevice != null) {
+            for (ExtZabbixTrigger t : problemDevice.getTriggers()) {
+                result = result.compareTo(t.getImportance()) > 0 ? result : t.getImportance();
+            }
+        }
+        if (problemSensor != null) {
+            for (ExtZabbixTrigger t : problemSensor.getTriggers()) {
+                result = result.compareTo(t.getImportance()) > 0 ? result : t.getImportance();
+            }
+        }
+        return result;
     }
 }

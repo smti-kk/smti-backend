@@ -4,11 +4,19 @@ import lombok.Data;
 import ru.cifrak.telecomit.backend.features.comparing.LocationFeature;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "feature_edit")
 @Data
-public class FeatureEditFull {
+@NamedEntityGraphs({
+        @NamedEntityGraph(
+                name = FeatureEditFull.FULL
+        )
+})
+public class FeatureEditFull implements Serializable {
+    public static final String FULL = "FeatureEditFull.FULL";
+
     @Id
     @SequenceGenerator(name = "FEATURE_EDIT_GENERATOR", sequenceName = "features_edit_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FEATURE_EDIT_GENERATOR")

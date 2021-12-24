@@ -6,8 +6,19 @@ import ru.cifrak.telecomit.backend.entities.*;
 import java.util.List;
 
 public class OrganizationSpec {
+    public static final Specification<Organization> TRUE_SPEC = (root, cq, cb) -> cb.conjunction();
+    public static final Specification<Organization> FALSE_SPEC = (root, cq, cb) -> cb.disjunction();
+
+    public static Specification<Organization> forOrCondition(Specification<Organization> spec) {
+        return spec != null ? spec : OrganizationSpec.FALSE_SPEC;
+    }
+
+    public static Specification<Organization> forAndCondition(Specification<Organization> spec) {
+        return spec != null ? spec : OrganizationSpec.TRUE_SPEC;
+    }
+
     public static Specification<Organization> inLocation(Location... locations) {
-        return (root, cq, cb) -> cb.and(root.get(Organization_.location).in(locations));
+        return (root, cq, cb) -> root.get(Organization_.location).in(locations);
     }
 
     public static Specification<Organization> withType(TypeOrganization type) {
@@ -23,14 +34,14 @@ public class OrganizationSpec {
     }
 
     public static Specification<Organization> inParent(List<Location> parents) {
-        return (root, cq, cb) -> cb.and(root.get(Organization_.location).get(Location_.parent).in(parents));
+        return (root, cq, cb) -> root.get(Organization_.location).get(Location_.parent).in(parents);
     }
 
     public static Specification<Organization> pStart(Integer pStart) {
-        return (root, cq, cb) -> cb.and(cb.greaterThanOrEqualTo(root.get(Organization_.location).get(Location_.population), (pStart)));
+        return (root, cq, cb) -> cb.greaterThanOrEqualTo(root.get(Organization_.location).get(Location_.population), (pStart));
     }
 
     public static Specification<Organization> pEnd(Integer pEnd) {
-        return (root, cq, cb) -> cb.and(cb.lessThanOrEqualTo(root.get(Organization_.location).get(Location_.population), (pEnd)));
+        return (root, cq, cb) -> cb.lessThanOrEqualTo(root.get(Organization_.location).get(Location_.population), (pEnd));
     }
 }

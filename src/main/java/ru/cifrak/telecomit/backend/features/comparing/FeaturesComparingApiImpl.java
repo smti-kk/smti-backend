@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.features.comparing;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +13,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.FeatureExportDTO;
 import ru.cifrak.telecomit.backend.entities.ExcelExportTypes;
+import ru.cifrak.telecomit.backend.entities.LogicalCondition;
 import ru.cifrak.telecomit.backend.entities.TcState;
 import ru.cifrak.telecomit.backend.entities.TcType;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
@@ -24,7 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static ru.cifrak.telecomit.backend.api.util.Reports.HelperReport.generateExelFeatureReport;
+import static ru.cifrak.telecomit.backend.api.util.reports.HelperReport.generateExelFeatureReport;
 
 @RestController
 public class FeaturesComparingApiImpl implements FeaturesComparingApi {
@@ -62,45 +64,26 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
             List<Integer> connectionTypes,
             Integer govProgram,
             Integer govProgramYear,
-            Integer hasAnyInternet,
+            Boolean hasAny,
+            LogicalCondition logicalCondition,
             TcType type,
             String... locationNames
     ) {
-        if (type.equals(TcType.INET)) {
-            return featureComparingService.locations(
-                    PageRequest.of(pageable.getPageNumber(),
-                            pageable.getPageSize(),
-                            Sort.by("locationParent.name").ascending().and(Sort.by("name").ascending())),
-                    parentIds,
-                    operators,
-                    null,
-                    connectionTypes,
-                    null,
-                    govProgram,
-                    govProgramYear,
-                    hasAnyInternet,
-                    null,
-                    locationNames
-            );
-        } else if (type.equals(TcType.MOBILE)) {
-            return featureComparingService.locations(
-                    PageRequest.of(pageable.getPageNumber(),
-                            pageable.getPageSize(),
-                            Sort.by("locationParent.name").ascending().and(Sort.by("name").ascending())),
-                    parentIds,
-                    null,
-                    operators,
-                    null,
-                    connectionTypes,
-                    govProgram,
-                    govProgramYear,
-                    null,
-                    hasAnyInternet,
-                    locationNames
-            );
-        } else {
-            return null;
-        }
+        return featureComparingService.locations(
+                pageable,
+                parentIds,
+                operators,
+                connectionTypes,
+                govProgram,
+                govProgramYear,
+                getHasAnyNotNull(hasAny),
+                type,
+                logicalCondition,
+                locationNames);
+    }
+
+    private boolean getHasAnyNotNull(Boolean hasAny) {
+        return hasAny != null ? hasAny : false;
     }
 
     @Override
@@ -110,51 +93,56 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
             List<Integer> connectionTypes,
             Integer govProgram,
             Integer govProgramYear,
-            Integer hasAnyInternet,
+            Boolean hasAny,
+            LogicalCondition logicalCondition,
             TcType type,
             String... locationNames
     ) throws IOException {
-        List<LocationFC> locationFCS;
-        if (type.equals(TcType.INET)) {
-            locationFCS = featureComparingService.locations(
-                    parentIds,
-                    operators,
-                    null,
-                    connectionTypes,
-                    null,
-                    govProgram,
-                    govProgramYear,
-                    hasAnyInternet,
-                    null,
-                    locationNames
-            );
-        } else if (type.equals(TcType.MOBILE)) {
-            locationFCS = featureComparingService.locations(
-                    parentIds,
-                    null,
-                    operators,
-                    null,
-                    connectionTypes,
-                    govProgram,
-                    govProgramYear,
-                    null,
-                    hasAnyInternet,
-                    locationNames
-            );
-        } else {
-            throw new IllegalArgumentException("Unsupported type " + type);
-        }
-        List<FeatureExportDTO> collect = locationFCS
-                .stream()
-                .map(str -> new FeatureExportDTO(str, type))
-                .collect(Collectors.toList());
-        IntStream.range(0, collect.size()).forEach(i -> collect.get(i).setPp(i + 1));
-        ByteArrayResource resource = new ByteArrayResource(generateExelFeatureReport(type).exportToByteArray(collect));
+        ByteArrayResource resource = getResource(
+                parentIds,
+                operators,
+                connectionTypes,
+                govProgram,
+                govProgramYear,
+                getHasAnyNotNull(hasAny),
+                type,
+                logicalCondition,
+                locationNames);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, new ReportName(ExcelExportTypes.fromTcType(type)).toString())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(resource.contentLength())
                 .body(resource);
+    }
+
+    @NotNull
+    private ByteArrayResource getResource(
+            List<Integer> parentIds,
+            List<Integer> operators,
+            List<Integer> connectionTypes,
+            Integer govProgram,
+            Integer govProgramYear,
+            Boolean hasAny,
+            TcType type,
+            LogicalCondition logicalCondition,
+            String... locationNames
+    ) throws IOException {
+        List<FeatureExportDTO> collect = featureComparingService.locations(
+                        parentIds,
+                        operators,
+                        connectionTypes,
+                        govProgram,
+                        govProgramYear,
+                        hasAny,
+                        type,
+                        logicalCondition,
+                        locationNames
+                )
+                .stream()
+                .map(str -> new FeatureExportDTO(str, type))
+                .collect(Collectors.toList());
+        IntStream.range(0, collect.size()).forEach(i -> collect.get(i).setPp(i + 1));
+        return new ByteArrayResource(generateExelFeatureReport(type).exportToByteArray(collect));
     }
 
     @Override
@@ -175,5 +163,4 @@ public class FeaturesComparingApiImpl implements FeaturesComparingApi {
         repositoryWritableTc.save(feature);
         locationService.refreshCache();
     }
-
 }
