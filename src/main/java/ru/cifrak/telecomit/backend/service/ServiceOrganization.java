@@ -19,16 +19,16 @@ import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryJournalMAP;
 import ru.cifrak.telecomit.backend.repository.RepositoryMonitoringAccessPoints;
 import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
+import ru.cifrak.telecomit.backend.service.storage.FileSystemStorageService;
 
 import javax.annotation.Nullable;
+import java.io.*;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -44,6 +44,7 @@ public class ServiceOrganization {
     private final ServiceExternalZabbix sZabbix;
     private final ServiceExternalReports sReports;
     private final ServiceMonitoringNotification serviceMonitoringNotification;
+    private final FileSystemStorageService fileSystemStorageService;
 
     public ServiceOrganization(RepositoryOrganization rOrganization,
                                RepositoryAccessPoints rAccessPoints,
@@ -52,7 +53,8 @@ public class ServiceOrganization {
                                ServiceExternalBlenders blenders,
                                ServiceExternalZabbix sZabbix,
                                ServiceExternalReports sReports,
-                               ServiceMonitoringNotification serviceMonitoringNotification) {
+                               ServiceMonitoringNotification serviceMonitoringNotification,
+                               FileSystemStorageService fileSystemStorageService) {
         this.rOrganization = rOrganization;
         this.rAccessPoints = rAccessPoints;
         this.rMonitoringAccessPoints = rMonitoringAccessPoints;
@@ -61,6 +63,7 @@ public class ServiceOrganization {
         this.sZabbix = sZabbix;
         this.sReports = sReports;
         this.serviceMonitoringNotification = serviceMonitoringNotification;
+        this.fileSystemStorageService = fileSystemStorageService;
     }
 
     public List<Organization> all() {
@@ -170,13 +173,17 @@ public class ServiceOrganization {
     }
 
     @Scheduled(cron = "0 0 * * * *")
-    public void autoMonitoringAccessPointStatus() throws JsonProcessingException {
+    public void autoMonitoringAccessPointStatus() throws IOException {
         log.info("--> going for activity status in zabbix");
+        PrintWriter pw = getPrintWriter();
         List<MonitoringAccessPoint> maps = rMonitoringAccessPoints.findAll();
+        Map<Integer, Integer> jmaps = rJournalMAP.findAll().stream().collect(Collectors.toMap(
+                jmap -> jmap.getMap().getId(),
+                jmap -> jmap.getAp().getId()));
         Map<String, ExtZabbixHost> devices = sZabbix.getHostsInProblemState(maps);
         for (MonitoringAccessPoint mapNotManaged : maps) {
             Optional<MonitoringAccessPoint> mapOptional = rMonitoringAccessPoints.findById(mapNotManaged.getId());
-            if (!mapOptional.isPresent()) {
+            if (mapOptional.isPresent()) {
                 MonitoringAccessPoint map = mapOptional.get();
                 ExtZabbixHost problemDevice = devices.get(map.getDeviceId());
                 ExtZabbixHost problemSensor = devices.get(map.getSensorId());
@@ -184,12 +191,14 @@ public class ServiceOrganization {
                     map.setConnectionState(APConnectionState.ACTIVE);
                     map.setProblemDefinition("");
                     map.setImportance(null);
-                } else if (problemDevice != null) {
-                    ExtZabbixTrigger trigger = problemDevice.triggerUnavailable();
-                    if (trigger != null) {
+                } else {
+                    ExtZabbixTrigger triggerUnavailable = problemDevice != null
+                            ? problemDevice.triggerUnavailable()
+                            : null;
+                    if (triggerUnavailable != null) {
                         map.setConnectionState(APConnectionState.DISABLED);
-                        map.setProblemDefinition(trigger.getDescription());
-                        map.setImportance(trigger.getImportance());
+                        map.setProblemDefinition(triggerUnavailable.getDescription());
+                        map.setImportance(triggerUnavailable.getImportance());
                     } else {
                         map.setConnectionState(APConnectionState.PROBLEM);
                         map.setProblemDefinition(getProblemDefinition(problemDevice, problemSensor));
@@ -197,32 +206,131 @@ public class ServiceOrganization {
                     }
                 }
                 map.setTimeState(LocalDateTime.now(ZoneId.systemDefault()));
-                rMonitoringAccessPoints.save(map);
+                String smap = getString(map, jmaps);
+                if (!smap.isEmpty()) {
+                    pw.print(smap);
+                }
             }
         }
-        updateAccessPointState();
+        pw.close();
+        doOriginal();
         log.info("<-- going for activity status in zabbix");
     }
 
-    private void updateAccessPointState() {
+
+
+    @NotNull
+    private String getString(MonitoringAccessPoint map, Map<Integer, Integer> jmaps) {
+        StringJoiner sj = new StringJoiner("::--::");
+        Integer apId = jmaps.get(map.getId());
+        Integer mapId = map.getId();
+        if (apId != null) {
+            sj.add(String.valueOf(apId));
+            sj.add(String.valueOf(mapId));
+            sj.add(map.getConnectionState().name());
+            sj.add(map.getProblemDefinition());
+            sj.add(map.getImportance() == null ? "" : map.getImportance().name());
+            sj.add("::!!::");
+        }
+        return sj.toString();
+    }
+
+    @NotNull
+    private PrintWriter getPrintWriter() throws IOException {
+        File upload1 = new File(fileSystemStorageService.getRootLocation().toFile(), "upload1");
+        upload1.delete();
+        FileWriter fileWriter = new FileWriter(upload1);
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+        return printWriter;
+    }
+
+    private void doOriginal() throws IOException {
+        File upload1 = new File(fileSystemStorageService.getRootLocation().toFile(), "upload1");
+        File upload = new File(fileSystemStorageService.getRootLocation().toFile(), "upload");
+        upload.delete();
+        Files.copy(upload1.toPath(), upload.toPath());
+        upload1.delete();
+    }
+
+    public void updateAccessPointState() throws FileNotFoundException {
+        File upload = new File(fileSystemStorageService.getRootLocation().toFile(), "upload");
+        Map<Integer, ApMonitoring> mapAp = new HashMap<>();
+        if (upload.exists()) {
+            Scanner scanner = new Scanner(upload);
+            scanner.useDelimiter("::!!::");
+            Integer apId;
+            Integer mapId;
+            while (scanner.hasNext()) {
+                String string = scanner.next();
+                String[] strings = string.split("::--::");
+                if (strings.length == 5) {
+                    apId = Integer.parseInt(strings[0]);
+                    mapId = Integer.parseInt(strings[1]);
+                    mapAp.put(apId,
+                            new ApMonitoring(
+                                    apId,
+                                    mapId,
+                                    APConnectionState.valueOf(strings[2]),
+                                    strings[3],
+                                    strings[4].isEmpty() ? null : ImportanceProblemStatus.valueOf(strings[4])
+                            )
+                    );
+                } else if (strings.length == 3) {
+                    apId = Integer.parseInt(strings[0]);
+                    mapId = Integer.parseInt(strings[1]);
+                    mapAp.put(apId,
+                            new ApMonitoring(
+                                    apId,
+                                    mapId,
+                                    APConnectionState.ACTIVE,
+                                    "",
+                                    null
+                            )
+                    );
+                }
+            }
+        }
         List<AccessPoint> accessPointsAll = rAccessPoints.findAll();
-        Map<Integer, MonitoringAccessPoint> jmaps = rJournalMAP.findAll().stream().collect(Collectors.toMap(
-                jmap -> jmap.getAp().getId(),
-                JournalMAP::getMap));
         for (AccessPoint pointNotManaged : accessPointsAll) {
             Optional<AccessPoint> pointOptional = rAccessPoints.findById(pointNotManaged.getId());
             if (pointOptional.isPresent()) {
                 AccessPoint point = pointOptional.get();
-                MonitoringAccessPoint jmap = jmaps.get(point.getId());
-                APConnectionState newState = jmap == null ?
-                        APConnectionState.NOT_MONITORED
-                        : jmap.getConnectionState();
-                if (point.getConnectionState() != newState) {
-                    point.setConnectionState(newState);
-                    rAccessPoints.save(point);
+                ApMonitoring apMonitoring = mapAp.get(point.getId());
+                if (apMonitoring == null) {
+                    if (point.getConnectionState() != APConnectionState.NOT_MONITORED) {
+                        point.setConnectionState(APConnectionState.NOT_MONITORED);
+                        rAccessPoints.save(point);
+                    }
+                } else {
+                    if (apMonitoring.getApConnectionState() != point.getConnectionState()) {
+                        point.setConnectionState(apMonitoring.getApConnectionState());
+                        rAccessPoints.save(point);
+                    }
                 }
             }
         }
+        List<MonitoringAccessPoint> maps = rMonitoringAccessPoints.findAll();
+        Map<Integer, Integer> jmaps = rJournalMAP.findAll().stream().collect(Collectors.toMap(
+                jmap -> jmap.getMap().getId(),
+                jmap -> jmap.getAp().getId()));
+        for (MonitoringAccessPoint mapNotManaged : maps) {
+            Optional<MonitoringAccessPoint> mapOptional = rMonitoringAccessPoints.findById(mapNotManaged.getId());
+            if (mapOptional.isPresent()) {
+                MonitoringAccessPoint map = mapOptional.get();
+                ApMonitoring apMonitoring = mapAp.get(jmaps.get(map.getId()));
+                if (apMonitoring != null) {
+                    if (apMonitoring.getApConnectionState() != map.getConnectionState()
+                    || !apMonitoring.getProblemDefinition().equals(map.getProblemDefinition())
+                    || apMonitoring.getImportance() != map.getImportance()) {
+                        map.setConnectionState(apMonitoring.getApConnectionState());
+                        map.setProblemDefinition(apMonitoring.getProblemDefinition());
+                        map.setImportance(apMonitoring.getImportance());
+                        rMonitoringAccessPoints.save(map);
+                    }
+                }
+            }
+        }
+        upload.delete();
     }
 
     @NotNull

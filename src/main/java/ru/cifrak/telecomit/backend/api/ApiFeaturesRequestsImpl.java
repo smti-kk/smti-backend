@@ -59,7 +59,6 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     private static final String DEFAULT_SORT_FIELD = "id";
     private final RepositoryFeaturesRequests repositoryFeaturesRequests;
     private final RepositoryAccount repositoryAccount;
-    private final RepositoryLocation repositoryLocation;
     private final RepositoryLocationFeaturesRequests repositoryLocationFeaturesRequests;
     private final ServiceWritableTc serviceWritableTc;
     private final LocationService locationService;
@@ -68,7 +67,6 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
 
     public ApiFeaturesRequestsImpl(RepositoryFeaturesRequests repositoryFeaturesRequests,
                                    RepositoryAccount repositoryAccount,
-                                   RepositoryLocation repositoryLocation,
                                    RepositoryLocationFeaturesRequests repositoryLocationFeaturesRequests,
                                    ServiceWritableTc serviceWritableTc,
                                    LocationService locationService,
@@ -76,7 +74,6 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
                                    DSLDetailLocation dslDetailLocation) {
         this.repositoryFeaturesRequests = repositoryFeaturesRequests;
         this.repositoryAccount = repositoryAccount;
-        this.repositoryLocation = repositoryLocation;
         this.repositoryLocationFeaturesRequests = repositoryLocationFeaturesRequests;
         this.serviceWritableTc = serviceWritableTc;
         this.locationService = locationService;
@@ -106,36 +103,27 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         Page<LocationFeaturesEditingRequestFull> requests =
                 getLocationFeaturesEditingRequestFulls(
                         getFeatureEditFullTrueChangesSpecification(
-                                parents, contractStart, contractEnd, actions, users, locations, STATUSES_FOR_JOURNAL,
+                                null, parents, contractStart, contractEnd, actions, users, locations, STATUSES_FOR_JOURNAL,
                                 logicalCondition),
                         createPageable(pageable, sort));
         log.info("<-- GET /api/features-requests/full/");
         return requests;
     }
 
-    private List<LocationForTable> getLocations(User user, List<LocationForTable> locations) {
+    private List<LocationForTable> getUserLocations(User user) {
         List<LocationForTable> result = new ArrayList<>();
-        dslDetailLocation.findAll(
-                        getPredicate(locations,
-                                repositoryAccount.findById(user.getId()).orElseThrow(NotFoundException::new)
-                                        .getLocations()
-                                        .stream().map(DLocationBase::getId).collect(Collectors.toList())))
-                .forEach(result::add);
+        List<Integer> locationsByUser = repositoryAccount.findById(user.getId()).orElseThrow(NotFoundException::new)
+                .getLocations()
+                .stream().map(DLocationBase::getId).collect(Collectors.toList());
+        BooleanExpression locationsByUserPredicate = QLocationForTable.locationForTable.id.in(locationsByUser)
+                .or(QLocationForTable.locationForTable.locationParent.id.in(locationsByUser));
+        dslDetailLocation.findAll(locationsByUserPredicate).forEach(result::add);
         return result;
-    }
-
-    private BooleanExpression getPredicate(List<LocationForTable> locations, List<Integer> locationsByUser) {
-        QLocationForTable locationForTable = QLocationForTable.locationForTable;
-        BooleanExpression locationsByUserPredicate = locationForTable.id.in(locationsByUser);
-        BooleanExpression locationsPredicate = locations != null ?
-                locationForTable.id.in(
-                        locations.stream().map(LocationForTable::getId).collect(Collectors.toList()))
-                : TRUE_EXPRESSION;
-        return locationsPredicate.and(locationsByUserPredicate);
     }
 
     @Nullable
     private Specification<FeatureEditFullTrueChanges> getFeatureEditFullTrueChangesSpecification(
+            List<LocationForTable> userLocations,
             List<LocationForTable> parents,
             LocalDate contractStart,
             LocalDate contractEnd,
@@ -149,7 +137,7 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         Specification<FeatureEditFullTrueChanges> mainSpec = logicalCondition == LogicalCondition.OR ?
                 getSpecsWithOrCondition(specs)
                 : getSpecsWithAndCondition(specs);
-        return getSpecsWithAndCondition(getNecessarySpecs()).and(mainSpec);
+        return getSpecsWithAndCondition(getNecessarySpecs(userLocations)).and(mainSpec);
     }
 
     private List<Specification<FeatureEditFullTrueChanges>> getSpecs(List<LocationForTable> parents,
@@ -188,8 +176,12 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         return result.get();
     }
 
-    private List<Specification<FeatureEditFullTrueChanges>> getNecessarySpecs() {
-        return new ArrayList<>();
+    private List<Specification<FeatureEditFullTrueChanges>> getNecessarySpecs(List<LocationForTable> userLocations) {
+        ArrayList<Specification<FeatureEditFullTrueChanges>> result = new ArrayList<>();
+        if (userLocations != null) {
+            result.add(getSpecLocations(userLocations));
+        }
+        return result;
     }
 
     private Specification<FeatureEditFullTrueChanges> getSpecContractStart(LocalDate contractStart) {
@@ -261,7 +253,7 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         long timeStart = System.currentTimeMillis();
         List<LocationFeaturesEditingRequestFull> requests = getLocationFeaturesEditingRequestFullsCollection(
                 getFeatureEditFullTrueChangesSpecification(
-                        parents, contractStart, contractEnd, actions, users, locations, STATUSES_FOR_JOURNAL,
+                        null, parents, contractStart, contractEnd, actions, users, locations, STATUSES_FOR_JOURNAL,
                         logicalCondition),
                 sort);
         Workbook book = createBook(requests);
@@ -555,8 +547,8 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         Page<LocationFeaturesEditingRequestFull> requests =
                 getLocationFeaturesEditingRequestFulls(
                         getFeatureEditFullTrueChangesSpecification(
-                                parents, null, null, null,
-                                Collections.singletonList(user), getLocations(user, locations), statuses,
+                                getUserLocations(user), parents, null, null, null,
+                                Collections.singletonList(user), locations, statuses,
                                 logicalCondition == null ? LogicalCondition.AND : logicalCondition),
                         createPageable(pageable, null));
         log.info("<-- GET /api/features-requests/by-user");
