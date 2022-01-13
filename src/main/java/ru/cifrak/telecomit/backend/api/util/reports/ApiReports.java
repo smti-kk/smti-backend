@@ -26,10 +26,12 @@ import ru.cifrak.telecomit.backend.repository.RepositoryAccessPointsFull;
 import ru.cifrak.telecomit.backend.repository.specs.AccessPointFullSpecification;
 import ru.cifrak.telecomit.backend.service.ReportName;
 import ru.cifrak.telecomit.backend.service.ServiceExternalReports;
+import ru.cifrak.telecomit.backend.service.ServiceOrganization;
 import ru.cifrak.telecomit.backend.utils.Converter;
 import ru.cifrak.telecomit.backend.utils.export.ExcelExporter;
 import ru.cifrak.telecomit.backend.utils.export.ExportToExcelConfiguration;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -50,12 +52,15 @@ import static ru.cifrak.telecomit.backend.api.util.reports.HelperReport.generate
 public class ApiReports {
     private final RepositoryAccessPointsFull rAccessPoints;
     private final ServiceExternalReports serviceExternalReports;
+    private final ServiceOrganization serviceOrganization;
 
     @Autowired
     public ApiReports(RepositoryAccessPointsFull rAccessPoints,
-                      ServiceExternalReports serviceExternalReports) {
+                      ServiceExternalReports serviceExternalReports,
+                      ServiceOrganization serviceOrganization) {
         this.rAccessPoints = rAccessPoints;
         this.serviceExternalReports = serviceExternalReports;
+        this.serviceOrganization = serviceOrganization;
     }
 
     @GetMapping(value = "/ap-all/export/")
@@ -186,8 +191,9 @@ public class ApiReports {
             @RequestParam(name = "address", required = false) String address,
             @RequestParam(name = "ap", required = false) List<TypeAccessPoint> ap,
             @RequestParam(name = "logicalCondition", required = false) LogicalCondition logicalCondition,
-            @RequestParam(name = "location", required = false) Location... locations) {
+            @RequestParam(name = "location", required = false) Location... locations) throws FileNotFoundException {
         log.info("--> GET /api/report/organization/ap-all//monitoring/");
+        serviceOrganization.updateAccessPointState();
         List<AccessPointFull> apList = getAp(type, smo, gdp, inettype, parents, organization, contractor,
                 pStart, pEnd, address, ap, logicalCondition, locations);
         List<APConnectionState> reportApList = getReportAp(apList);
