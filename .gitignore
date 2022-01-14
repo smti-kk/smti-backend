@@ -107,3 +107,4 @@ data
 application.properties
 docker/revision
 payload
+.app
