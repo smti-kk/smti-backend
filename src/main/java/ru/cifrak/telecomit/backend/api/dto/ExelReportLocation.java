@@ -4,11 +4,25 @@ import lombok.Data;
 import ru.cifrak.telecomit.backend.entities.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
 public class ExelReportLocation {
+    private static Map<String, Integer> INTERNET_WEIGHT = new HashMap<String, Integer>() {{
+        put("ростелеком", 1);
+        put("дом.ру", 2);
+        put("сибттк", 3);
+        put("искра", 4);
+        put("другие", 5);
+    }};
+
+    private static Map<String, Integer> MOBILE_WEIGHT = new HashMap<String, Integer>() {{
+        put("мегафон", 1);
+        put("теле2", 2);
+        put("мтс", 3);
+        put("билайн", 4);
+    }};
 
     private Integer pp;
     private String locationType;
@@ -62,15 +76,22 @@ public class ExelReportLocation {
                         .anyMatch(ap -> ap instanceof ApSMO)
                 )? "1" : "0";
 
-        this.internet = location.getTechnicalCapabilities().stream()
-                .filter(tc -> tc instanceof TcInternet && tc.getState() == TcState.ACTIVE)
-                .map(tc -> tc.getOperator().getName() + " (" + Optional.ofNullable(((TcInternet) tc).getTrunkChannel()).map(TypeTrunkChannel::getName)
+        List<String> internetOperators = location.getTechnicalCapabilities().stream()
+                .filter(tc1 -> tc1 instanceof TcInternet && tc1.getState() == TcState.ACTIVE)
+                .map(tc1 -> tc1.getOperator().getName() + " (" + Optional.ofNullable(((TcInternet) tc1).getTrunkChannel()).map(TypeTrunkChannel::getName)
                         .orElse("Не выбрано") + ")")
-                .collect(Collectors.joining(","));
-        this.telephone = location.getTechnicalCapabilities().stream()
-                .filter(tc -> tc instanceof TcMobile && tc.getState() == TcState.ACTIVE)
-                .map(tc -> tc.getOperator().getName() + " (" + ((TcMobile) tc).getType().getName() + ")")
-                .collect(Collectors.joining(","));
+                .collect(Collectors.toList());
+        internetOperators.removeIf(o -> getInternetWeight(o) == null);
+        internetOperators.sort(getInternetWeightComparator());
+        this.internet = String.join(",", internetOperators);
+
+        List<String> mobileOperators = location.getTechnicalCapabilities().stream()
+                .filter(tc1 -> tc1 instanceof TcMobile && tc1.getState() == TcState.ACTIVE)
+                .map(tc1 -> tc1.getOperator().getName() + " (" + ((TcMobile) tc1).getType().getName() + ")")
+                .collect(Collectors.toList());
+        mobileOperators.removeIf(o -> getMobileWeight(o) == null);
+        mobileOperators.sort(getMobileWeightComparator());
+        this.telephone = String.join(",", mobileOperators);
 
         this.payphone = location.getTechnicalCapabilities().stream()
                 .filter(tc -> tc instanceof TcPayphone && tc.getState() == TcState.ACTIVE)
@@ -100,4 +121,29 @@ public class ExelReportLocation {
         this.fias = location.getFias().toString();
     }
 
+    @org.jetbrains.annotations.NotNull
+    private Comparator<String> getInternetWeightComparator() {
+        return (o1, o2) -> {
+            int o1Weight = getInternetWeight(o1);
+            int o2Weight = getInternetWeight(o2);
+            return o1Weight - o2Weight;
+        };
+    }
+
+    @org.jetbrains.annotations.NotNull
+    private Comparator<String> getMobileWeightComparator() {
+        return (o1, o2) -> {
+            int o1Weight = getMobileWeight(o1);
+            int o2Weight = getMobileWeight(o2);
+            return o1Weight - o2Weight;
+        };
+    }
+
+    private Integer getInternetWeight(String operator) {
+        return INTERNET_WEIGHT.get(operator.substring(0, operator.indexOf("(")).trim().toLowerCase());
+    }
+
+    private Integer getMobileWeight(String operator) {
+        return MOBILE_WEIGHT.get(operator.substring(0, operator.indexOf("(")).trim().toLowerCase());
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -22,6 +23,11 @@ public class FileSystemStorageService implements StorageService {
 	@Autowired
 	public FileSystemStorageService(StorageProperties properties) {
 		this.rootLocation = Paths.get(properties.getLocation());
+		rootLocation.toFile().mkdirs();
+	}
+
+	public Path getRootLocation() {
+		return rootLocation;
 	}
 
 	@Override
@@ -34,6 +40,11 @@ public class FileSystemStorageService implements StorageService {
 		} catch (IOException e) {
 			throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
 		}
+	}
+
+	@Override
+	public boolean storeFile(File file) {
+		return false;
 	}
 
 	@Override
