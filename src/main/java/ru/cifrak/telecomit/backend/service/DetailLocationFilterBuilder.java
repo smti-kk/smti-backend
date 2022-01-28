@@ -2,6 +2,7 @@ package ru.cifrak.telecomit.backend.service;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
+import ru.cifrak.telecomit.backend.entities.TypeLocation;
 import ru.cifrak.telecomit.backend.entities.locationsummary.QLocationForTable;
 import ru.cifrak.telecomit.backend.entities.map.QTechnicalCapabilityForLocationTable;
 import ru.cifrak.telecomit.backend.utils.LogicalAndOrLogicalOrFilter;
@@ -68,6 +69,12 @@ public class DetailLocationFilterBuilder {
         return this;
     }
 
+    /**
+     * Adds condition for parent location. Must be without TypeLocation.REGION.
+     *
+     * @param parent name of parent location
+     * @return filter with added parent filter
+     */
     public DetailLocationFilterBuilder parent(@Nullable String parent) {
         if (parent != null) {
             filter = filter.with(
@@ -78,6 +85,13 @@ public class DetailLocationFilterBuilder {
                             .like("%" + parent.toLowerCase() + "%")
             );
         }
+        filter = filter.with(
+                QLocationForTable.locationForTable
+                        .locationParent
+                        .type
+                        .lower()
+                        .ne(TypeLocation.REGION.getShorted())
+        );
         return this;
     }
 
