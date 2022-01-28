@@ -115,14 +115,14 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(7, ExelReportLocation::getSMO, "СЗО");
         exportToExcelConfiguration.addColumn(8, ExelReportLocation::getRSMO, "РСЗО");
         exportToExcelConfiguration.addColumn(9, ExelReportLocation::getZSPD, "ЗСПД");
-        exportToExcelConfiguration.addColumn(10, ExelReportLocation::getTelephone, "Сотовая связь");
-        exportToExcelConfiguration.addColumn(11, ExelReportLocation::getInternet, "Интернет");
-        exportToExcelConfiguration.addColumn(12, ExelReportLocation::getCellular, "Телефон");
-        exportToExcelConfiguration.addColumn(13, ExelReportLocation::getPayphone, "Таксофон (кол-во)");
-        exportToExcelConfiguration.addColumn(14,Boolean.class, ExelReportLocation::getInfomat, "Инфомат");
+        exportToExcelConfiguration.addColumn(10, ExelReportLocation::getCellular, "Телефон");
+        exportToExcelConfiguration.addColumn(11, ExelReportLocation::getPayphone, "Таксофон (кол-во)");
+        exportToExcelConfiguration.addColumn(12,Boolean.class, ExelReportLocation::getInfomat, "Инфомат");
+        exportToExcelConfiguration.addColumn(13, ExelReportLocation::getPost, "Почта");
+        exportToExcelConfiguration.addColumn(14, ExelReportLocation::getTV, "Телевидение");
         exportToExcelConfiguration.addColumn(15, ExelReportLocation::getRadio, "Радио");
-        exportToExcelConfiguration.addColumn(16, ExelReportLocation::getTV, "Телевидение");
-        exportToExcelConfiguration.addColumn(17, ExelReportLocation::getPost, "Почта");
+        exportToExcelConfiguration.addColumn(16, ExelReportLocation::getTelephone, "Сотовая связь");
+        exportToExcelConfiguration.addColumn(17, ExelReportLocation::getInternet, "Интернет");
         exportToExcelConfiguration.addColumn(18, ExelReportLocation::getFias, "ФИАС");
         exportToExcelConfiguration.addColumn(19, ExelReportLocation::getProgram, "Программа");
 
