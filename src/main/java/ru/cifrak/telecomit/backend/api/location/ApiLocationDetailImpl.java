@@ -28,6 +28,7 @@ import ru.cifrak.telecomit.backend.service.LocationService;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -102,7 +103,10 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
     public ResponseEntity<ByteArrayResource> exportExcel(List<Integer> locationIds) throws IOException {
         log.info("->GET /api/detail-locations/export-excel");
         List<Location> allById = repositoryLocation.findAllById(locationIds);
-
+        allById.sort(Comparator.comparing((Location o) -> o.getParent().getName())
+                .thenComparing((Location o) -> o.getParent().getType())
+                .thenComparing(Location::getName)
+                .thenComparing(Location::getType));
         List<ExelReportLocation> collect = allById
                 .stream()
                 .map(ExelReportLocation::new)
