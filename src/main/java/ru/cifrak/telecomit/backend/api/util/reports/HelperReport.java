@@ -106,7 +106,7 @@ public class HelperReport {
         ExportToExcelConfiguration<ExelReportLocation> exportToExcelConfiguration = new ExportToExcelConfiguration<>();
 
         exportToExcelConfiguration.addColumn(0, Integer.class, ExelReportLocation::getPp, "№ п/п");
-        exportToExcelConfiguration.addColumn(1, ExelReportLocation::getDistrictName, "Район");
+        exportToExcelConfiguration.addColumn(1, ExelReportLocation::getDistrictName, "Муниципальное образование");
         exportToExcelConfiguration.addColumn(2, ExelReportLocation::getDistrict, "Тип МО");
         exportToExcelConfiguration.addColumn(3, ExelReportLocation::getLocationName, "Населенный пункт");
         exportToExcelConfiguration.addColumn(4, ExelReportLocation::getLocationType, "Тип населенного пункта");
