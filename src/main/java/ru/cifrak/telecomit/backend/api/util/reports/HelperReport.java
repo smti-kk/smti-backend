@@ -124,6 +124,7 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(16, ExelReportLocation::getTV, "Телевидение");
         exportToExcelConfiguration.addColumn(17, ExelReportLocation::getPost, "Почта");
         exportToExcelConfiguration.addColumn(18, ExelReportLocation::getFias, "ФИАС");
+        exportToExcelConfiguration.addColumn(19, ExelReportLocation::getProgram, "Программа");
 
         return new ExcelExporter<>(exportToExcelConfiguration);
     }
