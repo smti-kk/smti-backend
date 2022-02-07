@@ -44,6 +44,7 @@ public class ExelReportLocation {
     private String post;
     private String OKATO;
     private String fias;
+    private String program;
 
 
     public ExelReportLocation(@NotNull Location location) {
@@ -119,6 +120,20 @@ public class ExelReportLocation {
         this.OKATO = location.getOkato();
 
         this.fias = location.getFias().toString();
+
+        List<String> program = new ArrayList<>();
+        if (location.getOrganizations() != null) {
+            for (Organization organization : location.getOrganizations()) {
+                if (organization != null && organization.getAccessPoints() != null) {
+                    for (AccessPoint accessPoint : organization.getAccessPoints()) {
+                        if (accessPoint != null && accessPoint.getGovernmentDevelopmentProgram() != null) {
+                            program.add(accessPoint.getGovernmentDevelopmentProgram().getAcronym());
+                        }
+                    }
+                }
+            }
+        }
+        this.program = String.join(",", program);
     }
 
     @org.jetbrains.annotations.NotNull

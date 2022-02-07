@@ -1,0 +1,54 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="tolstonogovav" id="1">
+        <sql endDelimiter=";">
+            UPDATE public.technical_capability tc
+            SET state = 'ARCHIVE'
+            WHERE tc.id in (
+                SELECT tc.id
+                FROM public.technical_capability tc RIGHT JOIN (
+                    SELECT tc.key_location, tc.key_operator, tc.split, tc.key_type_mobile, tc.state
+                    FROM public.technical_capability tc
+                    WHERE tc.split = 'MOBILE' AND tc.state = 'ACTIVE'
+                    GROUP BY tc.split, tc.key_location, tc.key_operator, tc.split, tc.key_type_mobile, tc.state
+                    HAVING count(1) > 1
+                ) AS tc1 ON tc.key_location = tc1.key_location AND tc.key_operator = tc1.key_operator
+                    AND tc.split = tc1.split AND tc.key_type_mobile = tc1.key_type_mobile
+                    AND tc.state = tc1.state
+                WHERE tc.id NOT IN (
+                    SELECT max(tc.id)
+                    FROM public.technical_capability tc
+                    WHERE split = 'MOBILE' AND tc.state = 'ACTIVE'
+                    GROUP BY tc.split, tc.key_location, tc.key_operator, tc.split,  tc.key_type_mobile
+                    HAVING count(1) > 1
+                )
+            )
+            ;
+
+            UPDATE public.technical_capability tc
+            SET state = 'ARCHIVE'
+            WHERE tc.id in (
+                SELECT tc.id
+                FROM public.technical_capability tc RIGHT JOIN (
+                    SELECT tc.key_location, tc.key_operator, tc.split, tc.key_type_trunkchannel, tc.state
+                    FROM public.technical_capability tc
+                    WHERE tc.split = 'INET' AND tc.state = 'ACTIVE'
+                    GROUP BY tc.split, tc.key_location, tc.key_operator, tc.split, tc.key_type_trunkchannel, tc.state
+                    HAVING count(1) > 1
+                ) AS tc1 ON tc.key_location = tc1.key_location AND tc.key_operator = tc1.key_operator
+                    AND tc.split = tc1.split AND tc.key_type_trunkchannel = tc1.key_type_trunkchannel
+                    AND tc.state = tc1.state
+                WHERE tc.id NOT IN (
+                    SELECT max(tc.id)
+                    FROM public.technical_capability tc
+                    WHERE split = 'INET' AND tc.state = 'ACTIVE'
+                    GROUP BY tc.split, tc.key_location, tc.key_operator, tc.split,  tc.key_type_trunkchannel
+                    HAVING count(1) > 1
+                )
+            )
+            ;
+        </sql>
+    </changeSet>
+</databaseChangeLog>
