@@ -137,8 +137,11 @@ public class ExelReportLocation {
         if (location.getTechnicalCapabilities() != null) {
             for (TechnicalCapability tc : location.getTechnicalCapabilities()) {
                 if (tc != null && tc.getGovProgram() != null) {
-                    technicalCapabilityPrograms.add(tc.getGovProgram().getAcronym()
-                            + (tc.getGovYearComplete() != null ? " " + String.valueOf(tc.getGovYearComplete()) : ""));
+                    String govProgram = tc.getGovProgram().getAcronym()
+                            + (tc.getGovYearComplete() != null ? " " + String.valueOf(tc.getGovYearComplete()) : "");
+                    if (!technicalCapabilityPrograms.contains(govProgram)) {
+                        technicalCapabilityPrograms.add(govProgram);
+                    }
                 }
             }
         }
