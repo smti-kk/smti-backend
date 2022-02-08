@@ -121,19 +121,29 @@ public class ExelReportLocation {
 
         this.fias = location.getFias().toString();
 
-        List<String> program = new ArrayList<>();
+        List<String> programs = new ArrayList<>();
         if (location.getOrganizations() != null) {
             for (Organization organization : location.getOrganizations()) {
                 if (organization != null && organization.getAccessPoints() != null) {
                     for (AccessPoint accessPoint : organization.getAccessPoints()) {
                         if (accessPoint != null && accessPoint.getGovernmentDevelopmentProgram() != null) {
-                            program.add(accessPoint.getGovernmentDevelopmentProgram().getAcronym());
+                            programs.add(accessPoint.getGovernmentDevelopmentProgram().getAcronym());
                         }
                     }
                 }
             }
         }
-        this.program = String.join(",", program);
+        List<String> technicalCapabilityPrograms = new ArrayList<>();
+        if (location.getTechnicalCapabilities() != null) {
+            for (TechnicalCapability tc : location.getTechnicalCapabilities()) {
+                if (tc != null && tc.getGovProgram() != null) {
+                    technicalCapabilityPrograms.add(tc.getGovProgram().getAcronym()
+                            + (tc.getGovYearComplete() != null ? " " + String.valueOf(tc.getGovYearComplete()) : ""));
+                }
+            }
+        }
+        programs.addAll(technicalCapabilityPrograms);
+        this.program = String.join(",", programs);
     }
 
     @org.jetbrains.annotations.NotNull
