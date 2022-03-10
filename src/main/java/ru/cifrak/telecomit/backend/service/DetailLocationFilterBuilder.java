@@ -139,7 +139,7 @@ public class DetailLocationFilterBuilder {
     public BooleanExpression build() {
         BooleanExpression expression = filter.build();
         BooleanExpression withoutNpRnSSTer = QLocationForTable.locationForTable
-                .type.notIn(Arrays.asList("р-н", "край", "с/с", "тер", "мо"));
+                .type.notIn(Arrays.asList("р-н", "край", "с/с", "тер", "мо", "го"));
         if (expression != null) {
             return expression.and(withoutNpRnSSTer);
         } else {
