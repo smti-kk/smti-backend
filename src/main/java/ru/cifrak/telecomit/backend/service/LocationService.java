@@ -76,7 +76,11 @@ public class LocationService {
         QLocationParent parent = QLocationParent.locationParent;
         JPAQuery<LocationParent> jQ = new JPAQuery<LocationParent>(entityManager)
                 .from(parent)
-                .where(parent.level.eq(1));
+                .where(parent.type.eq("р-н")
+                        .or(parent.type.eq("мо")
+                                .or(parent.type.eq("го"))
+                        )
+                );
         List<LocationParent> orderedParents = jQ.fetch();
         orderedParents.sort(((Comparator<LocationParent>) (l1, l2) -> {
             int orderValueL1 =
