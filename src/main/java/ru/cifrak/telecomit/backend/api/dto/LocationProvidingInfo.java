@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.api.dto;
 import lombok.Data;
 import ru.cifrak.telecomit.backend.entities.locationsummary.LocationForTable;
 import ru.cifrak.telecomit.backend.entities.map.TechnicalCapabilityForLocationTable;
+import ru.cifrak.telecomit.backend.service.LocationService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,22 +66,14 @@ public class LocationProvidingInfo {
     private List<LocationForTable> geChilds(LocationForTable location) {
         List<LocationForTable> childs = new ArrayList<>();
         if (location.getPopulation() != 0 && location.getPopulation() != null) {
-            if (!"р-н".equals(location.getType())
-                    && !"край".equals(location.getType())
-                    && !"с/с".equals(location.getType())
-                    && !"тер".equals(location.getType())
-                    && !"мо".equals(location.getType())
+            if (!LocationService.PARENT_LOCATION_TYPES.contains(location.getType())
             ) {
                 childs.add(location);
             }
         }
         location.getChildren().forEach(c -> {
             if (c.getChildren().isEmpty()) {
-                if (!"р-н".equals(c.getType())
-                        && !"край".equals(c.getType())
-                        && !"с/с".equals(c.getType())
-                        && !"тер".equals(c.getType())
-                        && !"мо".equals(c.getType())
+                if (!LocationService.PARENT_LOCATION_TYPES.contains(c.getType())
                 ) {
                     childs.add(c);
                 }

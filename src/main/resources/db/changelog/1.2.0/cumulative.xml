@@ -18,4 +18,5 @@
     <include file="0016-update-specified-locatioin.xml" relativeToChangelogFile="true" />
     <include file="0017-update-krasnoyarsk.xml" relativeToChangelogFile="true" />
     <include file="0018-remove-duplicate-technical-capabilities.xml" relativeToChangelogFile="true" />
+    <include file="0019-fix-level-in-location-go.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
