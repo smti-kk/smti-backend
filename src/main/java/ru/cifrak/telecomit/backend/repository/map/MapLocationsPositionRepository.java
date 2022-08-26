@@ -20,7 +20,7 @@ public interface MapLocationsPositionRepository extends Repository<MapLocation, 
 
     @Query("SELECT l" +
             " FROM MapLocation l" +
-            " where l.type not in ('р-н', 'край', 'с/с', 'тер', 'мо') and l.geoData is not null")
+            " where l.type not in ('край', 'го', 'мо', 'р-н') and l.geoData is not null")
     @EntityGraph("map-location-full")
     @Cacheable("map-locations")
     List<MapLocation> findAll();
