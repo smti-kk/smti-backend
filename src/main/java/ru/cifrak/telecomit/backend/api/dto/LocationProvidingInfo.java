@@ -67,6 +67,8 @@ public class LocationProvidingInfo {
         List<LocationForTable> childs = new ArrayList<>();
         if (location.getPopulation() != 0 && location.getPopulation() != null) {
             if (!LocationService.PARENT_LOCATION_TYPES.contains(location.getType())
+                    && !"с/с".equals(location.getType())
+                    && !"тер".equals(location.getType())
             ) {
                 childs.add(location);
             }
@@ -74,6 +76,8 @@ public class LocationProvidingInfo {
         location.getChildren().forEach(c -> {
             if (c.getChildren().isEmpty()) {
                 if (!LocationService.PARENT_LOCATION_TYPES.contains(c.getType())
+                        && !"с/с".equals(c.getType())
+                        && !"тер".equals(c.getType())
                 ) {
                     childs.add(c);
                 }
