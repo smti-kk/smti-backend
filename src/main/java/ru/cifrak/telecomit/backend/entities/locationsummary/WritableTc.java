@@ -148,6 +148,6 @@ public class WritableTc {
 
     @JsonIgnore
     public boolean isPlan() {
-        return governmentDevelopmentProgram != null && govYearComplete >= Year.now().getValue();
+        return governmentDevelopmentProgram != null && govYearComplete > Year.now().getValue();
     }
 }
