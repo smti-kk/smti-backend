@@ -1,0 +1,12 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="tolstonogovav" id="1">
+        <sql endDelimiter=";">
+            UPDATE public.location
+            SET level = 1, parent_id = 4
+            WHERE name = 'Кедровый' AND type = 'го';
+        </sql>
+    </changeSet>
+</databaseChangeLog>
