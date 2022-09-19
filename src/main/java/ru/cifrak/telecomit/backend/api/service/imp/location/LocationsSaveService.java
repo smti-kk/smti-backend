@@ -59,7 +59,7 @@ public class LocationsSaveService {
     private Integer getLocationDTOLevel(LocationFromExcelDTO locationDTO) {
         int level = repository.findMaxLevel();
         Location mo = repository.findByNameAndType(locationDTO.getNameMO(), locationDTO.getTypeMO());
-        if (mo != null && mo.getLevel() < level) {
+        if (mo != null) {
             level = mo.getLevel() + 1;
         }
         return level;
