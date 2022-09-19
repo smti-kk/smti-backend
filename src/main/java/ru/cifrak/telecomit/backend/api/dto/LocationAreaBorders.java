@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.locationtech.jts.geom.MultiPolygon;
+import ru.cifrak.telecomit.backend.entities.GeoData;
 import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
@@ -27,6 +28,7 @@ public class LocationAreaBorders implements Serializable {
         this.id = entity.getId();
         this.name = entity.getName();
         this.fullName = entity.getType() + " " + entity.getName();
-        this.geometry = entity.getGeoData().getBorder();
+        GeoData geoData = entity.getGeoData();
+        this.geometry = geoData.getBorder();
     }
 }
