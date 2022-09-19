@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.LocationAreaBorders;
 import ru.cifrak.telecomit.backend.entities.GeoData;
+import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.repository.RepositoryGeoLocation;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 
@@ -35,9 +36,11 @@ public class ApiGEO {
     public List<LocationAreaBorders> locations() {
         log.info("->GET /api/location-area");
         log.info("<- GET /api/location-area");
-        return repository.areaBorders().stream()
+        List<Location> locations = repository.areaBorders();
+        List<LocationAreaBorders> collect = locations.stream()
                 .map(LocationAreaBorders::new)
                 .collect(Collectors.toList());
+        return collect;
     }
 
     @GetMapping("/location-foo/")
