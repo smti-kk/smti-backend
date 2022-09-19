@@ -22,4 +22,6 @@
     <include file="0020-fix-level-in-location-g-from-go.xml" relativeToChangelogFile="true" />
     <include file="0021-remove-subsidy-program-from-tc-and-ap.xml" relativeToChangelogFile="true" />
     <include file="0022-fix-parent-in-mo.xml" relativeToChangelogFile="true" />
+    <include file="0023-add-geometry.xml" relativeToChangelogFile="true" />
+    <include file="0024-add-geometry-for-mo.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
