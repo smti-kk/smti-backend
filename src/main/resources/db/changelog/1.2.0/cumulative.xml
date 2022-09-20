@@ -24,4 +24,7 @@
     <include file="0022-fix-parent-in-mo.xml" relativeToChangelogFile="true" />
     <include file="0023-add-geometry.xml" relativeToChangelogFile="true" />
     <include file="0024-add-geometry-for-mo.xml" relativeToChangelogFile="true" />
+    <include file="0025-add-geometry-for-mo-other.xml" relativeToChangelogFile="true" />
+    <include file="0026-add-geometry-for-mo-penzh.xml" relativeToChangelogFile="true" />
+    <include file="0027-add-geometry-for-not-mo.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
