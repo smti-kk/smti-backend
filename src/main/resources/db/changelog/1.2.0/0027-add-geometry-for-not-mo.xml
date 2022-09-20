@@ -1,0 +1,188 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="tolstonogovav" id="1">
+        <sql endDelimiter=";">
+            insert into public.geo_data (administrative_center, border, fias, okato, oktmo, osm_id)
+            VALUES
+                ('SRID=4326; POINT (165.9975 55.1975)',null,'716c481d-d63d-48fc-ae29-800ae130e2a5',null, null, null),
+                ('SRID=4326; POINT (158.7075 55.9280555555556)',null,'5d0f4bf6-9f65-4c69-9ad7-3ad1c069ea1a',null, null, null),
+                ('SRID=4326; POINT (158.971111111111 56.0536111111111)',null,'9f4f0916-850b-4c9e-aff9-904788ef0653',null, null, null),
+                ('SRID=4326; POINT (158.418333333333 52.9069444444444)',null,'b75a9701-5cd4-4623-99d5-4fa7463ceb47',null, null, null),
+                ('SRID=4326; POINT (158.388333333333 53.1830555555556)',null,'3da129ee-9b72-45ec-bef9-07b69e1eed4e',null, null, null),
+                ('SRID=4326; POINT (158.346944444444 53.095)',null,'5462ce6d-0c21-44bd-b5e3-4bda9f117acd',null, null, null),
+                ('SRID=4326; POINT (158.254166666667 52.9622222222222)',null,'5030f354-a346-424b-ad35-edc6c545386d',null, null, null),
+                ('SRID=4326; POINT (158.228888888889 52.9361111111111)',null,'def2da0e-1d6c-48c9-9ef0-c3f85f01ebe1',null, null, null),
+                ('SRID=4326; POINT (158.211388888889 53.2791666666667)',null,'7f394b62-2063-4643-b37d-4d5246aa20e4',null, null, null),
+                ('SRID=4326; POINT (158.1825 53.2772222222222)',null,'9fcf6329-4332-4ca4-a85f-7fbc14a58122',null, null, null),
+                ('SRID=4326; POINT (158.206944444444 53.3544444444444)',null,'bf439c1f-16b0-4036-81fa-306fdfceadb5',null, null, null),
+                ('SRID=4326; POINT (158.131666666667 53.2652777777778)',null,'1c56c941-7939-49fd-881f-1d28f2bf73a2',null, null, null),
+                ('SRID=4326; POINT (158.027222222222 53.2566666666667)',null,'a76ad39f-2163-4491-8580-c055cf112a73',null, null, null),
+                ('SRID=4326; POINT (158.083055555556 53.2644444444444)',null,'760b1d3c-a049-440c-bf93-5835d8a6a471',null, null, null),
+                ('SRID=4326; POINT (157.747222222222 53.1222222222222)',null,'d87ec982-b344-4b5c-9168-57a5c92202da',null, null, null),
+                ('SRID=4326; POINT (157.691388888889 53.1527777777778)',null,'aa2637d0-487d-45f9-b2e9-4621a25b191c',null, null, null),
+                ('SRID=4326; POINT (157.634722222222 53.18)',null,'ced7cf2f-06bc-44b6-9c4d-728eeda41222',null, null, null),
+                ('SRID=4326; POINT (157.472777777778 53.3325)',null,'ae020514-a34b-4cba-a6cf-05193bca5530',null, null, null),
+                ('SRID=4326; POINT (157.621944444444 53.6958333333333)',null,'c34e203d-7529-4b50-a60a-ae2707ce697a',null, null, null),
+                ('SRID=4326; POINT (158.333611111111 53.0466666666667)',null,'6f322061-9820-4835-9132-624ce98bdd6c',null, null, null),
+                ('SRID=4326; POINT (158.3 53.0836111111111)',null,'53257ac9-61ac-4a81-ae12-14e8b0eafcc7',null, null, null),
+                ('SRID=4326; POINT (158.535277777778 53.0972222222222)',null,'bd528b43-1ec8-4469-b78e-d0dd7139d7fa',null, null, null),
+                ('SRID=4326; POINT (158.515 53.1227777777778)',null,'48551b4e-f71d-4542-9258-de8a5e7b02f2',null, null, null),
+                ('SRID=4326; POINT (158.496111111111 53.1291666666667)',null,'939df3b7-e280-40be-bb3a-20638de8cee4',null, null, null),
+                ('SRID=4326; POINT (158.494722222222 53.1394444444444)',null,'69627fd5-bcb1-4c0f-8868-5ee38cb2fb3e',null, null, null),
+                ('SRID=4326; POINT (158.553333333333 53.0891666666667)',null,'7d01c583-b979-4c97-af08-753bc93edfc8',null, null, null),
+                ('SRID=4326; POINT (158.578611111111 53.0819444444444)',null,'fc4130e9-1c6e-4397-a2d6-dca38aeea418',null, null, null),
+                ('SRID=4326; POINT (158.567777777778 53.0811111111111)',null,'ece62da2-49e0-4f81-a2a0-c680d159c761',null, null, null),
+                ('SRID=4326; POINT (158.287777777778 53.2691666666667)',null,'c7d9b29f-2c8f-409f-ac1b-0b7d63646a4a',null, null, null),
+                ('SRID=4326; POINT (158.323611111111 53.2652777777778)',null,'f4790a2a-7500-4c44-93ba-9a77aecffbbf',null, null, null),
+                ('SRID=4326; POINT (158.389722222222 53.3480555555556)',null,'089a76c8-52f3-4429-961b-68198b4d25bd',null, null, null),
+                ('SRID=4326; POINT (158.62 54.6955555555556)',null,'8cc56ffb-8c3a-4fdd-8fda-8de5fd7653f4',null, null, null),
+                ('SRID=4326; POINT (159.0675 55.1213888888889)',null,'82f02981-d514-4061-9be0-eb00b337158e',null, null, null),
+                ('SRID=4326; POINT (158.211111111111 54.4002777777778)',null,'7e2f5167-58ad-4ba6-a3b9-0c66352c95ef',null, null, null),
+                ('SRID=4326; POINT (158.006111111111 54.1769444444444)',null,'7aa1c569-2a16-4319-b8ee-91594bec7f78',null, null, null),
+                ('SRID=4326; POINT (158.813888888889 54.8091666666667)',null,'5d813bf6-c42a-45a3-8385-7c3ec3061d15',null, null, null),
+                ('SRID=4326; POINT (159.637777777778 55.6041666666667)',null,'e8f1a4fa-cb82-45db-b159-30c48471f1d2',null, null, null),
+                ('SRID=4326; POINT (159.757222222222 55.5391666666667)',null,'1f48b721-6479-463b-a55b-16b92828b214',null, null, null),
+                ('SRID=4326; POINT (159.374166666667 55.2730555555556)',null,'1dece02a-0f33-4905-aac2-5f8458b1f22c',null, null, null),
+                ('SRID=4326; POINT (158.655833333333 53.0369444444444)',null,'0b3f0723-5fe0-4c23-af44-8082166c6d2e',null, null, null),
+                ('SRID=4326; POINT (155.946111111111 54.2988888888889)',null,'da2156c4-da2a-4e08-87c9-71a99f99a63f',null, null, null),
+                ('SRID=4326; POINT (155.843333333333 54.155)',null,'41b03188-829b-4a5f-adbb-eaee95224c8e',null, null, null),
+                ('SRID=4326; POINT (155.591111111111 55.0266666666667)',null,'c38ee3ad-1dd2-489b-a59d-7066923c4428',null, null, null),
+                ('SRID=4326; POINT (155.612777777778 55.6097222222222)',null,'a8a27fcf-cff9-45e7-b3ec-9f0fb9aa6e74',null, null, null),
+                ('SRID=4326; POINT (156.2825 52.8244444444444)',null,'f797a740-c264-4a3a-a242-b2a3501b86c3',null, null, null),
+                ('SRID=4326; POINT (156.243333333333 52.6597222222222)',null,'8de8cede-238b-4515-8c2b-3866206ec882',null, null, null),
+                ('SRID=4326; POINT (156.501388888889 51.4938888888889)',null,'aa0dc98b-8328-48bb-b21a-c87ce8d9a148',null, null, null),
+                ('SRID=4326; POINT (157.041388888889 52.9186111111111)',null,'ec47ae9b-9a29-4a90-af69-8512be06a3a2',null, null, null),
+                ('SRID=4326; POINT (156.573333333333 52.9288888888889)',null,'41ab9a11-8d14-4552-90e8-94f0fb596b5b',null, null, null),
+                ('SRID=4326; POINT (156.693888888889 53.0191666666667)',null,'a7307650-6d6d-47c0-8966-c1af01484742',null, null, null),
+                ('SRID=4326; POINT (156.5225 51.5008333333333)',null,'486a12d1-c230-4212-aca4-386eda55ab66',null, null, null),
+                ('SRID=4326; POINT (156.806944444444 51.4647222222222)',null,'fa6dd4e8-85eb-47d0-8182-a5ae7d891c4b',null, null, null),
+                ('SRID=4326; POINT (156.631111111111 51.4866666666667)',null,'abf7275f-eebe-455c-868e-a7bd351189de',null, null, null),
+                ('SRID=4326; POINT (162.534444444444 56.2377777777778)',null,'fff77bcc-32e5-4fb6-9b62-7a624b07bf1f',null, null, null),
+                ('SRID=4326; POINT (162.706944444444 56.2511111111111)',null,'54e4bf72-136a-4194-8f74-56bacea768f0',null, null, null),
+                ('SRID=4326; POINT (160.846388888889 56.3161111111111)',null,'7488c7f3-635a-4fcb-84f9-022c7000ea66',null, null, null),
+                ('SRID=4326; POINT (159.868888888889 56.0491666666667)',null,'8e47de99-f6a1-485b-b2f3-00cd0b6ec353',null, null, null),
+                ('SRID=4326; POINT (160.063888888889 56.2547222222222)',null,'6614af6f-3bd6-48fa-929b-a1c65f3a1930',null, null, null),
+                ('SRID=4326; POINT (163.066944444444 59.2444444444444)',null,'14025672-bbdc-44dd-94d3-9688e2b8546f',null, null, null),
+                ('SRID=4326; POINT (163.121944444444 59.1086111111111)',null,'e379e77e-6a64-4df1-9905-44054c699472',null, null, null),
+                ('SRID=4326; POINT (163.165833333333 59.0397222222222)',null,'298ce5a9-8804-4ce2-874a-35760c87d6c3',null, null, null),
+                ('SRID=4326; POINT (163.188055555556 59.4891666666667)',null,'6127fd64-f4e8-4ad4-a4e0-c2818b8b9f77',null, null, null),
+                ('SRID=4326; POINT (164.186666666667 59.9613888888889)',null,'b6839c69-7442-44b0-a675-3d26eb24c566',null, null, null),
+                ('SRID=4326; POINT (162.304166666667 58.5586111111111)',null,'d160f3ed-aa47-4901-83df-bdd21d9450e4',null, null, null),
+                ('SRID=4326; POINT (165.461388888889 60.1858333333333)',null,'d131e19e-e665-41d2-a66d-0effc0b55283',null, null, null),
+                ('SRID=4326; POINT (166.848611111111 60.9586111111111)',null,'a943110b-56d6-4663-a272-f25e322f0fa8',null, null, null),
+                ('SRID=4326; POINT (166.055555555556 60.4283333333333)',null,'694069cd-fffc-4299-b191-e3c6f0943cf8',null, null, null),
+                ('SRID=4326; POINT (169.065833333333 60.8288888888889)',null,'2e04a2ce-99c5-41ca-b36f-399884417876',null, null, null),
+                ('SRID=4326; POINT (169.605555555556 60.4427777777778)',null,'e7d330a1-fbbf-46ef-b0fe-eb2c8e5837e1',null, null, null),
+                ('SRID=4326; POINT (170.507777777778 61.0080555555556)',null,'340bc55f-f9bd-4351-8362-389d9823a7b6',null, null, null),
+                ('SRID=4326; POINT (169.143333333333 60.5552777777778)',null,'54bd7300-b5fe-4f95-bdac-6791aad27b9b',null, null, null),
+                ('SRID=4326; POINT (166.016111111111 60.3713888888889)',null,'7da6e8c7-0b64-4097-8f39-c7eba1574ead',null, null, null),
+                ('SRID=4326; POINT (166.208055555556 62.4675)',null,'2794b045-e31f-4c56-a4d4-1eaa6a9b0880',null, null, null),
+                ('SRID=4326; POINT (165.339444444444 62.485)',null,'57f9ae45-9209-4ae0-a47c-fac158a83512',null, null, null),
+                ('SRID=4326; POINT (167.973055555556 63.1702777777778)',null,'47c31df0-5f46-4084-bc3e-f1489fa12e7d',null, null, null),
+                ('SRID=4326; POINT (166.700277777778 62.0505555555556)',null,'9a849153-21f7-414e-9aaa-abcfe8b97df2',null, null, null),
+                ('SRID=4326; POINT (167.584166666667 63.7258333333333)',null,'1ec14b29-9f1e-46e0-94b8-33839a032612',null, null, null),
+                ('SRID=4326; POINT (163.091388888889 62.4166666666667)',null,'286a3206-a290-49c7-8f40-f90831d2bc5e',null, null, null),
+                ('SRID=4326; POINT (166.579444444444 62.7125)',null,'af1a1916-f153-47b6-a0a6-cd00a1d6a283',null, null, null),
+                ('SRID=4326; POINT (158.682222222222 57.7611111111111)',null,'1893d980-482d-4ce8-92f9-910e17d86766',null, null, null),
+                ('SRID=4326; POINT (158.287777777778 57.7255555555556)',null,'3d955611-7ac5-4b98-b1b2-c7751ce36b6c',null, null, null),
+                ('SRID=4326; POINT (159.393333333333 58.3063888888889)',null,'4bfe355a-de1f-4ecf-a8dd-9e3fbdcc0e04',null, null, null),
+                ('SRID=4326; POINT (156.889722222222 57.2011111111111)',null,'7b1c8fd2-ab6c-49d9-b673-6a5fa844819a',null, null, null),
+                ('SRID=4326; POINT (157.021944444444 56.8469444444444)',null,'a7c57f1a-fdc1-41eb-9398-2a4038cae38a',null, null, null),
+                ('SRID=4326; POINT (156.736111111111 57.0897222222222)',null,'16ad93be-9e60-494f-b0e7-8cf54278c18b',null, null, null),
+                ('SRID=4326; POINT (160.5575 59.4666666666667)',null,'9df7076e-b9e9-4a17-abd3-a0f9d43bd3ba',null, null, null),
+                ('SRID=4326; POINT (159.953611111111 59.0844444444444)',null,'31a1be3d-3097-4aee-b752-4e6124329051',null, null, null)
+            ;
+
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '716c481d-d63d-48fc-ae29-800ae130e2a5') where fias = '716c481d-d63d-48fc-ae29-800ae130e2a5';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '5d0f4bf6-9f65-4c69-9ad7-3ad1c069ea1a') where fias = '5d0f4bf6-9f65-4c69-9ad7-3ad1c069ea1a';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '9f4f0916-850b-4c9e-aff9-904788ef0653') where fias = '9f4f0916-850b-4c9e-aff9-904788ef0653';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'b75a9701-5cd4-4623-99d5-4fa7463ceb47') where fias = 'b75a9701-5cd4-4623-99d5-4fa7463ceb47';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '3da129ee-9b72-45ec-bef9-07b69e1eed4e') where fias = '3da129ee-9b72-45ec-bef9-07b69e1eed4e';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '5462ce6d-0c21-44bd-b5e3-4bda9f117acd') where fias = '5462ce6d-0c21-44bd-b5e3-4bda9f117acd';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '5030f354-a346-424b-ad35-edc6c545386d') where fias = '5030f354-a346-424b-ad35-edc6c545386d';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'def2da0e-1d6c-48c9-9ef0-c3f85f01ebe1') where fias = 'def2da0e-1d6c-48c9-9ef0-c3f85f01ebe1';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '7f394b62-2063-4643-b37d-4d5246aa20e4') where fias = '7f394b62-2063-4643-b37d-4d5246aa20e4';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '9fcf6329-4332-4ca4-a85f-7fbc14a58122') where fias = '9fcf6329-4332-4ca4-a85f-7fbc14a58122';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'bf439c1f-16b0-4036-81fa-306fdfceadb5') where fias = 'bf439c1f-16b0-4036-81fa-306fdfceadb5';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '1c56c941-7939-49fd-881f-1d28f2bf73a2') where fias = '1c56c941-7939-49fd-881f-1d28f2bf73a2';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'a76ad39f-2163-4491-8580-c055cf112a73') where fias = 'a76ad39f-2163-4491-8580-c055cf112a73';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '760b1d3c-a049-440c-bf93-5835d8a6a471') where fias = '760b1d3c-a049-440c-bf93-5835d8a6a471';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'd87ec982-b344-4b5c-9168-57a5c92202da') where fias = 'd87ec982-b344-4b5c-9168-57a5c92202da';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'aa2637d0-487d-45f9-b2e9-4621a25b191c') where fias = 'aa2637d0-487d-45f9-b2e9-4621a25b191c';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'ced7cf2f-06bc-44b6-9c4d-728eeda41222') where fias = 'ced7cf2f-06bc-44b6-9c4d-728eeda41222';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'ae020514-a34b-4cba-a6cf-05193bca5530') where fias = 'ae020514-a34b-4cba-a6cf-05193bca5530';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'c34e203d-7529-4b50-a60a-ae2707ce697a') where fias = 'c34e203d-7529-4b50-a60a-ae2707ce697a';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '6f322061-9820-4835-9132-624ce98bdd6c') where fias = '6f322061-9820-4835-9132-624ce98bdd6c';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '53257ac9-61ac-4a81-ae12-14e8b0eafcc7') where fias = '53257ac9-61ac-4a81-ae12-14e8b0eafcc7';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'bd528b43-1ec8-4469-b78e-d0dd7139d7fa') where fias = 'bd528b43-1ec8-4469-b78e-d0dd7139d7fa';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '48551b4e-f71d-4542-9258-de8a5e7b02f2') where fias = '48551b4e-f71d-4542-9258-de8a5e7b02f2';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '939df3b7-e280-40be-bb3a-20638de8cee4') where fias = '939df3b7-e280-40be-bb3a-20638de8cee4';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '69627fd5-bcb1-4c0f-8868-5ee38cb2fb3e') where fias = '69627fd5-bcb1-4c0f-8868-5ee38cb2fb3e';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '7d01c583-b979-4c97-af08-753bc93edfc8') where fias = '7d01c583-b979-4c97-af08-753bc93edfc8';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'fc4130e9-1c6e-4397-a2d6-dca38aeea418') where fias = 'fc4130e9-1c6e-4397-a2d6-dca38aeea418';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'ece62da2-49e0-4f81-a2a0-c680d159c761') where fias = 'ece62da2-49e0-4f81-a2a0-c680d159c761';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'c7d9b29f-2c8f-409f-ac1b-0b7d63646a4a') where fias = 'c7d9b29f-2c8f-409f-ac1b-0b7d63646a4a';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'f4790a2a-7500-4c44-93ba-9a77aecffbbf') where fias = 'f4790a2a-7500-4c44-93ba-9a77aecffbbf';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '089a76c8-52f3-4429-961b-68198b4d25bd') where fias = '089a76c8-52f3-4429-961b-68198b4d25bd';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '8cc56ffb-8c3a-4fdd-8fda-8de5fd7653f4') where fias = '8cc56ffb-8c3a-4fdd-8fda-8de5fd7653f4';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '82f02981-d514-4061-9be0-eb00b337158e') where fias = '82f02981-d514-4061-9be0-eb00b337158e';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '7e2f5167-58ad-4ba6-a3b9-0c66352c95ef') where fias = '7e2f5167-58ad-4ba6-a3b9-0c66352c95ef';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '7aa1c569-2a16-4319-b8ee-91594bec7f78') where fias = '7aa1c569-2a16-4319-b8ee-91594bec7f78';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '5d813bf6-c42a-45a3-8385-7c3ec3061d15') where fias = '5d813bf6-c42a-45a3-8385-7c3ec3061d15';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'e8f1a4fa-cb82-45db-b159-30c48471f1d2') where fias = 'e8f1a4fa-cb82-45db-b159-30c48471f1d2';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '1f48b721-6479-463b-a55b-16b92828b214') where fias = '1f48b721-6479-463b-a55b-16b92828b214';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '1dece02a-0f33-4905-aac2-5f8458b1f22c') where fias = '1dece02a-0f33-4905-aac2-5f8458b1f22c';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '0b3f0723-5fe0-4c23-af44-8082166c6d2e') where fias = '0b3f0723-5fe0-4c23-af44-8082166c6d2e';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'da2156c4-da2a-4e08-87c9-71a99f99a63f') where fias = 'da2156c4-da2a-4e08-87c9-71a99f99a63f';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '41b03188-829b-4a5f-adbb-eaee95224c8e') where fias = '41b03188-829b-4a5f-adbb-eaee95224c8e';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'c38ee3ad-1dd2-489b-a59d-7066923c4428') where fias = 'c38ee3ad-1dd2-489b-a59d-7066923c4428';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'a8a27fcf-cff9-45e7-b3ec-9f0fb9aa6e74') where fias = 'a8a27fcf-cff9-45e7-b3ec-9f0fb9aa6e74';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'f797a740-c264-4a3a-a242-b2a3501b86c3') where fias = 'f797a740-c264-4a3a-a242-b2a3501b86c3';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '8de8cede-238b-4515-8c2b-3866206ec882') where fias = '8de8cede-238b-4515-8c2b-3866206ec882';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'aa0dc98b-8328-48bb-b21a-c87ce8d9a148') where fias = 'aa0dc98b-8328-48bb-b21a-c87ce8d9a148';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'ec47ae9b-9a29-4a90-af69-8512be06a3a2') where fias = 'ec47ae9b-9a29-4a90-af69-8512be06a3a2';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '41ab9a11-8d14-4552-90e8-94f0fb596b5b') where fias = '41ab9a11-8d14-4552-90e8-94f0fb596b5b';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'a7307650-6d6d-47c0-8966-c1af01484742') where fias = 'a7307650-6d6d-47c0-8966-c1af01484742';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '486a12d1-c230-4212-aca4-386eda55ab66') where fias = '486a12d1-c230-4212-aca4-386eda55ab66';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'fa6dd4e8-85eb-47d0-8182-a5ae7d891c4b') where fias = 'fa6dd4e8-85eb-47d0-8182-a5ae7d891c4b';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'abf7275f-eebe-455c-868e-a7bd351189de') where fias = 'abf7275f-eebe-455c-868e-a7bd351189de';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'fff77bcc-32e5-4fb6-9b62-7a624b07bf1f') where fias = 'fff77bcc-32e5-4fb6-9b62-7a624b07bf1f';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '54e4bf72-136a-4194-8f74-56bacea768f0') where fias = '54e4bf72-136a-4194-8f74-56bacea768f0';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '7488c7f3-635a-4fcb-84f9-022c7000ea66') where fias = '7488c7f3-635a-4fcb-84f9-022c7000ea66';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '8e47de99-f6a1-485b-b2f3-00cd0b6ec353') where fias = '8e47de99-f6a1-485b-b2f3-00cd0b6ec353';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '6614af6f-3bd6-48fa-929b-a1c65f3a1930') where fias = '6614af6f-3bd6-48fa-929b-a1c65f3a1930';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '14025672-bbdc-44dd-94d3-9688e2b8546f') where fias = '14025672-bbdc-44dd-94d3-9688e2b8546f';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'e379e77e-6a64-4df1-9905-44054c699472') where fias = 'e379e77e-6a64-4df1-9905-44054c699472';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '298ce5a9-8804-4ce2-874a-35760c87d6c3') where fias = '298ce5a9-8804-4ce2-874a-35760c87d6c3';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '6127fd64-f4e8-4ad4-a4e0-c2818b8b9f77') where fias = '6127fd64-f4e8-4ad4-a4e0-c2818b8b9f77';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'b6839c69-7442-44b0-a675-3d26eb24c566') where fias = 'b6839c69-7442-44b0-a675-3d26eb24c566';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'd160f3ed-aa47-4901-83df-bdd21d9450e4') where fias = 'd160f3ed-aa47-4901-83df-bdd21d9450e4';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'd131e19e-e665-41d2-a66d-0effc0b55283') where fias = 'd131e19e-e665-41d2-a66d-0effc0b55283';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'a943110b-56d6-4663-a272-f25e322f0fa8') where fias = 'a943110b-56d6-4663-a272-f25e322f0fa8';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '694069cd-fffc-4299-b191-e3c6f0943cf8') where fias = '694069cd-fffc-4299-b191-e3c6f0943cf8';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '2e04a2ce-99c5-41ca-b36f-399884417876') where fias = '2e04a2ce-99c5-41ca-b36f-399884417876';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'e7d330a1-fbbf-46ef-b0fe-eb2c8e5837e1') where fias = 'e7d330a1-fbbf-46ef-b0fe-eb2c8e5837e1';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '340bc55f-f9bd-4351-8362-389d9823a7b6') where fias = '340bc55f-f9bd-4351-8362-389d9823a7b6';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '54bd7300-b5fe-4f95-bdac-6791aad27b9b') where fias = '54bd7300-b5fe-4f95-bdac-6791aad27b9b';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '7da6e8c7-0b64-4097-8f39-c7eba1574ead') where fias = '7da6e8c7-0b64-4097-8f39-c7eba1574ead';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '2794b045-e31f-4c56-a4d4-1eaa6a9b0880') where fias = '2794b045-e31f-4c56-a4d4-1eaa6a9b0880';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '57f9ae45-9209-4ae0-a47c-fac158a83512') where fias = '57f9ae45-9209-4ae0-a47c-fac158a83512';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '47c31df0-5f46-4084-bc3e-f1489fa12e7d') where fias = '47c31df0-5f46-4084-bc3e-f1489fa12e7d';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '9a849153-21f7-414e-9aaa-abcfe8b97df2') where fias = '9a849153-21f7-414e-9aaa-abcfe8b97df2';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '1ec14b29-9f1e-46e0-94b8-33839a032612') where fias = '1ec14b29-9f1e-46e0-94b8-33839a032612';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '286a3206-a290-49c7-8f40-f90831d2bc5e') where fias = '286a3206-a290-49c7-8f40-f90831d2bc5e';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'af1a1916-f153-47b6-a0a6-cd00a1d6a283') where fias = 'af1a1916-f153-47b6-a0a6-cd00a1d6a283';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '1893d980-482d-4ce8-92f9-910e17d86766') where fias = '1893d980-482d-4ce8-92f9-910e17d86766';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '3d955611-7ac5-4b98-b1b2-c7751ce36b6c') where fias = '3d955611-7ac5-4b98-b1b2-c7751ce36b6c';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '4bfe355a-de1f-4ecf-a8dd-9e3fbdcc0e04') where fias = '4bfe355a-de1f-4ecf-a8dd-9e3fbdcc0e04';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '7b1c8fd2-ab6c-49d9-b673-6a5fa844819a') where fias = '7b1c8fd2-ab6c-49d9-b673-6a5fa844819a';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = 'a7c57f1a-fdc1-41eb-9398-2a4038cae38a') where fias = 'a7c57f1a-fdc1-41eb-9398-2a4038cae38a';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '16ad93be-9e60-494f-b0e7-8cf54278c18b') where fias = '16ad93be-9e60-494f-b0e7-8cf54278c18b';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '9df7076e-b9e9-4a17-abd3-a0f9d43bd3ba') where fias = '9df7076e-b9e9-4a17-abd3-a0f9d43bd3ba';
+            update public.location set geo_data_id = (select gd.id from public.geo_data gd where gd.fias = '31a1be3d-3097-4aee-b752-4e6124329051') where fias = '31a1be3d-3097-4aee-b752-4e6124329051';
+
+        </sql>
+    </changeSet>
+</databaseChangeLog>
