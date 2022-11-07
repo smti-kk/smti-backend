@@ -9,7 +9,6 @@ import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTONppException;
 import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
-import ru.cifrak.telecomit.backend.service.LocationService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -114,7 +113,7 @@ public class LocationsFromExcelDTOValidated {
         badLocationDTO = this.checkTypes(locationsDTO);
         if (badLocationDTO != null) {
             throw new FromExcelDTOErrorException("Ошибка в типе, должен быть одним из {"
-                    + String.join(", ", LocationService.ALL_LOCATION_TYPES) + "}.");
+                    + String.join(", ", repository.findAllTypes()) + "}.");
         }
 
         badLocationDTO = this.checkMo(locationsDTO);
@@ -219,9 +218,10 @@ public class LocationsFromExcelDTOValidated {
     private String checkTypes(List<LocationFromExcelDTO> locationsDTO) {
         String result = null;
         // TODO: List<String> -> List<Locations>
+        List<String> typesOfLocationsDTO = repository.findAllTypes();
         for (LocationFromExcelDTO locationDTO : locationsDTO) {
-            if (!LocationService.NOT_PARENT_LOCATION_TYPES.contains(locationDTO.getType())
-                    || !LocationService.PARENT_LOCATION_TYPES.contains(locationDTO.getTypeMO())) {
+            if (!typesOfLocationsDTO.contains(locationDTO.getType())
+                    || !typesOfLocationsDTO.contains(locationDTO.getTypeMO())) {
                 result = locationDTO.getNpp();
                 break;
             }
