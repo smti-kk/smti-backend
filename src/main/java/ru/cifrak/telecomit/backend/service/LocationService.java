@@ -55,11 +55,6 @@ public class LocationService {
     }};
 */
 
-    public static final List<String> ALL_LOCATION_TYPES
-            = Arrays.stream(TypeLocation.values())
-            .map(TypeLocation::getShorted)
-            .collect(Collectors.toList());
-
     /**
      * Added .isTrue() and .isFalse(), because .asBoolean() returns ConstantImpl, that are not casts to Predicate.
      */
