@@ -88,7 +88,9 @@ public class ExelReportLocation {
 
         List<String> mobileOperators = location.getTechnicalCapabilities().stream()
                 .filter(tc1 -> tc1 instanceof TcMobile && tc1.getState() == TcState.ACTIVE)
-                .map(tc1 -> tc1.getOperator().getName() + " (" + ((TcMobile) tc1).getType().getName() + ")")
+                .map(tc1 -> tc1.getOperator().getName() +
+                        " (" + ((TcMobile) tc1).getType().getName() + ")" +
+                        (((TcMobile) tc1).getType().getName().equals("4G") ? ":уд." : ""))
                 .collect(Collectors.toList());
         mobileOperators.removeIf(o -> getMobileWeight(o) == null);
         mobileOperators.sort(getMobileWeightComparator());
