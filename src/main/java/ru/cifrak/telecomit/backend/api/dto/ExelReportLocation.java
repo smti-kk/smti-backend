@@ -31,7 +31,6 @@ public class ExelReportLocation {
     private String districtName;
     private Integer population;
     private String ESPD;
-    private String RSMO;
     private String EMSPD;
     private String SMO;
     private String cellular;
@@ -64,10 +63,6 @@ public class ExelReportLocation {
                         .anyMatch(ap -> ap instanceof ApESPD)
                 ) ? "1" : "0";
 
-        this.RSMO = location.getOrganizations().stream()
-                .anyMatch(org -> org.getAccessPoints().stream()
-                        .anyMatch(ap -> ap instanceof ApRSMO)
-                ) ? "1" : "0";
         this.EMSPD = location.getOrganizations().stream()
                 .anyMatch(org -> org.getAccessPoints().stream()
                         .anyMatch(ap -> ap instanceof ApEMSPD)
@@ -90,7 +85,9 @@ public class ExelReportLocation {
                 .filter(tc1 -> tc1 instanceof TcMobile && tc1.getState() == TcState.ACTIVE)
                 .map(tc1 -> tc1.getOperator().getName() +
                         " (" + ((TcMobile) tc1).getType().getName() + ")" +
-                        (((TcMobile) tc1).getType().getName().equals("4G") ? ":уд." : ""))
+                        ((((TcMobile) tc1).getType().getName().equals("4G") &&
+                                tc1.getQuality().name().equals("GOOD")) ?
+                                ":уд." : ""))
                 .collect(Collectors.toList());
         mobileOperators.removeIf(o -> getMobileWeight(o) == null);
         mobileOperators.sort(getMobileWeightComparator());
