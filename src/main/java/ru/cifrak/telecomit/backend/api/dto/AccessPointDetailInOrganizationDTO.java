@@ -112,12 +112,12 @@ public class AccessPointDetailInOrganizationDTO {
             this.type = "SMO";
         } else if (entity.getClass().isAssignableFrom(ApESPD.class)) {
             this.type = "ESPD";
-        } else if (entity.getClass().isAssignableFrom(ApZSPD.class)) {
-            this.type = "ZSPD";
-            this.hardware = ((ApZSPD) entity).getHardware() != null? ((ApZSPD) entity).getHardware().getName() : null;
-            this.software = ((ApZSPD) entity).getSoftware() != null? ((ApZSPD) entity).getSoftware().getName() : null;
-            this.equipment = ((ApZSPD) entity).getEquipment();
-            this.softType = ((ApZSPD) entity).getSoftType();
+        } else if (entity.getClass().isAssignableFrom(ApEMSPD.class)) {
+            this.type = "EMSPD";
+            this.hardware = ((ApEMSPD) entity).getHardware() != null? ((ApEMSPD) entity).getHardware().getName() : null;
+            this.software = ((ApEMSPD) entity).getSoftware() != null? ((ApEMSPD) entity).getSoftware().getName() : null;
+            this.equipment = ((ApEMSPD) entity).getEquipment();
+            this.softType = ((ApEMSPD) entity).getSoftType();
         } else if (entity.getClass().isAssignableFrom(ApRSMO.class)) {
             this.type = "RSMO";
         } else if (entity.getClass().isAssignableFrom(ApContract.class)) {

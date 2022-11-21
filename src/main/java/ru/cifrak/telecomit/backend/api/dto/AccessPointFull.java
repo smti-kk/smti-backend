@@ -97,9 +97,9 @@ public class AccessPointFull {
 
         this.operator = entity.getOperator();
         this.connectionType = entity.getInternetAccess();
-        if (entity.getClass().isAssignableFrom(ApZSPD.class)) {
-            this.equipment = ((ApZSPD) entity).getEquipment();
-            this.softType = ((ApZSPD) entity).getSoftType();
+        if (entity.getClass().isAssignableFrom(ApEMSPD.class)) {
+            this.equipment = ((ApEMSPD) entity).getEquipment();
+            this.softType = ((ApEMSPD) entity).getSoftType();
         }
     }
 }

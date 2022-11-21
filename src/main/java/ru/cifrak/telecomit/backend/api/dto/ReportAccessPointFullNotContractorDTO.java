@@ -27,8 +27,8 @@ public class ReportAccessPointFullNotContractorDTO extends ReportAccessPointFull
             this.type = "SMO";
         } else if (entity.getClass().isAssignableFrom(ApESPD.class)) {
             this.type = "ESPD";
-        } else if (entity.getClass().isAssignableFrom(ApZSPD.class)) {
-            this.type = "ZSPD";
+        } else if (entity.getClass().isAssignableFrom(ApEMSPD.class)) {
+            this.type = "EMSPD";
         } else if (entity.getClass().isAssignableFrom(ApRSMO.class)) {
             this.type = "RSMO";
         } else if (entity.getClass().isAssignableFrom(ApContract.class)) {

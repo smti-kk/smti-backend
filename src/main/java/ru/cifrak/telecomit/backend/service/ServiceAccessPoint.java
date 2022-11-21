@@ -47,17 +47,17 @@ public class ServiceAccessPoint {
                 initializeWithCommonFields(rsmo, organization, dto);
                 rAccessPoints.save(rsmo);
                 return new AccessPointDetailInOrganizationDTO(rsmo);
-            case "ZSPD":
-                final ApZSPD zspd = new ApZSPD();
-                initializeWithCommonFields(zspd, organization, dto);
+            case "EMSPD":
+                final ApEMSPD emspd = new ApEMSPD();
+                initializeWithCommonFields(emspd, organization, dto);
                 //TODO: here we should insert real data
-                zspd.setHardware(null);
+                emspd.setHardware(null);
                 //TODO: here we should insert real data
-                zspd.setSoftware(null);
-                zspd.setEquipment(dto.getEquipment());
-                zspd.setSoftType(dto.getSoftType());
-                rAccessPoints.save(zspd);
-                return new AccessPointDetailInOrganizationDTO(zspd);
+                emspd.setSoftware(null);
+                emspd.setEquipment(dto.getEquipment());
+                emspd.setSoftType(dto.getSoftType());
+                rAccessPoints.save(emspd);
+                return new AccessPointDetailInOrganizationDTO(emspd);
             case "CONTRACT":
                 final ApContract contract = new ApContract();
                 initializeWithCommonFields(contract, organization, dto);

@@ -32,7 +32,7 @@ public class ExelReportLocation {
     private Integer population;
     private String ESPD;
     private String RSMO;
-    private String ZSPD;
+    private String EMSPD;
     private String SMO;
     private String cellular;
     private String internet;
@@ -68,9 +68,9 @@ public class ExelReportLocation {
                 .anyMatch(org -> org.getAccessPoints().stream()
                         .anyMatch(ap -> ap instanceof ApRSMO)
                 ) ? "1" : "0";
-        this.ZSPD = location.getOrganizations().stream()
+        this.EMSPD = location.getOrganizations().stream()
                 .anyMatch(org -> org.getAccessPoints().stream()
-                        .anyMatch(ap -> ap instanceof ApZSPD)
+                        .anyMatch(ap -> ap instanceof ApEMSPD)
                 )? "1" : "0";
         this.SMO = location.getOrganizations().stream()
                 .anyMatch(org -> org.getAccessPoints().stream()

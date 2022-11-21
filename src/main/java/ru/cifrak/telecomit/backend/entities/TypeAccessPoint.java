@@ -12,7 +12,8 @@ public enum TypeAccessPoint {
     ESPD(1,"ESPD","ЕСПД"),
 //    RSMO(2,"RSMO","РСЗО"),
     SMO(3,"SMO","СЗО"),
-    ZSPD(4,"ZSPD","ЗСПД"),
+    // ZSPD : ЗСПД - заменили на - EMSPD : ЕМСПД
+    EMSPD(4,"EMSPD","ЕМСПД"),
     CONTRACT(5,"CONTRACT","Контракт");
 
     private Integer id;
@@ -25,7 +26,7 @@ public enum TypeAccessPoint {
             case ESPD:      return "ЕСПД";
 //            case RSMO:      return "РСЗО";
             case SMO:       return "СЗО";
-            case ZSPD:      return "ЗСПД";
+            case EMSPD:      return "ЕМСПД";
             case CONTRACT:  return "Контракт";
             default:    throw new IllegalArgumentException();
         }

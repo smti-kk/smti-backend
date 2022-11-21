@@ -114,7 +114,7 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(6, ExelReportLocation::getESPD, "ЕСПД");
         exportToExcelConfiguration.addColumn(7, ExelReportLocation::getSMO, "СЗО");
         exportToExcelConfiguration.addColumn(8, ExelReportLocation::getRSMO, "РСЗО");
-        exportToExcelConfiguration.addColumn(9, ExelReportLocation::getZSPD, "ЗСПД");
+        exportToExcelConfiguration.addColumn(9, ExelReportLocation::getEMSPD, "ЕМСПД");
         exportToExcelConfiguration.addColumn(10, ExelReportLocation::getCellular, "Телефон");
         exportToExcelConfiguration.addColumn(11, ExelReportLocation::getPayphone, "Таксофон (кол-во)");
         exportToExcelConfiguration.addColumn(12,Boolean.class, ExelReportLocation::getInfomat, "Инфомат");

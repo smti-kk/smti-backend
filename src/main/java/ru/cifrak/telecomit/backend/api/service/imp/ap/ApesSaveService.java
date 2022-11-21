@@ -75,8 +75,8 @@ public class ApesSaveService {
                         case ("СЗО"):
                             ap = new ApSMO();
                             break;
-                        case ("ЗСПД"):
-                            ap = new ApZSPD();
+                        case ("ЕМСПД"):
+                            ap = new ApEMSPD();
                             break;
                         default:
                             ap = new ApContract();
@@ -108,8 +108,8 @@ public class ApesSaveService {
             type = "РСЗО";
         } else if (ap instanceof ApSMO) {
             type = "СЗО";
-        } else if (ap instanceof ApZSPD) {
-            type = "ЗСПД";
+        } else if (ap instanceof ApEMSPD) {
+            type = "ЕМСПД";
         } else {
             type = "Контракт";
         }

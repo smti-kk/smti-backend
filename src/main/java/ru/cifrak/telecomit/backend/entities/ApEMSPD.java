@@ -10,8 +10,8 @@ import javax.persistence.Entity;
 @Data
 
 @Entity
-@DiscriminatorValue("ZSPD")
-public class ApZSPD extends AccessPoint{
+@DiscriminatorValue("EMSPD")
+public class ApEMSPD extends AccessPoint{
     @Column
     private Hardware hardware;
     @Column
