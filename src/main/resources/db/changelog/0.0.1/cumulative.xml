@@ -11,7 +11,7 @@
     <include file="0009-load-data-operators.xml" relativeToChangelogFile="true" />
     <include file="0010-load-data-types.xml" relativeToChangelogFile="true" />
     <include file="0011-load-data-location.xml" relativeToChangelogFile="true" />
-<!--    <include file="0012-load-data-organization-aps.xml" relativeToChangelogFile="true" />-->
+    <include file="0012-load-data-organization-aps.xml" relativeToChangelogFile="true" />
     <include file="0013-load-data-gov-progs.xml" relativeToChangelogFile="true" />
     <include file="0014-fix-seq-after-load-data.xml" relativeToChangelogFile="true" />
     <include file="0015-add-aps.xml" relativeToChangelogFile="true" />
@@ -39,7 +39,7 @@
     <include file="0039-ap-add-connection-state-constraint.xml" relativeToChangelogFile="true" />
     <include file="0040-ref-monitoring-to-ap.xml" relativeToChangelogFile="true" />
     <include file="0041-ref-ap-addresses.xml" relativeToChangelogFile="true" />
-<!--    <include file="0042-load-data-tech-caps.xml" relativeToChangelogFile="true" />-->
+    <include file="0042-load-data-tech-caps.xml" relativeToChangelogFile="true" />
     <include file="0043-fix-location-geo-data.xml" relativeToChangelogFile="true" />
     <include file="0044-add-organizations-to-account-table.xml" relativeToChangelogFile="true" />
     <include file="0045-ref-internet-types.xml" relativeToChangelogFile="true" />
