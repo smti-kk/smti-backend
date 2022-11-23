@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.cifrak.telecomit.backend.api.dto.ExelReportLocation;
+import ru.cifrak.telecomit.backend.api.dto.ExelReportLocationWithoutLogged;
 import ru.cifrak.telecomit.backend.api.dto.LocationProvidingInfo;
 import ru.cifrak.telecomit.backend.entities.Location;
 import ru.cifrak.telecomit.backend.entities.User;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static ru.cifrak.telecomit.backend.api.util.reports.HelperReport.generateExelFormatLocationType;
+import static ru.cifrak.telecomit.backend.api.util.reports.HelperReport.generateExelFormatLocationTypeWithout;
 
 @Slf4j
 @RestController
@@ -96,24 +98,40 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
         return new LocationProvidingInfo(repository.getOne(locationId));
     }
 
-    public List<Integer> govProgramYears() {
-        return writableTcRepo.existGovCompleteYears();
-    }
-
-    public ResponseEntity<ByteArrayResource> exportExcel(List<Integer> locationIds) throws IOException {
+    @Override
+    public ResponseEntity<ByteArrayResource> exportExcel(List<Integer> locationIds, Boolean isLogged) throws IOException {
         log.info("->GET /api/detail-locations/export-excel");
         List<Location> allById = repositoryLocation.findAllById(locationIds);
         allById.sort(Comparator.comparing((Location o) -> o.getParent().getName())
                 .thenComparing((Location o) -> o.getParent().getType())
                 .thenComparing(Location::getName)
                 .thenComparing(Location::getType));
-        List<ExelReportLocation> collect = allById
-                .stream()
-                .map(ExelReportLocation::new)
-                .collect(Collectors.toList());
 
+        if (isLogged) {
+            List<ExelReportLocation> collect = allById
+                    .stream()
+                    .map(ExelReportLocation::new)
+                    .collect(Collectors.toList());
+            IntStream.range(0, collect.size()).forEach(i -> collect.get(i).setPp(i + 1));
+
+            ByteArrayResource resource = new ByteArrayResource(generateExelFormatLocationType().exportToByteArray(collect));
+
+            log.info("<-GET /api/detail-locations/export-excel");
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"%D0%9E%D1%82%D1%87%D0%B5%D1%82_%D0%BF%D0%BE_%D0%BD%D0%B0%D1%81%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%BC_%D0%BF%D1%83%D0%BD%D0%BA%D1%82%D0%B0%D0%BC" + ".xlsx\"")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentLength(resource.contentLength())
+                    .body(resource);
+        }
+
+        List<ExelReportLocationWithoutLogged> collect = allById
+                .stream()
+                .map(ExelReportLocationWithoutLogged::new)
+                .collect(Collectors.toList());
         IntStream.range(0, collect.size()).forEach(i -> collect.get(i).setPp(i + 1));
-        ByteArrayResource resource = new ByteArrayResource(generateExelFormatLocationType().exportToByteArray(collect));
+
+        ByteArrayResource resource = new ByteArrayResource(generateExelFormatLocationTypeWithout().exportToByteArray(collect));
 
         log.info("<-GET /api/detail-locations/export-excel");
         return ResponseEntity.ok()
@@ -122,6 +140,10 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(resource.contentLength())
                 .body(resource);
+    }
+
+    public List<Integer> govProgramYears() {
+        return writableTcRepo.existGovCompleteYears();
     }
 
     public List<LocationForTable> byUser(User user) {

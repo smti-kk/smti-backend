@@ -1,15 +1,17 @@
 package ru.cifrak.telecomit.backend.api.dto;
 
 import lombok.Data;
-import ru.cifrak.telecomit.backend.entities.map.MapLocation;
+
+import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class DtoMapLocation {
-    private MapLocation location;
-    private String quality;
+    private Serializable location;
+    private List<String> qualities;
 
-    public DtoMapLocation(MapLocation location, String quality) {
+    public DtoMapLocation(Serializable location, List<String> qualities) {
         this.location = location;
-        this.quality = quality;
+        this.qualities = qualities;
     }
 }

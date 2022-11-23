@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.cifrak.telecomit.backend.api.dto.ExelReportAccessPointFullDTO;
 import ru.cifrak.telecomit.backend.api.dto.ExelReportLocation;
+import ru.cifrak.telecomit.backend.api.dto.ExelReportLocationWithoutLogged;
 import ru.cifrak.telecomit.backend.api.dto.FeatureExportDTO;
 import ru.cifrak.telecomit.backend.entities.TcType;
 import ru.cifrak.telecomit.backend.entities.User;
@@ -124,6 +125,30 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(16, ExelReportLocation::getInternet, "Интернет");
         exportToExcelConfiguration.addColumn(17, ExelReportLocation::getFias, "ФИАС");
         exportToExcelConfiguration.addColumn(18, ExelReportLocation::getProgram, "Программа");
+
+        return new ExcelExporter<>(exportToExcelConfiguration);
+    }
+
+    public static ExcelExporter<ExelReportLocationWithoutLogged> generateExelFormatLocationTypeWithout () {
+
+        ExportToExcelConfiguration<ExelReportLocationWithoutLogged> exportToExcelConfiguration = new ExportToExcelConfiguration<>();
+
+        exportToExcelConfiguration.addColumn(0, Integer.class, ExelReportLocationWithoutLogged::getPp, "№ п/п");
+        exportToExcelConfiguration.addColumn(1, ExelReportLocationWithoutLogged::getDistrictName, "Муниципальное образование");
+        exportToExcelConfiguration.addColumn(2, ExelReportLocationWithoutLogged::getDistrict, "Тип МО");
+        exportToExcelConfiguration.addColumn(3, ExelReportLocationWithoutLogged::getLocationName, "Населенный пункт");
+        exportToExcelConfiguration.addColumn(4, ExelReportLocationWithoutLogged::getLocationType, "Тип населенного пункта");
+        exportToExcelConfiguration.addColumn(5, Integer.class,ExelReportLocationWithoutLogged::getPopulation, "Население");
+        exportToExcelConfiguration.addColumn(6, ExelReportLocationWithoutLogged::getCellular, "Телефон");
+        exportToExcelConfiguration.addColumn(7, ExelReportLocationWithoutLogged::getPayphone, "Таксофон (кол-во)");
+        exportToExcelConfiguration.addColumn(8,Boolean.class, ExelReportLocationWithoutLogged::getInfomat, "Инфомат");
+        exportToExcelConfiguration.addColumn(9, ExelReportLocationWithoutLogged::getPost, "Почта");
+        exportToExcelConfiguration.addColumn(10, ExelReportLocationWithoutLogged::getTV, "Телевидение");
+        exportToExcelConfiguration.addColumn(11, ExelReportLocationWithoutLogged::getRadio, "Радио");
+        exportToExcelConfiguration.addColumn(12, ExelReportLocationWithoutLogged::getTelephone, "Сотовая связь");
+        exportToExcelConfiguration.addColumn(13, ExelReportLocationWithoutLogged::getInternet, "Интернет");
+        exportToExcelConfiguration.addColumn(14, ExelReportLocationWithoutLogged::getFias, "ФИАС");
+        exportToExcelConfiguration.addColumn(15, ExelReportLocationWithoutLogged::getProgram, "Программа");
 
         return new ExcelExporter<>(exportToExcelConfiguration);
     }
