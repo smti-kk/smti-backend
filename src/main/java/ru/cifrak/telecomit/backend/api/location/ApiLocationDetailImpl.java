@@ -99,7 +99,7 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
     }
 
     @Override
-    public ResponseEntity<ByteArrayResource> exportExcel(List<Integer> locationIds, Boolean isLogged) throws IOException {
+    public ResponseEntity<ByteArrayResource> exportExcel(List<Integer> locationIds, String token) throws IOException {
         log.info("->GET /api/detail-locations/export-excel");
         List<Location> allById = repositoryLocation.findAllById(locationIds);
         allById.sort(Comparator.comparing((Location o) -> o.getParent().getName())
@@ -107,7 +107,7 @@ public class ApiLocationDetailImpl implements ApiLocationDetail {
                 .thenComparing(Location::getName)
                 .thenComparing(Location::getType));
 
-        if (isLogged) {
+        if (token != null && !token.isEmpty()) {
             List<ExelReportLocation> collect = allById
                     .stream()
                     .map(ExelReportLocation::new)

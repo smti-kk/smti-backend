@@ -60,4 +60,9 @@ public class TechnicalCapability extends Auditing implements Serializable {
     @Column
     @Enumerated(EnumType.STRING)
     private TcState state;
+
+    @Transient
+    public String getDecriminatorValue() {
+        return this.getClass().getAnnotation(DiscriminatorValue.class).value();
+    }
 }

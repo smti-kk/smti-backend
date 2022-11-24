@@ -52,6 +52,7 @@ public class ApiMapLocationsImpl implements ApiMapLocations {
                     .stream()
                     .map(s -> new DtoMapLocation(s, repositoryLocation.findById(s.getId()).get()
                             .getTechnicalCapabilities().stream()
+                            .filter(tc -> tc.getDecriminatorValue().equals("MOBILE"))
                             .map(t -> t.getQuality().name())
                             .collect(Collectors.toList())))
                     .collect(Collectors.toList());
