@@ -30,9 +30,6 @@ public class ExelReportLocation {
     private String district;
     private String districtName;
     private Integer population;
-    private String ESPD;
-    private String EMSPD;
-    private String SMO;
     private String cellular;
     private String internet;
     private String telephone;
@@ -57,20 +54,6 @@ public class ExelReportLocation {
                 .filter(tc -> tc instanceof TcAts && tc.getState() == TcState.ACTIVE)
                 .map(tc -> tc.getOperator().getName())
                 .collect(Collectors.joining(","));
-
-        this.ESPD = location.getOrganizations().stream()
-                .anyMatch(org -> org.getAccessPoints().stream()
-                        .anyMatch(ap -> ap instanceof ApESPD)
-                ) ? "1" : "0";
-
-        this.EMSPD = location.getOrganizations().stream()
-                .anyMatch(org -> org.getAccessPoints().stream()
-                        .anyMatch(ap -> ap instanceof ApEMSPD)
-                )? "1" : "0";
-        this.SMO = location.getOrganizations().stream()
-                .anyMatch(org -> org.getAccessPoints().stream()
-                        .anyMatch(ap -> ap instanceof ApSMO)
-                )? "1" : "0";
 
         List<String> internetOperators = location.getTechnicalCapabilities().stream()
                 .filter(tc1 -> tc1 instanceof TcInternet && tc1.getState() == TcState.ACTIVE)

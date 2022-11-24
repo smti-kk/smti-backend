@@ -40,8 +40,7 @@ public interface ApiLocationDetail {
     LocationProvidingInfo locationProvidingInfo(@PathVariable Integer locationId);
 
     @PostMapping("/export-excel")
-    ResponseEntity<ByteArrayResource> exportExcel(@RequestBody List<Integer> locationIds,
-                                                  @RequestHeader(required = false, value = "Authorization") String token) throws IOException;
+    ResponseEntity<ByteArrayResource> exportExcel(@RequestBody List<Integer> locationIds) throws IOException;
 
     @GetMapping("/by-user")
     List<LocationForTable> byUser(@AuthenticationPrincipal User user);
