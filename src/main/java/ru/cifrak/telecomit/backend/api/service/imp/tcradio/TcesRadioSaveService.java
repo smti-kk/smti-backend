@@ -50,11 +50,11 @@ public class TcesRadioSaveService {
     }
 
     public void save(List<TcRadioFromExcelDTO> TcesDTO, User user) {
-        for (TcRadioFromExcelDTO tcTOO : TcesDTO){
-            List<Signal> types = this.convertToEntityAttribute(tcTOO.getType().replaceAll(" ", ""));
+        for (TcRadioFromExcelDTO tcDTO : TcesDTO){
+            List<Signal> types = this.convertToEntityAttribute(tcDTO.getType().replaceAll(" ", ""));
             List<WritableTc> tcesByLocOpT = repositoryWritableTcForImport.findByLocationIdAndOperatorIdAndTypeAndState(
-                    repositoryLocation.findByFias(UUID.fromString(tcTOO.getFias())).getId(),
-                    repositoryOperator.findByName(tcTOO.getOperator()).getId(),
+                    repositoryLocation.findByFias(UUID.fromString(tcDTO.getFias())).getId(),
+                    repositoryOperator.findByName(tcDTO.getOperator()).getId(),
                     TcRadio.class.getAnnotation(DiscriminatorValue.class).value(),
                     TcState.ACTIVE
             );
@@ -63,6 +63,8 @@ public class TcesRadioSaveService {
                 clonedTc.setTvOrRadioTypes(types);
                 clonedTc = rWritableTc.save(clonedTc);
                 FeatureEdit featureEdit = new FeatureEdit(tcesByLocOpT.get(0), clonedTc);
+                featureEdit.setAction(tcDTO.getActivity().equals("НЕТ") ? FeatureEditAction.DELETE
+                        : featureEdit.getAction());
                 featureEdit = repositoryFeatureEdits.save(featureEdit);
                 LocationFeaturesEditingRequest importRequest = new LocationFeaturesEditingRequest(
                         tcesByLocOpT.get(0).getLocationId(),
@@ -75,8 +77,8 @@ public class TcesRadioSaveService {
                 repositoryLocationFeaturesRequests.save(importRequest);
             } else {
                 WritableTc tcByLocOpT = new WritableTc();
-                tcByLocOpT.setLocationId(repositoryLocation.findByFias(UUID.fromString(tcTOO.getFias())).getId());
-                tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcTOO.getOperator()).getId());
+                tcByLocOpT.setLocationId(repositoryLocation.findByFias(UUID.fromString(tcDTO.getFias())).getId());
+                tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcDTO.getOperator()).getId());
                 tcByLocOpT.setTvOrRadioTypes(types);
                 tcByLocOpT.setType(TcRadio.class.getAnnotation(DiscriminatorValue.class).value());
                 tcByLocOpT.setQuality(ServiceQuality.GOOD);

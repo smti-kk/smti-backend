@@ -16,12 +16,15 @@ public class TcInternetFromExcelDTO {
 
     private final String channel;
 
+    private final String activity;
+
     public TcInternetFromExcelDTO(Row row) {
         this(
                 row.getCell(0).getStringCellValue().trim(),
                 row.getCell(5).getStringCellValue().trim(),
                 row.getCell(6).getStringCellValue().trim(),
-                row.getCell(7).getStringCellValue().trim()
+                row.getCell(7).getStringCellValue().trim(),
+                row.getCell(11).getStringCellValue().trim()
         );
     }
 }

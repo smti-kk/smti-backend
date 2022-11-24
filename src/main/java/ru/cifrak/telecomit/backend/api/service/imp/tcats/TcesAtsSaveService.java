@@ -51,6 +51,21 @@ public class TcesAtsSaveService {
                     TcState.ACTIVE
             );
             if (tcesByLocOpT.size() > 0) {
+                WritableTc clonedTc = tcesByLocOpT.get(0).cloneWithNullId();
+                clonedTc = rWritableTc.save(clonedTc);
+                FeatureEdit featureEdit = new FeatureEdit(tcesByLocOpT.get(0), clonedTc);
+                featureEdit.setAction(tcDTO.getActivity().equals("НЕТ") ? FeatureEditAction.DELETE
+                        : featureEdit.getAction());
+                featureEdit = repositoryFeatureEdits.save(featureEdit);
+                LocationFeaturesEditingRequest importRequest = new LocationFeaturesEditingRequest(
+                        tcesByLocOpT.get(0).getLocationId(),
+                        "",
+                        user,
+                        ChangeSource.IMPORT,
+                        Collections.singleton(featureEdit)
+                );
+                importRequest.accept(serviceWritableTc);
+                repositoryLocationFeaturesRequests.save(importRequest);
 //                tcesByLocOpT.get(0).setState(TcState.ACTIVE);
 //                // TODO: Transaction.
 //                repositoryWritableTcForImport.save(tcesByLocOpT.get(0));

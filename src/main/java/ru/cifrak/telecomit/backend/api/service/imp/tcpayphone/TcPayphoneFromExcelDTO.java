@@ -16,13 +16,16 @@ public class TcPayphoneFromExcelDTO {
 
     private final String quantity;
 
+    private final String activity;
+
     public TcPayphoneFromExcelDTO(Row row) {
         this(
                 row.getCell(0).getStringCellValue().trim(),
                 row.getCell(5).getStringCellValue().trim(),
                 row.getCell(6).getStringCellValue().trim(),
                 row.getCell(7).getStringCellValue().trim().isEmpty() ?
-                        "0" : row.getCell(7).getStringCellValue().trim()
+                        "0" : row.getCell(7).getStringCellValue().trim(),
+                row.getCell(11).getStringCellValue().trim()
         );
     }
 }
