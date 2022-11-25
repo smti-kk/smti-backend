@@ -103,7 +103,7 @@ public class ExelReportLocation {
 
         this.fias = location.getFias().toString();
 
-        List<String> programs = new ArrayList<>();
+        /*List<String> programs = new ArrayList<>();
         if (location.getOrganizations() != null) {
             for (Organization organization : location.getOrganizations()) {
                 if (organization != null && organization.getAccessPoints() != null) {
@@ -114,7 +114,7 @@ public class ExelReportLocation {
                     }
                 }
             }
-        }
+        }*/
         List<String> technicalCapabilityPrograms = new ArrayList<>();
         if (location.getTechnicalCapabilities() != null) {
             for (TechnicalCapability tc : location.getTechnicalCapabilities()) {
@@ -127,8 +127,8 @@ public class ExelReportLocation {
                 }
             }
         }
-        programs.addAll(technicalCapabilityPrograms);
-        this.program = String.join(",", programs);
+        //programs.addAll(technicalCapabilityPrograms);
+        //this.program = String.join(",", programs);
     }
 
     @org.jetbrains.annotations.NotNull

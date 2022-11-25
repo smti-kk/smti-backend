@@ -81,7 +81,7 @@ public class AccessPointDetailInOrganizationDTO {
         this.address = entity.getAddress();
         this.billingId = entity.getBillingId();
         this.completed = entity.getCompleted();
-        this.contractor = entity.getContractor();
+        //this.contractor = entity.getContractor();
         this.createdAt = entity.getCreatedDate();
         this.customer = entity.getCustomer();
         this.declaredSpeed = entity.getDeclaredSpeed();
@@ -97,14 +97,14 @@ public class AccessPointDetailInOrganizationDTO {
         this.updatedAt = entity.getModifiedDate();
         this.visible = entity.getVisible();
 
-        if (entity.getGovernmentDevelopmentProgram() != null) {
+        /*if (entity.getGovernmentDevelopmentProgram() != null) {
             this.governmentProgram = new GovernmentDevelopmentProgram(
                     entity.getGovernmentDevelopmentProgram().getId(),
                     entity.getGovernmentDevelopmentProgram().getDescription(),
                     entity.getGovernmentDevelopmentProgram().getName(),
                     entity.getGovernmentDevelopmentProgram().getAcronym()
             );
-        }
+        }*/
 
         this.operator = entity.getOperator() != null ? new OperatorSimpleDTO(entity.getOperator()) : null;
         this.internetAccess = entity.getInternetAccess() != null ? new TypeInternetAccessDTO(entity.getInternetAccess()) : null;

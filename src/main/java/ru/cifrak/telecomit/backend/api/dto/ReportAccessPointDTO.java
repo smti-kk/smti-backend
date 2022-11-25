@@ -32,7 +32,7 @@ public class ReportAccessPointDTO implements Serializable {
     public ReportAccessPointDTO(AccessPoint entity) {
         this.id = entity.getId();
         this.address = entity.getAddress();
-        this.contractor = entity.getContractor();
+//        this.contractor = entity.getContractor();
         this.customer = entity.getCustomer();
         this.declaredSpeed = entity.getDeclaredSpeed();
         this.internetAccess = entity.getInternetAccess() != null ? new TypeInternetAccessDTO(entity.getInternetAccess()) : null;
@@ -43,7 +43,7 @@ public class ReportAccessPointDTO implements Serializable {
         }
         this.zabbixDeviceName = entity.getMonitoringLink() != null ? entity.getMonitoringLink().getMap().getDeviceName() : null;
         this.zabbixDeviceIp = entity.getMonitoringLink() != null ? entity.getMonitoringLink().getMap().getDeviceIp() : null;
-        this.governmentDevelopmentProgram = entity.getGovernmentDevelopmentProgram() != null ? entity.getGovernmentDevelopmentProgram().getName() : null;
+//        this.governmentDevelopmentProgram = entity.getGovernmentDevelopmentProgram() != null ? entity.getGovernmentDevelopmentProgram().getName() : null;
         this.utmLastDayTraffic = entity.getMonitoringLink() != null ? Converter.megabytes(entity.getMonitoringLink().getMap().getLastDayTraffic() != null ? entity.getMonitoringLink().getMap().getLastDayTraffic() : 0L) : "--";
         this.connectionState = entity.getMonitoringLink() != null ? entity.getMonitoringLink().getMap().getConnectionState() != null ? entity.getMonitoringLink().getMap().getConnectionState().toString() : APConnectionState.NOT_MONITORED.toString() : APConnectionState.NOT_MONITORED.toString();
     }

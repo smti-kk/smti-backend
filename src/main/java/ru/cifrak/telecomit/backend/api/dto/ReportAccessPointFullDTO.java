@@ -32,7 +32,7 @@ public class ReportAccessPointFullDTO extends ReportAccessPointFullAllDTO {
     public ReportAccessPointFullDTO(AccessPoint entity) {
         this.id = entity.getId();
         this.address = entity.getAddress();
-        this.contractor = entity.getContractor();
+/*        this.contractor = entity.getContractor();*/
         this.declaredSpeed = entity.getDeclaredSpeed();
         this.internetAccess = entity.getInternetAccess() != null ? new TypeInternetAccessDTO(entity.getInternetAccess()) : null;
         if (entity.getClass().isAssignableFrom(ApSMO.class)) {

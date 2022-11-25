@@ -103,18 +103,18 @@ public class ExelReportLocationWithoutLogged {
 
         this.fias = location.getFias().toString();
 
-        List<String> programs = new ArrayList<>();
-        if (location.getOrganizations() != null) {
-            for (Organization organization : location.getOrganizations()) {
-                if (organization != null && organization.getAccessPoints() != null) {
-                    for (AccessPoint accessPoint : organization.getAccessPoints()) {
-                        if (accessPoint != null && accessPoint.getGovernmentDevelopmentProgram() != null) {
-                            programs.add(accessPoint.getGovernmentDevelopmentProgram().getAcronym());
-                        }
-                    }
-                }
-            }
-        }
+//        List<String> programs = new ArrayList<>();
+//        if (location.getOrganizations() != null) {
+//            for (Organization organization : location.getOrganizations()) {
+//                if (organization != null && organization.getAccessPoints() != null) {
+//                    for (AccessPoint accessPoint : organization.getAccessPoints()) {
+//                        if (accessPoint != null && accessPoint.getGovernmentDevelopmentProgram() != null) {
+//                            programs.add(accessPoint.getGovernmentDevelopmentProgram().getAcronym());
+//                        }
+//                    }
+//                }
+//            }
+//        }
         List<String> technicalCapabilityPrograms = new ArrayList<>();
         if (location.getTechnicalCapabilities() != null) {
             for (TechnicalCapability tc : location.getTechnicalCapabilities()) {
@@ -127,8 +127,8 @@ public class ExelReportLocationWithoutLogged {
                 }
             }
         }
-        programs.addAll(technicalCapabilityPrograms);
-        this.program = String.join(",", programs);
+//        programs.addAll(technicalCapabilityPrograms);
+//        this.program = String.join(",", programs);
     }
 
     @org.jetbrains.annotations.NotNull

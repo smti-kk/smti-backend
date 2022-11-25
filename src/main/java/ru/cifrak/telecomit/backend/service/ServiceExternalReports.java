@@ -114,7 +114,7 @@ public class ServiceExternalReports {
                             if (utm5Data.get(jmap.getMap().getIdAccount()) != null) {
                                 item.setConsumption(Converter.megabytes(utm5Data.get(jmap.getMap().getIdAccount()).getBytes()));
                             }
-                            item.setContractor(jmap.getAp().getContractor());
+                            //item.setContractor(jmap.getAp().getContractor());
                             item.setLocation(jmap.getAp().getOrganization().getLocation().getType() + ". " + jmap.getAp().getOrganization().getLocation().getName());
                             item.setUcn(jmap.getAp().getUcn());
                             item.setOrganization(jmap.getAp().getOrganization().getName());

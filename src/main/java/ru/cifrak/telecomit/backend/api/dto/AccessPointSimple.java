@@ -30,12 +30,12 @@ public class AccessPointSimple {
         this.id = entity.getId();
         this.point = entity.getPoint();
 
-        this.governmentProgram = new GovernmentDevelopmentProgram(
-                entity.getGovernmentDevelopmentProgram().getId(),
-                entity.getGovernmentDevelopmentProgram().getDescription(),
-                entity.getGovernmentDevelopmentProgram().getName(),
-                entity.getGovernmentDevelopmentProgram().getAcronym()
-        );
+//        this.governmentProgram = new GovernmentDevelopmentProgram(
+//                entity.getGovernmentDevelopmentProgram().getId(),
+//                entity.getGovernmentDevelopmentProgram().getDescription(),
+//                entity.getGovernmentDevelopmentProgram().getName(),
+//                entity.getGovernmentDevelopmentProgram().getAcronym()
+//        );
 
 //        this.avstatus = entity.getMonitoringConnectionMetrics().stream()
 //                .min(Comparator.comparingLong((mcm) -> mcm.getTimeMark().getTime()))

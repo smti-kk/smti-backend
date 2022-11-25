@@ -21,7 +21,7 @@ public class ReportApContractDTO {
     public ReportApContractDTO(ApContract entity) {
         this.id = entity.getId();
         this.address = entity.getAddress();
-        this.contractor = entity.getContractor();
+/*        this.contractor = entity.getContractor();*/
         this.declaredSpeed = entity.getDeclaredSpeed();
         this.internetAccess = entity.getInternetAccess() != null ? new TypeInternetAccessDTO(entity.getInternetAccess()) : null;
         this.type = "CONTRACT";
