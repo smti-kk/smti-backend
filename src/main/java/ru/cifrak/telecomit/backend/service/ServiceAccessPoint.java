@@ -81,7 +81,7 @@ public class ServiceAccessPoint {
         item.setId(dto.getId());
         item.setAddress(dto.getAddress());
         item.setBillingId(dto.getBilling_id());
-//        item.setContractor(dto.getContractor());
+        item.setContractor(dto.getContractor());
         item.setCustomer(dto.getCustomer());
         item.setDeclaredSpeed(dto.getDeclaredSpeed());
         item.setDescription(dto.getDescription());
@@ -95,7 +95,7 @@ public class ServiceAccessPoint {
         item.setOrganization(organization);
         item.setUcn(dto.getUcn());
         item.setVisible(dto.getVisible());
-//        item.setGovernmentDevelopmentProgram(dto.getGovernment_program() != null ? rGovernmentProgram.getOne(dto.getGovernment_program()) : null);
+        item.setGovernmentDevelopmentProgram(dto.getGovernment_program() != null ? rGovernmentProgram.getOne(dto.getGovernment_program()) : null);
         item.setInternetAccess(dto.getInternetAccess() != null ? rInternetAccessType.getOne(dto.getInternetAccess()) : null);
         item.setCompleted(dto.getCompleted());
         item.setDeleted(Boolean.FALSE);

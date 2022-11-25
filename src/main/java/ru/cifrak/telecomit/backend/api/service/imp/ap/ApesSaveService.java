@@ -58,11 +58,11 @@ public class ApesSaveService {
                 if (getTypeAPInString(apes.get(0)).equals(tcDTO.getTypeAccessPoint())) {
                     // TODO: Transaction.
                     apes.get(0).setAddress(tcDTO.getAddress());
-                    /*apes.get(0).setContractor(tcDTO.getContractor());*/
+                    apes.get(0).setContractor(tcDTO.getContractor());
                     apes.get(0).setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
                     apes.get(0).setDeclaredSpeed(tcDTO.getDeclaredSpeed());
-                    /*apes.get(0).setGovernmentDevelopmentProgram(repositoryGovernmentDevelopmentProgram.findByAcronym(tcDTO.getProgram()));
-                    */repositoryAccessPoints.save(apes.get(0));
+                    apes.get(0).setGovernmentDevelopmentProgram(repositoryGovernmentDevelopmentProgram.findByAcronym(tcDTO.getProgram()));
+                    repositoryAccessPoints.save(apes.get(0));
                 } else {
                     AccessPoint ap;
                     switch (tcDTO.getTypeAccessPoint()) {
@@ -85,9 +85,9 @@ public class ApesSaveService {
                     ap.setPoint(createPoint(tcDTO.getLongitude(), tcDTO.getLatitude()));
                     ap.setOrganization(getOrganization(tcDTO));
                     ap.setAddress(tcDTO.getAddress());
-                   /* ap.setContractor(tcDTO.getContractor());
+                    ap.setContractor(tcDTO.getContractor());
                     ap.setGovernmentDevelopmentProgram(repositoryGovernmentDevelopmentProgram.findByAcronym(tcDTO.getProgram()));
-                    */ap.setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
+                    ap.setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
                     ap.setDeclaredSpeed(tcDTO.getDeclaredSpeed());
                     ap.setVisible(true);
                     ap.setMaxAmount(0);

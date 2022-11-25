@@ -68,7 +68,7 @@ public class AccessPointFull {
         this.address = entity.getAddress();
         this.billingId = entity.getBillingId();
         this.completed = entity.getCompleted();
-        //this.contractor = entity.getContractor();
+        this.contractor = entity.getContractor();
         this.createdAt = entity.getCreatedDate();
         this.customer = entity.getCustomer();
         this.definedSpeed = entity.getDeclaredSpeed();
@@ -84,12 +84,12 @@ public class AccessPointFull {
         this.updatedAt = entity.getModifiedDate();
         this.visible = entity.getVisible();
 
-        /*this.governmentProgram = new GovernmentDevelopmentProgram(
+        this.governmentProgram = new GovernmentDevelopmentProgram(
                 entity.getGovernmentDevelopmentProgram().getId(),
                 entity.getGovernmentDevelopmentProgram().getDescription(),
                 entity.getGovernmentDevelopmentProgram().getName(),
                 entity.getGovernmentDevelopmentProgram().getAcronym()
-        );*/
+        );
 
 //        this.avstatus = entity.getMonitoringConnectionMetrics().stream()
 //                .min(Comparator.comparingLong((mcm) -> mcm.getTimeMark().getTime()))
