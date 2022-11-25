@@ -180,23 +180,30 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     private JournalMAP monitoringLink;
 
     //Функциональный заказчик [12]
+    @Column(name = "fun_customer")
     private String funCustomer;
 
     //ID (по контракту) [16]
+    @Column(name = "contract_id")
     private Integer contractId;
 
     //Контракт [17]
+    @Column(name = "contract")
     private String contract;
 
     //Контакты [18]
+    @Column(name = "contacts")
     private String contacts;
 
     //Изменение [19]
+    @Column(name = "change")
     private String change;
 
     //Дата подключения/ изменения [20]
+    @Column(name = "date_connection_or_change")
     private LocalDateTime dateConnectionOrChange;
 
     // Комментарии [22]
+    @Column(name = "commentary")
     private String commentary;
 }
