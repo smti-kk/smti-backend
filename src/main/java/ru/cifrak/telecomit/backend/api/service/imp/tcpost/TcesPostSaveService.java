@@ -64,7 +64,7 @@ public class TcesPostSaveService {
                 clonedTc.setTypePost(typePost.getId());
                 clonedTc = rWritableTc.save(clonedTc);
                 FeatureEdit featureEdit = new FeatureEdit(tcesByLocOpT.get(0), clonedTc);
-                featureEdit.setAction(tcDTO.getActivity().equals("НЕТ") ? FeatureEditAction.DELETE
+                featureEdit.setAction(tcDTO.getActivity().toLowerCase().equals("нет") ? FeatureEditAction.DELETE
                         : featureEdit.getAction());
                 featureEdit = repositoryFeatureEdits.save(featureEdit);
                 LocationFeaturesEditingRequest importRequest = new LocationFeaturesEditingRequest(
