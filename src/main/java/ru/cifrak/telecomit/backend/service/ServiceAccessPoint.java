@@ -33,12 +33,17 @@ public class ServiceAccessPoint {
     public AccessPointDetailInOrganizationDTO giveNewCreatedAccessPoint(@NotNull final Organization organization, @NotNull final AccessPointNewDTO dto) throws Exception {
         switch (dto.getType()) {
             case "SMO":
-                final ApSMO smo = new ApSMO();
+                final ApSMO smo = new ApSMO(dto.getDataCommissioning());
                 initializeWithCommonFields(smo, organization, dto);
                 rAccessPoints.save(smo);
                 return new AccessPointDetailInOrganizationDTO(smo);
             case "ESPD":
-                final ApESPD espd = new ApESPD();
+                final ApESPD espd = new ApESPD(dto.getEspdWhiteIp(),
+                                               dto.getNumSourceEmailsRTK(),
+                                               dto.getOneTimePay(),
+                                               dto.getMounthlyPay(),
+                                               dto.getZspdWhiteIp(),
+                                               dto.getAvailZspdOrMethodConToZspd());
                 initializeWithCommonFields(espd, organization, dto);
                 rAccessPoints.save(espd);
                 return new AccessPointDetailInOrganizationDTO(espd);

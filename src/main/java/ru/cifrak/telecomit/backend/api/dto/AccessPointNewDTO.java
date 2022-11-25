@@ -11,7 +11,9 @@ import ru.cifrak.telecomit.backend.entities.TypeAccessPoint;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -53,4 +55,23 @@ public class AccessPointNewDTO {
     private LocalDate ended;
     private String equipment;
     private String softType;
+    //
+    //NEW FIELDS
+    //GENERAL
+    private String funCustomer;
+    private Integer contractId;
+    private String contract;
+    private String contacts;
+    private String change;
+    private LocalDateTime dateConnectionOrChange;
+    private String commentary;
+    //ESPD
+    private String espdWhiteIp;
+    private String numSourceEmailsRTK;
+    private BigDecimal oneTimePay;
+    private BigDecimal mounthlyPay;
+    private String zspdWhiteIp;
+    private String availZspdOrMethodConToZspd;
+    //SMO
+    private LocalDateTime dataCommissioning;
 }

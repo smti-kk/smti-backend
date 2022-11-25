@@ -11,6 +11,7 @@ import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -177,4 +178,25 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
 
     @OneToOne(mappedBy = "ap")
     private JournalMAP monitoringLink;
+
+    //Функциональный заказчик [12]
+    private String funCustomer;
+
+    //ID (по контракту) [16]
+    private Integer contractId;
+
+    //Контракт [17]
+    private String contract;
+
+    //Контакты [18]
+    private String contacts;
+
+    //Изменение [19]
+    private String change;
+
+    //Дата подключения/ изменения [20]
+    private LocalDateTime dateConnectionOrChange;
+
+    // Комментарии [22]
+    private String commentary;
 }

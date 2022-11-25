@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="shihovse" id="1">
+        <sql endDelimiter=";">
+            ALTER TABLE public.access_point
+                ADD COLUMN data_commissioning DATE,
+                ADD COLUMN fun_customer VARCHAR(255),
+                ADD COLUMN contract_id INTEGER,
+                ADD COLUMN contract VARCHAR(255),
+                ADD COLUMN contacts TEXT,
+                ADD COLUMN change VARCHAR(255),
+                ADD COLUMN date_connection_or_change DATE,
+                ADD COLUMN commentary TEXT,
+                ADD COLUMN espd_white_ip TEXT,
+                ADD COLUMN num_source_emails_RTK TEXT,
+                ADD COLUMN one_time_pay NUMERIC(19, 2),
+                ADD COLUMN monthly_pay NUMERIC(19, 2),
+                ADD COLUMN zspd_white_ip TEXT,
+                ADD COLUMN avail_zspd_or_method_con_to_zspd VARCHAR(255);
+        </sql>
+    </changeSet>
+</databaseChangeLog>
