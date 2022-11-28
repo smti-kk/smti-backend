@@ -4,4 +4,5 @@
     <include file="0002-remove-some-columns-in-access-point.xml" relativeToChangelogFile="true" />
     <include file="0003-back-columns.xml" relativeToChangelogFile="true" />
     <include file="0004-back-contractor-to-access-point.xml" relativeToChangelogFile="true" />
+    <include file="0005-create-view-map-location.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
