@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
+import ru.cifrak.telecomit.backend.api.dto.DtoTypeAccessPoint;
 import ru.cifrak.telecomit.backend.api.dto.TypeChangeAp;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOErrorException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
@@ -316,7 +317,7 @@ public class ApesFromExcelDTOValidated {
 
     private String checkFullnessCells(List<? extends ApFromExcelDTO> tcesDTO, String apType) {
         String result = null;
-        switch (ru.cifrak.telecomit.backend.api.dto.TypeAccessPoint.valueOf(apType)) {
+        switch (DtoTypeAccessPoint.valueOf(apType)) {
             case ESPD:
                 for (ApFromExcelDTO apFromExcelDTO : tcesDTO) {
                     ApESPDFromExcelDTO TcDTO = (ApESPDFromExcelDTO) apFromExcelDTO;
