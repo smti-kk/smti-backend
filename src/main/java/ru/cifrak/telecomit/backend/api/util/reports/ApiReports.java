@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.cifrak.telecomit.backend.api.dto.*;
 import ru.cifrak.telecomit.backend.entities.AccessPointFull;
 import ru.cifrak.telecomit.backend.entities.*;
+import ru.cifrak.telecomit.backend.entities.TypeAccessPoint;
 import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
 import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
 import ru.cifrak.telecomit.backend.repository.RepositoryAccessPointsFull;
