@@ -5,25 +5,26 @@ import ru.cifrak.telecomit.backend.api.dto.DtoMapLocation;
 import ru.cifrak.telecomit.backend.entities.map.MapLocation;
 import ru.cifrak.telecomit.backend.entities.map.ShortLocation;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
-import ru.cifrak.telecomit.backend.repository.ReposirotyDtoMapLocation;
+import ru.cifrak.telecomit.backend.repository.RepositoryLocation;
 import ru.cifrak.telecomit.backend.repository.map.MapLocationSearchResult;
 import ru.cifrak.telecomit.backend.repository.map.MapLocationsPositionRepository;
 import ru.cifrak.telecomit.backend.repository.map.MapLocationsRepository;
 import ru.cifrak.telecomit.backend.service.BboxFactory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class ApiMapLocationsImpl implements ApiMapLocations {
     private final MapLocationsPositionRepository mapLocationsPositionRepository;
     private final MapLocationsRepository mapLocationsRepository;
     private final BboxFactory bboxFactory;
-    private final ReposirotyDtoMapLocation repositoryLocation;
+    private final RepositoryLocation repositoryLocation;
 
     public ApiMapLocationsImpl(MapLocationsPositionRepository mapLocationsPositionRepository,
                                MapLocationsRepository mapLocationsRepository,
                                BboxFactory bboxFactory,
-                               ReposirotyDtoMapLocation repositoryLocation) {
+                               RepositoryLocation repositoryLocation) {
         this.mapLocationsPositionRepository = mapLocationsPositionRepository;
         this.mapLocationsRepository = mapLocationsRepository;
         this.bboxFactory = bboxFactory;
@@ -47,7 +48,14 @@ public class ApiMapLocationsImpl implements ApiMapLocations {
 
     @Override
     public List<DtoMapLocation> listWithQuality() {
-        return repositoryLocation.findAll();
+            return mapLocationsPositionRepository.findAll()
+                    .stream()
+                    .map(s -> new DtoMapLocation(s, repositoryLocation.findById(s.getId()).get()
+                            .getTechnicalCapabilities().stream()
+                            .filter(tc -> tc.getDecriminatorValue().equals("MOBILE"))
+                            .map(t -> t.getQuality().name())
+                            .collect(Collectors.toList())))
+                    .collect(Collectors.toList());
     }
     
     @Override

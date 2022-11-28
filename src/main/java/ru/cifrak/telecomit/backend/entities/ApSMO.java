@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @DiscriminatorValue("SMO")
-public class ApSMO extends AccessPoint{
+public class ApSMO extends AccessPoint {
 
-    //Дата ввода в эксплуатацию [15]
+    // Дата ввода в эксплуатацию
     @Column(name = "data_commissioning")
     private LocalDateTime dataCommissioning;
 

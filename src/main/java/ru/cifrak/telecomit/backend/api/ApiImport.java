@@ -6,10 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTONppException;
@@ -92,6 +89,8 @@ public class ApiImport {
     private final BaseStationsSaveService baseStationsSaveService;
     private final RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram;
 
+    private final RepositoryAccessPoints repositoryAccessPoints;
+
     public ApiImport(
             RepositoryLocation repositoryLocation,
             RepositoryOperator repositoryOperator,
@@ -113,7 +112,8 @@ public class ApiImport {
             TcesAtsSaveService tcesAtsSaveService,
             TrunkChannelsSaveService trunkChannelsSaveService,
             BaseStationsSaveService baseStationsSaveService,
-            RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram) {
+            RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram,
+            RepositoryAccessPoints repositoryAccessPoints) {
         this.repositoryLocation = repositoryLocation;
         this.repositoryOperator = repositoryOperator;
         this.repositoryTypeTruncChannel = repositoryTypeTruncChannel;
@@ -135,6 +135,7 @@ public class ApiImport {
         this.trunkChannelsSaveService = trunkChannelsSaveService;
         this.baseStationsSaveService = baseStationsSaveService;
         this.repositoryGovernmentDevelopmentProgram = repositoryGovernmentDevelopmentProgram;
+        this.repositoryAccessPoints = repositoryAccessPoints;
     }
 
     @Secured({"ROLE_ADMIN"})
@@ -472,7 +473,8 @@ public class ApiImport {
 
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/access-point")
-    public ResponseEntity<ByteArrayResource> handleFileAccessPoint(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ByteArrayResource> handleFileAccessPoint(@RequestParam("file") MultipartFile file,
+                                                                   @RequestBody String apType) {
         HttpHeaders headers = new HttpHeaders();
         try {
             ApImportResult importResult = new ApesFromExcelDTOValidated(
@@ -481,8 +483,10 @@ public class ApiImport {
                     repositorySmoType,
                     repositoryOrganizationType,
                     repositoryLocation,
-                    repositoryGovernmentDevelopmentProgram, new ApesFromExcelDTO(file)).getTcesDTO();
-            apesSaveService.save(importResult.getListToImport());
+                    repositoryGovernmentDevelopmentProgram,
+                    repositoryAccessPoints,
+                    new ApesFromExcelDTO(file)).getTcesDTO(apType);
+            apesSaveService.save(importResult.getListToImport(), apType);
             if (importResult.getImportFailure() > 0) {
                 log.error("<-POST /api/import/access-point :: error");
                 headers.set("import-success", String.valueOf(importResult.getImportSuccess()));

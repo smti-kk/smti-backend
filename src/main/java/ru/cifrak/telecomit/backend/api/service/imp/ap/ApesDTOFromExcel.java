@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ApesDTOFromExcel {
 
-    List<ApFromExcelDTO> getTcesDTO() throws FromExcelDTOFormatException;
+    List<? extends ApFromExcelDTO> getTcesDTO(String apType) throws FromExcelDTOFormatException;
 
     MultipartFile getFile();
 }
