@@ -2,70 +2,99 @@ package ru.cifrak.telecomit.backend.api.service.imp.ap;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class ApFromExcelDTO {
 
-    private final String npp;
+    protected String npp;
 
     // organization.location.fias - Номер населенного пункта в ФИАС [6]
-    private final String fiasLocation;
+    protected String fiasLocation;
 
     // organization.name - Полное наименование учреждения [7]
-    private final String name;
+    protected String name;
 
     // address & organization.address - Адрес точки подключения [8]
-    private final String address;
+    protected String address;
 
     // point - Ширина [9]
-    private final String latitude;
+    protected String latitude;
 
     // point - Долгота [10]
-    private final String longitude;
+    protected String longitude;
 
     // organization.fias - Номер учреждения в ФИАС [11]
-    private final String fias;
+    protected String fias;
 
-    // organization.smo - Вид СЗО [12]
-    private final String smo;
+    // funCustomer - Функциональный заказчик [12]
+    protected String functionalCustomer;
 
-    // organization.type - Тип учреждения [13]
-    private final String type;
+    // organization.smo - Вид СЗО [12] DELETE
+//    private final String smo;
 
-    // contractor - Оператор связи [14]
-    private final String contractor;
+    // organization.type - Тип учреждения [13] DELETE
+//    private final String type;
 
-    // internetAccess - Тип подключения [15]
-    private final String typeInternetAccess;
+    // contractor - Оператор связи [14] DELETE
+//    private final String contractor;
 
-    // declaredSpeed - Скорость подключения [16]
-    private final String declaredSpeed;
+    // internetAccess - Тип подключения [13]
+    protected String typeInternetAccess;
 
-    // governmentDevelopmentProgram - Наименование программы [18]
-    private final String program;
+    // declaredSpeed - Скорость подключения [14]
+    protected String declaredSpeed;
+
+    // contractId - ID (по контракту) [ESPD: 15] [SMO: 16]
+    protected String contractId;
+
+    // contract - Контракт [ESPD: 25] [SMO: 17]
+    protected String contract;
+
+    // contacts - Контакты [ESPD: 17] [SMO: 18]
+    protected String contacts;
+
+    // change - Изменение [ESPD: 18] [SMO: 19]
+    protected String changeType;
+
+    // dateConnectionOrChange - Дата подключения/изменения [ESPD: 19] [SMO: 20]
+    protected String connectionOrChangeDate;
+
+    // numIncomingMessage - № вх. письма от ведомтсва [ESPD: 20] [SMO: 21]
+    protected String nppIncomingMessage;
+
+    // commentary - Комментарии [22]
+    protected String comments;
+
+    // deleted - Активность [ESPD: 28] [SMO: 23]
+    protected String activity;
+
+    // governmentDevelopmentProgram - Наименование программы [18] DELETE
+//    private final String program;
 
     // //type\\ - Тип точки подключения [21]
-    private final String typeAccessPoint;
+//    private final String typeAccessPoint;
 
-    public ApFromExcelDTO(Row row) {
-        this(
-                row.getCell(0).getStringCellValue().trim(),
-                row.getCell(5).getStringCellValue().trim(),
-                row.getCell(6).getStringCellValue().trim(),
-                row.getCell(7).getStringCellValue().trim(),
-                row.getCell(8).getStringCellValue().trim().replaceAll(",", "."),
-                row.getCell(9).getStringCellValue().trim().replaceAll(",", "."),
-                row.getCell(10).getStringCellValue().trim(),
-                row.getCell(11).getStringCellValue().trim().toLowerCase().equals("нет") ?
-                    "" : row.getCell(11).getStringCellValue().trim(),
-                row.getCell(12).getStringCellValue().trim(),
-                row.getCell(13).getStringCellValue().trim(),
-                row.getCell(14).getStringCellValue().trim(),
-                row.getCell(15).getStringCellValue().trim(),
-                row.getCell(17).getStringCellValue().trim(),
-                row.getCell(19).getStringCellValue().trim()
-        );
-    }
+//    public ApFromExcelDTO(Row row) {
+//        this(
+//                row.getCell(0).getStringCellValue().trim(),
+//                row.getCell(5).getStringCellValue().trim(),
+//                row.getCell(6).getStringCellValue().trim(),
+//                row.getCell(7).getStringCellValue().trim(),
+//                row.getCell(8).getStringCellValue().trim().replaceAll(",", "."),
+//                row.getCell(9).getStringCellValue().trim().replaceAll(",", "."),
+//                row.getCell(10).getStringCellValue().trim(),
+//                row.getCell(11).getStringCellValue().trim().toLowerCase().equals("нет") ?
+//                    "" : row.getCell(11).getStringCellValue().trim(),
+//                row.getCell(12).getStringCellValue().trim(),
+//                row.getCell(13).getStringCellValue().trim(),
+//                row.getCell(14).getStringCellValue().trim(),
+//                row.getCell(15).getStringCellValue().trim(),
+//                row.getCell(17).getStringCellValue().trim(),
+//                row.getCell(19).getStringCellValue().trim()
+//        );
+//    }
 }

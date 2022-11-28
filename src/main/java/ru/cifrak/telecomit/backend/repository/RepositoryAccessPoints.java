@@ -13,6 +13,7 @@ import ru.cifrak.telecomit.backend.entities.AccessPoint;
 import ru.cifrak.telecomit.backend.entities.Organization;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface RepositoryAccessPoints extends JpaRepository<AccessPoint, Integer>, JpaSpecificationExecutor {
@@ -27,6 +28,7 @@ public interface RepositoryAccessPoints extends JpaRepository<AccessPoint, Integ
     @Override
     Page findAll(Specification spec, Pageable pageable);
 
+    Optional<AccessPoint> findByOrganizationAndAddress(Organization organization, String address);
 
     List<AccessPoint> getAllByOrganizationIdAndDeletedIsFalse(Integer id);
 
