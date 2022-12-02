@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="shikhovse" id="10">
+        <sql endDelimiter=";">
+            drop view view_map_location;
+
+            create view view_map_location as
+            SELECT row_number() over () as id,
+                    l.id as location_id,
+                   l.fias as fias,
+                   l.level as level,
+                   l.name as name,
+                   l.okato as okato,
+                   l.oktmo as oktmo,
+                   l.population as population,
+                   l.type as type,
+                   gd.id as geo_id,
+                   gd.administrative_center as administrative_center,
+                   l.parent_id as parent_id,
+                   p.name as parent_name,
+                   p.type as parent_type,
+                   p.level as parent_level,
+                   (select string_agg(tc.quality, ', ') from technical_capability tc where tc.split = 'MOBILE' and tc.state = 'ACTIVE' and tc.key_location = l.id) as qualities
+            FROM location l
+                     inner join technical_capability tc on l.id = tc.key_location
+                     inner join geo_data gd on gd.id = l.geo_data_id
+                     inner join location p on p.id = l.parent_id
+            where l.type not in ('р-н', 'край', 'с/с', 'тер', 'мо')
+              and l.geo_data_id is not null
+            group by l.id, gd.id, p.id
+            order by l.id;
+        </sql>
+    </changeSet>
+</databaseChangeLog>
