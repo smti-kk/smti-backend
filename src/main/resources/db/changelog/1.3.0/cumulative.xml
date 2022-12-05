@@ -6,6 +6,8 @@
     <include file="0004-back-contractor-to-access-point.xml" relativeToChangelogFile="true" />
     <include file="0005-create-view-map-location.xml" relativeToChangelogFile="true" />
     <include file="0006-add-column-to-access_point.xml" relativeToChangelogFile="true" />
+    <include file="0007-alter-feature_edit-and-access_point.xml" relativeToChangelogFile="true" />
+    <include file="0008-new-update-edit_requests_view.xml" relativeToChangelogFile="true" />
     <include file="0009-recreate-view-map-location.xml" relativeToChangelogFile="true" />
     <include file="0010-recreate-view-map-location.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
