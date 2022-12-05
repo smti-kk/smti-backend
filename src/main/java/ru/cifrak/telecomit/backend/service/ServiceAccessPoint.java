@@ -30,7 +30,7 @@ public class ServiceAccessPoint {
         this.rInternetAccessType = rInternetAccessType;
     }
 
-    public AccessPointDetailInOrganizationDTO giveNewCreatedAccessPoint(@NotNull final Organization organization, @NotNull final AccessPointNewDTO dto) throws Exception {
+    public AccessPointDetailInOrganizationDTO giveNewCreatedAccessPoint(@NotNull final Organization organization, final AccessPointNewDTO dto) throws Exception {
         switch (dto.getType()) {
             case "SMO":
                 final ApSMO smo = new ApSMO(dto.getDateCommissioning());

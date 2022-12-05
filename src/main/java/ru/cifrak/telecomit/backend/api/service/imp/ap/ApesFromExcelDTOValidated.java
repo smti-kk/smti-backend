@@ -189,11 +189,11 @@ public class ApesFromExcelDTOValidated {
                     " в таблице на мониторинге!");
         }
 
-//        badDTO = this.checkAddressAndTypeAP(tcesDTO, apType);
-//        if (badDTO != null) {
-//            throw new FromExcelDTOErrorException("Ошибка! Точка подключения под номером " + badDTO +
-//                    " уже существует с другим типом!");
-//        }
+        badDTO = this.checkAddressAndTypeAP(tcesDTO, apType);
+        if (badDTO != null) {
+            throw new FromExcelDTOErrorException("Ошибка! Точка подключения под номером " + badDTO +
+                    " уже существует с другим типом!");
+        }
 
 //        badDTO = this.checkTypeSmo(tcesDTO);
 //        if (badDTO != null) {
