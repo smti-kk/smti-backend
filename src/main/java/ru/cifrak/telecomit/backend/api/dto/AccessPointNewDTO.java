@@ -7,13 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
-import ru.cifrak.telecomit.backend.entities.TypeAccessPoint;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -63,7 +61,7 @@ public class AccessPointNewDTO {
     private String contract;
     private String contacts;
     private String change;
-    private LocalDateTime dateConnectionOrChange;
+    private LocalDate dateConnectionOrChange;
     private String commentary;
     //ESPD
     private String espdWhiteIp;
@@ -73,5 +71,5 @@ public class AccessPointNewDTO {
     private String zspdWhiteIp;
     private String availZspdOrMethodConToZspd;
     //SMO
-    private LocalDateTime dataCommissioning;
+    private LocalDate dateCommissioning;
 }

@@ -69,7 +69,7 @@ public class ApFromExcelDTO {
     // commentary - Комментарии [22]
     protected String comments;
 
-    // deleted - Активность [ESPD: 28] [SMO: 23]
+    // deleted - Активность [ESPD: 28] [SMO: 23] (должно быть слово "нет" или ничего, нужно преобразовать в bool)
     protected String activity;
 
     // governmentDevelopmentProgram - Наименование программы [18] DELETE

@@ -61,6 +61,8 @@ import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelsSav
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.repository.*;
 
+import java.io.IOException;
+
 // TODO: добавить метод handleFileTcpPayphone (?)
 
 @Slf4j
@@ -474,7 +476,9 @@ public class ApiImport {
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/access-point")
     public ResponseEntity<ByteArrayResource> handleFileAccessPoint(@RequestParam("file") MultipartFile file,
-                                                                   @RequestBody String apType) {
+//                                                                   @RequestBody String apType,
+                                                                   @AuthenticationPrincipal User user
+                                                                   ) {
         HttpHeaders headers = new HttpHeaders();
         try {
             ApImportResult importResult = new ApesFromExcelDTOValidated(
@@ -485,8 +489,9 @@ public class ApiImport {
                     repositoryLocation,
                     repositoryGovernmentDevelopmentProgram,
                     repositoryAccessPoints,
-                    new ApesFromExcelDTO(file)).getTcesDTO(apType);
-            apesSaveService.save(importResult.getListToImport(), apType);
+                    // TODO: вернуть apType в качестве аргумента для двух методов ниже
+                    new ApesFromExcelDTO(file)).getTcesDTO("SMO");
+            apesSaveService.save(importResult.getListToImport(), "SMO", user);
             if (importResult.getImportFailure() > 0) {
                 log.error("<-POST /api/import/access-point :: error");
                 headers.set("import-success", String.valueOf(importResult.getImportSuccess()));
@@ -504,6 +509,10 @@ public class ApiImport {
             // TODO: <-, -> ?
             log.error("<-POST /api/import/access-point :: {}", e.getMessage());
             headers.set("import-message", "npp-error");
+            return ResponseEntity.badRequest().headers(headers).body(null);
+        } catch (IOException e) {
+            log.error("<-POST /api/import/access-point :: {}", e.getMessage());
+            headers.set("import-message", "input/output-error");
             return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (Exception e) {
             log.error("<-POST /api/import/access-point :: {}", e.getMessage());

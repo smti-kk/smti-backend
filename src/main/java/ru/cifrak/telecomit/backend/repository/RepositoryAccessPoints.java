@@ -28,7 +28,7 @@ public interface RepositoryAccessPoints extends JpaRepository<AccessPoint, Integ
     @Override
     Page findAll(Specification spec, Pageable pageable);
 
-    Optional<AccessPoint> findByOrganizationAndAddress(Organization organization, String address);
+    Optional<AccessPoint> findByOrganizationAndAddressAndDeleted(Organization organization, String address, Boolean deleted);
 
     List<AccessPoint> getAllByOrganizationIdAndDeletedIsFalse(Integer id);
 

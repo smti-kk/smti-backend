@@ -5,7 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
-import ru.cifrak.telecomit.backend.api.dto.DtoTypeAccessPoint;
+import ru.cifrak.telecomit.backend.entities.TypeAccessPoint;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class ApesFromExcelDTO implements ApesDTOFromExcel {
     public List<? extends ApFromExcelDTO> getTcesDTO(String apType) {
         List tces;
         int rowCount = 0;
-        switch (DtoTypeAccessPoint.valueOf(apType)) {
+        switch (TypeAccessPoint.valueOf(apType)) {
             case ESPD:
                 tces = new ArrayList<ApESPDFromExcelDTO>();
                 rowCount = 28;
@@ -56,7 +56,7 @@ public class ApesFromExcelDTO implements ApesDTOFromExcel {
                 }
 
                 if (this.notEmptyRow(row, apType)) {
-                    switch (DtoTypeAccessPoint.valueOf(apType)) {
+                    switch (TypeAccessPoint.valueOf(apType)) {
                         case ESPD:
                             tces.add(new ApESPDFromExcelDTO(row));
                             break;
@@ -71,7 +71,7 @@ public class ApesFromExcelDTO implements ApesDTOFromExcel {
     }
 
     private boolean notEmptyRow(Row row, String apType) {
-        switch (DtoTypeAccessPoint.valueOf(apType)) {
+        switch (TypeAccessPoint.valueOf(apType)) {
             case ESPD:
                 return     !row.getCell(0).getStringCellValue().trim().isEmpty()
                         || !row.getCell(5).getStringCellValue().trim().isEmpty()

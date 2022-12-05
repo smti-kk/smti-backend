@@ -19,5 +19,5 @@ public class ApImportResult {
 
     private ByteArrayResource fileWithError;
 
-    private List<ApFromExcelDTO> listToImport;
+    private List<? extends ApFromExcelDTO> listToImport;
 }

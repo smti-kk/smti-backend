@@ -7,7 +7,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import ru.cifrak.telecomit.backend.entities.User;
-import ru.cifrak.telecomit.backend.service.ServiceWritableTc;
+import ru.cifrak.telecomit.backend.service.ServiceWritable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -70,7 +70,7 @@ public class LocationFeaturesEditingRequest {
     public LocationFeaturesEditingRequest() {
     }
 
-    public void accept(ServiceWritableTc service) {
+    public void accept(ServiceWritable service) {
         setStatus(ACCEPTED);
         service.editLocationFeatures(featureEdits, locationId);
     }

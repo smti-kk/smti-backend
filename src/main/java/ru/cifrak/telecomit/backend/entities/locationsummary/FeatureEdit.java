@@ -1,6 +1,8 @@
 package ru.cifrak.telecomit.backend.entities.locationsummary;
 
 import lombok.Data;
+import ru.cifrak.telecomit.backend.entities.AccessPoint;
+import ru.cifrak.telecomit.backend.features.comparing.LocationFeatureAp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -23,6 +25,14 @@ public class FeatureEdit {
     @ManyToOne(cascade = CascadeType.MERGE)
     private WritableTc newValue;
 
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "access_point_id")
+    private LocationFeatureAp accessPoint;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "new_access_point_id")
+    private LocationFeatureAp newAccessPoint;
+
     public FeatureEdit() {
     }
 
@@ -39,4 +49,18 @@ public class FeatureEdit {
         this.newValue = newValue;
         this.action = FeatureEditAction.UPDATE;
     }
+
+    public FeatureEdit(@NotNull LocationFeatureAp accessPoint,
+                       @NotNull FeatureEditAction action) {
+        this.accessPoint = accessPoint;
+        this.action = action;
+    }
+
+    public FeatureEdit(@NotNull LocationFeatureAp accessPoint,
+                       @NotNull LocationFeatureAp newAccessPoint) {
+        this.accessPoint = accessPoint;
+        this.newAccessPoint = newAccessPoint;
+        this.action = FeatureEditAction.UPDATE;
+    }
+
 }

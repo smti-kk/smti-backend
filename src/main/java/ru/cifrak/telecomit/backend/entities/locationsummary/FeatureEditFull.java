@@ -1,7 +1,8 @@
 package ru.cifrak.telecomit.backend.entities.locationsummary;
 
 import lombok.Data;
-import ru.cifrak.telecomit.backend.features.comparing.LocationFeature;
+import ru.cifrak.telecomit.backend.features.comparing.LocationFeatureAp;
+import ru.cifrak.telecomit.backend.features.comparing.LocationFeatureTc;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,10 +27,16 @@ public class FeatureEditFull implements Serializable {
     private FeatureEditAction action;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    private LocationFeature tc;
+    private LocationFeatureTc tc;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    private LocationFeature newValue;
+    private LocationFeatureTc newValueTc;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    private LocationFeatureAp ap;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    private LocationFeatureAp newValueAp;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(

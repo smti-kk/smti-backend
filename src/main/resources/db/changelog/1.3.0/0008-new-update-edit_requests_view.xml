@@ -1,0 +1,44 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="rodushkinva" id="8">
+        <dropView viewName="feature_edit_with_true_changes" schemaName="public"/>
+        <createView viewName="feature_edit_with_true_changes" schemaName="public">
+            SELECT
+                fe.*,
+                CASE
+                    WHEN fe.action='UPDATE' THEN 'Изменение'
+                    WHEN fe.action='CREATE' THEN 'Создание'
+                    WHEN fe.action='DELETE' THEN 'Удаление'
+                    END as "sort_action",
+                CASE
+                    WHEN lfer.change_source='IMPORT' THEN 'Импорт'
+                    WHEN lfer.change_source='REQUEST' THEN 'Уточняющая заявка'
+                    WHEN lfer.change_source='EDITING' THEN 'Ручной ввод'
+                    END as "sort_change_source"
+            FROM
+                feature_edit fe LEFT OUTER JOIN technical_capability tc
+                                                ON tc.id=fe.tc_id
+                                LEFT OUTER JOIN technical_capability tc_new_value
+                                                ON tc_new_value.id=fe.new_value_id
+                                LEFT OUTER JOIN location_features_editing_request_feature_edits lferfe
+                                                ON lferfe.feature_edits_id=fe.id
+                                LEFT OUTER JOIN location_features_editing_request lfer
+                                                ON lfer.id=lferfe.location_features_editing_request_id
+                                LEFT OUTER JOIN access_point ap
+                                                ON ap.id=fe.access_point_id
+            WHERE
+                NOT fe.action='UPDATE'
+               OR fe.action='UPDATE' AND (
+                    ((tc.split='PAYPHONE' OR tc.split='INFOMAT') AND NOT tc.quantity=tc_new_value.quantity)
+                    OR (tc.split='INET' AND (NOT tc.key_type_trunkchannel=tc_new_value.key_type_trunkchannel OR NOT tc.quality=tc_new_value.quality))
+                    OR (tc.split='MOBILE' AND (NOT tc.key_type_mobile=tc_new_value.key_type_mobile OR NOT tc.quality=tc_new_value.quality))
+                    OR (tc.split='POST' AND NOT tc.type_post=tc_new_value.type_post)
+                    OR ((tc.split='RADIO' OR tc.split='TV') AND NOT tc.type=tc_new_value.type)
+                    OR (tc.split='ATS')
+                    OR (ap.id=fe.access_point_id)
+                );
+        </createView>
+    </changeSet>
+</databaseChangeLog>

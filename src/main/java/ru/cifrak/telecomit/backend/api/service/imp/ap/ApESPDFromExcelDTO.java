@@ -42,7 +42,7 @@ public class ApESPDFromExcelDTO extends ApFromExcelDTO {
                 row.getCell(24).getStringCellValue().trim(), // contract - Контракт
                 row.getCell(16).getStringCellValue().trim(), // contacts - Контакты
                 row.getCell(17).getStringCellValue().trim(), // changeType - Изменение
-                row.getCell(18).getStringCellValue().trim(), // connectionDate - Дата подключения/изменения
+                row.getCell(18).getStringCellValue().trim(), // connectionOrChangeDate - Дата подключения/изменения
                 row.getCell(19).getStringCellValue().trim(), // nppIncomingMessage - № вх. письма от ведомтсва
                 row.getCell(21).getStringCellValue().trim(), // comments - Комментарии
                 row.getCell(27).getStringCellValue().trim()  // activity - Активность

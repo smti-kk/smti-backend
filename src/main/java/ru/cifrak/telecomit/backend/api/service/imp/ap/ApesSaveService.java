@@ -1,16 +1,35 @@
 package ru.cifrak.telecomit.backend.api.service.imp.ap;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 import ru.cifrak.telecomit.backend.entities.*;
+import ru.cifrak.telecomit.backend.entities.locationsummary.ChangeSource;
+import ru.cifrak.telecomit.backend.entities.locationsummary.FeatureEdit;
+import ru.cifrak.telecomit.backend.entities.locationsummary.FeatureEditAction;
+import ru.cifrak.telecomit.backend.entities.locationsummary.LocationFeaturesEditingRequest;
+import ru.cifrak.telecomit.backend.features.comparing.LocationFeatureAp;
 import ru.cifrak.telecomit.backend.repository.*;
 import ru.cifrak.telecomit.backend.service.LocationService;
+import ru.cifrak.telecomit.backend.service.ServiceWritableAP;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class ApesSaveService {
 
@@ -22,99 +41,211 @@ public class ApesSaveService {
 
     private final RepositoryInternetAccessType repositoryInternetAccessType;
 
-    private final RepositorySmoType repositorySmoType;
+//    private final RepositorySmoType repositorySmoType;
+//
+//    private final RepositoryOrganizationType repositoryOrganizationType;
+//
+//    private final RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram;
 
-    private final RepositoryOrganizationType repositoryOrganizationType;
+    private final RepositoryFeatureEdits repositoryFeatureEdits;
 
-    private final RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram;
+    private final RepositoryLocationFeaturesRequests repositoryLocationFeaturesRequests;
+
+    private final ServiceWritableAP serviceWritableAP;
 
     private final LocationService locationService;
+
+    private final String DATE_FORMAT_FROM_EXCEL = "dd.MM.yyyy";
 
     public ApesSaveService(
             RepositoryLocation repositoryLocation,
             RepositoryAccessPoints repositoryAccessPoints,
             RepositoryOrganization repositoryOrganization,
             RepositoryInternetAccessType repositoryInternetAccessType,
-            RepositorySmoType repositorySmoType,
-            RepositoryOrganizationType repositoryOrganizationType,
-            RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram,
+//            RepositorySmoType repositorySmoType,
+//            RepositoryOrganizationType repositoryOrganizationType,
+//            RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram,
+            RepositoryFeatureEdits repositoryFeatureEdits,
+            RepositoryLocationFeaturesRequests repositoryLocationFeaturesRequests,
+            ServiceWritableAP serviceWritableAP,
             LocationService locationService) {
         this.repositoryLocation = repositoryLocation;
         this.repositoryAccessPoints = repositoryAccessPoints;
         this.repositoryOrganization = repositoryOrganization;
         this.repositoryInternetAccessType = repositoryInternetAccessType;
-        this.repositorySmoType = repositorySmoType;
-        this.repositoryOrganizationType = repositoryOrganizationType;
-        this.repositoryGovernmentDevelopmentProgram = repositoryGovernmentDevelopmentProgram;
+//        this.repositorySmoType = repositorySmoType;
+//        this.repositoryOrganizationType = repositoryOrganizationType;
+//        this.repositoryGovernmentDevelopmentProgram = repositoryGovernmentDevelopmentProgram;
+        this.repositoryFeatureEdits = repositoryFeatureEdits;
+        this.repositoryLocationFeaturesRequests = repositoryLocationFeaturesRequests;
+        this.serviceWritableAP = serviceWritableAP;
         this.locationService = locationService;
     }
 
-    public void save(List<ApFromExcelDTO> TcesDTO, String apType) {
-        for (ApFromExcelDTO tcDTO : TcesDTO) {
+    public void save(List<? extends ApFromExcelDTO> apesDTO, String apType, User user) {
+        for (ApFromExcelDTO apDTO : apesDTO) {
             List<AccessPoint> apes = repositoryAccessPoints.findByPointAndOrganization(
-                    createPoint(tcDTO.getLongitude(), tcDTO.getLatitude()),
-                    getOrganization(tcDTO));
-//            if (apes.size() > 0) {
-//                // TODO: сделать приведение к указанному аргументом метода типу
-//                if (getTypeAPInString(apes.get(0)).equals(tcDTO.getTypeAccessPoint())) {
-//                    // TODO: Transaction.
-//                    apes.get(0).setAddress(tcDTO.getAddress());
-//                    apes.get(0).setContractor(tcDTO.getContractor());
-//                    apes.get(0).setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
-//                    apes.get(0).setDeclaredSpeed(tcDTO.getDeclaredSpeed());
-//                    apes.get(0).setGovernmentDevelopmentProgram(repositoryGovernmentDevelopmentProgram.findByAcronym(tcDTO.getProgram()));
-//                    repositoryAccessPoints.save(apes.get(0));
-//                } else {
-//                    AccessPoint ap;
-//                    switch (tcDTO.getTypeAccessPoint()) {
-//                        case ("ЕСПД"):
-//                            ap = new ApESPD();
-//                            break;
-//                        case ("РСЗО"):
-//                            ap = new ApRSMO();
-//                            break;
-//                        case ("СЗО"):
-//                            ap = new ApSMO();
-//                            break;
-//                        case ("ЕМСПД"):
-//                            ap = new ApEMSPD();
-//                            break;
-//                        default:
-//                            ap = new ApContract();
-//                            break;
-//                    }
-//                    ap.setPoint(createPoint(tcDTO.getLongitude(), tcDTO.getLatitude()));
-//                    ap.setOrganization(getOrganization(tcDTO));
-//                    ap.setAddress(tcDTO.getAddress());
-//                    ap.setContractor(tcDTO.getContractor());
-//                    ap.setGovernmentDevelopmentProgram(repositoryGovernmentDevelopmentProgram.findByAcronym(tcDTO.getProgram()));
-//                    ap.setInternetAccess(repositoryInternetAccessType.findByName(tcDTO.getTypeInternetAccess()));
-//                    ap.setDeclaredSpeed(tcDTO.getDeclaredSpeed());
-//                    ap.setVisible(true);
-//                    ap.setMaxAmount(0);
-//                    ap.setDeleted(false);
-//                    // TODO: Transaction.
-//                    repositoryAccessPoints.save(ap);
-//                }
-//            }
+                    createPoint(apDTO.getLongitude(), apDTO.getLatitude()),
+                    getOrganization(apDTO));
+            AccessPoint accessPoint = new AccessPoint();
+            FeatureEdit featureEdit;
+            // TODO: переписать parseExcelDtoToEntity: AccessPoint заменить на LFAP
+            // TODO: добавить репозиторий для LocationFeatureAp и работать с ним вместо repositoryAP
+            if (apes.size() > 0) {
+                accessPoint = apes.get(0);
+                LocationFeatureAp locationFeatureAp = new LocationFeatureAp(accessPoint);
+
+                if (apDTO.getActivity().equalsIgnoreCase("нет")) {
+                    this.parseExcelDtoToEntity(apDTO, accessPoint, apType);
+                    featureEdit = new FeatureEdit(locationFeatureAp, FeatureEditAction.DELETE);
+                } else {
+                    LocationFeatureAp clonedLFAP = locationFeatureAp.cloneWithNullId();
+                    AccessPoint clonedAp = clonedLFAP.convertToAccessPoint();
+                    this.parseExcelDtoToEntity(apDTO, clonedAp, apType);
+                    clonedAp = repositoryAccessPoints.save(clonedAp);
+                    clonedLFAP = new LocationFeatureAp(clonedAp);
+                    featureEdit = new FeatureEdit(locationFeatureAp, clonedLFAP);
+                }
+            } else {
+                switch (TypeAccessPoint.valueOf(apType)) {
+                    case ESPD:
+                        accessPoint = new ApESPD();
+                        break;
+                    case SMO:
+                        accessPoint = new ApSMO();
+                        break;
+                }
+                this.parseExcelDtoToEntity(apDTO, accessPoint, apType);
+                accessPoint = repositoryAccessPoints.save(accessPoint);
+                LocationFeatureAp locationFeatureAp = new LocationFeatureAp(accessPoint);
+                featureEdit = new FeatureEdit(locationFeatureAp, FeatureEditAction.CREATE);
+            }
+
+            repositoryFeatureEdits.save(featureEdit);
+            LocationFeaturesEditingRequest importRequest = new LocationFeaturesEditingRequest(
+                    accessPoint.getOrganization().getLocation().getId(),
+                    "",
+                    user,
+                    ChangeSource.IMPORT,
+                    Collections.singleton(featureEdit)
+            );
+            repositoryLocationFeaturesRequests.save(importRequest);
+            importRequest.accept(serviceWritableAP);
             locationService.refreshCache();
         }
     }
 
-    private String getTypeAPInString(AccessPoint ap) {
-        String type;
-        if (ap instanceof ApESPD) {
-            type = "ЕСПД";
-        } else if (ap instanceof ApRSMO) {
-            type = "РСЗО";
-        } else if (ap instanceof ApSMO) {
-            type = "СЗО";
-        } else if (ap instanceof ApEMSPD) {
-            type = "ЕМСПД";
-        } else {
-            type = "Контракт";
+    private void parseExcelDtoToEntity(ApFromExcelDTO apDTO, AccessPoint accessPoint, String apType) {
+
+        switch (TypeAccessPoint.valueOf(apType)) {
+            case ESPD:
+                try {
+                    Method method = ApESPD.class.getMethod("setEspdWhiteIp", String.class);
+                    method.setAccessible(true);
+                    method.invoke(accessPoint,
+                            ((ApESPDFromExcelDTO) apDTO).getEspdWhiteIp());
+                    method.setAccessible(false);
+
+                    method = ApESPD.class.getMethod("setNumSourceEmailsRTK", String.class);
+                    method.setAccessible(true);
+                    method.invoke(accessPoint,
+                            ((ApESPDFromExcelDTO) apDTO).getNppSourceMessageRTK());
+                    method.setAccessible(false);
+
+                    method = ApESPD.class.getMethod("setOneTimePay", BigDecimal.class);
+                    method.setAccessible(true);
+                    method.invoke(accessPoint,
+                            BigDecimal.valueOf(
+                                    Double.parseDouble(
+                                            ((ApESPDFromExcelDTO) apDTO).getOneTimePay()
+                                    )
+                            ));
+                    method.setAccessible(false);
+
+                    method = ApESPD.class.getMethod("setMonthlyPay", BigDecimal.class);
+                    method.setAccessible(true);
+                    method.invoke(accessPoint,
+                            BigDecimal.valueOf(
+                                    Double.parseDouble(
+                                            ((ApESPDFromExcelDTO) apDTO).getMonthlyPay()
+                                    )
+                            ));
+                    method.setAccessible(false);
+
+                    method = ApESPD.class.getMethod("setZspdWhiteIp", String.class);
+                    method.setAccessible(true);
+                    method.invoke(accessPoint, ((ApESPDFromExcelDTO) apDTO).getZspdWhiteIp());
+                    method.setAccessible(false);
+
+                    method = ApESPD.class.getMethod("setAvailZspdOrMethodConToZspd", String.class);
+                    method.setAccessible(true);
+                    method.invoke(accessPoint, ((ApESPDFromExcelDTO) apDTO).getAvailZSPD());
+                    method.setAccessible(false);
+                } catch (NoSuchMethodException e) {
+                    log.error("Не опеределен метод " + e.getMessage() + "!");
+                } catch (InvocationTargetException e) {
+                    log.error("Вызванный метод выдал исключение " + e.getMessage() + "!");
+                } catch (IllegalAccessException e) {
+                    log.error("Вызванный метод не имеет доступа" + e.getMessage() + "!");
+                }
+                break;
+
+            case SMO:
+                try {
+                    Method method = ApSMO.class.getMethod("setDateCommissioning", LocalDate.class);
+                    method.setAccessible(true);
+                    method.invoke(accessPoint,
+                            LocalDateTime.ofInstant(
+                                    Instant.ofEpochMilli(
+                                            DateUtil.getJavaDate(
+                                                    Double.parseDouble(
+                                                            ((ApSMOFromExcelDTO) apDTO)
+                                                                    .getCommissioningDate()
+                                                    )
+                                            ).getTime()
+                                    ),
+                                    ZoneId.systemDefault()
+                            ).toLocalDate()
+                    );
+                } catch (NoSuchMethodException e) {
+                    log.error("Не опеределен метод " + e.getMessage() + "!");
+                } catch (InvocationTargetException e) {
+                    log.error("Вызванный метод выдал исключение " + e.getMessage() + "!");
+                } catch (IllegalAccessException e) {
+                    log.error("Вызванный метод не имеет доступа" + e.getMessage() + "!");
+                }
+                break;
         }
-        return type;
+
+//                    accessPoint.setGovernmentDevelopmentProgram(repositoryGovernmentDevelopmentProgram.findByAcronym(apDTO.getProgram()));
+        accessPoint.setFunCustomer(apDTO.getFunctionalCustomer());
+        accessPoint.setAddress(apDTO.getAddress());
+        accessPoint.setPoint(this.createPoint(apDTO.getLongitude(), apDTO.getLatitude()));
+        accessPoint.setInternetAccess(
+                repositoryInternetAccessType.findByName(apDTO.getTypeInternetAccess())
+        );
+        accessPoint.setDeclaredSpeed(apDTO.getDeclaredSpeed());
+        accessPoint.setContractId(Integer.parseInt(apDTO.getContractId()));
+        accessPoint.setContract(apDTO.getContract());
+        accessPoint.setContacts(apDTO.getContacts());
+        accessPoint.setChange(apDTO.getChangeType());
+        accessPoint.setDateConnectionOrChange(
+                LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(
+                                DateUtil.getJavaDate(
+                                        Double.parseDouble(
+                                                apDTO.getConnectionOrChangeDate()
+                                        )
+                                ).getTime()
+                        ),
+                        ZoneId.systemDefault()
+                ).toLocalDate()
+        );
+        accessPoint.setNumIncomingMessage(apDTO.getNppIncomingMessage());
+        accessPoint.setCommentary(apDTO.getComments());
+        accessPoint.setVisible(!apDTO.getActivity().equalsIgnoreCase("нет"));
+        accessPoint.setDeleted(apDTO.getActivity().equalsIgnoreCase("нет"));
+        accessPoint.setOrganization(this.getOrganization(apDTO));
     }
 
     private Organization getOrganization(ApFromExcelDTO ap) {

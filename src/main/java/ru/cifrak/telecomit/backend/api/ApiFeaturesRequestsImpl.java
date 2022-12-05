@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.locationtech.jts.geom.Point;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,7 +17,8 @@ import ru.cifrak.telecomit.backend.auth.repository.RepositoryAccount;
 import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.locationsummary.*;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
-import ru.cifrak.telecomit.backend.features.comparing.LocationFeature;
+import ru.cifrak.telecomit.backend.features.comparing.LocationFeatureAp;
+import ru.cifrak.telecomit.backend.features.comparing.LocationFeatureTc;
 import ru.cifrak.telecomit.backend.repository.*;
 import ru.cifrak.telecomit.backend.repository.specs.FeatureEditFullTrueChangesSpec;
 import ru.cifrak.telecomit.backend.service.LocationService;
@@ -355,10 +357,10 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
     @NotNull
     private String getChanges(FeatureEditFull fef) {
         StringBuilder builder = new StringBuilder();
-        LocationFeature tc = fef.getTc();
+        LocationFeatureTc tc = fef.getTc();
         TcType tcType = tc.getType();
         if (fef.getAction() == FeatureEditAction.UPDATE) {
-            LocationFeature newValue = fef.getNewValue();
+            LocationFeatureTc newValue = fef.getNewValueTc();
             builder.append(String.format("%s %s: ",
                     tcType.toString(),
                     tc.getOperator().getName()));
@@ -524,7 +526,18 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         feature2Set.setId(feature.getId());
         feature2Set.setAction(feature.getAction());
         feature2Set.setTc(feature.getTc());
-        feature2Set.setNewValue(feature.getNewValue());
+        feature2Set.setNewValueTc(feature.getNewValue());
+        if (feature.getAp() != null) {
+            LocationFeatureAp tempAp = feature.getAp().cloneWithNullId();
+            tempAp.setPoint(null);
+            feature2Set.setAp(tempAp);
+
+            if (feature.getNewValueAp() != null) {
+                tempAp = feature.getNewValueAp().cloneWithNullId();
+                tempAp.setPoint(null);
+                feature2Set.setNewValueAp(tempAp);
+            }
+        }
         return Collections.singleton(feature2Set);
     }
 

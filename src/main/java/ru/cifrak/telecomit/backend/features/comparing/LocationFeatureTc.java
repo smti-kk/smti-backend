@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "technical_capability")
-public class LocationFeature implements Serializable {
+public class LocationFeatureTc implements Serializable {
     @Id
     private Long id;
 

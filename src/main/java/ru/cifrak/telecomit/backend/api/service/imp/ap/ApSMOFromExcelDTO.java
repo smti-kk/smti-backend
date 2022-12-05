@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.Row;
 @Getter
 public class ApSMOFromExcelDTO extends ApFromExcelDTO {
 
-    // dataCommissioning - Дата ввода в эксплуатацию [15]
+    // dateCommissioning - Дата ввода в эксплуатацию [15]
     protected String commissioningDate;
 
     public ApSMOFromExcelDTO(Row row) {

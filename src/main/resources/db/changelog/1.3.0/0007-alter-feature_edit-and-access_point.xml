@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="rodushkinva" id="7">
+        <sql endDelimiter=";">
+            ALTER TABLE public.feature_edit
+                ADD COLUMN access_point_id integer;
+
+            ALTER TABLE public.feature_edit
+                ADD CONSTRAINT fk_feature_edit__access_point
+                FOREIGN KEY (access_point_id)
+                REFERENCES public.access_point(id);
+
+            ALTER TABLE public.feature_edit
+                ADD COLUMN new_access_point_id integer;
+
+            ALTER TABLE public.feature_edit
+                ADD CONSTRAINT fk_feature_edit__new_access_point
+                    FOREIGN KEY (new_access_point_id)
+                        REFERENCES public.access_point(id);
+
+            ALTER TABLE public.access_point
+                RENAME COLUMN data_commissioning TO date_commissioning;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

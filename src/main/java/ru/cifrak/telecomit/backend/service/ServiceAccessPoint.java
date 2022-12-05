@@ -33,7 +33,7 @@ public class ServiceAccessPoint {
     public AccessPointDetailInOrganizationDTO giveNewCreatedAccessPoint(@NotNull final Organization organization, @NotNull final AccessPointNewDTO dto) throws Exception {
         switch (dto.getType()) {
             case "SMO":
-                final ApSMO smo = new ApSMO(dto.getDataCommissioning());
+                final ApSMO smo = new ApSMO(dto.getDateCommissioning());
                 initializeWithCommonFields(smo, organization, dto);
                 rAccessPoints.save(smo);
                 return new AccessPointDetailInOrganizationDTO(smo);

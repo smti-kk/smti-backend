@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class ApSMO extends AccessPoint {
 
     // Дата ввода в эксплуатацию
-    @Column(name = "data_commissioning")
-    private LocalDateTime dataCommissioning;
+    @Column(name = "date_commissioning")
+    private LocalDate dateCommissioning;
 
 }

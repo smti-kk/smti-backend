@@ -8,7 +8,6 @@ import ru.cifrak.telecomit.backend.entities.locationsummary.LocationParent;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -28,5 +27,5 @@ public class LocationFC implements Serializable {
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     @JoinColumn(name = "key_location")
-    private List<LocationFeature> technicalCapabilities;
+    private List<LocationFeatureTc> technicalCapabilities;
 }

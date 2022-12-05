@@ -10,6 +10,7 @@ import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -74,6 +75,24 @@ public class AccessPointDetailInOrganizationDTO {
     private Boolean utm5;
     private Boolean zabbix;
 
+    //GENERAL
+    private String funCustomer;
+    private Integer contractId;
+    private String contract;
+    private String contacts;
+    private String change;
+    private LocalDate dateConnectionOrChange;
+    private String commentary;
+    //ESPD
+    private String espdWhiteIp;
+    private String numSourceEmailsRTK;
+    private BigDecimal oneTimePay;
+    private BigDecimal mounthlyPay;
+    private String zspdWhiteIp;
+    private String availZspdOrMethodConToZspd;
+    //SMO
+    private LocalDate dateCommissioning;
+
     public AccessPointDetailInOrganizationDTO(AccessPoint entity) {
         // COMMON FIELDS
         this.id = entity.getId();
@@ -96,6 +115,25 @@ public class AccessPointDetailInOrganizationDTO {
         this.ucn = entity.getUcn();
         this.updatedAt = entity.getModifiedDate();
         this.visible = entity.getVisible();
+
+        this.funCustomer = entity.getFunCustomer();
+        this.contractId = entity.getContractId();
+        this.contract = entity.getContract();
+        this.contacts = entity.getContacts();
+        this.change = entity.getChange();
+        this.dateConnectionOrChange = entity.getDateConnectionOrChange();
+        this.commentary = entity.getCommentary();
+
+        if (entity instanceof ApESPD) {
+            this.espdWhiteIp = ((ApESPD) entity).getEspdWhiteIp();
+            this.numSourceEmailsRTK = ((ApESPD) entity).getNumSourceEmailsRTK();
+            this.oneTimePay = ((ApESPD) entity).getOneTimePay();
+            this.mounthlyPay = ((ApESPD) entity).getMonthlyPay();
+            this.zspdWhiteIp = ((ApESPD) entity).getZspdWhiteIp();
+            this.availZspdOrMethodConToZspd = ((ApESPD) entity).getAvailZspdOrMethodConToZspd();
+        } else if (entity instanceof ApSMO) {
+            this.dateCommissioning = ((ApSMO) entity).getDateCommissioning();
+        }
 
         if (entity.getGovernmentDevelopmentProgram() != null) {
             this.governmentProgram = null;

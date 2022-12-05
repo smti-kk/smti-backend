@@ -11,8 +11,7 @@ import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
 
 
 @JsonTypeInfo(
@@ -149,7 +148,7 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     @Column
     private Integer ucn;
 
-    @Column(nullable = false)
+    @Column
     private Boolean visible;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -201,7 +200,7 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
 
     // Дата подключения/ изменения
     @Column(name = "date_connection_or_change")
-    private LocalDateTime dateConnectionOrChange;
+    private LocalDate dateConnectionOrChange;
 
     // № вх. письма от ведомтсва
     @Column(name = "num_incoming_message")

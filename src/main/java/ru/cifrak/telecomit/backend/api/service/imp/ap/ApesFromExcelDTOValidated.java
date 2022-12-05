@@ -4,14 +4,11 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
-import ru.cifrak.telecomit.backend.api.dto.DtoTypeAccessPoint;
 import ru.cifrak.telecomit.backend.api.dto.TypeChangeAp;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOErrorException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTONppException;
-import ru.cifrak.telecomit.backend.entities.APConnectionState;
-import ru.cifrak.telecomit.backend.entities.AccessPoint;
-import ru.cifrak.telecomit.backend.entities.TypeAccessPoint;
+import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.repository.*;
 
 import java.io.ByteArrayOutputStream;
@@ -99,14 +96,30 @@ public class ApesFromExcelDTOValidated {
             FromExcelDTONppException, IOException {
         this.checkFormatFile(this.getFile());
         List<? extends ApFromExcelDTO> tcesDTO = origin.getTcesDTO(apType);
+
+        if (tcesDTO == null) {
+            throw new FromExcelDTOFormatException(
+                    "Неизвестный тип точки подключения! - " + apType);
+        }
+
         if (!this.checkFullnessNpp(tcesDTO)) {
             throw new FromExcelDTONppException("Не все \"№ п/п\" заполнены.");
         }
+
         int importFailure = 0;
         int importSuccess = 0;
-        // TODO: сделать приведение к указанному аргументом метода типу
-        List<ApFromExcelDTO> toImport = new ArrayList<>();
-        List<ApFromExcelDTO> toCheck = new ArrayList<>();
+        List toImport = null;
+        List toCheck = null;
+        switch (TypeAccessPoint.valueOf(apType)) {
+            case ESPD:
+                toImport = new ArrayList<ApESPDFromExcelDTO>();
+                toCheck = new ArrayList<ApESPDFromExcelDTO>();
+                break;
+            case SMO:
+                toImport = new ArrayList<ApSMOFromExcelDTO>();
+                toCheck = new ArrayList<ApSMOFromExcelDTO>();
+                break;
+        }
         Workbook book = createErrorBook();
         Sheet sheet = book.getSheetAt(0);
         for (ApFromExcelDTO tcDTO : tcesDTO) {
@@ -175,6 +188,12 @@ public class ApesFromExcelDTOValidated {
             throw new FromExcelDTOErrorException("Ошибка! Точка подключения под номером " + badDTO +
                     " в таблице на мониторинге!");
         }
+
+//        badDTO = this.checkAddressAndTypeAP(tcesDTO, apType);
+//        if (badDTO != null) {
+//            throw new FromExcelDTOErrorException("Ошибка! Точка подключения под номером " + badDTO +
+//                    " уже существует с другим типом!");
+//        }
 
 //        badDTO = this.checkTypeSmo(tcesDTO);
 //        if (badDTO != null) {
@@ -317,7 +336,7 @@ public class ApesFromExcelDTOValidated {
 
     private String checkFullnessCells(List<? extends ApFromExcelDTO> tcesDTO, String apType) {
         String result = null;
-        switch (DtoTypeAccessPoint.valueOf(apType)) {
+        switch (TypeAccessPoint.valueOf(apType)) {
             case ESPD:
                 for (ApFromExcelDTO apFromExcelDTO : tcesDTO) {
                     ApESPDFromExcelDTO TcDTO = (ApESPDFromExcelDTO) apFromExcelDTO;
@@ -414,8 +433,8 @@ public class ApesFromExcelDTOValidated {
         String result = null;
 
         for (ApFromExcelDTO tcDTO : tcesDTO) {
-            Optional<AccessPoint> optionalAP = repositoryAccessPoints.findByOrganizationAndAddress(
-                    repositoryOrganization.findByFias(UUID.fromString(tcDTO.getFias())), tcDTO.getAddress()
+            Optional<AccessPoint> optionalAP = repositoryAccessPoints.findByOrganizationAndAddressAndDeleted(
+                    repositoryOrganization.findByFias(UUID.fromString(tcDTO.getFias())), tcDTO.getAddress(), false
             );
 
             if (optionalAP.isPresent() && optionalAP.get().getConnectionState().equals(APConnectionState.ACTIVE)) {
@@ -423,6 +442,32 @@ public class ApesFromExcelDTOValidated {
                 break;
             }
         }
+        return result;
+    }
+
+    private String checkAddressAndTypeAP(List<? extends ApFromExcelDTO> tcesDTO, String apType) {
+        String result = null;
+
+        for (ApFromExcelDTO tcDTO: tcesDTO) {
+            Optional<AccessPoint> optionalAP = repositoryAccessPoints.findByOrganizationAndAddressAndDeleted(
+                    repositoryOrganization.findByFias(UUID.fromString(tcDTO.getFias())), tcDTO.getAddress(), false
+            );
+
+            if (optionalAP.isPresent()) {
+                if (optionalAP.get() instanceof ApESPD &&
+                        TypeAccessPoint.valueOf(apType).equals(TypeAccessPoint.SMO)) {
+                    result = tcDTO.getNpp();
+                    break;
+                }
+
+                if (optionalAP.get() instanceof ApSMO &&
+                        TypeAccessPoint.valueOf(apType).equals(TypeAccessPoint.ESPD)) {
+                    result = tcDTO.getNpp();
+                    break;
+                }
+            }
+        }
+
         return result;
     }
 }
