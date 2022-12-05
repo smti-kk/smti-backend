@@ -476,7 +476,7 @@ public class ApiImport {
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/access-point")
     public ResponseEntity<ByteArrayResource> handleFileAccessPoint(@RequestParam("file") MultipartFile file,
-//                                                                   @RequestBody String apType,
+                                                                   @RequestBody String apType,
                                                                    @AuthenticationPrincipal User user
                                                                    ) {
         HttpHeaders headers = new HttpHeaders();
@@ -490,8 +490,8 @@ public class ApiImport {
                     repositoryGovernmentDevelopmentProgram,
                     repositoryAccessPoints,
                     // TODO: вернуть apType в качестве аргумента для двух методов ниже
-                    new ApesFromExcelDTO(file)).getTcesDTO("SMO");
-            apesSaveService.save(importResult.getListToImport(), "SMO", user);
+                    new ApesFromExcelDTO(file)).getTcesDTO(apType);
+            apesSaveService.save(importResult.getListToImport(), apType, user);
             if (importResult.getImportFailure() > 0) {
                 log.error("<-POST /api/import/access-point :: error");
                 headers.set("import-success", String.valueOf(importResult.getImportSuccess()));
