@@ -55,7 +55,7 @@ public class FCFiltersPredicate {
 
     public BooleanExpression booleanExpression() {
         QLocationFC locationFC = QLocationFC.locationFC;
-        QLocationFeature locationFeature = QLocationFeature.locationFeature;
+        QLocationFeatureTc locationFeature = QLocationFeatureTc.locationFeatureTc;
         BooleanExpression typePredicate = getTypePredicate(locationFC);
         BooleanExpression parentPredicate = getParentPredicate(locationFC);
         BooleanExpression locationPredicate = getLocationPredicate(locationFC);
@@ -138,7 +138,7 @@ public class FCFiltersPredicate {
     }
 
     @Nullable
-    private BooleanExpression getOperatorPredicate(QLocationFC locationFC, QLocationFeature locationFeature) {
+    private BooleanExpression getOperatorPredicate(QLocationFC locationFC, QLocationFeatureTc locationFeature) {
         return operators != null ?
                 JPAExpressions.selectOne().from(locationFeature).where(locationFeature.type.eq(type)
                         .and(locationFeature.operator.id.in(operators))
