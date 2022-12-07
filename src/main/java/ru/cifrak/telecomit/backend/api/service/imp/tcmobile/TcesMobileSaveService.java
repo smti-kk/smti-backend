@@ -60,7 +60,7 @@ public class TcesMobileSaveService {
                 clonedTc.setTypeMobile(repositoryMobileType.findByName(tcDTO.getType()).getId());
                 clonedTc = rWritableTc.save(clonedTc);
                 FeatureEdit featureEdit = new FeatureEdit(tcesByLocOpT.get(0), clonedTc);
-                featureEdit.setAction(tcDTO.getActivity().toLowerCase().equals("нет") ? FeatureEditAction.DELETE
+                featureEdit.setAction(tcDTO.getActivity().equalsIgnoreCase("нет") ? FeatureEditAction.DELETE
                         : featureEdit.getAction());
                 featureEdit = repositoryFeatureEdits.save(featureEdit);
                 LocationFeaturesEditingRequest importRequest = new LocationFeaturesEditingRequest(
@@ -73,6 +73,9 @@ public class TcesMobileSaveService {
                 importRequest.accept(serviceWritableTc);
                 repositoryLocationFeaturesRequests.save(importRequest);
             } else {
+                if (tcDTO.getActivity().equalsIgnoreCase("нет")) {
+                    continue;
+                }
                 WritableTc tcByLocOpT = new WritableTc();
                 tcByLocOpT.setLocationId(repositoryLocation.findByFias(UUID.fromString(tcDTO.getFias())).getId());
                 tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcDTO.getOperator()).getId());

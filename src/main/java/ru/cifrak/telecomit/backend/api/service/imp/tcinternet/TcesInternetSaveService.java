@@ -48,7 +48,7 @@ public class TcesInternetSaveService {
     }
 
     public void save(List<TcInternetFromExcelDTO> TcesInternetDTO, User user) {
-        for (TcInternetFromExcelDTO tcDTO : TcesInternetDTO){
+        for (TcInternetFromExcelDTO tcDTO : TcesInternetDTO) {
             List<WritableTc> tcesByLocOpT = RepositoryWritableTcForImport.findByLocationIdAndOperatorIdAndTypeAndState(
                     repositoryLocation.findByFias(UUID.fromString(tcDTO.getFias())).getId(),
                     repositoryOperator.findByName(tcDTO.getOperator()).getId(),
@@ -60,7 +60,7 @@ public class TcesInternetSaveService {
                 clonedTc.setTrunkChannel(repositoryTypeTruncChannel.findByName(tcDTO.getChannel()).getId());
                 clonedTc = rWritableTc.save(clonedTc);
                 FeatureEdit featureEdit = new FeatureEdit(tcesByLocOpT.get(0), clonedTc);
-                featureEdit.setAction(tcDTO.getActivity().toLowerCase().equals("нет") ? FeatureEditAction.DELETE
+                featureEdit.setAction(tcDTO.getActivity().equalsIgnoreCase("нет") ? FeatureEditAction.DELETE
                         : featureEdit.getAction());
                 featureEdit = repositoryFeatureEdits.save(featureEdit);
                 LocationFeaturesEditingRequest importRequest = new LocationFeaturesEditingRequest(
@@ -73,6 +73,9 @@ public class TcesInternetSaveService {
                 importRequest.accept(serviceWritableTc);
                 repositoryLocationFeaturesRequests.save(importRequest);
             } else {
+                if (tcDTO.getActivity().equalsIgnoreCase("нет")) {
+                    continue;
+                }
                 WritableTc tcByLocOpT = new WritableTc();
                 tcByLocOpT.setLocationId(repositoryLocation.findByFias(UUID.fromString(tcDTO.getFias())).getId());
                 tcByLocOpT.setOperatorId(repositoryOperator.findByName(tcDTO.getOperator()).getId());
