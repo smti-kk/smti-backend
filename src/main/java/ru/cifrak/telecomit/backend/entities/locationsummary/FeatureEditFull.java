@@ -30,7 +30,7 @@ public class FeatureEditFull implements Serializable {
     private LocationFeatureTc tc;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    private LocationFeatureTc newValueTc;
+    private LocationFeatureTc newValue;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     private LocationFeatureAp ap;

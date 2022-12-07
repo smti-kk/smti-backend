@@ -7,7 +7,6 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.locationtech.jts.geom.Point;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,7 +16,6 @@ import ru.cifrak.telecomit.backend.auth.repository.RepositoryAccount;
 import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.locationsummary.*;
 import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
-import ru.cifrak.telecomit.backend.features.comparing.LocationFeatureAp;
 import ru.cifrak.telecomit.backend.features.comparing.LocationFeatureTc;
 import ru.cifrak.telecomit.backend.repository.*;
 import ru.cifrak.telecomit.backend.repository.specs.FeatureEditFullTrueChangesSpec;
@@ -360,7 +358,7 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         LocationFeatureTc tc = fef.getTc();
         TcType tcType = tc.getType();
         if (fef.getAction() == FeatureEditAction.UPDATE) {
-            LocationFeatureTc newValue = fef.getNewValueTc();
+            LocationFeatureTc newValue = fef.getNewValue();
             builder.append(String.format("%s %s: ",
                     tcType.toString(),
                     tc.getOperator().getName()));
@@ -526,7 +524,7 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         feature2Set.setId(feature.getId());
         feature2Set.setAction(feature.getAction());
         feature2Set.setTc(feature.getTc());
-        feature2Set.setNewValueTc(feature.getNewValue());
+        feature2Set.setNewValue(feature.getNewValue());
         feature2Set.setAp(feature.getAp());
         feature2Set.setNewValueAp(feature.getNewValueAp());
         return Collections.singleton(feature2Set);
