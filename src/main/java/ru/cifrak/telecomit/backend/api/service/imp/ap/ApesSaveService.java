@@ -101,6 +101,9 @@ public class ApesSaveService {
                     featureEdit = new FeatureEdit(locationFeatureAp, clonedLFAP);
                 }
             } else {
+                if (apDTO.getActivity().equalsIgnoreCase("нет")) {
+                    continue;
+                }
                 switch (TypeAccessPoint.valueOf(apType)) {
                     case ESPD:
                         accessPoint = new ApESPD();
