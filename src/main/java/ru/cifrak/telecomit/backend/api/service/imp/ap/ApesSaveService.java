@@ -23,11 +23,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -54,8 +50,6 @@ public class ApesSaveService {
     private final ServiceWritableAP serviceWritableAP;
 
     private final LocationService locationService;
-
-    private final String DATE_FORMAT_FROM_EXCEL = "dd.MM.yyyy";
 
     public ApesSaveService(
             RepositoryLocation repositoryLocation,
@@ -92,7 +86,7 @@ public class ApesSaveService {
             // TODO: переписать parseExcelDtoToEntity: AccessPoint заменить на LFAP
             // TODO: добавить репозиторий для LocationFeatureAp и работать с ним вместо repositoryAP
             if (apes.size() > 0) {
-                accessPoint = apes.get(0);
+                accessPoint = apes.stream().max(Comparator.comparing(AccessPoint::getId)).get();
                 LocationFeatureAp locationFeatureAp = new LocationFeatureAp(accessPoint);
 
                 if (apDTO.getActivity().equalsIgnoreCase("нет")) {

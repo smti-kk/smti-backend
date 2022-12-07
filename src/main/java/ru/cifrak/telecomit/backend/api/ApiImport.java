@@ -8,6 +8,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.cifrak.telecomit.backend.api.dto.DtoImportAccessPointParams;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTOFormatException;
 import ru.cifrak.telecomit.backend.api.service.imp.FromExcelDTONppException;
 import ru.cifrak.telecomit.backend.api.service.imp.ap.ApImportResult;
@@ -61,6 +62,7 @@ import ru.cifrak.telecomit.backend.api.service.imp.trunkchannel.TrunkChannelsSav
 import ru.cifrak.telecomit.backend.entities.User;
 import ru.cifrak.telecomit.backend.repository.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 // TODO: добавить метод handleFileTcpPayphone (?)
@@ -475,8 +477,7 @@ public class ApiImport {
 
     @Secured({"ROLE_ADMIN"})
     @PostMapping("/access-point")
-    public ResponseEntity<ByteArrayResource> handleFileAccessPoint(@RequestParam("file") MultipartFile file,
-                                                                   @RequestBody String apType,
+    public ResponseEntity<ByteArrayResource> handleFileAccessPoint(@Valid DtoImportAccessPointParams params,
                                                                    @AuthenticationPrincipal User user
                                                                    ) {
         HttpHeaders headers = new HttpHeaders();
@@ -490,8 +491,8 @@ public class ApiImport {
                     repositoryGovernmentDevelopmentProgram,
                     repositoryAccessPoints,
                     // TODO: вернуть apType в качестве аргумента для двух методов ниже
-                    new ApesFromExcelDTO(file)).getTcesDTO(apType);
-            apesSaveService.save(importResult.getListToImport(), apType, user);
+                    new ApesFromExcelDTO(params.getFile())).getTcesDTO(params.getApType());
+            apesSaveService.save(importResult.getListToImport(), params.getApType(), user);
             if (importResult.getImportFailure() > 0) {
                 log.error("<-POST /api/import/access-point :: error");
                 headers.set("import-success", String.valueOf(importResult.getImportSuccess()));
@@ -502,24 +503,28 @@ public class ApiImport {
             }
         } catch (FromExcelDTOFormatException e) {
             // TODO: <-, -> ?
+            log.error("import-message: format-error");
             log.error("<-POST /api/import/access-point :: {}", e.getMessage());
             headers.set("import-message", "format-error");
             return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (FromExcelDTONppException e) {
             // TODO: <-, -> ?
+            log.error("import-message: npp-error");
             log.error("<-POST /api/import/access-point :: {}", e.getMessage());
             headers.set("import-message", "npp-error");
             return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (IOException e) {
+            log.error("import-message: input/output-error");
             log.error("<-POST /api/import/access-point :: {}", e.getMessage());
             headers.set("import-message", "input/output-error");
             return ResponseEntity.badRequest().headers(headers).body(null);
         } catch (Exception e) {
+            log.error("import-message: unexpected");
             log.error("<-POST /api/import/access-point :: {}", e.getMessage());
             headers.set("import-message", "unexpected");
             return ResponseEntity.badRequest().headers(headers).body(null);
         }
-        log.info("POST /api/import/access-point :: {}", file.getOriginalFilename());
+        log.info("POST /api/import/access-point :: {}", params.getFile().getOriginalFilename());
         return ResponseEntity.ok(null);
     }
 

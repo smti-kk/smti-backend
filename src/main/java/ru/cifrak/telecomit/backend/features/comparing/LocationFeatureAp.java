@@ -1,11 +1,15 @@
 package ru.cifrak.telecomit.backend.features.comparing;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import ru.cifrak.telecomit.backend.entities.*;
+import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
+import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -21,16 +25,21 @@ public class LocationFeatureAp {
     @Id
     private Integer id;
 
+    @Column(name = "type")
+    private String type;
+
     @Column(name = "address")
     private String address;
 
+    @JsonSerialize(using = GeometrySerializer.class)
+    @JsonDeserialize(using = GeometryDeserializer.class)
     @Column(name = "point")
     private Point point;
 
     @Column(name = "fun_customer")
     private String funCustomer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "key_type_internet_access")
     private TypeInternetAccess internetAccess;
 
@@ -63,7 +72,7 @@ public class LocationFeatureAp {
     @Column(name = "visible")
     private Boolean visible;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "key_organization")
     private Organization organization;
 
@@ -107,6 +116,7 @@ public class LocationFeatureAp {
         this.organization = someAp.getOrganization();
 
         if (someAp instanceof ApESPD) {
+            this.type = ApESPD.class.getAnnotation(DiscriminatorValue.class).value();
             this.espdWhiteIp = ((ApESPD) someAp).getEspdWhiteIp();
             this.numSourceEmailsRTK = ((ApESPD) someAp).getNumSourceEmailsRTK();
             this.oneTimePay = ((ApESPD) someAp).getOneTimePay();
@@ -114,6 +124,7 @@ public class LocationFeatureAp {
             this.zspdWhiteIp = ((ApESPD) someAp).getZspdWhiteIp();
             this.availZspdOrMethodConToZspd = ((ApESPD) someAp).getAvailZspdOrMethodConToZspd();
         } else if (someAp instanceof ApSMO) {
+            this.type = ApSMO.class.getAnnotation(DiscriminatorValue.class).value();
             this.dateCommissioning = ((ApSMO) someAp).getDateCommissioning();
         }
     }
@@ -122,11 +133,14 @@ public class LocationFeatureAp {
     public LocationFeatureAp cloneWithNullId() {
         return new LocationFeatureAp(
                 null,
-                getAddress(), getPoint(), getFunCustomer(),getInternetAccess(), getDeclaredSpeed(), getContractId(),
-                getContract(), getContacts(), getChange(), getDateConnectionOrChange(), getNumIncomingMessage(),
-                getCommentary(), getDeleted(), getVisible(), getOrganization(),
+                getType(), getAddress(), getPoint(), getFunCustomer(), getInternetAccess(),
+                getDeclaredSpeed(), getContractId(), getContract(), getContacts(), getChange(),
+                getDateConnectionOrChange(), getNumIncomingMessage(), getCommentary(),
+                getDeleted(), getVisible(), getOrganization(),
+
                 getEspdWhiteIp(), getNumSourceEmailsRTK(), getOneTimePay(), getMonthlyPay(),
                 getZspdWhiteIp(), getAvailZspdOrMethodConToZspd(),
+
                 getDateCommissioning()
         );
     }

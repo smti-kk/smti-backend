@@ -527,17 +527,8 @@ public class ApiFeaturesRequestsImpl implements ApiFeaturesRequests {
         feature2Set.setAction(feature.getAction());
         feature2Set.setTc(feature.getTc());
         feature2Set.setNewValueTc(feature.getNewValue());
-        if (feature.getAp() != null) {
-            LocationFeatureAp tempAp = feature.getAp().cloneWithNullId();
-            tempAp.setPoint(null);
-            feature2Set.setAp(tempAp);
-
-            if (feature.getNewValueAp() != null) {
-                tempAp = feature.getNewValueAp().cloneWithNullId();
-                tempAp.setPoint(null);
-                feature2Set.setNewValueAp(tempAp);
-            }
-        }
+        feature2Set.setAp(feature.getAp());
+        feature2Set.setNewValueAp(feature.getNewValueAp());
         return Collections.singleton(feature2Set);
     }
 
