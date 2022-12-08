@@ -91,7 +91,7 @@ public class ServiceAccessPoint {
         dto.getPoint().setSRID(4326);
         item.setPoint(dto.getPoint());
         item.setQuality(dto.getQuality());
-        item.setState(ParticipationStatus.valueOf(dto.getState()));
+         item.setState(ParticipationStatus.NONE);
         item.setOrganization(organization);
         item.setUcn(dto.getUcn());
         item.setVisible(dto.getVisible());

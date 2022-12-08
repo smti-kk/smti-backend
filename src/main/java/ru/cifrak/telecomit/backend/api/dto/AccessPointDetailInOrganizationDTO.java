@@ -82,6 +82,9 @@ public class AccessPointDetailInOrganizationDTO {
     private String contacts;
     private String change;
     private LocalDate dateConnectionOrChange;
+
+    private String numIncomingMessage;
+
     private String commentary;
     //ESPD
     private String espdWhiteIp;
@@ -121,6 +124,7 @@ public class AccessPointDetailInOrganizationDTO {
         this.contacts = entity.getContacts();
         this.change = entity.getChange();
         this.dateConnectionOrChange = entity.getDateConnectionOrChange();
+        this.numIncomingMessage = entity.getNumIncomingMessage();
         this.commentary = entity.getCommentary();
 
         if (entity instanceof ApESPD) {

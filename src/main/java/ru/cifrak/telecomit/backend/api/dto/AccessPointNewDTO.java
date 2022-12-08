@@ -62,6 +62,7 @@ public class AccessPointNewDTO {
     private String contacts;
     private String change;
     private LocalDate dateConnectionOrChange;
+    private String numIncomingMessage;
     private String commentary;
     //ESPD
     private String espdWhiteIp;
