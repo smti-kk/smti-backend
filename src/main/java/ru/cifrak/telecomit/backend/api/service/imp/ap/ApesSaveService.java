@@ -215,7 +215,9 @@ public class ApesSaveService {
         }
 
 //                    accessPoint.setGovernmentDevelopmentProgram(repositoryGovernmentDevelopmentProgram.findByAcronym(apDTO.getProgram()));
+        accessPoint.setOrganization(this.getOrganization(apDTO));
         accessPoint.setFunCustomer(apDTO.getFunctionalCustomer());
+        accessPoint.getOrganization().setFunCustomer(apDTO.getFunctionalCustomer());
         accessPoint.setAddress(apDTO.getAddress());
         accessPoint.setPoint(this.createPoint(apDTO.getLongitude(), apDTO.getLatitude()));
         accessPoint.setInternetAccess(
@@ -242,7 +244,6 @@ public class ApesSaveService {
         accessPoint.setCommentary(apDTO.getComments());
         accessPoint.setVisible(!apDTO.getActivity().equalsIgnoreCase("нет"));
         accessPoint.setDeleted(apDTO.getActivity().equalsIgnoreCase("нет"));
-        accessPoint.setOrganization(this.getOrganization(apDTO));
     }
 
     private Organization getOrganization(ApFromExcelDTO ap) {
@@ -256,6 +257,7 @@ public class ApesSaveService {
             }
             organization.setName(ap.getName());
             organization.setAddress(ap.getAddress());
+            organization.setFunCustomer(ap.getFunctionalCustomer());
 //            organization.setSmo(repositorySmoType.findByName(ap.getSmo()));
 //            organization.setType(repositoryOrganizationType.findByName(ap.getType()));
             organization.setAcronym("");

@@ -116,7 +116,6 @@ public class AccessPointDetailInOrganizationDTO {
         this.updatedAt = entity.getModifiedDate();
         this.visible = entity.getVisible();
 
-        this.funCustomer = entity.getFunCustomer();
         this.contractId = entity.getContractId();
         this.contract = entity.getContract();
         this.contacts = entity.getContacts();

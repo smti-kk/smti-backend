@@ -8,6 +8,7 @@ import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
@@ -167,6 +168,62 @@ public class AccessPointFull extends AuditingSoftDelete implements Serializable 
     private String equipment;
     @Column
     private String softType;
+
+    // ID (по контракту)
+    @Column(name = "contract_id")
+    private Integer contractId;
+
+    // Контракт
+    @Column(name = "contract")
+    private String contract;
+
+    // Контакты
+    @Column(name = "contacts")
+    private String contacts;
+
+    // Изменение
+    @Column(name = "change")
+    private String change;
+
+    // Дата подключения/ изменения
+    @Column(name = "date_connection_or_change")
+    private LocalDate dateConnectionOrChange;
+
+    // № вх. письма от ведомтсва
+    @Column(name = "num_incoming_message")
+    private String numIncomingMessage;
+
+    // Комментарии
+    @Column(name = "commentary")
+    private String commentary;
+
+    // Белый IP ЕСПД
+    @Column(name = "espd_white_ip")
+    private String espdWhiteIp;
+
+    // № вх.письма от ведомства
+    @Column(name = "num_source_emails_RTK")
+    private String numSourceEmailsRTK;
+
+    // Разовый, руб. с НДС
+    @Column(name = "one_time_pay")
+    private BigDecimal oneTimePay;
+
+    // Ежемес, руб. с НДС
+    @Column(name = "monthly_pay")
+    private BigDecimal monthlyPay;
+
+    // Белый IP ЗСПД
+    @Column(name = "zspd_white_ip")
+    private String zspdWhiteIp;
+
+    // Наличие ЗСПД/ способ подключения к ЗСПД
+    @Column(name = "avail_zspd_or_method_con_to_zspd")
+    private String availZspdOrMethodConToZspd;
+
+    // Дата ввода в эксплуатацию
+    @Column(name = "date_commissioning")
+    private LocalDate dateCommissioning;
 
     @OneToOne(mappedBy = "ap")
     private JournalMAP monitoringLink;

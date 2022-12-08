@@ -66,6 +66,10 @@ public class AccessPointFullSpecification {
                 "%" + operator.toLowerCase() + "%");
     }
 
+    public static Specification<AccessPointFull> withDeleted(Boolean deleted) {
+        return (root, cq, cb) -> cb.equal(root.get(AccessPointFull_.DELETED), deleted);
+    }
+
     public static Specification<AccessPointFull> pStart(Integer pStart) {
         return (root, cq, cb) -> cb.greaterThanOrEqualTo(
                 root.get(AccessPointFull_.organization).get(Organization_.location).get(Location_.population),

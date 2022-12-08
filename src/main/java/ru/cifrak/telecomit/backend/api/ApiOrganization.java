@@ -315,6 +315,7 @@ public class ApiOrganization {
         item.setKpp(value.getKpp());
         item.setAcronym(value.getAcronym());
         item.setLocation(rLocation.getOne(value.getLocation()));
+        item.setFunCustomer(value.getFunCustomer());
         //TODO: make this work later, when we have some real data...
         List<Organization> parents = rOrganization.findByUserOrganization(user.getId());
         if (parents.size() > 0) {
@@ -346,6 +347,7 @@ public class ApiOrganization {
         item.setKpp(value.getKpp());
         item.setAcronym(value.getAcronym());
         item.setLocation(rLocation.getOne(value.getLocation()));
+        item.setFunCustomer(value.getFunCustomer());
         //TODO: make this work later, when we have some real data...
 //        item.setParent(value.getParent());
 //        item.setChildren(value.getChildren());

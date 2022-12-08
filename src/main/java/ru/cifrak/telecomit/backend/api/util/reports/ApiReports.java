@@ -442,6 +442,7 @@ public class ApiReports {
         result.add(getSpecContract(contract));
         result.add(getSpecCStart(cStart));
         result.add(getSpecCEnd(cEnd));
+        result.add(getSpecDeleted(false));
         return result;
     }
 
@@ -468,6 +469,7 @@ public class ApiReports {
         result.add(getSpecAp(ap));
         result.add(getSpecAddress(address));
         result.add(getSpecState(state));
+        result.add(getSpecDeleted(false));
         return result;
     }
 
@@ -558,6 +560,12 @@ public class ApiReports {
     private Specification<AccessPointFull> getSpecType(TypeOrganization type) {
         return type != null ?
                 AccessPointFullSpecification.withType(type)
+                : null;
+    }
+
+    private Specification<AccessPointFull> getSpecDeleted(Boolean deleted) {
+        return deleted != null ?
+                AccessPointFullSpecification.withDeleted(deleted)
                 : null;
     }
 

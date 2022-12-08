@@ -134,4 +134,8 @@ public class Organization implements Serializable {
 
     @Column
     private Boolean main;
+
+    // Функциональный заказчик
+    @Column(name = "fun_customer")
+    private String funCustomer;
 }

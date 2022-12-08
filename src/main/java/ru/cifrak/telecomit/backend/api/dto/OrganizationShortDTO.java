@@ -27,6 +27,8 @@ public class OrganizationShortDTO {
     private Integer smo;
     private Integer location;
 
+    private String funCustomer;
+
     public OrganizationShortDTO(Organization organization) {
         this.id = organization.getId();
         this.acronym = organization.getAcronym();
@@ -39,5 +41,6 @@ public class OrganizationShortDTO {
         this.type = organization.getType() != null ? organization.getType().getId() : null;
         this.smo = organization.getSmo() != null ? organization.getSmo().getId() : null;
         this.location = organization.getLocation() != null ? organization.getLocation().getId() : null;
+        this.funCustomer = organization.getFunCustomer();
     }
 }
