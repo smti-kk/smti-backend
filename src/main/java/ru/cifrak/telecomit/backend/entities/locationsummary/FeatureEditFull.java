@@ -33,9 +33,11 @@ public class FeatureEditFull implements Serializable {
     private LocationFeatureTc newValue;
 
     @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "access_point_id")
     private LocationFeatureAp ap;
 
     @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "new_access_point_id")
     private LocationFeatureAp newValueAp;
 
     @ManyToOne(fetch = FetchType.LAZY)

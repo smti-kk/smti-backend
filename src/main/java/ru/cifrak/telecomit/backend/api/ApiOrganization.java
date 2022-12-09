@@ -377,16 +377,17 @@ public class ApiOrganization {
     @PostMapping(value = "/{id}/ap/", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createAP(
             @PathVariable(name = "id") final Organization organization,
-            @RequestBody final AccessPointNewDTO dto
+            @RequestBody final AccessPointNewDTO dto,
+            @AuthenticationPrincipal User user
     ) {
         log.info("->POST /api/organization/{}/ap", organization.getId());
         AccessPointDetailInOrganizationDTO bNew;
         try {
-            bNew = accesspoints.giveNewCreatedAccessPoint(organization, dto);
-            log.info("<-POST /api/organization/{}/ap/{}", organization.getId(), bNew.getId());
+            bNew = accesspoints.giveNewCreatedAccessPoint(organization, dto, user);
+            log.info("<- POST /api/organization/{}/ap/{}", organization.getId(), bNew.getId());
             return ResponseEntity.ok(bNew);
         } catch (Exception e) {
-            log.error("<-POST /api/organization/{}/ap/ :: {}", organization.getId(), e.getMessage());
+            log.error("<- POST /api/organization/{}/ap/ :: {}", organization.getId(), e.getMessage());
             return ResponseEntity
                     .badRequest()
                     .header("Content-Type", "application/json")
@@ -398,12 +399,13 @@ public class ApiOrganization {
     @PutMapping(value = "/{id}/ap/", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> updateAP(
             @PathVariable(name = "id") final Organization organization,
-            @RequestBody final AccessPointNewDTO dto
+            @RequestBody final AccessPointNewDTO dto,
+            @AuthenticationPrincipal User user
     ) {
         log.info("->PUT /api/organization/{}/ap", organization.getId());
         AccessPointDetailInOrganizationDTO bNew;
         try {
-            bNew = accesspoints.giveNewCreatedAccessPoint(organization, dto);
+            bNew = accesspoints.giveNewCreatedAccessPoint(organization, dto, user);
             log.info("<-PUT /api/organization/{}/ap/{}", organization.getId(), bNew.getId());
             return ResponseEntity.ok(bNew);
         } catch (Exception e) {

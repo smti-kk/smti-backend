@@ -1,5 +1,6 @@
 package ru.cifrak.telecomit.backend.api.location;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import ru.cifrak.telecomit.backend.repository.RepositoryWritableTc;
 import ru.cifrak.telecomit.backend.service.LocationService;
 import ru.cifrak.telecomit.backend.service.ServiceWritableTc;
 
+@Slf4j
 @RestController
 public class ApiLocationFeaturesImpl implements ApiLocationFeatures {
 
@@ -43,6 +45,7 @@ public class ApiLocationFeaturesImpl implements ApiLocationFeatures {
     public void saveFeatures(LocationFeaturesSaveRequest request,
                              Integer locationId,
                              @AuthenticationPrincipal User user) {
+        log.info("-> POST /api/location-features/::{}", locationId);
         LocationFeaturesEditingRequest eReq = new LocationFeaturesEditingRequest(
                 locationId,
                 request.getComment(),
@@ -66,5 +69,6 @@ public class ApiLocationFeaturesImpl implements ApiLocationFeatures {
             featuresRequests.save(savedRequest);
             locationService.refreshCache();
         }
+        log.info("<- POST /api/location-features/::{}", locationId);
     }
 }
