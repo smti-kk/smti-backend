@@ -14,6 +14,8 @@ import ru.cifrak.telecomit.backend.entities.UserRole;
 import ru.cifrak.telecomit.backend.utils.export.ExcelExporter;
 import ru.cifrak.telecomit.backend.utils.export.ExportToExcelConfiguration;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -72,7 +74,7 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(10, ExelReportAccessPointFullDTO::getFullAddressOrganization, "Адрес учреждения");
         exportToExcelConfiguration.addColumn(11, Double.class,ExelReportAccessPointFullDTO::getLatitude, "Широта");
         exportToExcelConfiguration.addColumn(12, Double.class,ExelReportAccessPointFullDTO::getLongitude, "Долгота");
-        exportToExcelConfiguration.addColumn(13, ExelReportAccessPointFullDTO::getSMO, "Вид СЗО");
+        exportToExcelConfiguration.addColumn(13, ExelReportAccessPointFullDTO::getFunCustomer, "Функциональный заказчик");
         exportToExcelConfiguration.addColumn(14, ExelReportAccessPointFullDTO::getCompanyType, "Тип учреждения");
         exportToExcelConfiguration.addColumn(15, Boolean.class,ExelReportAccessPointFullDTO::getPointView, "Отображается");
         exportToExcelConfiguration.addColumn(16, ExelReportAccessPointFullDTO::getAccessPointCustomer, "Заказчик");
@@ -90,6 +92,7 @@ public class HelperReport {
         exportToExcelConfiguration.addColumn(27, ExelReportAccessPointFullDTO::getGovernmentProgramName, "Государственная программа");
         exportToExcelConfiguration.addColumn(28, ExelReportAccessPointFullDTO::getParticipationStatus, "Статус участия");
         exportToExcelConfiguration.addColumn(29, Integer.class, ExelReportAccessPointFullDTO::getYearOverGovProgram, "Год реализации");
+
         if (user.getRoles().contains(UserRole.CONTRACTOR)) {
             exportToExcelConfiguration.addColumn(30, Date.class, ExelReportAccessPointFullDTO::getCreateDate, "Дата постановки на мониторинг");
             exportToExcelConfiguration.addColumn(31, Integer.class, ExelReportAccessPointFullDTO::getMonitoring, "Мониторинг");
@@ -98,7 +101,38 @@ public class HelperReport {
             exportToExcelConfiguration.addColumn(34, Integer.class, ExelReportAccessPointFullDTO::getImportance, "Важность");
             exportToExcelConfiguration.addColumn(35, Integer.class, ExelReportAccessPointFullDTO::getProblemDefinition, "Описание проблемы");
             exportToExcelConfiguration.addColumn(36, Integer.class, ExelReportAccessPointFullDTO::getDayTraffic, "Трафик");
+
+            exportToExcelConfiguration.addColumn(37, Integer.class, ExelReportAccessPointFullDTO::getContractId, "ID (по контракту)");
+            exportToExcelConfiguration.addColumn(38, ExelReportAccessPointFullDTO::getContract, "Контракт");
+            exportToExcelConfiguration.addColumn(39, ExelReportAccessPointFullDTO::getContacts, "Контакты");
+            exportToExcelConfiguration.addColumn(40, ExelReportAccessPointFullDTO::getChange, "Изменение");
+            exportToExcelConfiguration.addColumn(41, LocalDate.class, ExelReportAccessPointFullDTO::getDateConnectionOrChange, "Дата подключения/ изменения");
+            exportToExcelConfiguration.addColumn(42, ExelReportAccessPointFullDTO::getNumIncomingMessage, "№ вх.письма от ведомства");
+            exportToExcelConfiguration.addColumn(43, ExelReportAccessPointFullDTO::getCommentary, "Комментарии");
+            exportToExcelConfiguration.addColumn(44, ExelReportAccessPointFullDTO::getEspdWhiteIp, "Белый IP ЕСПД");
+            exportToExcelConfiguration.addColumn(45, ExelReportAccessPointFullDTO::getNumSourceEmailsRTK, "№ исх. письма на РТК");
+            exportToExcelConfiguration.addColumn(46, BigDecimal.class, ExelReportAccessPointFullDTO::getOneTimePay, "Разовый, руб. с НДС");
+            exportToExcelConfiguration.addColumn(47, BigDecimal.class, ExelReportAccessPointFullDTO::getMonthlyPay, "Ежемес, руб. с НДС");
+            exportToExcelConfiguration.addColumn(48, ExelReportAccessPointFullDTO::getZspdWhiteIp, "Белый IP ЗСПД");
+            exportToExcelConfiguration.addColumn(49, ExelReportAccessPointFullDTO::getAvailZspdOrMethodConToZspd, "Наличие ЗСПД/ способ подключения к ЗСПД");
+            exportToExcelConfiguration.addColumn(50, LocalDate.class, ExelReportAccessPointFullDTO::getDateCommissioning, "Дата ввода в эксплуатацию");
+        } else {
+            exportToExcelConfiguration.addColumn(30, Integer.class, ExelReportAccessPointFullDTO::getContractId, "ID (по контракту)");
+            exportToExcelConfiguration.addColumn(31, ExelReportAccessPointFullDTO::getContract, "Контракт");
+            exportToExcelConfiguration.addColumn(32, ExelReportAccessPointFullDTO::getContacts, "Контакты");
+            exportToExcelConfiguration.addColumn(33, ExelReportAccessPointFullDTO::getChange, "Изменение");
+            exportToExcelConfiguration.addColumn(34, LocalDate.class, ExelReportAccessPointFullDTO::getDateConnectionOrChange, "Дата подключения/ изменения");
+            exportToExcelConfiguration.addColumn(35, ExelReportAccessPointFullDTO::getNumIncomingMessage, "№ вх.письма от ведомства");
+            exportToExcelConfiguration.addColumn(36, ExelReportAccessPointFullDTO::getCommentary, "Комментарии");
+            exportToExcelConfiguration.addColumn(37, ExelReportAccessPointFullDTO::getEspdWhiteIp, "Белый IP ЕСПД");
+            exportToExcelConfiguration.addColumn(38, ExelReportAccessPointFullDTO::getNumSourceEmailsRTK, "№ исх. письма на РТК");
+            exportToExcelConfiguration.addColumn(39, BigDecimal.class, ExelReportAccessPointFullDTO::getOneTimePay, "Разовый, руб. с НДС");
+            exportToExcelConfiguration.addColumn(40, BigDecimal.class, ExelReportAccessPointFullDTO::getMonthlyPay, "Ежемес, руб. с НДС");
+            exportToExcelConfiguration.addColumn(41, ExelReportAccessPointFullDTO::getZspdWhiteIp, "Белый IP ЗСПД");
+            exportToExcelConfiguration.addColumn(42, ExelReportAccessPointFullDTO::getAvailZspdOrMethodConToZspd, "Наличие ЗСПД/ способ подключения к ЗСПД");
+            exportToExcelConfiguration.addColumn(43, LocalDate.class, ExelReportAccessPointFullDTO::getDateCommissioning, "Дата ввода в эксплуатацию");
         }
+
         return new ExcelExporter<>(exportToExcelConfiguration);
     }
 

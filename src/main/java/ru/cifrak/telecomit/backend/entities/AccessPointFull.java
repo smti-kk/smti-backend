@@ -230,4 +230,7 @@ public class AccessPointFull extends AuditingSoftDelete implements Serializable 
 
     @OneToOne(mappedBy = "ap")
     private ApStatusView apStatusView;
+
+    @Column(name = "fun_customer")
+    private String funCustomer;
 }

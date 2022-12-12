@@ -7,8 +7,9 @@ import ru.cifrak.telecomit.backend.entities.AccessPointFull;
 import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
 import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,7 +46,6 @@ public class ExelReportAccessPointFullDTO {
     private String channelWidth;
     private String descriptionAccess;
     private String governmentProgramName;
-    private String contract;
     private Integer yearOverGovProgram;
     private Integer ucn;
     private String accessNode;
@@ -61,6 +61,36 @@ public class ExelReportAccessPointFullDTO {
     private ImportanceProblemStatus importance;
     private Date createDate;
     private String problemDefinition;
+
+    private Integer contractId;
+
+    private String contract;
+
+    private String contacts;
+
+    private String change;
+
+    private LocalDate dateConnectionOrChange;
+
+    private String numIncomingMessage;
+
+    private String commentary;
+
+    private String espdWhiteIp;
+
+    private String numSourceEmailsRTK;
+
+    private BigDecimal oneTimePay;
+
+    private BigDecimal monthlyPay;
+
+    private String zspdWhiteIp;
+
+    private String availZspdOrMethodConToZspd;
+
+    private LocalDate dateCommissioning;
+
+    private String funCustomer;
 
     public ExelReportAccessPointFullDTO(AccessPointFull item, User user) {
         this.idOrg = Optional.ofNullable(item).map(AccessPointFull::getOrganization).map(Organization::getId).orElse(ERROR_DATA_INTEGER);
@@ -133,6 +163,22 @@ public class ExelReportAccessPointFullDTO {
                     .map(MonitoringAccessPoint::getProblemDefinition)
                     .orElse("");
         }
+
+        this.contractId = Optional.ofNullable(item).map(AccessPointFull::getContractId).orElse(ERROR_DATA_INTEGER);
+        this.contract = Optional.ofNullable(item).map(AccessPointFull::getContract).orElse(ERROR_DATA_STRING);
+        this.contacts = Optional.ofNullable(item).map(AccessPointFull::getContacts).orElse(ERROR_DATA_STRING);
+        this.change = Optional.ofNullable(item).map(AccessPointFull::getChange).orElse(ERROR_DATA_STRING);
+        this.dateConnectionOrChange = Optional.ofNullable(item).map(AccessPointFull::getDateConnectionOrChange).orElse(LocalDate.now());
+        this.numIncomingMessage = Optional.ofNullable(item).map(AccessPointFull::getNumIncomingMessage).orElse(ERROR_DATA_STRING);
+        this.commentary = Optional.ofNullable(item).map(AccessPointFull::getCommentary).orElse(ERROR_DATA_STRING);
+        this.espdWhiteIp = Optional.ofNullable(item).map(AccessPointFull::getEspdWhiteIp).orElse(ERROR_DATA_STRING);
+        this.numSourceEmailsRTK = Optional.ofNullable(item).map(AccessPointFull::getNumSourceEmailsRTK).orElse(ERROR_DATA_STRING);
+        this.oneTimePay = Optional.ofNullable(item).map(AccessPointFull::getOneTimePay).orElse(BigDecimal.valueOf(ERROR_DATA_INTEGER));
+        this.monthlyPay = Optional.ofNullable(item).map(AccessPointFull::getMonthlyPay).orElse(BigDecimal.valueOf(ERROR_DATA_INTEGER));
+        this.zspdWhiteIp = Optional.ofNullable(item).map(AccessPointFull::getZspdWhiteIp).orElse(ERROR_DATA_STRING);
+        this.availZspdOrMethodConToZspd = Optional.ofNullable(item).map(AccessPointFull::getAvailZspdOrMethodConToZspd).orElse(ERROR_DATA_STRING);
+        this.dateCommissioning = Optional.ofNullable(item).map(AccessPointFull::getDateCommissioning).orElse(LocalDate.now());
+        this.funCustomer = Optional.ofNullable(item).map(AccessPointFull::getFunCustomer).orElse(ERROR_DATA_STRING);
     }
 
     public ExelReportAccessPointFullDTO(AccessPointFull item) {
@@ -166,6 +212,21 @@ public class ExelReportAccessPointFullDTO {
         this.governmentProgramName = Optional.ofNullable(item).map(AccessPointFull::getGovernmentDevelopmentProgram).map(GovernmentDevelopmentProgram::getName).orElse(NOTHING_TO_SAY);
         this.participationStatus = "";
         this.yearOverGovProgram = Optional.ofNullable(item).map(AccessPointFull::getCompleted).orElse(COMPLETE_NULL_INTEGER);
+
+        this.contractId = Optional.ofNullable(item).map(AccessPointFull::getContractId).orElse(ERROR_DATA_INTEGER);
+        this.contract = Optional.ofNullable(item).map(AccessPointFull::getContract).orElse(ERROR_DATA_STRING);
+        this.contacts = Optional.ofNullable(item).map(AccessPointFull::getContacts).orElse(ERROR_DATA_STRING);
+        this.change = Optional.ofNullable(item).map(AccessPointFull::getChange).orElse(ERROR_DATA_STRING);
+        this.dateConnectionOrChange = Optional.ofNullable(item).map(AccessPointFull::getDateConnectionOrChange).orElse(LocalDate.now());
+        this.numIncomingMessage = Optional.ofNullable(item).map(AccessPointFull::getNumIncomingMessage).orElse(ERROR_DATA_STRING);
+        this.commentary = Optional.ofNullable(item).map(AccessPointFull::getCommentary).orElse(ERROR_DATA_STRING);
+        this.espdWhiteIp = Optional.ofNullable(item).map(AccessPointFull::getEspdWhiteIp).orElse(ERROR_DATA_STRING);
+        this.numSourceEmailsRTK = Optional.ofNullable(item).map(AccessPointFull::getNumSourceEmailsRTK).orElse(ERROR_DATA_STRING);
+        this.oneTimePay = Optional.ofNullable(item).map(AccessPointFull::getOneTimePay).orElse(BigDecimal.valueOf(ERROR_DATA_INTEGER));
+        this.monthlyPay = Optional.ofNullable(item).map(AccessPointFull::getMonthlyPay).orElse(BigDecimal.valueOf(ERROR_DATA_INTEGER));
+        this.zspdWhiteIp = Optional.ofNullable(item).map(AccessPointFull::getZspdWhiteIp).orElse(ERROR_DATA_STRING);
+        this.availZspdOrMethodConToZspd = Optional.ofNullable(item).map(AccessPointFull::getAvailZspdOrMethodConToZspd).orElse(ERROR_DATA_STRING);
+        this.dateCommissioning = Optional.ofNullable(item).map(AccessPointFull::getDateCommissioning).orElse(LocalDate.now());
     }
 
     private static String convertToRuLoc(Boolean pointView) {
