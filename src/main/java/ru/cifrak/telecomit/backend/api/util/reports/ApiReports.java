@@ -389,11 +389,11 @@ public class ApiReports {
                                                    Location[] locations,
                                                    List<APConnectionState> state) {
         List<Specification<AccessPointFull>> specs = getSpecs(type, smo, gdp, inettype, parents, organization,
-                contractor, address, ap, locations, state);
+                contractor, address, locations, state);
         Specification<AccessPointFull> mainSpec = logicalCondition == LogicalCondition.OR ?
                 getSpecsWithOrCondition(specs)
                 : getSpecsWithAndCondition(specs);
-        return getSpecsWithAndCondition(getNecessarySpecs(pStart, pEnd)).and(mainSpec);
+        return getSpecsWithAndCondition(getNecessarySpecs(pStart, pEnd)).and(mainSpec).and(getSpecAp(ap));
     }
 
     private Specification<AccessPointFull> getSpecsWithOrCondition(List<Specification<AccessPointFull>> specs) {
@@ -454,7 +454,7 @@ public class ApiReports {
                                                           String organization,
                                                           String contractor,
                                                           String address,
-                                                          List<TypeAccessPoint> ap,
+//                                                          List<TypeAccessPoint> ap,
                                                           Location[] locations,
                                                           List<APConnectionState> state) {
         List<Specification<AccessPointFull>> result = new ArrayList<>();
@@ -466,7 +466,7 @@ public class ApiReports {
         result.add(getSpecParents(parents));
         result.add(getSpecOrganization(organization));
         result.add(getSpecContractor(contractor));
-        result.add(getSpecAp(ap));
+//        result.add(getSpecAp(ap));
         result.add(getSpecAddress(address));
         result.add(getSpecState(state));
         result.add(getSpecDeleted(false));
