@@ -68,8 +68,7 @@ public class ExelReportLocationWithoutLogged {
                 .filter(tc1 -> tc1 instanceof TcMobile && tc1.getState() == TcState.ACTIVE)
                 .map(tc1 -> tc1.getOperator().getName() +
                         " (" + ((TcMobile) tc1).getType().getName() + ")" +
-                        ((((TcMobile) tc1).getType().getName().equals("4G") &&
-                                tc1.getQuality().name().equals("GOOD")) ?
+                        ((tc1.getQuality().name().equals("NORMAL")) ?
                                 ":уд." : ""))
                 .collect(Collectors.toList());
         mobileOperators.removeIf(o -> getMobileWeight(o) == null);
