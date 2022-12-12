@@ -94,7 +94,7 @@ public class ApesSaveService {
                     featureEdit = new FeatureEdit(locationFeatureAp, FeatureEditAction.DELETE);
                 } else {
                     LocationFeatureAp clonedLFAP = locationFeatureAp.cloneWithNullId();
-                    AccessPoint clonedAp = clonedLFAP.convertToAccessPoint();
+                    AccessPoint clonedAp = clonedLFAP.convertToAccessPoint(repositoryAccessPoints);
                     this.parseExcelDtoToEntity(apDTO, clonedAp, apType);
                     clonedAp = repositoryAccessPoints.save(clonedAp);
                     clonedLFAP = new LocationFeatureAp(clonedAp);

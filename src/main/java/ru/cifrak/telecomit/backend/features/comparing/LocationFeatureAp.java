@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import ru.cifrak.telecomit.backend.entities.*;
+import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
@@ -146,13 +147,20 @@ public class LocationFeatureAp {
     }
 
     @JsonIgnore
-    public AccessPoint convertToAccessPoint() {
+    public AccessPoint convertToAccessPoint(RepositoryAccessPoints repositoryAccessPoints) {
         AccessPoint result = new AccessPoint();
 
-        if (this.getDateCommissioning() != null) {
+        if (TypeAccessPoint.valueOf(this.getType()).equals(TypeAccessPoint.SMO)) {
             result = new ApSMO();
-        } else if (this.getEspdWhiteIp() != null) {
+            ((ApSMO) result).setDateCommissioning(this.getDateCommissioning());
+        } else if (TypeAccessPoint.valueOf(this.getType()).equals(TypeAccessPoint.ESPD)) {
             result = new ApESPD();
+            ((ApESPD) result).setEspdWhiteIp(this.getEspdWhiteIp());
+            ((ApESPD) result).setNumSourceEmailsRTK(this.getNumSourceEmailsRTK());
+            ((ApESPD) result).setOneTimePay(this.getOneTimePay());
+            ((ApESPD) result).setMonthlyPay(this.getMonthlyPay());
+            ((ApESPD) result).setZspdWhiteIp(this.getZspdWhiteIp());
+            ((ApESPD) result).setAvailZspdOrMethodConToZspd(this.getAvailZspdOrMethodConToZspd());
         }
 
         result.setId(this.getId());
@@ -172,15 +180,13 @@ public class LocationFeatureAp {
         result.setVisible(this.getVisible());
         result.setOrganization(this.getOrganization());
 
-        if (this.getDateCommissioning() != null) {
-            ((ApSMO) result).setDateCommissioning(this.getDateCommissioning());
-        } else if (this.getEspdWhiteIp() != null) {
-            ((ApESPD) result).setEspdWhiteIp(this.getEspdWhiteIp());
-            ((ApESPD) result).setNumSourceEmailsRTK(this.getNumSourceEmailsRTK());
-            ((ApESPD) result).setOneTimePay(this.getOneTimePay());
-            ((ApESPD) result).setMonthlyPay(this.getMonthlyPay());
-            ((ApESPD) result).setZspdWhiteIp(this.getZspdWhiteIp());
-            ((ApESPD) result).setAvailZspdOrMethodConToZspd(this.getAvailZspdOrMethodConToZspd());
+        if (this.getId() != null && this.getId() > 0) {
+            AccessPoint ap = repositoryAccessPoints.getOne(this.getId());
+            result.setCreatedBy(ap.getCreatedBy());
+            result.setCreatedDate(ap.getCreatedDate());
+            result.setModifiedBy(ap.getModifiedBy());
+            result.setModifiedDate(ap.getModifiedDate());
+            result.setMonitoringLink(ap.getMonitoringLink());
         }
 
         return result;

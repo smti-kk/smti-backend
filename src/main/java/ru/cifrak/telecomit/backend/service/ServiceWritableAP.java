@@ -9,6 +9,7 @@ import ru.cifrak.telecomit.backend.entities.locationsummary.FeatureEdit;
 import ru.cifrak.telecomit.backend.entities.locationsummary.WritableTc;
 import ru.cifrak.telecomit.backend.features.comparing.LocationFeatureAp;
 import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
+import ru.cifrak.telecomit.backend.repository.RepositoryAccessPointsFull;
 
 import java.util.Set;
 
@@ -18,14 +19,16 @@ public class ServiceWritableAP implements ServiceWritable {
 
     private final RepositoryAccessPoints repositoryAccessPoints;
 
+    private final RepositoryAccessPointsFull repositoryAccessPointsFull;
+
     @Override
     public void editLocationFeatures(Set<FeatureEdit> features, Integer locationId) {
         features.forEach(f -> {
-            AccessPoint accessPoint = f.getAccessPoint().convertToAccessPoint();
+            AccessPoint accessPoint = f.getAccessPoint().convertToAccessPoint(repositoryAccessPoints);
             switch (f.getAction()) {
                 case UPDATE:
                     this.updateAndSave(accessPoint,
-                            f.getNewAccessPoint().convertToAccessPoint());
+                            f.getNewAccessPoint().convertToAccessPoint(repositoryAccessPoints));
                     break;
                 case CREATE:
                     this.createNewAndSave(accessPoint);
@@ -57,8 +60,15 @@ public class ServiceWritableAP implements ServiceWritable {
 
     private void updateAndSave(AccessPoint ap, AccessPoint newAp) {
         this.changeModeAccessPoint(ap, false);
-        repositoryAccessPoints.save(newAp);
-        repositoryAccessPoints.save(ap);
+        newAp.setCreatedBy(ap.getCreatedBy());
+        newAp.setCreatedDate(ap.getCreatedDate());
+        if (ap.getMonitoringLink() != null) {
+            ap.getMonitoringLink().setAp(newAp);
+        }
+        newAp.setMonitoringLink(ap.getMonitoringLink());
+
+        repositoryAccessPoints.saveAndFlush(newAp);
+        repositoryAccessPoints.saveAndFlush(ap);
     }
 
     private void moveToTrashAndSave(AccessPoint ap) {

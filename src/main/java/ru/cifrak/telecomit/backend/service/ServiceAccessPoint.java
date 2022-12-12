@@ -116,7 +116,7 @@ public class ServiceAccessPoint {
             accessPoint = rAccessPoints.getOne(dto.getId());
             locationFeatureAp = new LocationFeatureAp(accessPoint);
             LocationFeatureAp clonedLFAP = locationFeatureAp.cloneWithNullId();
-            AccessPoint clonedAp = clonedLFAP.convertToAccessPoint();
+            AccessPoint clonedAp = clonedLFAP.convertToAccessPoint(rAccessPoints);
             initializeWithCommonFields(clonedAp, organization, dto);
             clonedAp = rAccessPoints.saveAndFlush(clonedAp);
             clonedLFAP = new LocationFeatureAp(clonedAp);
@@ -130,7 +130,7 @@ public class ServiceAccessPoint {
             } else if (TypeAccessPoint.valueOf(dto.getType()).equals(TypeAccessPoint.SMO)) {
                 clonedLFAP.setDateCommissioning(dto.getDateCommissioning());
             }
-            returnValue = clonedLFAP.convertToAccessPoint();
+            returnValue = clonedLFAP.convertToAccessPoint(rAccessPoints);
             returnValue = rAccessPoints.saveAndFlush(returnValue);
             clonedLFAP = new LocationFeatureAp(returnValue);
             featureEdit = new FeatureEdit(locationFeatureAp, clonedLFAP);
