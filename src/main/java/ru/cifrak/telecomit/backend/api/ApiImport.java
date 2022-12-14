@@ -73,6 +73,8 @@ import java.io.IOException;
 public class ApiImport {
     private final RepositoryLocation repositoryLocation;
     private final RepositoryOperator repositoryOperator;
+    private final RepositoryChanges repositoryChanges;
+    private final RepositoryFunCustomer repositoryFunCustomer;
     private final RepositoryTypeTruncChannel repositoryTypeTruncChannel;
     private final RepositoryMobileType repositoryMobileType;
     private final RepositoryOrganization repositoryOrganization;
@@ -97,6 +99,8 @@ public class ApiImport {
 
     public ApiImport(
             RepositoryLocation repositoryLocation,
+            RepositoryChanges repositoryChanges,
+            RepositoryFunCustomer repositoryFunCustomer,
             RepositoryOperator repositoryOperator,
             RepositoryTypeTruncChannel repositoryTypeTruncChannel,
             RepositoryMobileType repositoryMobileType,
@@ -119,6 +123,8 @@ public class ApiImport {
             RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram,
             RepositoryAccessPoints repositoryAccessPoints) {
         this.repositoryLocation = repositoryLocation;
+        this.repositoryChanges = repositoryChanges;
+        this.repositoryFunCustomer = repositoryFunCustomer;
         this.repositoryOperator = repositoryOperator;
         this.repositoryTypeTruncChannel = repositoryTypeTruncChannel;
         this.repositoryMobileType = repositoryMobileType;
@@ -484,6 +490,8 @@ public class ApiImport {
         try {
             ApImportResult importResult = new ApesFromExcelDTOValidated(
                     repositoryOrganization,
+                    repositoryFunCustomer,
+                    repositoryChanges,
                     repositoryInternetAccessType,
                     repositorySmoType,
                     repositoryOrganizationType,

@@ -14,4 +14,5 @@
     <include file="0012-add-table-fun_customer.xml" relativeToChangelogFile="true" />
     <include file="0013-create-new-table-changes.xml" relativeToChangelogFile="true" />
     <include file="0014-add-id_seq-for-fun_customer.xml" relativeToChangelogFile="true" />
+    <include file="0015-set-values-to-type-internet-access.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

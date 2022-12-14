@@ -1,0 +1,31 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="shihovse" id="15">
+        <sql endDelimiter=";">
+            insert into public.type_internet_access values (13, 'ETTH', 'ESPD'),
+                                                           (14, 'SHDSL', 'ESPD'),
+                                                           (15, 'WiMax', 'ESPD'),
+                                                           (16, '3g/4g', 'ESPD'),
+                                                           (17, 'ADSL', 'ESPD'),
+                                                           (18, 'GPON', 'ESPD'),
+                                                           (19, 'Wi-fi', 'ESPD'),
+                                                           (20, 'xPON', 'ESPD'),
+                                                           (21, 'МТС оптика', 'ESPD'),
+                                                           (22, 'Спутник/идет стройка', 'ESPD');
+
+            update public.type_internet_access
+            set ap_type = 'GENERAL'
+            where id in (4, 10, 11);
+
+            update public.type_internet_access
+            set ap_type = 'SMO'
+            where id = 12;
+
+            update public.type_internet_access
+            set ap_type = 'ESPD'
+            where id = 3;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

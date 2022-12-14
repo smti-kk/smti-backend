@@ -25,6 +25,8 @@ public class ApesFromExcelDTOValidated {
 
     private final RepositoryInternetAccessType repositoryInternetAccessType;
 
+    private final RepositoryFunCustomer repositoryFunCustomer;
+
     private final RepositorySmoType repositorySmoType;
 
     private final RepositoryOrganizationType repositoryOrganizationType;
@@ -35,10 +37,14 @@ public class ApesFromExcelDTOValidated {
 
     private final RepositoryAccessPoints repositoryAccessPoints;
 
+    private final RepositoryChanges repositoryChanges;
+
     private final ApesDTOFromExcel origin;
 
     public ApesFromExcelDTOValidated(
             RepositoryOrganization repositoryOrganization,
+            RepositoryFunCustomer repositoryFunCustomer,
+            RepositoryChanges repositoryChanges,
             RepositoryInternetAccessType repositoryInternetAccessType,
             RepositorySmoType repositorySmoType,
             RepositoryOrganizationType repositoryOrganizationType,
@@ -47,6 +53,8 @@ public class ApesFromExcelDTOValidated {
             RepositoryAccessPoints repositoryAccessPoints,
             ApesDTOFromExcel origin) {
         this.repositoryOrganization = repositoryOrganization;
+        this.repositoryFunCustomer = repositoryFunCustomer;
+        this.repositoryChanges = repositoryChanges;
         this.repositoryInternetAccessType = repositoryInternetAccessType;
         this.repositorySmoType = repositorySmoType;
         this.repositoryOrganizationType = repositoryOrganizationType;
@@ -193,6 +201,18 @@ public class ApesFromExcelDTOValidated {
         if (badDTO != null) {
             throw new FromExcelDTOErrorException("Ошибка! Точка подключения под номером " + badDTO +
                     " уже существует с другим типом!");
+        }
+
+        badDTO = this.checkFunCustomer(tcesDTO);
+        if (badDTO != null) {
+            throw new FromExcelDTOErrorException("Ошибка! В точка подключения под номером " + badDTO +
+                    " нет такого типа функционального заказчика!");
+        }
+
+        badDTO = this.checkChanges(tcesDTO);
+        if (badDTO != null) {
+            throw new FromExcelDTOErrorException("Ошибка! В точка подключения под номером " + badDTO +
+                    " нет такого типа изменений!");
         }
 
 //        badDTO = this.checkTypeSmo(tcesDTO);
@@ -468,6 +488,28 @@ public class ApesFromExcelDTOValidated {
             }
         }
 
+        return result;
+    }
+
+    private String checkFunCustomer(List<? extends ApFromExcelDTO> tcesDTO) {
+        String result = null;
+        for (ApFromExcelDTO tcDTO : tcesDTO) {
+            if (!repositoryFunCustomer.findByName(tcDTO.getFunctionalCustomer()).isPresent()) {
+                result = tcDTO.getNpp();
+                break;
+            }
+        }
+        return result;
+    }
+
+    private String checkChanges(List<? extends ApFromExcelDTO> tcesDTO) {
+        String result = null;
+        for (ApFromExcelDTO tcDTO : tcesDTO) {
+            if (repositoryChanges.findByName(tcDTO.getChangeType()) == null) {
+                result = tcDTO.getNpp();
+                break;
+            }
+        }
         return result;
     }
 }
