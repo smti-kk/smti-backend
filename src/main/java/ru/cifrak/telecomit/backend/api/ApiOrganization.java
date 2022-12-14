@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +16,7 @@ import ru.cifrak.telecomit.backend.api.dto.response.ExternalSystemCreateStatusDT
 import ru.cifrak.telecomit.backend.api.util.reports.HelperReport;
 import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.exceptions.NotAllowedException;
+import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
 import ru.cifrak.telecomit.backend.repository.*;
 import ru.cifrak.telecomit.backend.repository.specs.OrganizationSpec;
 import ru.cifrak.telecomit.backend.service.ServiceAccessPoint;
@@ -452,11 +454,16 @@ public class ApiOrganization {
     }
 
     @GetMapping("/fun-customer/{id}")
-    public FunCustomerDto getFunCustomer(@PathVariable Integer id) {
+    public ResponseEntity<FunCustomerDto> getFunCustomer(@PathVariable Integer id) {
         log.info("-> GET /api/organization/fun-customer/{}", id);
-        FunCustomerDto result = sOrganization.getFunCustomer(id);
+        FunCustomerDto result;
+        try {
+            result = sOrganization.getFunCustomer(id);
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
         log.info("<- GET /api/organization/fun-customer/{}", id);
-        return result;
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/fun-customer/")

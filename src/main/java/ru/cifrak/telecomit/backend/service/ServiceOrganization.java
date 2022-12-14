@@ -375,7 +375,7 @@ public class ServiceOrganization {
                 .map(FunCustomerDto::new).collect(Collectors.toList());
     }
 
-    public FunCustomerDto getFunCustomer(Integer id) {
+    public FunCustomerDto getFunCustomer(Integer id) throws NotFoundException {
         return rFunCustomer.findById(id).map(FunCustomerDto::new)
                 .orElseThrow( () -> { throw new NotFoundException(
                         "Не найден функциональный заказчик по данному идентификатору [" + id + "]!"
