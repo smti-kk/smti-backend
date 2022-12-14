@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cifrak.telecomit.backend.api.dto.AccessPointDetailInOrganizationDTO;
 import ru.cifrak.telecomit.backend.api.dto.AccessPointNewDTO;
+import ru.cifrak.telecomit.backend.api.dto.ChangesDto;
 import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.locationsummary.ChangeSource;
 import ru.cifrak.telecomit.backend.entities.locationsummary.FeatureEdit;
@@ -14,6 +15,8 @@ import ru.cifrak.telecomit.backend.features.comparing.LocationFeatureAp;
 import ru.cifrak.telecomit.backend.repository.*;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -186,4 +189,13 @@ public class ServiceAccessPoint {
         item.setCommentary(dto.getCommentary());
         return item;
     }
+
+    public List<ChangesDto> getListChanges(String apType) {
+        return rChanges.findAll().stream()
+                .filter(funCustomer ->
+                        apType == null || (funCustomer.getApType().getName().equals(apType) ||
+                                funCustomer.getApType().getName().equals(TypeAccessPoint.GENERAL.getName())))
+                .map(ChangesDto::new).collect(Collectors.toList());
+    }
+
 }

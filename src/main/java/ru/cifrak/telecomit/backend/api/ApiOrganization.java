@@ -482,4 +482,11 @@ public class ApiOrganization {
         return result;
     }
 
+    @DeleteMapping("/fun-customer/{id}")
+    public void deleteFunCustomer(@PathVariable(name = "id") Integer id) {
+        log.info("-> DELETE /api/organization/fun-customer/{}", id);
+        rFunCustomer.deleteById(id);
+        log.info("<- DELETE /api/organization/fun-customer/{}", id);
+    }
+
 }

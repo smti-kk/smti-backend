@@ -17,6 +17,8 @@ import javax.persistence.*;
 public class FunCustomer {
 
     @Id
+    @SequenceGenerator(name = "FUN_CUSTOMER_ID_GENERATOR", sequenceName = "fun_customer_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FUN_CUSTOMER_ID_GENERATOR")
     private Integer id;
 
     @Column
