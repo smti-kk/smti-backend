@@ -55,8 +55,9 @@ public class LocationFeatureAp {
     @Column(name = "contacts")
     private String contacts;
 
-    @Column(name = "change")
-    private String change;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "change")
+    private Changes change;
 
     @Column(name = "date_connection_or_change")
     private LocalDate dateConnectionOrChange;

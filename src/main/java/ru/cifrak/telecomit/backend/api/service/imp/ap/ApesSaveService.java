@@ -35,6 +35,8 @@ public class ApesSaveService {
 
     private final RepositoryOrganization repositoryOrganization;
 
+    private final RepositoryChanges repositoryChanges;
+
     private final RepositoryInternetAccessType repositoryInternetAccessType;
 
 //    private final RepositorySmoType repositorySmoType;
@@ -52,6 +54,7 @@ public class ApesSaveService {
     private final LocationService locationService;
 
     public ApesSaveService(
+            RepositoryChanges repositoryChanges,
             RepositoryLocation repositoryLocation,
             RepositoryAccessPoints repositoryAccessPoints,
             RepositoryOrganization repositoryOrganization,
@@ -74,6 +77,7 @@ public class ApesSaveService {
         this.repositoryLocationFeaturesRequests = repositoryLocationFeaturesRequests;
         this.serviceWritableAP = serviceWritableAP;
         this.locationService = locationService;
+        this.repositoryChanges = repositoryChanges;
     }
 
     public void save(List<? extends ApFromExcelDTO> apesDTO, String apType, User user) {
@@ -227,7 +231,7 @@ public class ApesSaveService {
         accessPoint.setContractId(Integer.parseInt(apDTO.getContractId()));
         accessPoint.setContract(apDTO.getContract());
         accessPoint.setContacts(apDTO.getContacts());
-        accessPoint.setChange(apDTO.getChangeType());
+        accessPoint.setChange(repositoryChanges.findByName(apDTO.getChangeType()));
         accessPoint.setDateConnectionOrChange(
                 LocalDateTime.ofInstant(
                         Instant.ofEpochMilli(

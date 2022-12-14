@@ -195,8 +195,9 @@ public class AccessPoint extends AuditingSoftDelete implements Serializable {
     private String contacts;
 
     // Изменение
-    @Column(name = "change")
-    private String change;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "change")
+    private Changes change;
 
     // Дата подключения/ изменения
     @Column(name = "date_connection_or_change")

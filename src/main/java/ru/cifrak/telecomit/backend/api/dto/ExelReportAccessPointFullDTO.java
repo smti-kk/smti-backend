@@ -167,7 +167,10 @@ public class ExelReportAccessPointFullDTO {
         this.contractId = Optional.ofNullable(item).map(AccessPointFull::getContractId).orElse(ERROR_DATA_INTEGER);
         this.contract = Optional.ofNullable(item).map(AccessPointFull::getContract).orElse(ERROR_DATA_STRING);
         this.contacts = Optional.ofNullable(item).map(AccessPointFull::getContacts).orElse(ERROR_DATA_STRING);
-        this.change = Optional.ofNullable(item).map(AccessPointFull::getChange).orElse(ERROR_DATA_STRING);
+
+        this.change = Optional.ofNullable(item).map(AccessPointFull::getChange)
+                .map(s -> s.getName()).orElse(ERROR_DATA_STRING);
+
         this.dateConnectionOrChange = Optional.ofNullable(item).map(AccessPointFull::getDateConnectionOrChange).orElse(LocalDate.now());
         this.numIncomingMessage = Optional.ofNullable(item).map(AccessPointFull::getNumIncomingMessage).orElse(ERROR_DATA_STRING);
         this.commentary = Optional.ofNullable(item).map(AccessPointFull::getCommentary).orElse(ERROR_DATA_STRING);
@@ -216,7 +219,10 @@ public class ExelReportAccessPointFullDTO {
         this.contractId = Optional.ofNullable(item).map(AccessPointFull::getContractId).orElse(ERROR_DATA_INTEGER);
         this.contract = Optional.ofNullable(item).map(AccessPointFull::getContract).orElse(ERROR_DATA_STRING);
         this.contacts = Optional.ofNullable(item).map(AccessPointFull::getContacts).orElse(ERROR_DATA_STRING);
-        this.change = Optional.ofNullable(item).map(AccessPointFull::getChange).orElse(ERROR_DATA_STRING);
+
+        this.change = Optional.ofNullable(item).map(AccessPointFull::getChange)
+                .map(s -> s.getName()).orElse(ERROR_DATA_STRING);
+
         this.dateConnectionOrChange = Optional.ofNullable(item).map(AccessPointFull::getDateConnectionOrChange).orElse(LocalDate.now());
         this.numIncomingMessage = Optional.ofNullable(item).map(AccessPointFull::getNumIncomingMessage).orElse(ERROR_DATA_STRING);
         this.commentary = Optional.ofNullable(item).map(AccessPointFull::getCommentary).orElse(ERROR_DATA_STRING);

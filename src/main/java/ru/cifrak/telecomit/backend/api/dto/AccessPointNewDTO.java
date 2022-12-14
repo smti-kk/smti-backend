@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import ru.cifrak.telecomit.backend.entities.Changes;
 import ru.cifrak.telecomit.backend.serializer.GeometryDeserializer;
 import ru.cifrak.telecomit.backend.serializer.GeometrySerializer;
 
@@ -60,7 +61,7 @@ public class AccessPointNewDTO {
     private Integer contractId;
     private String contract;
     private String contacts;
-    private String change;
+    private Changes change;
     private LocalDate dateConnectionOrChange;
     private String numIncomingMessage;
     private String commentary;
