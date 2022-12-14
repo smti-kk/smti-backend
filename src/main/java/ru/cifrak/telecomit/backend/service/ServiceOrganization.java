@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.cifrak.telecomit.backend.api.dto.FunCustomerDto;
 import ru.cifrak.telecomit.backend.api.dto.MonitoringAccessPointWizardDTO;
 import ru.cifrak.telecomit.backend.api.dto.UTM5ReportTrafficDTO;
 import ru.cifrak.telecomit.backend.api.dto.external.ExtZabbixHost;
@@ -15,10 +16,8 @@ import ru.cifrak.telecomit.backend.entities.*;
 import ru.cifrak.telecomit.backend.entities.external.JournalMAP;
 import ru.cifrak.telecomit.backend.entities.external.MonitoringAccessPoint;
 import ru.cifrak.telecomit.backend.exceptions.NotAllowedException;
-import ru.cifrak.telecomit.backend.repository.RepositoryAccessPoints;
-import ru.cifrak.telecomit.backend.repository.RepositoryJournalMAP;
-import ru.cifrak.telecomit.backend.repository.RepositoryMonitoringAccessPoints;
-import ru.cifrak.telecomit.backend.repository.RepositoryOrganization;
+import ru.cifrak.telecomit.backend.exceptions.NotFoundException;
+import ru.cifrak.telecomit.backend.repository.*;
 import ru.cifrak.telecomit.backend.service.storage.FileSystemStorageService;
 
 import javax.annotation.Nullable;
@@ -40,6 +39,8 @@ public class ServiceOrganization {
     private final RepositoryAccessPoints rAccessPoints;
     private final RepositoryMonitoringAccessPoints rMonitoringAccessPoints;
     private final RepositoryJournalMAP rJournalMAP;
+
+    private final RepositoryFunCustomer rFunCustomer;
     private final ServiceExternalBlenders blenders;
     private final ServiceExternalZabbix sZabbix;
     private final ServiceExternalReports sReports;
@@ -50,6 +51,7 @@ public class ServiceOrganization {
                                RepositoryAccessPoints rAccessPoints,
                                RepositoryMonitoringAccessPoints rMonitoringAccessPoints,
                                RepositoryJournalMAP rJournalMAP,
+                               RepositoryFunCustomer repositoryFunCustomer,
                                ServiceExternalBlenders blenders,
                                ServiceExternalZabbix sZabbix,
                                ServiceExternalReports sReports,
@@ -59,6 +61,7 @@ public class ServiceOrganization {
         this.rAccessPoints = rAccessPoints;
         this.rMonitoringAccessPoints = rMonitoringAccessPoints;
         this.rJournalMAP = rJournalMAP;
+        this.rFunCustomer = repositoryFunCustomer;
         this.blenders = blenders;
         this.sZabbix = sZabbix;
         this.sReports = sReports;
@@ -363,4 +366,24 @@ public class ServiceOrganization {
         }
         return result;
     }
+
+    public List<FunCustomerDto> getListFunCustomer(String apType) {
+        return rFunCustomer.findAll().stream()
+                .filter(funCustomer ->
+                                funCustomer.getApType().getName().equals(apType) ||
+                                funCustomer.getApType().getName().equals(TypeAccessPoint.GENERAL.getName()))
+                .map(FunCustomerDto::new).collect(Collectors.toList());
+    }
+
+    public FunCustomerDto getFunCustomer(Integer id) {
+        return rFunCustomer.findById(id).map(FunCustomerDto::new)
+                .orElseThrow( () -> { throw new NotFoundException(
+                        "Не найден функциональный заказчик по данному идентификатору [" + id + "]!"
+                ); } );
+    }
+
+    public FunCustomerDto createOrUpdateFunCustomer(FunCustomerDto dto) {
+        return new FunCustomerDto(rFunCustomer.saveAndFlush(new FunCustomer(dto)));
+    }
+
 }

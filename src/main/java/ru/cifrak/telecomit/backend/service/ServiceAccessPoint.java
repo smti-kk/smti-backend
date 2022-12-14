@@ -30,6 +30,8 @@ public class ServiceAccessPoint {
 
     private final RepositoryLocationFeaturesRequests repositoryLocationFeaturesRequests;
 
+    private final RepositoryChanges rChanges;
+
     private final ServiceWritableAP serviceWritableAP;
 
     private final LocationService locationService;
@@ -44,6 +46,7 @@ public class ServiceAccessPoint {
                               RepositoryInternetAccessType rInternetAccessType,
                               RepositoryFeatureEdits repositoryFeatureEdits,
                               RepositoryLocationFeaturesRequests repositoryLocationFeaturesRequests,
+                              RepositoryChanges repositoryChanges,
                               ServiceWritableAP serviceWritableAP,
                               LocationService locationService) {
         this.rOrganization = rOrganization;
@@ -55,6 +58,7 @@ public class ServiceAccessPoint {
         this.rInternetAccessType = rInternetAccessType;
         this.repositoryFeatureEdits = repositoryFeatureEdits;
         this.repositoryLocationFeaturesRequests = repositoryLocationFeaturesRequests;
+        this.rChanges = repositoryChanges;
         this.serviceWritableAP = serviceWritableAP;
         this.locationService = locationService;
     }
@@ -172,11 +176,11 @@ public class ServiceAccessPoint {
         item.setInternetAccess(dto.getInternetAccess() != null ? rInternetAccessType.getOne(dto.getInternetAccess()) : null);
         item.setCompleted(dto.getCompleted());
         item.setDeleted(Boolean.FALSE);
-        item.setFunCustomer(organization.getFunCustomer());
+        item.setFunCustomer(organization.getFunCustomer() != null ? organization.getFunCustomer().getName() : null);
         item.setContractId(dto.getContractId());
         item.setContract(dto.getContract());
         item.setContacts(dto.getContacts());
-        item.setChange(dto.getChange());
+        item.setChange(rChanges.getOne(dto.getChange()));
         item.setDateConnectionOrChange(dto.getDateConnectionOrChange());
         item.setNumIncomingMessage(dto.getNumIncomingMessage());
         item.setCommentary(dto.getCommentary());

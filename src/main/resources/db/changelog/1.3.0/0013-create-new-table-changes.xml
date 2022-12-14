@@ -13,11 +13,11 @@
             ALTER TABLE public.type_internet_access
                 ADD COLUMN ap_type VARCHAR(31);
 
-            insert into public.changes values (1, '', 'перенос'),
+            insert into public.changes values (1, 'GENERAL', 'перенос'),
                                               (2, 'SMO', 'исключения'),
-                                              (3, '', 'перенос 4этап'),
-                                              (4, '', 'Подключение'),
-                                              (5, '', 'Подключение 4этап'),
+                                              (3, 'GENERAL', 'перенос 4этап'),
+                                              (4, 'GENERAL', 'Подключение'),
+                                              (5, 'GENERAL', 'Подключение 4этап'),
                                               (6, 'SMO', 'Сгорел'),
                                               (8, 'ESPD', 'перенос 1этап'),
                                               (9, 'ESPD', 'перенос 2этап'),
@@ -33,9 +33,8 @@
                                               (22, 'ESPD', 'Белый IP');
 
 
-            alter table public.access_point
-            alter column change type int
-            using change::integer;
+            alter table public.access_point drop column change;
+            alter table public.access_point add column change integer;
 
             alter table public.access_point
                 add foreign key (change) references public.changes;

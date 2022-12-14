@@ -1,0 +1,47 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="rodushkinva" id="12">
+        <sql endDelimiter=";">
+            CREATE TABLE public.fun_customer (
+                id INTEGER NOT NULL,
+                name TEXT NOT NULL,
+                ap_type VARCHAR(255),
+                CONSTRAINT fun_customer_pkey PRIMARY KEY (id)
+            );
+
+            ALTER TABLE public.organization DROP COLUMN fun_customer;
+            ALTER TABLE public.organization ADD COLUMN key_fun_customer integer;
+            ALTER TABLE public.organization
+                ADD CONSTRAINT FK_ORGANIZATION__FUN_CUSTOMER
+                FOREIGN KEY (key_fun_customer)
+                REFERENCES fun_customer(id);
+
+            INSERT INTO public.fun_customer(id, name, ap_type) VALUES
+                ( 1, 'МинСоцПол', 'GENERAL'),
+                ( 2, 'МинСоцПолМинФин', 'ESPD'),
+                ( 3, 'Аг ГО и ЧС', 'GENERAL'),
+                ( 4, 'Аг Занятоси', 'ESPD'),
+                ( 5, 'Аг Печати', 'ESPD'),
+                ( 6, 'ВетНадзор', 'ESPD'),
+                ( 7, 'ГТН', 'GENERAL'),
+                ( 8, 'ЗАГС', 'GENERAL'),
+                ( 9, 'ЗАГСМинФин', 'ESPD'),
+                (10, 'МинЗдрав', 'GENERAL'),
+                (11, 'МинЗдравМинФин', 'ESPD'),
+                (12, 'МинКульт', 'ESPD'),
+                (13, 'МинЛес', 'ESPD'),
+                (14, 'МинОбр', 'ESPD'),
+                (15, 'МинСпорт', 'ESPD'),
+                (16, 'МинТранс', 'ESPD'),
+                (17, 'МинФин', 'ESPD'),
+                (18, 'МирСуд', 'GENERAL'),
+                (19, 'МЦР', 'ESPD'),
+                (20, 'МЭиРП', 'ESPD'),
+                (21, 'СтройНадзор', 'ESPD'),
+                (22, 'ЦИТ', 'ESPD'),
+                (23, 'ОМСУ', 'SMO');
+        </sql>
+    </changeSet>
+</databaseChangeLog>

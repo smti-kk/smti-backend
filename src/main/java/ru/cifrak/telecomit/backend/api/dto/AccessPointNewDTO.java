@@ -61,7 +61,7 @@ public class AccessPointNewDTO {
     private Integer contractId;
     private String contract;
     private String contacts;
-    private Changes change;
+    private Integer change;
     private LocalDate dateConnectionOrChange;
     private String numIncomingMessage;
     private String commentary;

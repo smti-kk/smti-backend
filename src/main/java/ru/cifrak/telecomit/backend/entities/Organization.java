@@ -136,6 +136,7 @@ public class Organization implements Serializable {
     private Boolean main;
 
     // Функциональный заказчик
-    @Column(name = "fun_customer")
-    private String funCustomer;
+    @ManyToOne
+    @JoinColumn(name = "key_fun_customer")
+    private FunCustomer funCustomer;
 }

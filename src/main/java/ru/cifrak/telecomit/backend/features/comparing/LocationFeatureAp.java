@@ -101,6 +101,7 @@ public class LocationFeatureAp {
 
     public LocationFeatureAp(AccessPoint someAp) {
         this.id = someAp.getId();
+        this.type = someAp.getClass().getAnnotation(DiscriminatorValue.class).value();
         this.address = someAp.getAddress();
         this.point = someAp.getPoint();
         this.funCustomer = someAp.getFunCustomer();
@@ -117,16 +118,14 @@ public class LocationFeatureAp {
         this.visible = someAp.getVisible();
         this.organization = someAp.getOrganization();
 
-        if (someAp instanceof ApESPD) {
-            this.type = ApESPD.class.getAnnotation(DiscriminatorValue.class).value();
+        if (this.type.equals(TypeAccessPoint.ESPD.getName())) {
             this.espdWhiteIp = ((ApESPD) someAp).getEspdWhiteIp();
             this.numSourceEmailsRTK = ((ApESPD) someAp).getNumSourceEmailsRTK();
             this.oneTimePay = ((ApESPD) someAp).getOneTimePay();
             this.monthlyPay = ((ApESPD) someAp).getMonthlyPay();
             this.zspdWhiteIp = ((ApESPD) someAp).getZspdWhiteIp();
             this.availZspdOrMethodConToZspd = ((ApESPD) someAp).getAvailZspdOrMethodConToZspd();
-        } else if (someAp instanceof ApSMO) {
-            this.type = ApSMO.class.getAnnotation(DiscriminatorValue.class).value();
+        } else if (this.type.equals(TypeAccessPoint.SMO.getName())) {
             this.dateCommissioning = ((ApSMO) someAp).getDateCommissioning();
         }
     }

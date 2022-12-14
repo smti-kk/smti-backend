@@ -11,5 +11,6 @@
     <include file="0009-recreate-view-map-location.xml" relativeToChangelogFile="true" />
     <include file="0010-recreate-view-map-location.xml" relativeToChangelogFile="true" />
     <include file="0011-transfer-fun_customer-to-organization.xml" relativeToChangelogFile="true" />
+    <include file="0012-add-table-fun_customer.xml" relativeToChangelogFile="true" />
     <include file="0013-create-new-table-changes.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

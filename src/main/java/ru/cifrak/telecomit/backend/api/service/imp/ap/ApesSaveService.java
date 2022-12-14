@@ -49,6 +49,8 @@ public class ApesSaveService {
 
     private final RepositoryLocationFeaturesRequests repositoryLocationFeaturesRequests;
 
+    private final RepositoryFunCustomer repositoryFunCustomer;
+
     private final ServiceWritableAP serviceWritableAP;
 
     private final LocationService locationService;
@@ -64,6 +66,7 @@ public class ApesSaveService {
 //            RepositoryGovernmentDevelopmentProgram repositoryGovernmentDevelopmentProgram,
             RepositoryFeatureEdits repositoryFeatureEdits,
             RepositoryLocationFeaturesRequests repositoryLocationFeaturesRequests,
+            RepositoryFunCustomer repositoryFunCustomer,
             ServiceWritableAP serviceWritableAP,
             LocationService locationService) {
         this.repositoryLocation = repositoryLocation;
@@ -75,6 +78,7 @@ public class ApesSaveService {
 //        this.repositoryGovernmentDevelopmentProgram = repositoryGovernmentDevelopmentProgram;
         this.repositoryFeatureEdits = repositoryFeatureEdits;
         this.repositoryLocationFeaturesRequests = repositoryLocationFeaturesRequests;
+        this.repositoryFunCustomer = repositoryFunCustomer;
         this.serviceWritableAP = serviceWritableAP;
         this.locationService = locationService;
         this.repositoryChanges = repositoryChanges;
@@ -221,7 +225,9 @@ public class ApesSaveService {
 //                    accessPoint.setGovernmentDevelopmentProgram(repositoryGovernmentDevelopmentProgram.findByAcronym(apDTO.getProgram()));
         accessPoint.setOrganization(this.getOrganization(apDTO));
         accessPoint.setFunCustomer(apDTO.getFunctionalCustomer());
-        accessPoint.getOrganization().setFunCustomer(apDTO.getFunctionalCustomer());
+        accessPoint.getOrganization().setFunCustomer(
+                repositoryFunCustomer.findByName(apDTO.getFunctionalCustomer()).get()
+        );
         accessPoint.setAddress(apDTO.getAddress());
         accessPoint.setPoint(this.createPoint(apDTO.getLongitude(), apDTO.getLatitude()));
         accessPoint.setInternetAccess(
@@ -261,7 +267,7 @@ public class ApesSaveService {
             }
             organization.setName(ap.getName());
             organization.setAddress(ap.getAddress());
-            organization.setFunCustomer(ap.getFunctionalCustomer());
+            organization.setFunCustomer(repositoryFunCustomer.findByName(ap.getFunctionalCustomer()).get());
 //            organization.setSmo(repositorySmoType.findByName(ap.getSmo()));
 //            organization.setType(repositoryOrganizationType.findByName(ap.getType()));
             organization.setAcronym("");

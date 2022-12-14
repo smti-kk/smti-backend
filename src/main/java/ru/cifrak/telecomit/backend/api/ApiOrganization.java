@@ -35,16 +35,19 @@ public class ApiOrganization {
     private final RepositoryLocation rLocation;
     private final RepositorySmoType rTypeSmo;
     private final RepositoryOrganizationType rTypeOrganization;
+
+    private final RepositoryFunCustomer rFunCustomer;
     private final ServiceAccessPoint accesspoints;
     private final ServiceOrganization sOrganization;
 
 
-    public ApiOrganization(RepositoryOrganization repository, RepositoryAccessPoints rAccessPoints, RepositoryLocation rLocation, RepositorySmoType rTypeSmo, RepositoryOrganizationType rTypeOrganization, ServiceAccessPoint accesspoints, ServiceOrganization sOrganization) {
+    public ApiOrganization(RepositoryOrganization repository, RepositoryAccessPoints rAccessPoints, RepositoryLocation rLocation, RepositorySmoType rTypeSmo, RepositoryOrganizationType rTypeOrganization, RepositoryFunCustomer rFunCustomer, ServiceAccessPoint accesspoints, ServiceOrganization sOrganization) {
         this.rOrganization = repository;
         this.rAccessPoints = rAccessPoints;
         this.rLocation = rLocation;
         this.rTypeSmo = rTypeSmo;
         this.rTypeOrganization = rTypeOrganization;
+        this.rFunCustomer = rFunCustomer;
         this.accesspoints = accesspoints;
         this.sOrganization = sOrganization;
     }
@@ -315,7 +318,7 @@ public class ApiOrganization {
         item.setKpp(value.getKpp());
         item.setAcronym(value.getAcronym());
         item.setLocation(rLocation.getOne(value.getLocation()));
-        item.setFunCustomer(value.getFunCustomer());
+        item.setFunCustomer(rFunCustomer.getOne(value.getFunCustomer()));
         //TODO: make this work later, when we have some real data...
         List<Organization> parents = rOrganization.findByUserOrganization(user.getId());
         if (parents.size() > 0) {
@@ -347,7 +350,7 @@ public class ApiOrganization {
         item.setKpp(value.getKpp());
         item.setAcronym(value.getAcronym());
         item.setLocation(rLocation.getOne(value.getLocation()));
-        item.setFunCustomer(value.getFunCustomer());
+        item.setFunCustomer(rFunCustomer.getOne(value.getFunCustomer()));
         //TODO: make this work later, when we have some real data...
 //        item.setParent(value.getParent());
 //        item.setChildren(value.getChildren());
@@ -437,4 +440,39 @@ public class ApiOrganization {
     public List<Organization> base() {
         return rOrganization.findAllMain();
     }
+
+    @GetMapping("/fun-customer/list")
+    public List<FunCustomerDto> getFunCustomerList(
+            @RequestParam(name = "apType", required = false) String apType
+    ) {
+        log.info("-> GET /api/organization/fun-customer/list");
+        List<FunCustomerDto> result = sOrganization.getListFunCustomer(apType);
+        log.info("<- GET /api/organization/fun-customer/list");
+        return result;
+    }
+
+    @GetMapping("/fun-customer/{id}")
+    public FunCustomerDto getFunCustomer(@PathVariable Integer id) {
+        log.info("-> GET /api/organization/fun-customer/{}", id);
+        FunCustomerDto result = sOrganization.getFunCustomer(id);
+        log.info("<- GET /api/organization/fun-customer/{}", id);
+        return result;
+    }
+
+    @PostMapping("/fun-customer/")
+    public FunCustomerDto createFunCustomer(@RequestBody FunCustomerDto funCustomerDto) {
+        log.info("-> POST /api/organization/fun-customer/");
+        FunCustomerDto result = sOrganization.createOrUpdateFunCustomer(funCustomerDto);
+        log.info("<- POST /api/organization/fun-customer/");
+        return result;
+    }
+
+    @PutMapping("/fun-customer/")
+    public FunCustomerDto updateFunCustomer(@RequestBody FunCustomerDto funCustomerDto) {
+        log.info("-> PUT /api/organization/fun-customer/{}", funCustomerDto.getId());
+        FunCustomerDto result = sOrganization.createOrUpdateFunCustomer(funCustomerDto);
+        log.info("<- PUT /api/organization/fun-customer/{}", funCustomerDto.getId());
+        return result;
+    }
+
 }
