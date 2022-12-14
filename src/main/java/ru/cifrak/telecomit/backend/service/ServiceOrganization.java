@@ -370,16 +370,16 @@ public class ServiceOrganization {
     public List<FunCustomerDto> getListFunCustomer(String apType) {
         return rFunCustomer.findAll().stream()
                 .filter(funCustomer ->
-                                funCustomer.getApType().getName().equals(apType) ||
-                                funCustomer.getApType().getName().equals(TypeAccessPoint.GENERAL.getName()))
+                        apType == null || (funCustomer.getApType().getName().equals(apType) ||
+                                funCustomer.getApType().getName().equals(TypeAccessPoint.GENERAL.getName())))
                 .map(FunCustomerDto::new).collect(Collectors.toList());
     }
 
-    public FunCustomerDto getFunCustomer(Integer id) throws NotFoundException {
+    public FunCustomerDto getFunCustomer(Integer id) {
         return rFunCustomer.findById(id).map(FunCustomerDto::new)
-                .orElseThrow( () -> { throw new NotFoundException(
+                .orElseThrow( () -> new NotFoundException(
                         "Не найден функциональный заказчик по данному идентификатору [" + id + "]!"
-                ); } );
+                ) );
     }
 
     public FunCustomerDto createOrUpdateFunCustomer(FunCustomerDto dto) {
