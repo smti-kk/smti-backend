@@ -14,7 +14,8 @@ public enum TypeAccessPoint {
     SMO(3,"SMO","СЗО"),
     // ZSPD : ЗСПД - заменили на - EMSPD : ЕМСПД
     EMSPD(4,"EMSPD","ЕМСПД"),
-    CONTRACT(5,"CONTRACT","Контракт");
+    CONTRACT(5,"CONTRACT","Контракт"),
+    GENERAL(6, "GENERAL", "Общее");
 
     private Integer id;
     private String name;

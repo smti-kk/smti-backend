@@ -24,6 +24,7 @@ import java.time.LocalDate;
                 attributeNodes = {
                         @NamedAttributeNode("governmentDevelopmentProgram"),
                         @NamedAttributeNode("internetAccess"),
+                        @NamedAttributeNode("change"),
                         @NamedAttributeNode("operator"),
                         @NamedAttributeNode(value = "organization", subgraph = "org-loc"),
                 },
@@ -42,6 +43,7 @@ import java.time.LocalDate;
                 name = AccessPointFull.REPORT_ALL_EXPORT,
                 attributeNodes = {
                         @NamedAttributeNode("governmentDevelopmentProgram"),
+                        @NamedAttributeNode("change"),
                         @NamedAttributeNode("internetAccess"),
                         @NamedAttributeNode("operator"),
                         @NamedAttributeNode(value = "organization", subgraph = "org-loc-1"),
@@ -182,8 +184,9 @@ public class AccessPointFull extends AuditingSoftDelete implements Serializable 
     private String contacts;
 
     // Изменение
-    @Column(name = "change")
-    private String change;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "change")
+    private Changes change;
 
     // Дата подключения/ изменения
     @Column(name = "date_connection_or_change")

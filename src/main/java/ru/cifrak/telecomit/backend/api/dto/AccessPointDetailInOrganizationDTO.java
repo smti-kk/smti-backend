@@ -3,6 +3,7 @@ package ru.cifrak.telecomit.backend.api.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import liquibase.change.Change;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.locationtech.jts.geom.Point;
@@ -122,7 +123,7 @@ public class AccessPointDetailInOrganizationDTO {
         this.contractId = entity.getContractId();
         this.contract = entity.getContract();
         this.contacts = entity.getContacts();
-        this.change = entity.getChange();
+        this.change = entity.getChange() != null ? entity.getChange().getName() : null;
         this.dateConnectionOrChange = entity.getDateConnectionOrChange();
         this.numIncomingMessage = entity.getNumIncomingMessage();
         this.commentary = entity.getCommentary();

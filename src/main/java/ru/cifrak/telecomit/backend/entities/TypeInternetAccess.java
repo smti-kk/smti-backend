@@ -31,4 +31,6 @@ public class TypeInternetAccess implements Serializable {
     @Column(nullable = false, length = 256)
     private String name;
 
+    @Column(name = "ap_type")
+    private TypeAccessPoint apType;
 }
