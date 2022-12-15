@@ -182,11 +182,12 @@ public class ApesFromExcelDTOValidated {
                     + "}.");
         }
 
-        badDTO = this.checkChangeType(tcesDTO);
+        badDTO = this.checkChangeType(tcesDTO, apType);
         if (badDTO != null) {
             throw new FromExcelDTOErrorException("Ошибка в типе изменения, должен быть одним из {"
-                    + Stream.of(TypeChangeAp.values())
-                            .map(TypeChangeAp::getValue)
+                    + repositoryChanges.findAll()
+                            .stream()
+                            .map(Changes::getName)
                             .collect(Collectors.joining(", "))
                     + "}.");
         }
@@ -203,16 +204,10 @@ public class ApesFromExcelDTOValidated {
                     " уже существует с другим типом!");
         }
 
-        badDTO = this.checkFunCustomer(tcesDTO);
+        badDTO = this.checkFunCustomer(tcesDTO, apType);
         if (badDTO != null) {
-            throw new FromExcelDTOErrorException("Ошибка! В точка подключения под номером " + badDTO +
-                    " нет такого типа функционального заказчика!");
-        }
-
-        badDTO = this.checkChanges(tcesDTO);
-        if (badDTO != null) {
-            throw new FromExcelDTOErrorException("Ошибка! В точка подключения под номером " + badDTO +
-                    " нет такого типа изменений!");
+            throw new FromExcelDTOErrorException("Указанного функционального заказчика в точке подключения под номером "
+                    + badDTO + " нет в справочнике!");
         }
 
 //        badDTO = this.checkTypeSmo(tcesDTO);
@@ -435,11 +430,15 @@ public class ApesFromExcelDTOValidated {
         return result;
     }
 
-    private String checkChangeType(List<? extends ApFromExcelDTO> tcesDTO) {
+    private String checkChangeType(List<? extends ApFromExcelDTO> tcesDTO, String apType) {
         String result = null;
-        List<String> typesChangeApString = Stream.of(TypeChangeAp.values())
-                                                 .map(TypeChangeAp::getValue)
-                                                 .collect(Collectors.toList());
+        List<String> typesChangeApString = repositoryChanges.findAll()
+                .stream()
+                .filter(change ->
+                        change.getApType().equals(TypeAccessPoint.valueOf(apType)) ||
+                                change.getApType().equals(TypeAccessPoint.GENERAL))
+                .map(Changes::getName)
+                .collect(Collectors.toList());
         for (ApFromExcelDTO tcDTO : tcesDTO) {
             if (!typesChangeApString.contains(tcDTO.getChangeType())) {
                 result = tcDTO.getNpp();
@@ -491,10 +490,18 @@ public class ApesFromExcelDTOValidated {
         return result;
     }
 
-    private String checkFunCustomer(List<? extends ApFromExcelDTO> tcesDTO) {
+    private String checkFunCustomer(List<? extends ApFromExcelDTO> tcesDTO, String apType) {
         String result = null;
+
+        List<String> funCustomerNames = repositoryFunCustomer.findAll()
+                .stream()
+                .filter(funCustomer ->
+                        funCustomer.getApType().equals(TypeAccessPoint.valueOf(apType)) ||
+                                funCustomer.getApType().equals(TypeAccessPoint.GENERAL))
+                .map(FunCustomer::getName)
+                .collect(Collectors.toList());
         for (ApFromExcelDTO tcDTO : tcesDTO) {
-            if (!repositoryFunCustomer.findByName(tcDTO.getFunctionalCustomer()).isPresent()) {
+            if (!funCustomerNames.contains(tcDTO.getFunctionalCustomer())) {
                 result = tcDTO.getNpp();
                 break;
             }
@@ -502,14 +509,4 @@ public class ApesFromExcelDTOValidated {
         return result;
     }
 
-    private String checkChanges(List<? extends ApFromExcelDTO> tcesDTO) {
-        String result = null;
-        for (ApFromExcelDTO tcDTO : tcesDTO) {
-            if (repositoryChanges.findByName(tcDTO.getChangeType()) == null) {
-                result = tcDTO.getNpp();
-                break;
-            }
-        }
-        return result;
-    }
 }
