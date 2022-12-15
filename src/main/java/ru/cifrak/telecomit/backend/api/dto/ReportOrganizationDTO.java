@@ -10,7 +10,7 @@ public class ReportOrganizationDTO {
     private TypeOrgDTO type;
     private TypeSmoDTO smo;
     private LocationDTO location;
-    private String funCustomer;
+    private FunCustomerDto funCustomer;
 
     public ReportOrganizationDTO(Organization organization) {
         this.id = organization.getId();
@@ -18,6 +18,6 @@ public class ReportOrganizationDTO {
         this.type = organization.getType() != null ? new TypeOrgDTO(organization.getType()) : null;
         this.smo = organization.getSmo() != null ? new TypeSmoDTO(organization.getSmo()) : null;
         this.location = organization.getLocation() != null ? new LocationDTO(organization.getLocation()) : null;
-        this.funCustomer = organization.getFunCustomer() != null ? organization.getFunCustomer().getName() : null;
+        this.funCustomer = organization.getFunCustomer() != null ? new FunCustomerDto(organization.getFunCustomer()) : null;
     }
 }
