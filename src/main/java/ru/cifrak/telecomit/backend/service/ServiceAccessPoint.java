@@ -120,7 +120,7 @@ public class ServiceAccessPoint {
             featureEdit = new FeatureEdit(locationFeatureAp, FeatureEditAction.CREATE);
             returnValue = rAccessPoints.save(accessPoint);
         } else {
-            accessPoint = rAccessPoints.getOne(dto.getId());
+            accessPoint = rAccessPoints.findById(dto.getId()).get();
             locationFeatureAp = new LocationFeatureAp(accessPoint);
             LocationFeatureAp clonedLFAP = locationFeatureAp.cloneWithNullId();
             AccessPoint clonedAp = clonedLFAP.convertToAccessPoint(rAccessPoints);
