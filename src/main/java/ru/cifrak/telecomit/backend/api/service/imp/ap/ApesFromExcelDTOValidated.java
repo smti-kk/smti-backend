@@ -185,6 +185,9 @@ public class ApesFromExcelDTOValidated {
             throw new FromExcelDTOErrorException("Ошибка в типе изменения, должен быть одним из {"
                     + repositoryChanges.findAll()
                             .stream()
+                            .filter(change ->
+                                    change.getApType().equals(TypeAccessPoint.valueOf(apType)) ||
+                                            change.getApType().equals(TypeAccessPoint.GENERAL))
                             .map(Changes::getName)
                             .collect(Collectors.joining(", "))
                     + "}.");
@@ -438,12 +441,9 @@ public class ApesFromExcelDTOValidated {
                 .map(Changes::getName)
                 .collect(Collectors.toList());
         for (ApFromExcelDTO tcDTO : tcesDTO) {
-            for (String item : typesChangeApString) {
+            if (!typesChangeApString.contains(tcDTO.getChangeType())) {
                 result = tcDTO.getNpp();
-                if (item.equals(tcDTO.getChangeType())) {
-                    result = null;
-                    break;
-                }
+                break;
             }
         }
         return result;
