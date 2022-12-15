@@ -438,9 +438,12 @@ public class ApesFromExcelDTOValidated {
                 .map(Changes::getName)
                 .collect(Collectors.toList());
         for (ApFromExcelDTO tcDTO : tcesDTO) {
-            if (!typesChangeApString.contains(tcDTO.getChangeType())) {
+            for (String item : typesChangeApString) {
                 result = tcDTO.getNpp();
-                break;
+                if (item.equals(tcDTO.getChangeType())) {
+                    result = null;
+                    break;
+                }
             }
         }
         return result;

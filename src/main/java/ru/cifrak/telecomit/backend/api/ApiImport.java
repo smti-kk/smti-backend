@@ -486,6 +486,8 @@ public class ApiImport {
     public ResponseEntity<ByteArrayResource> handleFileAccessPoint(@Valid DtoImportAccessPointParams params,
                                                                    @AuthenticationPrincipal User user
                                                                    ) {
+        log.info("-> POST /api/import/access-point :: {}, type = {}",
+                params.getFile().getOriginalFilename(), params.getApType());
         HttpHeaders headers = new HttpHeaders();
         try {
             ApImportResult importResult = new ApesFromExcelDTOValidated(
@@ -502,7 +504,7 @@ public class ApiImport {
                     new ApesFromExcelDTO(params.getFile())).getTcesDTO(params.getApType());
             apesSaveService.save(importResult.getListToImport(), params.getApType(), user);
             if (importResult.getImportFailure() > 0) {
-                log.error("<-POST /api/import/access-point :: error");
+                log.error("<- POST /api/import/access-point :: error");
                 headers.set("import-success", String.valueOf(importResult.getImportSuccess()));
                 headers.set("import-failure", String.valueOf(importResult.getImportFailure()));
                 headers.set("import-message", "error");
@@ -532,7 +534,8 @@ public class ApiImport {
             headers.set("import-message", "unexpected");
             return ResponseEntity.badRequest().headers(headers).body(null);
         }
-        log.info("POST /api/import/access-point :: {}", params.getFile().getOriginalFilename());
+        log.info("<- POST /api/import/access-point :: {}, type = {}",
+                params.getFile().getOriginalFilename(), params.getApType());
         return ResponseEntity.ok(null);
     }
 
