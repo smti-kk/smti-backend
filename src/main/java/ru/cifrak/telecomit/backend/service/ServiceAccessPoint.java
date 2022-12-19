@@ -183,7 +183,11 @@ public class ServiceAccessPoint {
         item.setContractId(dto.getContractId());
         item.setContract(dto.getContract());
         item.setContacts(dto.getContacts());
-        item.setChange(rChanges.getOne(dto.getChange()));
+        if (dto.getChange() != null) {
+            item.setChange(rChanges.findById(dto.getChange()).get());
+        } else {
+            item.setChange(null);
+        }
         item.setDateConnectionOrChange(dto.getDateConnectionOrChange());
         item.setNumIncomingMessage(dto.getNumIncomingMessage());
         item.setCommentary(dto.getCommentary());
