@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import ru.cifrak.telecomit.backend.entities.FunCustomer;
 import ru.cifrak.telecomit.backend.entities.Organization;
 
 import java.util.List;
@@ -61,4 +62,6 @@ public interface RepositoryOrganization extends JpaRepository<Organization, Inte
 
     @Nullable
     Organization findByFias(UUID fias);
+
+    List<Organization> findAllByFunCustomer(FunCustomer funCustomer);
 }
