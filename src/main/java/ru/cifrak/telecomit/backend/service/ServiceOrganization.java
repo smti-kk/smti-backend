@@ -386,4 +386,11 @@ public class ServiceOrganization {
         return new FunCustomerDto(rFunCustomer.saveAndFlush(new FunCustomer(dto)));
     }
 
+    public void deleteFunCustomer(Integer id) {
+        if (rFunCustomer.findById(id).isPresent()) {
+            for (Organization entity : rOrganization.findAllByFunCustomer(rFunCustomer.findById(id).get())) {
+                entity.setFunCustomer(null);
+            }
+        }
+    }
 }
